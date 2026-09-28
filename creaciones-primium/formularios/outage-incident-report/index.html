@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Outage Incident Report</title>
+<meta name="description" content="Server outage report with severity chosen from real radio buttons, an impact slider, affected regions, a ticket preview that rebuilds on every change and a dispatched ticket receipt.">
+<meta name="description-es" content="Parte de caída de servidor con severidad elegida en botones de radio reales, deslizador de impacto, regiones afectadas, vista previa del ticket que se rehace con cada cambio y resguardo de ticket enviado.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="sala" aria-hidden="true">
+  <span class="lampara lampara-a"></span>
+  <span class="lampara lampara-b"></span>
+  <span class="panel-muros"></span>
+  <span class="semaforo"><i></i><i></i><i></i><i></i></span>
+  <span class="barrido"></span>
+</div>
+
+<main class="consola">
+  <header class="consola-cab">
+    <span class="escudo" aria-hidden="true"><span class="escudo-raya"></span></span>
+    <div>
+      <p class="antetitulo">Node operations &middot; incident intake</p>
+      <h1>File an outage report</h1>
+    </div>
+    <p class="cab-reloj"><b id="reloj">--:--:--</b><span>node LON-03 &middot; on call now</span></p>
+  </header>
+
+  <p class="intro">The ticket on the right is written as you fill the form, so you can read the exact wording the on call engineer will get. Nothing is dispatched until you press send.</p>
+
+  <div class="escena">
+    <form class="hoja" id="form" novalidate>
+      <section class="bloque">
+        <h2 class="bloque-titulo"><span class="bloque-n" aria-hidden="true">01</span>What is down</h2>
+
+        <div class="campo" data-estado="neutro">
+          <label for="servicio">Affected service <span class="req" aria-hidden="true">*</span></label>
+          <select id="servicio" name="servicio" aria-describedby="servicio-ayuda" aria-invalid="false">
+            <option value="">Pick the service that is failing</option>
+            <option value="pagos">Payments API, card capture</option>
+            <option value="sesiones">Session gateway, logins</option>
+            <option value="transcod">Media transcoder, uploads</option>
+            <option value="datos">Nightly data pipeline</option>
+            <option value="panel">Customer web panel</option>
+          </select>
+          <p class="ayuda" id="servicio-ayuda">One ticket per service. If two are down, file twice, the routing is different.</p>
+          <p class="error" id="servicio-error" role="alert"></p>
+        </div>
+
+        <fieldset class="campo conjunto" id="conjunto-severidad" data-estado="neutro">
+          <legend>Severity <span class="req" aria-hidden="true">*</span></legend>
+          <p class="conjunto-pista">This is the only field the pager reacts to. Pick the worst thing true right now, not the worst thing you expect.</p>
+          <div class="severidades" role="radiogroup" aria-labelledby="conjunto-severidad" aria-describedby="severidad-ayuda">
+            <div class="sev sev--1">
+              <input type="radio" id="sev1" name="severidad" value="SEV1">
+              <label for="sev1">
+                <span class="sev-code">SEV1</span>
+                <span class="sev-txt"><b>Total outage, money or data at risk</b><small>Everyone is blocked. Page the incident commander now.</small></span>
+                <span class="sev-lampara" aria-hidden="true"></span>
+              </label>
+            </div>
+            <div class="sev sev--2">
+              <input type="radio" id="sev2" name="severidad" value="SEV2">
+              <label for="sev2">
+                <span class="sev-code">SEV2</span>
+                <span class="sev-txt"><b>Major degradation, workaround exists</b><small>A queue of customers is stuck, but there is a way round it.</small></span>
+                <span class="sev-lampara" aria-hidden="true"></span>
+              </label>
+            </div>
+            <div class="sev sev--3">
+              <input type="radio" id="sev3" name="severidad" value="SEV3">
+              <label for="sev3">
+                <span class="sev-code">SEV3</span>
+                <span class="sev-txt"><b>Partial, few customers affected</b><small>Under one per cent of traffic. Handle it in the working day.</small></span>
+                <span class="sev-lampara" aria-hidden="true"></span>
+              </label>
+            </div>
+            <div class="sev sev--4">
+              <input type="radio" id="sev4" name="severidad" value="SEV4">
+              <label for="sev4">
+                <span class="sev-code">SEV4</span>
+                <span class="sev-txt"><b>Cosmetic or internal only</b><small>Nothing is broken for a customer. Log it and move on.</small></span>
+                <span class="sev-lampara" aria-hidden="true"></span>
+              </label>
+            </div>
+          </div>
+          <p class="ayuda" id="severidad-ayuda">Move with the arrow keys. The lamp next to each code lights when it is the active one.</p>
+          <p class="error" id="severidad-error" role="alert"></p>
+        </fieldset>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="momento">When it started <span class="req" aria-hidden="true">*</span></label>
+            <input id="momento" name="momento" type="datetime-local" aria-describedby="momento-ayuda" aria-invalid="false">
+            <p class="ayuda" id="momento-ayuda">Local time of the node, not your own. A minute of accuracy is plenty.</p>
+            <p class="error" id="momento-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="impacto">Share of traffic affected <span class="req" aria-hidden="true">*</span></label>
+            <div class="deslizador">
+              <input id="impacto" name="impacto" type="range" min="0" max="100" step="1" value="0" aria-describedby="impacto-ayuda">
+              <span class="deslizador-cabecera" aria-hidden="true"><b id="impactoValor">0 %</b></span>
+              <span class="deslizador-pista" aria-hidden="true"><i id="impactoRelleno"></i></span>
+            </div>
+            <p class="ayuda" id="impacto-ayuda" role="status">Zero means a single request is failing. One hundred means the whole region is dark.</p>
+            <p class="error" id="impacto-error" role="alert"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque-titulo"><span class="bloque-n" aria-hidden="true">02</span>How it looks from outside</h2>
+
+        <div class="campo" data-estado="neutro">
+          <label for="titulo">Headline <span class="req" aria-hidden="true">*</span></label>
+          <input id="titulo" name="titulo" type="text" maxlength="90" placeholder="Card capture failing on 3DS step" aria-describedby="titulo-ayuda" aria-invalid="false">
+          <div class="cuenta" id="tituloCuenta">0 of 90</div>
+          <p class="ayuda" id="titulo-ayuda">Ten to ninety characters, in the shape a colleague would say it out loud. No ticket codes.</p>
+          <p class="error" id="titulo-error" role="alert"></p>
+        </div>
+
+        <fieldset class="campo conjunto" id="conjunto-regiones" data-estado="neutro">
+          <legend>Affected regions <span class="req" aria-hidden="true">*</span></legend>
+          <p class="conjunto-pista">Tick every region you can see the failure in, not just yours.</p>
+          <div class="regiones">
+            <label class="region"><input type="checkbox" name="region" value="EU West, Dublin"><span class="region-cod">EU-W</span><span class="region-txt">Dublin</span></label>
+            <label class="region"><input type="checkbox" name="region" value="US East, Ashburn"><span class="region-cod">US-E</span><span class="region-txt">Ashburn</span></label>
+            <label class="region"><input type="checkbox" name="region" value="AP South, Singapore"><span class="region-cod">AP-S</span><span class="region-txt">Singapore</span></label>
+            <label class="region"><input type="checkbox" name="region" value="SA East, Sao Paulo"><span class="region-cod">SA-E</span><span class="region-txt">Sao Paulo</span></label>
+          </div>
+          <p class="ayuda" id="regiones-ayuda">No region ticked yet. Traffic shifts to the healthy node until you say where it hurts.</p>
+          <p class="error" id="regiones-error" role="alert"></p>
+        </fieldset>
+
+        <div class="campo" data-estado="neutro">
+          <label for="detalle">What you have seen so far <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="detalle" name="detalle" rows="4" maxlength="600" placeholder="Optional, but the first thirty characters are what the engineer reads. Error codes, timings, what you already tried." aria-describedby="detalle-ayuda" aria-invalid="false"></textarea>
+          <div class="cuenta" id="detalleCuenta">0 of 600</div>
+          <p class="ayuda" id="detalle-ayuda">Thirty to six hundred characters. Paste logs if you have them, one block is plenty.</p>
+          <p class="error" id="detalle-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque-titulo"><span class="bloque-n" aria-hidden="true">03</span>Who gets it</h2>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="guardia">Who reported it <span class="req" aria-hidden="true">*</span></label>
+            <select id="guardia" name="guardia" aria-describedby="guardia-ayuda" aria-invalid="false">
+              <option value="">Pick the person filing this</option>
+              <option value="vera">Vera Ostrowski, platform</option>
+              <option value="dani">Dani Ferreira, payments</option>
+              <option value="milo">Milo Haugen, data</option>
+              <option value="ruth">Ruth Aluko, customer care</option>
+            </select>
+            <p class="ayuda" id="guardia-ayuda">The ticket is signed with this name and the conversation goes to their queue.</p>
+            <p class="error" id="guardia-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="contacto">Phone for the callback <span class="req" aria-hidden="true">*</span></label>
+            <input id="contacto" name="contacto" type="tel" inputmode="tel" autocomplete="tel" maxlength="18" placeholder="+44 7700 900412" aria-describedby="contacto-ayuda" aria-invalid="false">
+            <p class="ayuda" id="contacto-ayuda">International format, digits, spaces, plus and dashes only. It is masked when shown on the ticket.</p>
+            <p class="error" id="contacto-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo campo-check" data-estado="neutro">
+          <input id="despertar" name="despertar" type="checkbox" aria-describedby="despertar-ayuda">
+          <label for="despertar">Page the on call engineer, do not wait for the working day</label>
+          <p class="ayuda" id="despertar-ayuda">Only worth it at SEV1 and SEV2. Below that the ticket waits in the queue until 08:00.</p>
+          <p class="error" id="despertar-error" role="alert"></p>
+        </div>
+      </section>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The ticket will not be filed yet</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <button class="enviar" type="submit" id="enviar">File the ticket <span class="flecha" aria-hidden="true"></span></button>
+      <p class="pie-legal">Filing opens a public timeline in the status page within four minutes. Nothing here is shared with customers until you press send.</p>
+    </form>
+
+    <aside class="monitor" aria-label="Live preview of the ticket">
+      <p class="monitor-etiqueta">Ticket preview</p>
+      <article class="ticket" id="ticket" data-sev="none">
+        <span class="ticket-cinta" aria-hidden="true"></span>
+
+        <header class="ticket-cab">
+          <span class="ticket-id" id="tId">INC-000000</span>
+          <span class="ticket-sev" id="tSev">no severity</span>
+        </header>
+
+        <h2 class="ticket-titulo" id="tTitulo">Your headline goes here</h2>
+        <p class="ticket-servicio" id="tServicio">service not set</p>
+
+        <div class="ticket-medidor">
+          <span class="ticket-medidor-cabecera"><span>Traffic affected</span><b id="tImpacto">0 %</b></span>
+          <span class="ticket-pista" aria-hidden="true"><i id="tRelleno"></i></span>
+        </div>
+
+        <dl class="ticket-datos">
+          <div><dt>Started</dt><dd id="tMomento">not set</dd></div>
+          <div><dt>Regions</dt><dd id="tRegiones">none ticked</dd></div>
+          <div><dt>Reported by</dt><dd id="tGuardia">nobody yet</dd></div>
+          <div><dt>Callback</dt><dd id="tContacto">not set</dd></div>
+          <div><dt>Paging</dt><dd id="tPaging">waits for 08:00</dd></div>
+          <div><dt>Queue</dt><dd id="tCola">triage</dd></div>
+        </dl>
+
+        <p class="ticket-detalle" id="tDetalle">No notes on this ticket yet.</p>
+
+        <footer class="ticket-pie">
+          <span class="ticket-sello" aria-hidden="true"></span>
+          <span id="tPie">Node LON-03, draft not sent</span>
+        </footer>
+      </article>
+
+      <div class="cola-estado" role="status">
+        <span class="cola-lampara" id="colaLampara" aria-hidden="true"></span>
+        <span id="colaTexto">Draft. Nothing has left this browser.</span>
+      </div>
+    </aside>
+  </div>
+
+  <section class="despachado" id="despachado" hidden tabindex="-1" aria-live="polite">
+    <span class="despachado-aro" aria-hidden="true"></span>
+    <span class="despachado-sello" aria-hidden="true"><span class="despachado-tic"></span></span>
+    <p class="antetitulo">Ticket filed</p>
+    <h2 id="despTitulo">The pager has been told</h2>
+    <p id="despTexto">The on call engineer has the ticket in their queue.</p>
+    <dl class="despachado-datos">
+      <div><dt>Ticket</dt><dd id="dId">INC-000000</dd></div>
+      <div><dt>Severity</dt><dd id="dSev">SEV3</dd></div>
+      <div><dt>Assigned to</dt><dd id="dRota">platform on call</dd></div>
+      <div><dt>Status page in</dt><dd id="dEstado">4 minutes</dd></div>
+    </dl>
+    <button class="enviar enviar-tenue" type="button" id="otra">File another outage</button>
+  </section>
+
+  <p class="pie-pagina">Node operations &middot; one ticket per service &middot; the status page goes public four minutes after you send</p>
+</main>
+</body>
+</html>

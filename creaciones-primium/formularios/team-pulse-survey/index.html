@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Team Pulse Survey</title>
+<meta name="description" content="Five question team pulse survey with animated result bars per question, a live confidence readout and a sealed response card.">
+<meta name="description-es" content="Encuesta de pulso del equipo de cinco preguntas con barras de resultado animadas, lectura de confianza en vivo y tarjeta de respuesta sellada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="pared" aria-hidden="true"></div>
+<div class="luz luz-a" aria-hidden="true"></div>
+<div class="luz luz-b" aria-hidden="true"></div>
+<div class="planta" aria-hidden="true"><span class="hoja h1"></span><span class="hoja h2"></span><span class="hoja h3"></span></div>
+
+<main class="tablero">
+  <header class="tablero-cab">
+    <span class="marca" aria-hidden="true"><i></i><i></i><i></i></span>
+    <div>
+      <p class="antetitulo">Northgate studio &middot; quarterly check in</p>
+      <h1>How is the team doing?</h1>
+      <p class="entradilla">Five questions, three minutes, no names attached. Results are shown against the last three surveys so you can see the drift, not just the number.</p>
+    </div>
+    <p class="sello-dia"><b id="dia">11</b><span>feb<br>2026</span></p>
+  </header>
+
+  <div class="progreso" aria-hidden="true">
+    <span class="progreso-pista"><i id="progresoRelleno"></i></span>
+    <span class="progreso-texto" id="progresoTexto">0 of 5 answered</span>
+  </div>
+
+  <form class="cuestionario" id="form" novalidate>
+    <section class="bloque" aria-labelledby="p1">
+      <div class="bloque-cab">
+        <span class="num" aria-hidden="true">01</span>
+        <h2 id="p1">How clear are the goals for this quarter?</h2>
+      </div>
+      <p class="bloque-ayuda">From one means nobody could repeat the goal, five means you could recite it.</p>
+      <div class="campo" data-estado="neutro">
+        <div class="escala" role="radiogroup" aria-labelledby="p1" aria-describedby="p1-ayuda">
+          <div class="paso"><input type="radio" id="p1o1" name="p1" value="1"><label for="p1o1"><span class="punto"></span><span class="sr">1, not at all clear</span></label></div>
+          <div class="paso"><input type="radio" id="p1o2" name="p1" value="2"><label for="p1o2"><span class="punto"></span><span class="sr">2, barely clear</span></label></div>
+          <div class="paso"><input type="radio" id="p1o3" name="p1" value="3"><label for="p1o3"><span class="punto"></span><span class="sr">3, fairly clear</span></label></div>
+          <div class="paso"><input type="radio" id="p1o4" name="p1" value="4"><label for="p1o4"><span class="punto"></span><span class="sr">4, very clear</span></label></div>
+          <div class="paso"><input type="radio" id="p1o5" name="p1" value="5"><label for="p1o5"><span class="punto"></span><span class="sr">5, crystal clear</span></label></div>
+        </div>
+        <p class="ayuda" id="p1-ayuda" role="status">Pick one with the mouse or with the arrow keys. The bar lights up as soon as you answer.</p>
+        <p class="error" id="p1-error" role="alert"></p>
+      </div>
+      <div class="barras" aria-label="Spread of the answers to question one" id="barras-p1">
+        <span class="barra-slot"><i data-v="1"></i></span>
+        <span class="barra-slot"><i data-v="2"></i></span>
+        <span class="barra-slot"><i data-v="3"></i></span>
+        <span class="barra-slot"><i data-v="4"></i></span>
+        <span class="barra-slot"><i data-v="5"></i></span>
+        <span class="barra-leyenda"><b id="p1-valor">no answer yet</b></span>
+      </div>
+    </section>
+
+    <section class="bloque" aria-labelledby="p2">
+      <div class="bloque-cab">
+        <span class="num" aria-hidden="true">02</span>
+        <h2 id="p2">How is the workload this week?</h2>
+      </div>
+      <p class="bloque-ayuda">Think about the last seven days, not the whole quarter.</p>
+      <div class="campo" data-estado="neutro">
+        <div class="escala" role="radiogroup" aria-labelledby="p2" aria-describedby="p2-ayuda">
+          <div class="paso"><input type="radio" id="p2o1" name="p2" value="1"><label for="p2o1"><span class="punto"></span><span class="sr">1, far too light</span></label></div>
+          <div class="paso"><input type="radio" id="p2o2" name="p2" value="2"><label for="p2o2"><span class="punto"></span><span class="sr">2, too light</span></label></div>
+          <div class="paso"><input type="radio" id="p2o3" name="p2" value="3"><label for="p2o3"><span class="punto"></span><span class="sr">3, about right</span></label></div>
+          <div class="paso"><input type="radio" id="p2o4" name="p2" value="4"><label for="p2o4"><span class="punto"></span><span class="sr">4, a bit heavy</span></label></div>
+          <div class="paso"><input type="radio" id="p2o5" name="p2" value="5"><label for="p2o5"><span class="punto"></span><span class="sr">5, far too heavy</span></label></div>
+        </div>
+        <p class="ayuda" id="p2-ayuda" role="status">Five means the week was unworkable and you want something dropped.</p>
+        <p class="error" id="p2-error" role="alert"></p>
+      </div>
+      <div class="barras" aria-label="Spread of the answers to question two" id="barras-p2">
+        <span class="barra-slot"><i data-v="1"></i></span>
+        <span class="barra-slot"><i data-v="2"></i></span>
+        <span class="barra-slot"><i data-v="3"></i></span>
+        <span class="barra-slot"><i data-v="4"></i></span>
+        <span class="barra-slot"><i data-v="5"></i></span>
+        <span class="barra-leyenda"><b id="p2-valor">no answer yet</b></span>
+      </div>
+    </section>
+
+    <section class="bloque" aria-labelledby="p3">
+      <div class="bloque-cab">
+        <span class="num" aria-hidden="true">03</span>
+        <h2 id="p3">Do you get useful feedback on your work?</h2>
+      </div>
+      <p class="bloque-ayuda">Useful means specific, timely and about something you can change.</p>
+      <div class="campo" data-estado="neutro">
+        <div class="escala" role="radiogroup" aria-labelledby="p3" aria-describedby="p3-ayuda">
+          <div class="paso"><input type="radio" id="p3o1" name="p3" value="1"><label for="p3o1"><span class="punto"></span><span class="sr">1, never</span></label></div>
+          <div class="paso"><input type="radio" id="p3o2" name="p3" value="2"><label for="p3o2"><span class="punto"></span><span class="sr">2, rarely</span></label></div>
+          <div class="paso"><input type="radio" id="p3o3" name="p3" value="3"><label for="p3o3"><span class="punto"></span><span class="sr">3, sometimes</span></label></div>
+          <div class="paso"><input type="radio" id="p3o4" name="p3" value="4"><label for="p3o4"><span class="punto"></span><span class="sr">4, often</span></label></div>
+          <div class="paso"><input type="radio" id="p3o5" name="p3" value="5"><label for="p3o5"><span class="punto"></span><span class="sr">5, all the time</span></label></div>
+        </div>
+        <p class="ayuda" id="p3-ayuda" role="status">A low score here is the one the team usually wants read out loud.</p>
+        <p class="error" id="p3-error" role="alert"></p>
+      </div>
+      <div class="barras" aria-label="Spread of the answers to question three" id="barras-p3">
+        <span class="barra-slot"><i data-v="1"></i></span>
+        <span class="barra-slot"><i data-v="2"></i></span>
+        <span class="barra-slot"><i data-v="3"></i></span>
+        <span class="barra-slot"><i data-v="4"></i></span>
+        <span class="barra-slot"><i data-v="5"></i></span>
+        <span class="barra-leyenda"><b id="p3-valor">no answer yet</b></span>
+      </div>
+    </section>
+
+    <section class="bloque" aria-labelledby="p4">
+      <div class="bloque-cab">
+        <span class="num" aria-hidden="true">04</span>
+        <h2 id="p4">How comfortable are you raising a problem?</h2>
+      </div>
+      <p class="bloque-ayuda">Including a problem that is your own fault, or that involves your manager.</p>
+      <div class="campo" data-estado="neutro">
+        <div class="escala" role="radiogroup" aria-labelledby="p4" aria-describedby="p4-ayuda">
+          <div class="paso"><input type="radio" id="p4o1" name="p4" value="1"><label for="p4o1"><span class="punto"></span><span class="sr">1, not at all</span></label></div>
+          <div class="paso"><input type="radio" id="p4o2" name="p4" value="2"><label for="p4o2"><span class="punto"></span><span class="sr">2, a little</span></label></div>
+          <div class="paso"><input type="radio" id="p4o3" name="p4" value="3"><label for="p4o3"><span class="punto"></span><span class="sr">3, neutral</span></label></div>
+          <div class="paso"><input type="radio" id="p4o4" name="p4" value="4"><label for="p4o4"><span class="punto"></span><span class="sr">4, quite comfortable</span></label></div>
+          <div class="paso"><input type="radio" id="p4o5" name="p4" value="5"><label for="p4o5"><span class="punto"></span><span class="sr">5, very comfortable</span></label></div>
+        </div>
+        <p class="ayuda" id="p4-ayuda" role="status">Nobody but you sees the individual answer, only the aggregate.</p>
+        <p class="error" id="p4-error" role="alert"></p>
+      </div>
+      <div class="barras" aria-label="Spread of the answers to question four" id="barras-p4">
+        <span class="barra-slot"><i data-v="1"></i></span>
+        <span class="barra-slot"><i data-v="2"></i></span>
+        <span class="barra-slot"><i data-v="3"></i></span>
+        <span class="barra-slot"><i data-v="4"></i></span>
+        <span class="barra-slot"><i data-v="5"></i></span>
+        <span class="barra-leyenda"><b id="p4-valor">no answer yet</b></span>
+      </div>
+    </section>
+
+    <section class="bloque" aria-labelledby="p5">
+      <div class="bloque-cab">
+        <span class="num" aria-hidden="true">05</span>
+        <h2 id="p5">Would you recommend this team as a place to work?</h2>
+      </div>
+      <p class="bloque-ayuda">The bluntest question on the sheet, and the one leadership reads first.</p>
+      <div class="campo" data-estado="neutro">
+        <div class="escala" role="radiogroup" aria-labelledby="p5" aria-describedby="p5-ayuda">
+          <div class="paso"><input type="radio" id="p5o1" name="p5" value="1"><label for="p5o1"><span class="punto"></span><span class="sr">1, no chance</span></label></div>
+          <div class="paso"><input type="radio" id="p5o2" name="p5" value="2"><label for="p5o2"><span class="punto"></span><span class="sr">2, unlikely</span></label></div>
+          <div class="paso"><input type="radio" id="p5o3" name="p5" value="3"><label for="p5o3"><span class="punto"></span><span class="sr">3, maybe</span></label></div>
+          <div class="paso"><input type="radio" id="p5o4" name="p5" value="4"><label for="p5o4"><span class="punto"></span><span class="sr">4, probably</span></label></div>
+          <div class="paso"><input type="radio" id="p5o5" name="p5" value="5"><label for="p5o5"><span class="punto"></span><span class="sr">5, without doubt</span></label></div>
+        </div>
+        <p class="ayuda" id="p5-ayuda" role="status">Four or five counts as a promoter in the summary the team sees on Friday.</p>
+        <p class="error" id="p5-error" role="alert"></p>
+      </div>
+      <div class="barras" aria-label="Spread of the answers to question five" id="barras-p5">
+        <span class="barra-slot"><i data-v="1"></i></span>
+        <span class="barra-slot"><i data-v="2"></i></span>
+        <span class="barra-slot"><i data-v="3"></i></span>
+        <span class="barra-slot"><i data-v="4"></i></span>
+        <span class="barra-slot"><i data-v="5"></i></span>
+        <span class="barra-leyenda"><b id="p5-valor">no answer yet</b></span>
+      </div>
+    </section>
+
+    <section class="bloque bloque-nota">
+      <div class="campo" data-estado="neutro">
+        <label for="nota">One thing we should fix before the next survey</label>
+        <textarea id="nota" name="nota" rows="3" maxlength="240" placeholder="Optional. The office reads every line of this box on Friday morning." aria-describedby="nota-ayuda"></textarea>
+        <div class="cuenta" id="notaCuenta">0 of 240</div>
+        <p class="ayuda" id="nota-ayuda">Between 10 and 240 characters if you write anything. Blank is a perfectly good answer too.</p>
+        <p class="error" id="nota-error" role="alert"></p>
+      </div>
+    </section>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenTitulo">Two questions still open</b>
+        <ul id="resumenLista"></ul>
+      </div>
+    </div>
+
+    <div class="acciones">
+      <p class="nota-legal">Answers are stored under an anonymous token that expires in 30 days. Managers see the aggregate once four people have answered.</p>
+      <button class="enviar" type="submit" id="enviar">Send my answers <span class="flecha" aria-hidden="true"></span></button>
+    </div>
+  </form>
+
+  <section class="entregada" id="entregada" hidden tabindex="-1" aria-live="polite">
+    <span class="entregada-aro" aria-hidden="true"></span>
+    <span class="entregada-sello" aria-hidden="true"><span class="entregada-tic"></span></span>
+    <p class="antetitulo">Response received</p>
+    <h2 id="entregadaTitulo">Thank you, that is five out of five</h2>
+    <p id="entregadaTexto">Your answers are counted. The summary goes out to the team on Friday.</p>
+    <dl class="entregada-datos">
+      <div><dt>Average score</dt><dd id="entPromedio">0,0</dd></div>
+      <div><dt>Lowest question</dt><dd id="entBaja">no answer yet</dd></div>
+      <div><dt>Token</dt><dd id="entToken">PL-000000</dd></div>
+      <div><dt>Answers shared</dt><dd id="entCompartidas">1 of 4</dd></div>
+    </dl>
+    <button class="enviar enviar-tenue" type="button" id="otra">Change an answer</button>
+  </section>
+</main>
+
+<p class="pie-pagina">Northgate studio &middot; four people needed before the aggregate opens &middot; no names, ever</p>
+</body>
+</html>

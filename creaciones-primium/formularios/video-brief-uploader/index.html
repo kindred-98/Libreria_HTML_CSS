@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Upload the script and reference footage for a video commission: drop zones with thumbnails, live per file progress, retry on a dropped transfer and a checked brief before it is sent.">
+<meta name="description-es" content="Sube el guion y los vídeos de referencia de un encargo de vídeo: zonas de arrastre con miniaturas, progreso por archivo, reintento si se cae una transferencia y revisión del encargo antes de enviarlo.">
+<meta name="theme-color" content="#0d1110">
+<meta name="robots" content="index, follow">
+<title>Video brief uploader</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="escena" aria-hidden="true">
+  <div class="escena__rayas"></div>
+  <div class="escena__mancha escena__mancha--a"></div>
+  <div class="escena__mancha escena__mancha--b"></div>
+</div>
+
+<header class="cabecera">
+  <p class="cabecera__marca"><span class="marca__foco" aria-hidden="true"></span> Halyard Studio &middot; new commission</p>
+  <h1>Send us the brief</h1>
+  <p class="cabecera__bajada">The script, the footage you like and the brand files. Drop them in, watch the bars fill, and we will come back with a shooting plan inside one working day.</p>
+</header>
+
+<main class="envoltorio">
+
+  <form class="bolsa" id="formBrief" novalidate>
+
+    <div class="avance" id="avance" data-vacio="1">
+      <div class="avance__fila">
+        <p class="avance__etiqueta">Overall transfer</p>
+        <p class="avance__cifra"><b id="avanceCifra">0</b><span>%</span></p>
+      </div>
+      <div class="avance__pista" role="img" id="avanceBar" aria-label="No files queued yet">
+        <span class="avance__relleno" id="avanceRelleno"></span>
+      </div>
+      <p class="avance__nota" id="avanceTexto">Nothing queued. The script is the one file we cannot start without.</p>
+    </div>
+
+    <div class="resumen" id="resumenError" hidden tabindex="-1" role="alert" aria-labelledby="resumenErrorTitulo">
+      <span class="resumen__marca" aria-hidden="true">!</span>
+      <div>
+        <b id="resumenErrorTitulo">The brief is not sent yet</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <section class="grupo" aria-labelledby="titGuion">
+      <div class="grupo__cabeza">
+        <h2 class="grupo__titulo" id="titGuion"><span class="grupo__num">01</span> The script</h2>
+        <p class="grupo__cuenta" id="cuentaGuion">No file yet</p>
+      </div>
+
+      <div class="zona" id="zonaGuion" data-viva="0">
+        <input class="zona__entrada" type="file" id="archivoGuion" accept=".pdf,.docx,.md,.txt,.rtf" aria-describedby="ayudaGuion errorGuion">
+        <label class="zona__cara" for="archivoGuion">
+          <span class="zona__mas" aria-hidden="true"></span>
+          <span class="zona__titulo">Drop the script here</span>
+          <span class="zona__pista">or click to browse, one file only</span>
+        </label>
+        <ul class="chips" id="ayudaGuion">
+          <li class="chip">PDF</li>
+          <li class="chip">DOCX</li>
+          <li class="chip">MD</li>
+          <li class="chip">TXT</li>
+          <li class="chip">RTF</li>
+          <li class="chip chip--limite">12 MB max</li>
+        </ul>
+        <p class="error" id="errorGuion" hidden></p>
+      </div>
+
+      <ul class="ficheros" id="listaGuion"></ul>
+    </section>
+
+    <section class="grupo" aria-labelledby="titVideos">
+      <div class="grupo__cabeza">
+        <h2 class="grupo__titulo" id="titVideos"><span class="grupo__num">02</span> Reference footage</h2>
+        <p class="grupo__cuenta" id="cuentaVideos">0 of 6 files</p>
+      </div>
+
+      <div class="zona" id="zonaVideos" data-viva="0">
+        <input class="zona__entrada" type="file" id="archivoVideos" accept=".mp4,.mov,.webm,.mkv,.m4v" multiple aria-describedby="ayudaVideos errorVideos">
+        <label class="zona__cara" for="archivoVideos">
+          <span class="zona__mas" aria-hidden="true"></span>
+          <span class="zona__titulo">Drop the clips here</span>
+          <span class="zona__pista">or click to browse, up to six at a time</span>
+        </label>
+        <ul class="chips" id="ayudaVideos">
+          <li class="chip">MP4</li>
+          <li class="chip">MOV</li>
+          <li class="chip">WEBM</li>
+          <li class="chip">MKV</li>
+          <li class="chip">M4V</li>
+          <li class="chip chip--limite">400 MB each</li>
+        </ul>
+        <p class="error" id="errorVideos" hidden></p>
+      </div>
+
+      <ul class="ficheros" id="listaVideos"></ul>
+    </section>
+
+    <section class="grupo" aria-labelledby="titMarca">
+      <div class="grupo__cabeza">
+        <h2 class="grupo__titulo" id="titMarca"><span class="grupo__num">03</span> Brand files</h2>
+        <p class="grupo__cuenta" id="cuentaMarca">0 of 10 files</p>
+      </div>
+
+      <div class="zona" id="zonaMarca" data-viva="0">
+        <input class="zona__entrada" type="file" id="archivoMarca" accept=".png,.jpg,.jpeg,.svg,.webp" multiple aria-describedby="ayudaMarca errorMarca">
+        <label class="zona__cara" for="archivoMarca">
+          <span class="zona__mas" aria-hidden="true"></span>
+          <span class="zona__titulo">Drop the logos here</span>
+          <span class="zona__pista">or click to browse, stills and vectors</span>
+        </label>
+        <ul class="chips" id="ayudaMarca">
+          <li class="chip">PNG</li>
+          <li class="chip">JPG</li>
+          <li class="chip">SVG</li>
+          <li class="chip">WEBP</li>
+          <li class="chip chip--limite">8 MB each</li>
+        </ul>
+        <p class="error" id="errorMarca" hidden></p>
+      </div>
+
+      <ul class="ficheros" id="listaMarca"></ul>
+    </section>
+
+    <section class="datos" aria-labelledby="titDatos">
+      <h2 class="grupo__titulo" id="titDatos"><span class="grupo__num">04</span> Who is this for</h2>
+
+      <div class="rejilla">
+        <label class="campo">
+          <span class="campo__etiqueta">Project name</span>
+          <input class="texto" type="text" id="proyecto" name="proyecto" maxlength="48" placeholder="Autumn range, thirty second cut" aria-describedby="errorProyecto">
+          <span class="error" id="errorProyecto" hidden></span>
+        </label>
+
+        <label class="campo">
+          <span class="campo__etiqueta">Contact email</span>
+          <input class="texto" type="email" id="correo" name="correo" maxlength="64" placeholder="you@studio.com" aria-describedby="ayudaCorreo errorCorreo" autocomplete="email" spellcheck="false">
+          <span class="ayuda" id="ayudaCorreo">The shooting plan lands here.</span>
+          <span class="error" id="errorCorreo" hidden></span>
+        </label>
+
+        <label class="campo">
+          <span class="campo__etiqueta">Footage due</span>
+          <input class="texto" type="date" id="entrega" name="entrega" aria-describedby="ayudaEntrega errorEntrega">
+          <span class="ayuda" id="ayudaEntrega">Today counts as valid, yesterday does not.</span>
+          <span class="error" id="errorEntrega" hidden></span>
+        </label>
+
+        <label class="campo">
+          <span class="campo__etiqueta">Shoot days</span>
+          <select class="texto texto--select" id="jornada" name="jornada" aria-describedby="errorJornada">
+            <option value="">Pick a length</option>
+            <option value="1">One day, single setup</option>
+            <option value="2">Two days, studio and street</option>
+            <option value="3">Three days, full production</option>
+            <option value="5">Five days, two locations</option>
+            <option value="8">Eight days, campaign scale</option>
+          </select>
+          <span class="error" id="errorJornada" hidden></span>
+        </label>
+      </div>
+
+      <label class="campo">
+        <span class="campo__etiqueta">Anything else <em>optional</em></span>
+        <textarea class="area" id="notas" name="notas" rows="3" maxlength="400" placeholder="The reference we like is the second clip, but the grade should be warmer."></textarea>
+        <span class="ayuda"><i class="cuenta" id="cuentaNotas">0</i> of 400 characters.</span>
+      </label>
+
+      <label class="caja" id="cajaLicencia" data-estado="ok">
+        <input class="caja__entrada" type="checkbox" id="licencia" name="licencia" aria-describedby="errorLicencia">
+        <span class="caja__punto" aria-hidden="true"></span>
+        <span class="caja__texto">I own the rights to everything in this drop, or I have permission to use it. Halyard can cut it, grade it and show it to the client.</span>
+      </label>
+      <p class="error" id="errorLicencia" hidden></p>
+    </section>
+
+    <div class="firma">
+      <p class="firma__nota">We keep the original files for ninety days, then they go. Nothing is shared outside the production team.</p>
+      <button class="envia" type="submit" id="envia">
+        <span class="envia__texto" id="enviaTexto">Send the brief</span>
+        <span class="envia__cinta" aria-hidden="true"></span>
+      </button>
+    </div>
+  </form>
+
+  <section class="cerrada" id="cerrada" hidden tabindex="-1" aria-labelledby="cerradaTitulo">
+    <div class="cerrada__marco">
+      <div class="cerrada__sello" aria-hidden="true"><span class="cerrada__tic"></span></div>
+      <p class="cerrada__kicker">Brief received</p>
+      <h2 class="cerrada__titulo" id="cerradaTitulo">It is with the producer</h2>
+      <p class="cerrada__lead" id="cerradaLead">Every file is on the server and the plan is being written.</p>
+      <dl class="cerrada__datos">
+        <div><dt>Ticket</dt><dd id="cerradaRef">BRF-0000</dd></div>
+        <div><dt>Project</dt><dd id="cerradaProyecto">No name</dd></div>
+        <div><dt>Files</dt><dd id="cerradaArchivo">0</dd></div>
+        <div><dt>Footage due</dt><dd id="cerradaEntrega">No date</dd></div>
+      </dl>
+      <ul class="cerrada__pasos" id="cerradaPasos"></ul>
+      <button class="otra" type="button" id="otra">Send another brief</button>
+    </div>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

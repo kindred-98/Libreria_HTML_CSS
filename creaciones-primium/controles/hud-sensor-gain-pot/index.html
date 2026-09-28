@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hud Sensor Gain Pot</title>
+<meta name="description" content="A sensor gain pot drawn inside a spacecraft heads up display: the needle rides a graduated scope with its own radar sweep, and three telemetry columns for gain, noise floor and threshold rebuild themselves as the pot turns.">
+<meta name="description-es" content="Un potenciometro de ganancia de sensor dibujado en un visor de cabina: la aguja recorre un esfera graduada con su propio barrido de radar, y tres columnas de telemetria con ganancia, suelo de ruido y umbral se rehacen al girar el mando.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="page">
+  <header class="head">
+    <p class="head__kicker">Suit deck 3 &middot; optical bench</p>
+    <h1>Sensor Gain Pot</h1>
+    <p class="head__lead">Grab the scope and swing the needle around the dial. Arrows step one unit, Page Up and Page Down jump ten, Home and End run to the stops, Space seats the gain at unity.</p>
+  </header>
+
+  <div class="hud">
+    <span class="hud__lines" aria-hidden="true"></span>
+    <span class="hud__scan" aria-hidden="true"></span>
+    <span class="hud__corner hud__corner--tl" aria-hidden="true"></span>
+    <span class="hud__corner hud__corner--tr" aria-hidden="true"></span>
+    <span class="hud__corner hud__corner--bl" aria-hidden="true"></span>
+    <span class="hud__corner hud__corner--br" aria-hidden="true"></span>
+
+    <div class="hud__bar">
+      <div class="hud__ident">
+        <b>Sensor Gain</b>
+        <s>optical bench &middot; channel 2</s>
+      </div>
+      <div class="hud__ticks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="hud__stat">
+        <span class="lamp" aria-hidden="true"></span>
+        <span id="statMode">manual trim</span>
+      </div>
+    </div>
+
+    <div class="hud__main">
+      <div class="scope" id="scope" style="--p:.62">
+        <span class="scope__ring" aria-hidden="true"></span>
+        <span class="scope__grad" aria-hidden="true"></span>
+        <span class="scope__major" aria-hidden="true"></span>
+        <span class="scope__grid" aria-hidden="true"></span>
+        <span class="scope__datum" aria-hidden="true"></span>
+        <span class="scope__sweep" aria-hidden="true"></span>
+        <span class="scope__ping" aria-hidden="true"></span>
+        <span class="scope__ping scope__ping--b" aria-hidden="true"></span>
+        <span class="scope__arc" aria-hidden="true"></span>
+
+        <span class="scope__num" style="--a:-120deg" aria-hidden="true">-24</span>
+        <span class="scope__num" style="--a:-60deg" aria-hidden="true">-12</span>
+        <span class="scope__num" style="--a:0deg" aria-hidden="true">0</span>
+        <span class="scope__num" style="--a:60deg" aria-hidden="true">+12</span>
+        <span class="scope__num" style="--a:120deg" aria-hidden="true">+24</span>
+
+        <span class="scope__needle" aria-hidden="true"></span>
+        <span class="scope__hub" aria-hidden="true"></span>
+
+        <span class="scope__win" aria-hidden="true">
+          <b id="winVal">+5.8</b>
+          <s>db of gain</s>
+        </span>
+
+        <input class="scope__input" id="gain" type="range" min="0" max="100" step="1" value="62" aria-label="Sensor gain trim, in decibels">
+      </div>
+
+      <div class="cols">
+        <section class="col col--gain">
+          <header><span>gain</span><b id="numGain">+5.8</b></header>
+          <div class="col__bar"><i id="barGain"></i></div>
+          <p class="col__unit">db trim</p>
+          <div class="col__rungs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </section>
+
+        <section class="col col--noise">
+          <header><span>noise floor</span><b id="numNoise">11.8</b></header>
+          <div class="col__bar"><i id="barNoise"></i></div>
+          <p class="col__unit">db snr</p>
+          <div class="col__rungs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </section>
+
+        <section class="col col--thr">
+          <header><span>threshold</span><b id="numThr">8.9</b></header>
+          <div class="col__bar"><i id="barThr"></i></div>
+          <p class="col__unit">db trip</p>
+          <div class="col__rungs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="hud__foot">
+      <span class="hud__keys">
+        <b>drag</b> swing &nbsp;<b>arrows</b> step &nbsp;<b>pgup</b> ten &nbsp;<b>home end</b> stops
+      </span>
+      <span class="hud__serial">SUIT DECK 3 &middot; FIRMWARE 2.14 &middot; 48V LOOP</span>
+    </div>
+  </div>
+
+  <p class="foot">The radar sweep, the travelling scanline and the pulses climbing the columns keep the deck alive whatever the pot is doing.</p>
+</main>
+</body>
+</html>

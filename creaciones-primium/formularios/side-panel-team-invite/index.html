@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Side Panel Team Invite</title>
+<meta name="description" content="Team invitation in a side sheet you can drag by its handle and resize with a real separator, with email chip parsing, role and team selection, an invite expiry slider and a sent panel.">
+<meta name="description-es" content="Invitación de equipo en una hoja lateral que se arrastra por el tirador y se redimensiona con un separador real, con análisis de correos en etiquetas, selección de rol y equipo, deslizador de caducidad y panel de enviados.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="piso" aria-hidden="true">
+  <span class="piso__halo piso__halo--a"></span>
+  <span class="piso__halo piso__halo--b"></span>
+  <span class="piso__malla"></span>
+  <span class="piso__rayo"></span>
+</div>
+
+<header class="barra">
+  <span class="marca"><span class="marca__marca" aria-hidden="true"></span>Halden Group</span>
+  <button class="abrir" type="button" id="abrir" aria-expanded="true" aria-controls="hoja">
+    <span class="abrir__punto" aria-hidden="true"></span>
+    Invite teammates
+  </button>
+</header>
+
+<main class="tablero" id="tablero">
+  <div class="portada">
+    <p class="antetitulo">People &amp; access</p>
+    <h1>The team already knows the drill</h1>
+    <p class="intro">The invitation sheet lives on the right edge. Drag it by the handle, pull the left edge to make it wider, and the panel keeps whatever you typed.</p>
+  </div>
+
+  <div class="rejilla">
+    <article class="tarjeta">
+      <p class="tarjeta__etiqueta">Seats</p>
+      <p class="tarjeta__cifra">18 of 25</p>
+      <div class="silla"><span class="silla__relleno" style="width:72%"></span></div>
+      <p class="tarjeta__nota">Seven seats left on the Studio plan.</p>
+    </article>
+
+    <article class="tarjeta">
+      <p class="tarjeta__etiqueta">Pending</p>
+      <p class="tarjeta__cifra">3 open</p>
+      <ul class="mini">
+        <li><b>Wren Achebe</b><small>sent 3 days ago, expires in 4</small></li>
+        <li><b>Teo Sanders</b><small>sent 5 days ago, expires in 2</small></li>
+        <li><b>Ilse Novak</b><small>sent yesterday, expires in 6</small></li>
+      </ul>
+    </article>
+
+    <article class="tarjeta">
+      <p class="tarjeta__etiqueta">Groups</p>
+      <p class="tarjeta__cifra">5 teams</p>
+      <ul class="etiquetas-mini">
+        <li>Studio</li>
+        <li>Finance</li>
+        <li>Support</li>
+        <li>Ops</li>
+        <li>Design</li>
+      </ul>
+    </article>
+  </div>
+
+  <p class="nota-pie" id="notaPie">The sheet is a real panel: try dragging the striped handle on top of it, and pull the dotted edge on its left side.</p>
+</main>
+
+<aside class="hoja" id="hoja" aria-labelledby="hojaTitulo">
+  <div class="hoja__asa" id="asa" role="button" tabindex="0" aria-label="Drag the invitation sheet sideways, double press to close it" aria-describedby="pistaAsa">
+    <span class="asa__rayas" aria-hidden="true"></span>
+    <span class="asa__palanca" aria-hidden="true"></span>
+  </div>
+
+  <header class="hoja__cab">
+    <div>
+      <p class="antetitulo">Access</p>
+      <h2 class="hoja__titulo" id="hojaTitulo">Invite people to Halden</h2>
+    </div>
+    <span class="hoja__estado" id="hojaEstado">sheet open</span>
+    <button class="hoja__cerrar" type="button" id="cerrar" aria-label="Close the invitation sheet">
+      <span aria-hidden="true"></span>
+    </button>
+  </header>
+
+  <p class="hoja__pista" id="pistaAsa">Drag the handle. The sheet snaps back to the edge when you let go.</p>
+
+  <div class="separador" id="separador" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Sheet width in pixels" aria-valuemin="330" aria-valuemax="660" aria-valuenow="440">
+    <span class="separador__punto" aria-hidden="true"></span>
+  </div>
+
+  <form class="hoja__cuerpo" id="form" novalidate>
+    <div class="campo" data-estado="neutro">
+      <label for="correos">Email addresses</label>
+      <textarea id="correos" name="correos" rows="4" spellcheck="false" placeholder="wren@halden.example, teo@halden.example" aria-describedby="correos-ayuda"></textarea>
+      <div class="fichas" id="fichas" aria-live="polite" aria-label="Parsed addresses"></div>
+      <p class="ayuda" id="correos-ayuda">Separate with commas, spaces or new lines. Between two and eight addresses, no repeats.</p>
+      <p class="err" id="correos-err" role="alert"></p>
+    </div>
+
+    <div class="doble">
+      <div class="campo" data-estado="neutro">
+        <label for="rol">Access level</label>
+        <select id="rol" name="rol" aria-describedby="rol-ayuda">
+          <option value="">Choose a level</option>
+          <option value="admin">Administrator, everything</option>
+          <option value="editor">Editor, content and drafts</option>
+          <option value="invitado">Guest, shared items only</option>
+          <option value="facturacion">Billing, invoices only</option>
+        </select>
+        <p class="ayuda" id="rol-ayuda">Guests never see the members list or the billing tab.</p>
+        <p class="err" id="rol-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="equipo">Put them in a team</label>
+        <select id="equipo" name="equipo" aria-describedby="equipo-ayuda">
+          <option value="">Choose a team</option>
+          <option value="studio">Studio</option>
+          <option value="finanzas">Finance</option>
+          <option value="soporte">Support</option>
+          <option value="ops">Ops</option>
+          <option value="diseno">Design</option>
+        </select>
+        <p class="ayuda" id="equipo-ayuda">They can be moved later without sending a new invitation.</p>
+        <p class="err" id="equipo-err" role="alert"></p>
+      </div>
+    </div>
+
+    <div class="campo" data-estado="neutro">
+      <label for="mensaje">Message that goes with the invite</label>
+      <textarea id="mensaje" name="mensaje" rows="3" maxlength="240" placeholder="We are opening the studio to the design team on Monday. Join us for the kickoff at ten." aria-describedby="mensaje-ayuda"></textarea>
+      <p class="ayuda" id="mensaje-ayuda">Say why they are being invited. It is the first thing they read.</p>
+      <p class="conteo"><span class="conteo__pips" id="mensajePips" aria-hidden="true"></span><span id="mensajeCuenta">0 of 240 characters, 20 minimum</span></p>
+      <p class="err" id="mensaje-err" role="alert"></p>
+    </div>
+
+    <div class="campo" data-estado="neutro">
+      <label for="caducidad">Invitation expires after</label>
+      <div class="deslizador">
+        <span class="deslizador__pista" aria-hidden="true"></span>
+        <input id="caducidad" name="caducidad" type="range" min="1" max="30" step="1" value="7" aria-describedby="caducidad-ayuda">
+        <span class="deslizador__cap" id="capCaducidad" aria-hidden="true"></span>
+      </div>
+      <p class="ayuda" id="caducidad-ayuda">Seven days. Arrow keys move it one day, Home and End jump to the ends.</p>
+      <p class="err" id="caducidad-err" role="alert"></p>
+    </div>
+
+    <div class="campo campo--check" data-estado="neutro">
+      <input id="calendario" name="calendario" type="checkbox" aria-describedby="calendario-ayuda">
+      <label for="calendario">Add a calendar hold to the message</label>
+      <p class="ayuda" id="calendario-ayuda">A thirty minute slot the day after they accept.</p>
+      <p class="err" id="calendario-err" role="alert"></p>
+    </div>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">The invitations are not sent yet</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <footer class="hoja__pie">
+      <p class="hoja__ayuda" id="ayudaEnvio">Nothing is sent until you press the button.</p>
+      <button class="enviar" type="submit">
+        <span class="enviar__destello" aria-hidden="true"></span>
+        <span id="enviarTexto">Send invitations</span>
+      </button>
+    </footer>
+  </form>
+
+  <section class="enviados" id="enviados" hidden tabindex="-1" aria-live="polite">
+    <span class="enviados__sello" aria-hidden="true"><span class="enviados__tic"></span></span>
+    <p class="enviados__kicker">Invitations sent</p>
+    <h2 class="enviados__titulo" id="enviadosTitulo">Three people are waiting</h2>
+    <p class="enviados__lead" id="enviadosLead">Each link expires in seven days and can be revoked from the members tab.</p>
+    <ul class="enviados__lista" id="enviadosLista"></ul>
+    <dl class="enviados__cuentas">
+      <div><dt>Access level</dt><dd id="enviadosRol">editor</dd></div>
+      <div><dt>Team</dt><dd id="enviadosEquipo">Studio</dd></div>
+      <div><dt>Expires</dt><dd id="enviadosCaduca">in 7 days</dd></div>
+    </dl>
+    <button class="otra" type="button" id="otra">Invite somebody else</button>
+  </section>
+</aside>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portfolio Piece Uploader</title>
+<meta name="description" content="Portfolio upload form with a drag and drop zone, per file thumbnails, live progress, retry on failure, size rules and a sent confirmation.">
+<meta name="description-es" content="Formulario de subida de piezas de portafolio con zona de arrastre, miniaturas por archivo, progreso en vivo, reintento ante fallo, reglas de tamaño y confirmación de envío.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="taller" aria-hidden="true">
+  <span class="foco foco-a"></span>
+  <span class="foco foco-b"></span>
+  <span class="rejilla-rejilla"></span>
+  <span class="rayo"></span>
+</div>
+
+<main class="taller-mesa">
+  <header class="taller-cab">
+    <div>
+      <p class="antetitulo">Case file &middot; 3 pieces max</p>
+      <h1>Send us your best work</h1>
+    </div>
+    <p class="taller-nota">One case file per person. We review everything on Monday and reply within five working days, either way.</p>
+  </header>
+
+  <form class="hoja" id="form" novalidate>
+    <section class="seccion">
+      <h2 class="seccion-titulo"><span class="seccion-n" aria-hidden="true">01</span>The piece</h2>
+
+      <div class="zona" id="zona" data-arrastre="false">
+        <input id="archivos" name="archivos" type="file" multiple aria-describedby="zona-ayuda" class="zona-real">
+        <div class="zona-borde" aria-hidden="true"></div>
+        <div class="zona-cuerpo">
+          <span class="cajon" aria-hidden="true">
+            <span class="cajon-tapa"></span>
+            <span class="cajon-frente"></span>
+            <span class="cajon-asa"></span>
+            <span class="cajon-flecha"></span>
+          </span>
+          <p class="zona-titulo">Drop the files here</p>
+          <p class="zona-pista">or pick them from the machine &middot; three pieces, 4 MB each</p>
+          <label class="zona-boton" for="archivos">Choose files</label>
+          <p class="zona-formatos">Accepted: JPG, PNG, WEBP, GIF, PDF, ZIP, MP4. Nothing leaves your browser in this demo.</p>
+        </div>
+        <p class="ayuda" id="zona-ayuda" role="status">Drop a file on the panel and it joins the queue on the right. You can remove any piece before sending.</p>
+        <p class="error" id="archivos-error" role="alert"></p>
+      </div>
+
+      <div class="cola" id="cola" aria-label="Files in the queue"></div>
+      <p class="cola-vacia" id="colaVacia">The queue is empty. Add at least one piece to go on.</p>
+    </section>
+
+    <section class="seccion">
+      <h2 class="seccion-titulo"><span class="seccion-n" aria-hidden="true">02</span>Where it goes</h2>
+
+      <div class="rejilla-campos">
+        <div class="campo" data-estado="neutro">
+          <label for="titulo">Title of the piece <span class="req" aria-hidden="true">*</span></label>
+          <input id="titulo" name="titulo" type="text" maxlength="60" placeholder="Street level photography, Bristol" aria-describedby="titulo-ayuda" aria-invalid="false">
+          <div class="cuenta" id="tituloCuenta">0 of 60</div>
+          <p class="ayuda" id="titulo-ayuda">Between 4 and 60 characters. This is the headline the reviewer sees first.</p>
+          <p class="error" id="titulo-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="disciplina">Discipline <span class="req" aria-hidden="true">*</span></label>
+          <select id="disciplina" name="disciplina" aria-describedby="disciplina-ayuda" aria-invalid="false">
+            <option value="">Choose one</option>
+            <option value="fotografia">Photography</option>
+            <option value="video">Video and motion</option>
+            <option value="3d">3D and CGI</option>
+            <option value="ilustracion">Illustration</option>
+            <option value="producto">Product and industrial</option>
+          </select>
+          <p class="ayuda" id="disciplina-ayuda">It decides which of the four review tables opens your file first.</p>
+          <p class="error" id="disciplina-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="email">Where we reply <span class="req" aria-hidden="true">*</span></label>
+          <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@studio.com" aria-describedby="email-ayuda" aria-invalid="false">
+          <p class="ayuda" id="email-ayuda">The verdict lands here, usually by Tuesday afternoon.</p>
+          <p class="error" id="email-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="enlace">Public link, if you have one</label>
+          <input id="enlace" name="enlace" type="url" inputmode="url" spellcheck="false" placeholder="https://your-site.com/case" aria-describedby="enlace-ayuda" aria-invalid="false">
+          <p class="ayuda" id="enlace-ayuda">Optional. Must start with http or https, no spaces.</p>
+          <p class="error" id="enlace-error" role="alert"></p>
+        </div>
+
+        <div class="campo campo-ancho" data-estado="neutro">
+          <label for="nota">One line about the work</label>
+          <textarea id="nota" name="nota" rows="3" maxlength="220" placeholder="Optional. What should the reviewer look at first?" aria-describedby="nota-ayuda"></textarea>
+          <div class="cuenta" id="notaCuenta">0 of 220</div>
+          <p class="ayuda" id="nota-ayuda">Up to 220 characters. If you leave it blank we read the files cold.</p>
+          <p class="error" id="nota-error" role="alert"></p>
+        </div>
+
+        <div class="campo campo-check campo-ancho" data-estado="neutro">
+          <input id="inestable" name="inestable" type="checkbox" aria-describedby="inestable-ayuda">
+          <label for="inestable">Test an unstable line: every file breaks once before it goes through</label>
+          <p class="ayuda" id="inestable-ayuda">Useful if you want to see the retry button work. Turn it off for a clean run.</p>
+          <p class="error" id="inestable-error" role="alert"></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenTitulo">The case file is not ready</b>
+        <ul id="resumenLista"></ul>
+      </div>
+    </div>
+
+    <div class="cierre">
+      <dl class="cuentas">
+        <div><dt>Pieces in the queue</dt><dd id="lineaPiezas">0 of 3</dd></div>
+        <div><dt>Total weight</dt><dd id="lineaPeso">0,0 MB of 4,0 MB</dd></div>
+        <div><dt>Ready to send</dt><dd id="lineaListas">0</dd></div>
+      </dl>
+      <button class="enviar" type="submit" id="enviar">Send the case file <span class="flecha" aria-hidden="true"></span></button>
+    </div>
+
+    <p class="pie-legal">Fields marked with an asterisk are mandatory. We keep your files for 90 days and then delete them for good. Nothing you upload here is shared with anybody outside the review panel.</p>
+  </form>
+
+  <section class="enviado" id="enviado" hidden tabindex="-1" aria-live="polite">
+    <span class="enviado-aro" aria-hidden="true"></span>
+    <span class="enviado-sello" aria-hidden="true"><span class="enviado-tic"></span></span>
+    <p class="antetitulo">Case file received</p>
+    <h2 id="enviadoTitulo">It is with the panel</h2>
+    <p id="enviadoTexto">We have your files and we will answer by email.</p>
+    <ul class="enviado-lista" id="enviadoLista"></ul>
+    <dl class="enviado-datos">
+      <div><dt>Reference</dt><dd id="envReferencia">CF-000000</dd></div>
+      <div><dt>Discipline</dt><dd id="envDisciplina">photography</dd></div>
+      <div><dt>Pieces</dt><dd id="envPiezas">0</dd></div>
+      <div><dt>Answer by</dt><dd id="envPlazo">Tuesday</dd></div>
+    </dl>
+    <button class="enviar enviar-tenue" type="button" id="otra">Send another case file</button>
+  </section>
+
+  <p class="pie-pagina">Open desk &middot; five working days &middot; your files are deleted after 90 days</p>
+</main>
+</body>
+</html>

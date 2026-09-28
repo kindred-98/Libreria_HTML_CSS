@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keyboard Shortcut Modal</title>
+<meta name="description" content="Quick control preferences in a modal over a blurred game lobby, with four rebindable keys, duplicate detection, a trapped focus loop, Escape to close and focus returned to the opener.">
+<meta name="description-es" content="Preferencias rápidas de control en un modal sobre el vestíbulo de un juego desenfocado, con cuatro teclas reasignables, detección de duplicados, foco atrapado, cierre con Escape y devolución del foco al elemento que lo abrió.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="vestibulo" id="vestibulo" aria-hidden="true">
+  <span class="vestibulo__cielo"></span>
+  <span class="vestibulo__radar" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
+  <span class="vestibulo__torre" aria-hidden="true"></span>
+  <span class="vestibulo__suelo"></span>
+  <span class="vestibulo__niebla"></span>
+  <div class="hud">
+    <div class="hud__fila">
+      <span class="hud__escudo" aria-hidden="true"></span>
+      <span class="hud__datos"><b>Nightledger</b><small>Squad 3 of 5 &middot; ranked &middot; 21,4 Mbps</small></span>
+      <span class="hud__ping">ping <b>18 ms</b></span>
+    </div>
+    <ul class="hud__marcadores">
+      <li><span>Round</span><b>11</b></li>
+      <li><span>Score</span><b>48 320</b></li>
+      <li><span>Streak</span><b>4</b></li>
+    </ul>
+    <p class="hud__aviso">Lobby is open. Quick controls are locked while you are in a match.</p>
+    <button class="hud__boton" type="button" id="abrir" tabindex="-1">Open quick controls</button>
+  </div>
+</div>
+
+<div class="velo" id="velo"></div>
+
+<div class="dialogo" id="dialogo" role="dialog" aria-modal="true" aria-labelledby="dialogoTitulo" aria-describedby="dialogoIntro">
+  <div class="dialogo__marco">
+    <span class="dialogo__tornillo dialogo__tornillo--a" aria-hidden="true"></span>
+    <span class="dialogo__tornillo dialogo__tornillo--b" aria-hidden="true"></span>
+    <span class="dialogo__tornillo dialogo__tornillo--c" aria-hidden="true"></span>
+    <span class="dialogo__tornillo dialogo__tornillo--d" aria-hidden="true"></span>
+    <span class="dialogo__luz" aria-hidden="true"></span>
+
+    <header class="dialogo__cab">
+      <div>
+        <p class="antetitulo">Quick controls</p>
+        <h1 class="dialogo__titulo" id="dialogoTitulo">Bind four keys</h1>
+      </div>
+      <button class="dialogo__cerrar" type="button" id="cerrar" aria-label="Close without saving">
+        <span aria-hidden="true"></span>
+      </button>
+    </header>
+
+    <p class="dialogo__intro" id="dialogoIntro">Click a key, then press the combination you want. Escape never gets bound, and the same key cannot do two things.</p>
+
+    <form class="cuerpo" id="form" novalidate>
+      <div class="campo" data-estado="neutro">
+        <label for="perfil">Control profile</label>
+        <select id="perfil" name="perfil" aria-describedby="perfil-ayuda">
+          <option value="">Choose a profile</option>
+          <option value="mando">Controller first</option>
+          <option value="teclado">Keyboard first</option>
+          <option value="mixto">Mixed, keyboard with a mouse</option>
+        </select>
+        <p class="ayuda" id="perfil-ayuda">The profile decides which hints the game shows next to each action.</p>
+        <p class="err" id="perfil-err" role="alert"></p>
+      </div>
+
+      <ul class="filas" id="filas"></ul>
+
+      <div class="campo campo--check" data-estado="neutro">
+        <input id="sesion" name="sesion" type="checkbox" aria-describedby="sesion-ayuda">
+        <label for="sesion">Apply to the session I am in right now</label>
+        <p class="ayuda" id="sesion-ayuda">Without this the new bindings wait for the next match.</p>
+        <p class="err" id="sesion-err" role="alert"></p>
+      </div>
+
+      <div class="resumen" id="resumenError" role="alert" hidden>
+        <span class="resumen__marca" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">The controls are not saved yet</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <div class="dialogo__pie">
+        <p class="dialogo__pista" id="pista">Tab stays inside this panel. Escape closes it.</p>
+        <div class="dialogo__botones">
+          <button class="cancelar" type="button" id="cancelar">Cancel</button>
+          <button class="guardar" type="submit">
+            <span class="guardar__destello" aria-hidden="true"></span>
+            <span id="guardarTexto">Save controls</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<section class="aplicado" id="aplicado" hidden tabindex="-1" aria-live="polite">
+  <span class="aplicado__sello" aria-hidden="true"><span class="aplicado__tic"></span></span>
+  <p class="aplicado__kicker">Controls saved</p>
+  <h1 class="aplicado__titulo" id="aplicadoTitulo">Your four keys are in</h1>
+  <p class="aplicado__lead" id="aplicadoLead">They apply the next time you load the lobby.</p>
+  <dl class="aplicado__teclas" id="aplicadoTeclas"></dl>
+  <button class="otra" type="button" id="otra">Bind them again</button>
+</section>
+
+<p class="vivo" id="vivo" role="status" aria-live="polite" hidden></p>
+</body>
+</html>

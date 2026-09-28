@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A short post match survey where every answer moves a bar: rank mood, role played and queue fairness across the squad, with animated result bars.">
+<meta name="description-es" content="Una encuesta corta de postpartido donde cada respuesta mueve una barra: ánimo de rango, rol jugado y justicia de la cola en el escuadrón, con barras de resultado animadas.">
+<meta name="theme-color" content="#0b1020">
+<meta name="robots" content="index, follow">
+<title>Post match rank report</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="escena" aria-hidden="true">
+  <div class="escena__rejilla"></div>
+  <div class="escena__halo escena__halo--a"></div>
+  <div class="escena__halo escena__halo--b"></div>
+</div>
+
+<header class="cabecera">
+  <p class="cabecera__marca"><span class="marca__sello" aria-hidden="true"></span> Rank Desk &middot; season 12</p>
+  <h1>Post match report</h1>
+  <p class="cabecera__bajada">Four quick questions after the ladder queue. Every answer you drop lands in the squad chart, so the bars move the moment you pick.</p>
+</header>
+
+<main class="envoltorio">
+
+  <form class="informe" id="formInforme" novalidate>
+
+    <div class="medidor" id="medidor" data-vacio="1">
+      <div class="medidor__fila">
+        <p class="medidor__etiqueta">Squad mood</p>
+        <p class="medidor__cifra"><b id="moodCifra">--</b><span>/100</span></p>
+      </div>
+      <div class="medidor__pista" role="img" id="moodBar" aria-label="Squad mood, no answers yet">
+        <span class="medidor__relleno" id="moodRelleno"></span>
+      </div>
+      <p class="medidor__veredicto" id="moodTexto">Answer the first question and the mood starts moving.</p>
+      <p class="medidor__cuenta" id="moodCuenta">0 of 3 questions answered</p>
+    </div>
+
+    <div class="resumen" id="resumenError" hidden tabindex="-1" role="alert" aria-labelledby="resumenErrorTitulo">
+      <span class="resumen__marca" aria-hidden="true">!</span>
+      <div>
+        <b id="resumenErrorTitulo">The report is not sent yet</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <fieldset class="bloque" id="bloqueRango" data-estado="ok">
+      <legend class="bloque__leyenda">
+        <span class="bloque__num">01</span>
+        <span class="bloque__texto">How did the last match feel?</span>
+        <span class="bloque__pista" id="pistaRango">Pick a rung</span>
+      </legend>
+      <p class="bloque__ayuda">Bars show how the other nine squad members rated their own last game.</p>
+      <div class="filas">
+        <label class="fila">
+          <input type="radio" name="rango" value="0">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Tilt city</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraR0"></i></i></span>
+          <span class="fila__cuenta" id="cuentaR0">0 of 0</span>
+        </label>
+        <label class="fila">
+          <input type="radio" name="rango" value="1">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Rough ride</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraR1"></i></i></span>
+          <span class="fila__cuenta" id="cuentaR1">0 of 0</span>
+        </label>
+        <label class="fila">
+          <input type="radio" name="rango" value="2">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Even game</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraR2"></i></i></span>
+          <span class="fila__cuenta" id="cuentaR2">0 of 0</span>
+        </label>
+        <label class="fila">
+          <input type="radio" name="rango" value="3">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Good game</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraR3"></i></i></span>
+          <span class="fila__cuenta" id="cuentaR3">0 of 0</span>
+        </label>
+        <label class="fila">
+          <input type="radio" name="rango" value="4">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Flawless run</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraR4"></i></i></span>
+          <span class="fila__cuenta" id="cuentaR4">0 of 0</span>
+        </label>
+      </div>
+      <p class="bloque__error" id="errorRango" hidden></p>
+    </fieldset>
+
+    <fieldset class="bloque" id="bloqueRol" data-estado="ok">
+      <legend class="bloque__leyenda">
+        <span class="bloque__num">02</span>
+        <span class="bloque__texto">Which role did you lock in?</span>
+        <span class="bloque__pista" id="pistaRol">Pick a role</span>
+      </legend>
+      <p class="bloque__ayuda">The squad spread for the last night of ranked.</p>
+      <div class="filas">
+        <label class="fila">
+          <input type="radio" name="rol" value="0">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Entry</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraL0"></i></i></span>
+          <span class="fila__cuenta" id="cuentaL0">0 of 0</span>
+        </label>
+        <label class="fila">
+          <input type="radio" name="rol" value="1">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Support</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraL1"></i></i></span>
+          <span class="fila__cuenta" id="cuentaL1">0 of 0</span>
+        </label>
+        <label class="fila">
+          <input type="radio" name="rol" value="2">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">In game leader</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraL2"></i></i></span>
+          <span class="fila__cuenta" id="cuentaL2">0 of 0</span>
+        </label>
+        <label class="fila">
+          <input type="radio" name="rol" value="3">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Flex</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraL3"></i></i></span>
+          <span class="fila__cuenta" id="cuentaL3">0 of 0</span>
+        </label>
+        <label class="fila">
+          <input type="radio" name="rol" value="4">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Sniper</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraL4"></i></i></span>
+          <span class="fila__cuenta" id="cuentaL4">0 of 0</span>
+        </label>
+      </div>
+      <p class="bloque__error" id="errorRol" hidden></p>
+    </fieldset>
+
+    <fieldset class="bloque" id="bloqueCola" data-estado="ok">
+      <legend class="bloque__leyenda">
+        <span class="bloque__num">03</span>
+        <span class="bloque__texto">Was the queue fair tonight?</span>
+        <span class="bloque__pista" id="pistaCola">Pick one</span>
+      </legend>
+      <p class="bloque__ayuda">Matchmaking takes the first ten seconds to read your MMR.</p>
+      <div class="filas">
+        <label class="fila">
+          <input type="radio" name="cola" value="0">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Yes, it felt fair</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraC0"></i></i></span>
+          <span class="fila__cuenta" id="cuentaC0">0 of 0</span>
+        </label>
+        <label class="fila">
+          <input type="radio" name="cola" value="1">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">Mostly fair</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraC1"></i></i></span>
+          <span class="fila__cuenta" id="cuentaC1">0 of 0</span>
+        </label>
+        <label class="fila">
+          <input type="radio" name="cola" value="2">
+          <span class="fila__punto" aria-hidden="true"></span>
+          <span class="fila__nombre">No, it was rough</span>
+          <span class="fila__pista" aria-hidden="true"><i class="fila__barra"><i class="fila__relleno" id="barraC2"></i></i></span>
+          <span class="fila__cuenta" id="cuentaC2">0 of 0</span>
+        </label>
+      </div>
+      <p class="bloque__error" id="errorCola" hidden></p>
+    </fieldset>
+
+    <fieldset class="bloque bloque--texto" id="bloqueDetalle" data-estado="ok">
+      <legend class="bloque__leyenda">
+        <span class="bloque__num">04</span>
+        <span class="bloque__texto">One change for next time?</span>
+        <span class="bloque__pista" id="pistaDetalle">At least 10 characters</span>
+      </legend>
+      <p class="bloque__ayuda">This is the line the coach reads on Monday.</p>
+      <label class="campo">
+        <span class="campo__etiqueta">What would you change about the last match?</span>
+        <textarea class="area" id="detalle" name="detalle" rows="3" placeholder="We should have saved the smoke for the second push, not the first." aria-describedby="ayudaDetalle errorDetalle"></textarea>
+        <span class="ayuda" id="ayudaDetalle"><i class="cuenta" id="cuentaDetalle">0</i> characters. Ten is the minimum, 240 keeps it readable.</span>
+        <span class="error" id="errorDetalle" hidden></span>
+      </label>
+    </fieldset>
+
+    <div class="firma">
+      <label class="campo campo--corto">
+        <span class="campo__etiqueta">Your tag <em>optional</em></span>
+        <input class="texto" type="text" id="alias" name="alias" maxlength="16" placeholder="nightowl" aria-describedby="ayudaAlias errorAlias" autocomplete="off" spellcheck="false">
+        <span class="ayuda" id="ayudaAlias">Letters, numbers, dot, dash and underscore. Up to 16.</span>
+        <span class="error" id="errorAlias" hidden></span>
+      </label>
+      <button class="envia" type="submit" id="envia">
+        <span class="envia__texto" id="enviaTexto">Send the report</span>
+        <span class="envia__cinta" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <p class="pie">
+      <span class="pie__punto" aria-hidden="true"></span>
+      Answers stay inside the squad. The chart updates with your vote and nothing else.
+    </p>
+  </form>
+
+  <section class="cerrada" id="cerrada" hidden tabindex="-1" aria-labelledby="cerradaTitulo">
+    <div class="cerrada__marco">
+      <div class="cerrada__sello" aria-hidden="true"><span class="cerrada__tic"></span></div>
+      <p class="cerrada__kicker">Report filed</p>
+      <h2 class="cerrada__titulo" id="cerradaTitulo">The chart has your vote</h2>
+      <p class="cerrada__lead" id="cerradaLead">The bars moved and the coach sees your line on Monday.</p>
+      <dl class="cerrada__datos">
+        <div><dt>Ticket</dt><dd id="cerradaRef">RPT-0000</dd></div>
+        <div><dt>Mood</dt><dd id="cerradaMood">0 / 100</dd></div>
+        <div><dt>Verdict</dt><dd id="cerradaVeredicto">Even game</dd></div>
+        <div><dt>Chart answers</dt><dd id="cerradaTotal">0 answers</dd></div>
+      </dl>
+      <ol class="cerrada__pasos" id="cerradaPasos"></ol>
+      <button class="otra" type="button" id="otra">Run the report again</button>
+    </div>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

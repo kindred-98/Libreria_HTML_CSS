@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Company Expense Claim</title>
+<meta name="description" content="Expense claim laid out in two columns with labels on the left, keyboard shortcuts for every action, repeatable expense lines with a running total and a stamped claim reference.">
+<meta name="description-es" content="Reclamación de gastos en dos columnas con etiquetas a la izquierda, atajos de teclado para cada acción, líneas de gasto repetibles con total acumulado y referencia de reclamación sellada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="oficina" aria-hidden="true">
+  <span class="oficina__luz oficina__luz--a"></span>
+  <span class="oficina__luz oficina__luz--b"></span>
+  <span class="oficina__rayas"></span>
+  <span class="oficina__soporte"></span>
+</div>
+
+<header class="cabecera">
+  <span class="marca"><span class="marca__sello" aria-hidden="true"></span>Aldergate &amp; Finch</span>
+  <p class="cabecera__nota">Expenses desk &middot; claim window open until the 28th &middot; 41 claims in review</p>
+</header>
+
+<main class="escena">
+  <div class="cabecera-largo">
+    <p class="antetitulo">Expense claim</p>
+    <h1>Reclaim what the company owes you</h1>
+    <p class="intro">Labels on the left, fields on the right, and a keyboard shortcut for everything. Nothing leaves this page until you sign it.</p>
+  </div>
+
+  <div class="atajos" role="group" aria-label="Keyboard shortcuts">
+    <span class="atajos__titulo">Shortcuts</span>
+    <span class="atajo"><kbd>Alt</kbd><kbd>1</kbd> to <kbd>5</kbd> jump to a section</span>
+    <span class="atajo"><kbd>Alt</kbd><kbd>N</kbd> new expense line</span>
+    <span class="atajo"><kbd>Alt</kbd><kbd>K</kbd> remove last line</span>
+    <span class="atajo"><kbd>Alt</kbd><kbd>S</kbd> save draft</span>
+    <span class="atajo"><kbd>Alt</kbd><kbd>Enter</kbd> sign and file</span>
+  </div>
+
+  <form class="lateral" id="form" novalidate>
+    <section class="tramo" id="tramo-1" aria-labelledby="h1s">
+      <h2 class="tramo__titulo" id="h1s"><span class="tramo__num">1</span>Who is claiming</h2>
+
+      <div class="linea" data-estado="neutro">
+        <div class="linea__izq">
+          <label for="empleado">Employee</label>
+          <p class="micro">Your name as payroll knows it.</p>
+        </div>
+        <div class="linea__der">
+          <input id="empleado" name="empleado" type="text" autocomplete="name" maxlength="60" placeholder="Rowan Ellis" aria-describedby="empleado-ayuda">
+          <p class="ayuda" id="empleado-ayuda">Between 3 and 60 characters.</p>
+          <p class="err" id="empleado-err" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="linea" data-estado="neutro">
+        <div class="linea__izq">
+          <label for="departamento">Department</label>
+          <p class="micro">Drives which cost centre pays.</p>
+        </div>
+        <div class="linea__der">
+          <select id="departamento" name="departamento" aria-describedby="departamento-ayuda">
+            <option value="">Choose a department</option>
+            <option value="ventas">Sales</option>
+            <option value="soporte">Customer support</option>
+            <option value="ingenieria">Engineering</option>
+            <option value="finanzas">Finance</option>
+            <option value="operaciones">Operations</option>
+          </select>
+          <p class="ayuda" id="departamento-ayuda">Operations covers travel and warehouse visits.</p>
+          <p class="err" id="departamento-err" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="linea" data-estado="neutro">
+        <div class="linea__izq">
+          <label for="periodo">Claim period</label>
+          <p class="micro">A month already closed cannot be reopened.</p>
+        </div>
+        <div class="linea__der">
+          <select id="periodo" name="periodo" aria-describedby="periodo-ayuda">
+            <option value="">Choose a period</option>
+            <option value="cerrado">Last month, books already closed</option>
+            <option value="actual">This month, still open</option>
+            <option value="anterior">Two months back, needs a note</option>
+          </select>
+          <p class="ayuda" id="periodo-ayuda">Picking a closed month adds a finance review of two days.</p>
+          <p class="err" id="periodo-err" role="alert"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo-2" aria-labelledby="h2s">
+      <div class="tramo__cab">
+        <h2 class="tramo__titulo" id="h2s"><span class="tramo__num">2</span>Expense lines</h2>
+        <span class="tramo__contador" id="contador">0 lines, 0,00 total</span>
+      </div>
+
+      <div class="lineas" id="lineas"></div>
+
+      <div class="lineas__vacias" id="lineasVacias">
+        <p class="lineas__vacias-titulo">No expense line yet</p>
+        <p class="lineas__vacias-nota">Add one with the button below or with <kbd>Alt</kbd> <kbd>N</kbd>. A claim needs at least a single line with an amount.</p>
+      </div>
+
+      <div class="lineas__acciones">
+        <button class="anadir" type="button" id="anadir">
+          <span class="anadir__raya" aria-hidden="true"></span>
+          Add an expense line
+        </button>
+        <button class="quitar" type="button" id="quitar">Remove last line</button>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo-3" aria-labelledby="h3s">
+      <h2 class="tramo__titulo" id="h3s"><span class="tramo__num">3</span>Justification</h2>
+
+      <div class="linea" data-estado="neutro">
+        <div class="linea__izq">
+          <label for="motivo">Why was this spent</label>
+          <p class="micro">Read by the approver, not by the system.</p>
+        </div>
+        <div class="linea__der">
+          <textarea id="motivo" name="motivo" rows="4" maxlength="400" placeholder="Two nights in Lisbon for the reseller summit, plus the airport train both ways. Receipts attached in the finance portal." aria-describedby="motivo-ayuda"></textarea>
+          <p class="conteo" id="motivo-ayuda"><span class="conteo__pips" id="motivoPips" aria-hidden="true"></span><span id="motivoCuenta">0 of 400 characters, 30 minimum</span></p>
+          <p class="err" id="motivo-err" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="linea" data-estado="neutro">
+        <div class="linea__izq">
+          <label for="recibos">Receipts</label>
+          <p class="micro">Counted here, uploaded in the portal.</p>
+        </div>
+        <div class="linea__der">
+          <div class="pasos" id="pasos" role="radiogroup" aria-labelledby="etiquetaRecibos" aria-describedby="recibos-ayuda">
+            <span class="etiqueta" id="etiquetaRecibos">Receipt status</span>
+            <label class="paso">
+              <input type="radio" name="recibos" id="recibos" value="todos">
+              <span class="paso__caja"><b>Every line has a receipt</b><small>Fastest route, paid in the next run.</small></span>
+            </label>
+            <label class="paso">
+              <input type="radio" name="recibos" id="recibos2" value="algunos">
+              <span class="paso__caja"><b>Some lines under 25,00</b><small>Finance asks for a photo of those later.</small></span>
+            </label>
+            <label class="paso">
+              <input type="radio" name="recibos" id="recibos3" value="ninguno">
+              <span class="paso__caja"><b>No receipts at all</b><small>The claim is held for a manager decision.</small></span>
+            </label>
+          </div>
+          <p class="ayuda" id="recibos-ayuda">Lines under 25,00 do not always need one, everything above does.</p>
+          <p class="err" id="recibos-err" role="alert"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo-4" aria-labelledby="h4s">
+      <h2 class="tramo__titulo" id="h4s"><span class="tramo__num">4</span>Approver and payment</h2>
+
+      <div class="linea" data-estado="neutro">
+        <div class="linea__izq">
+          <label for="aprobador">Approver</label>
+          <p class="micro">Your line manager, or finance if there is none.</p>
+        </div>
+        <div class="linea__der">
+          <input id="aprobador" name="aprobador" type="text" maxlength="60" placeholder="Dana Whitlock" aria-describedby="aprobador-ayuda">
+          <p class="ayuda" id="aprobador-ayuda">Between 3 and 60 characters. We send them a one click approval link.</p>
+          <p class="err" id="aprobador-err" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="linea" data-estado="neutro">
+        <div class="linea__izq">
+          <label for="pago">Payment</label>
+          <p class="micro">Where the money lands once approved.</p>
+        </div>
+        <div class="linea__der">
+          <select id="pago" name="pago" aria-describedby="pago-ayuda">
+            <option value="">Choose how you get paid</option>
+            <option value="nomina">Next payroll run</option>
+            <option value="transferencia">Bank transfer, once approved</option>
+            <option value="tarjeta">Company card settlement</option>
+          </select>
+          <p class="ayuda" id="pago-ayuda">A bank transfer needs the account on file, not here.</p>
+          <p class="err" id="pago-err" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="linea linea--check" data-estado="neutro">
+        <div class="linea__izq">
+          <span class="etiqueta">Declaration</span>
+          <p class="micro">Required to file anything.</p>
+        </div>
+        <div class="linea__der">
+          <div class="casilla">
+            <input id="declaro" name="declaro" type="checkbox" aria-describedby="declaro-ayuda">
+            <label for="declaro">The amounts are true and I have not claimed the same expense twice</label>
+          </div>
+          <p class="ayuda" id="declaro-ayuda">Duplicate detection runs again after you file, so a false declaration is caught anyway.</p>
+          <p class="err" id="declaro-err" role="alert"></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">The claim cannot be filed yet</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <div class="banda">
+      <dl class="banda__cuentas">
+        <div><dt>Lines</dt><dd id="totalLineas">0</dd></div>
+        <div><dt>Net</dt><dd id="totalNeto">0,00</dd></div>
+        <div><dt>Recoverable tax</dt><dd id="totalImpuesto">0,00</dd></div>
+        <div class="banda__total"><dt>You get back</dt><dd id="totalBruto">0,00</dd></div>
+      </dl>
+      <button class="firmar" type="submit" id="firmar">
+        <span class="firmar__sello" aria-hidden="true"></span>
+        <span id="firmarTexto">Sign and file the claim</span>
+      </button>
+    </div>
+  </form>
+</main>
+
+<div class="brindis" id="brindis" role="status" aria-live="polite" hidden>
+  <span class="brindis__gorro" aria-hidden="true"></span>
+  <span id="brindisTexto">Draft saved</span>
+</div>
+
+<section class="archivada" id="archivada" hidden tabindex="-1" aria-live="polite">
+  <span class="archivada__marca" aria-hidden="true"></span>
+  <p class="archivada__kicker">Claim filed</p>
+  <h1 class="archivada__titulo" id="archivadaTitulo">Sent to your approver</h1>
+  <p class="archivada__lead" id="archivadaLead">Dana Whitlock gets a one click link. Until they answer, nothing is paid.</p>
+  <dl class="archivada__datos">
+    <div><dt>Claim</dt><dd id="archivadaRef">EX-0000</dd></div>
+    <div><dt>Employee</dt><dd id="archivadaEmpleado">not set</dd></div>
+    <div><dt>Lines</dt><dd id="archivadaLineas">0</dd></div>
+    <div><dt>Amount</dt><dd id="archivadaTotal">0,00</dd></div>
+  </dl>
+  <ol class="archivada__pasos" id="archivadaPasos"></ol>
+  <button class="otra" type="button" id="otra">Start another claim</button>
+</section>
+
+<footer class="pie">
+  <span>Aldergate &amp; Finch &middot; expenses</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Average approval: 1,4 days</span>
+</footer>
+</body>
+</html>

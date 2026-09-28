@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guild Application</title>
+<meta name="description" content="Long guild application laid out in one column with side section anchors that track the scroll, a live character sheet on the side, section by section checks and a submitted application receipt.">
+<meta name="description-es" content="Solicitud larga para entrar en un guild en una sola columna con anclas laterales que siguen el desplazamiento, ficha de personaje en vivo, comprobación por sección y resguardo de la solicitud enviada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="salon" aria-hidden="true">
+  <span class="salon__antorcha salon__antorcha--a"></span>
+  <span class="salon__antorcha salon__antorcha--b"></span>
+  <span class="salon__estandarte"></span>
+  <span class="salon__suelo"></span>
+  <span class="salon__chispa"></span>
+</div>
+
+<header class="encabezado">
+  <span class="escudo" aria-hidden="true"><span class="escudo__gema"></span><span class="escudo__alas"></span></span>
+  <div>
+    <p class="antetitulo">Order of the Ninth Lantern &middot; recruitment</p>
+    <h1>Apply to the guild</h1>
+  </div>
+  <p class="encabezado__nota">Two raid nights a week, one optional Saturday &middot; applications are read by the officers, not a bot &middot; replies within four days</p>
+</header>
+
+<main class="escena">
+  <nav class="anclas" aria-label="Sections of this application">
+    <p class="anclas__titulo">Sections</p>
+    <ol class="anclas__lista" id="anclas"></ol>
+    <p class="anclas__pie" id="anclasPie">6 of 6 sections still open</p>
+  </nav>
+
+  <form class="hoja" id="form" novalidate>
+    <section class="tramo" id="tramo-1" aria-labelledby="h1s">
+      <h2 class="tramo__titulo" id="h1s"><span class="tramo__num">1</span>Who you are in game</h2>
+
+      <div class="campo" data-estado="neutro">
+        <label for="nombre">Main character <span class="req" aria-hidden="true">*</span></label>
+        <input id="nombre" name="nombre" type="text" autocomplete="off" spellcheck="false" maxlength="16" placeholder="nineofniners" aria-describedby="nombre-ayuda" aria-invalid="false">
+        <p class="ayuda" id="nombre-ayuda">Three to sixteen characters, lower case. The name on the guild tag, and the one the sheet on the right is built from.</p>
+        <p class="err" id="nombre-err" role="alert"></p>
+      </div>
+
+      <div class="doble">
+        <div class="campo" data-estado="neutro">
+          <label for="clase">Class <span class="req" aria-hidden="true">*</span></label>
+          <select id="clase" name="clase" aria-describedby="clase-ayuda" aria-invalid="false">
+            <option value="">Pick a class</option>
+            <option value="guardián">Guardian</option>
+            <option value="asalto">Assault</option>
+            <option value="apoyo">Support</option>
+            <option value="sigilo">Sigil</option>
+            <option value="artillero">Artillery</option>
+          </select>
+          <p class="ayuda" id="clase-ayuda">It changes the role we would put you on and the emblem on the sheet.</p>
+          <p class="err" id="clase-err" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="nivel">Level <span class="req" aria-hidden="true">*</span></label>
+          <div class="lectura">
+            <output class="lectura__num" id="nivelValor">0</output>
+            <span class="lectura__texto" id="nivelTexto">nothing on the sheet yet</span>
+          </div>
+          <div class="deslizador">
+            <span class="deslizador__pista" aria-hidden="true"><i id="nivelRelleno"></i></span>
+            <input id="nivel" name="nivel" type="range" min="0" max="100" step="1" value="0" aria-describedby="nivel-ayuda">
+            <span class="deslizador__cap" id="nivelCap" aria-hidden="true"></span>
+          </div>
+          <p class="ayuda" id="nivel-ayuda">The cap is one hundred. Below fifty we would ask you to finish the campaign first, and we would say so in the reply.</p>
+          <p class="err" id="nivel-err" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="region">Region and language <span class="req" aria-hidden="true">*</span></label>
+        <div class="doble">
+          <select id="region" name="region" aria-describedby="region-ayuda" aria-invalid="false">
+            <option value="">Region</option>
+            <option value="na">North America</option>
+            <option value="eu">Europe</option>
+            <option value="oce">Oceania</option>
+            <option value="sa">South America</option>
+          </select>
+          <select id="idioma" name="idioma" aria-describedby="region-ayuda" aria-invalid="false">
+            <option value="">Language</option>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="pt">Portuguese</option>
+          </select>
+        </div>
+        <p class="ayuda" id="region-ayuda">Raid nights run at twenty one hundred GMT. What we need is whether you can make the ones that suit you.</p>
+        <p class="err" id="region-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo-2" aria-labelledby="h2s">
+      <h2 class="tramo__titulo" id="h2s"><span class="tramo__num">2</span>What you bring</h2>
+
+      <div class="campo" data-estado="neutro">
+        <span class="etiqueta" id="roles-titulo">Roles you can fill <span class="req" aria-hidden="true">*</span></span>
+        <p class="pista">Tick every role you would rather do than sit in a queue for. Three is plenty.</p>
+        <div class="roles" id="roles" role="group" aria-labelledby="roles-titulo" aria-describedby="roles-ayuda" aria-invalid="false"></div>
+        <p class="ayuda" id="roles-ayuda" role="status">Nothing ticked yet. The sheet on the right shows a guild with no set raid comp.</p>
+        <p class="err" id="roles-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <span class="etiqueta" id="lenguetas-titulo">What you are good at</span>
+        <p class="pista">Optional, but it is the section the officers read twice. Six lines, no essays.</p>
+        <div class="lenguetas" id="lenguetas" role="group" aria-labelledby="lenguetas-titulo" aria-describedby="lenguetas-ayuda" aria-invalid="false"></div>
+        <p class="ayuda" id="lenguetas-ayuda" role="status">Nothing ticked. The sheet says nothing about your strengths.</p>
+        <p class="err" id="lenguetas-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="logros">Raids cleared <span class="req" aria-hidden="true">*</span></label>
+        <input id="logros" name="logros" type="text" autocomplete="off" maxlength="60" placeholder="Citadel 14, Duskfall 3, weekly clear since week two" aria-describedby="logros-ayuda" aria-invalid="false">
+        <p class="ayuda" id="logros-ayuda">Twelve to sixty characters. The name of the hardest wing you have finished, and roughly when.</p>
+        <p class="err" id="logros-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo-3" aria-labelledby="h3s">
+      <h2 class="tramo__titulo" id="h3s"><span class="tramo__num">3</span>When you can play</h2>
+
+      <div class="campo" data-estado="neutro">
+        <span class="etiqueta" id="noches-titulo">Weeknights you can raid <span class="req" aria-hidden="true">*</span></span>
+        <p class="pista">At least two. A guild that cannot field eight is a guild that stops existing by February.</p>
+        <div class="noches" id="noches" role="group" aria-labelledby="noches-titulo" aria-describedby="noches-ayuda" aria-invalid="false"></div>
+        <p class="ayuda" id="noches-ayuda" role="status">No nights ticked. A guild of one cannot raid at all.</p>
+        <p class="err" id="noches-err" role="alert"></p>
+      </div>
+
+      <div class="campo campo--check" data-estado="neutro">
+        <input id="sabado" name="sabado" type="checkbox" aria-describedby="sabado-ayuda">
+        <label for="sabado">I can also raid on Saturdays, the optional one</label>
+        <span class="glifo" aria-hidden="true"></span>
+        <p class="ayuda" id="sabado-ayuda">Nobody is ever made to come on a Saturday. It is the night the whole guild goes, and it is optional.</p>
+        <p class="err" id="sabado-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="salida">How long before you need to be online <span class="req" aria-hidden="true">*</span></label>
+        <div class="radios" role="radiogroup" aria-labelledby="salida-etiqueta" aria-describedby="salida-ayuda" aria-invalid="false">
+          <span class="oculto" id="salida-etiqueta">Time to online</span>
+          <label class="opcion"><input type="radio" id="salida-30" name="salida" value="30 minutes"><span class="opcion__caja">Thirty minutes</span></label>
+          <label class="opcion"><input type="radio" id="salida-60" name="salida" value="An hour" checked><span class="opcion__caja">An hour</span></label>
+          <label class="opcion"><input type="radio" id="salida-120" name="salida" value="Two hours"><span class="opcion__caja">Two hours</span></label>
+        </div>
+        <p class="ayuda" id="salida-ayuda">Raid pulls happen on the dot. If you need a long warning, say so now and the officers will plan around it.</p>
+        <p class="err" id="salida-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo-4" aria-labelledby="h4s">
+      <h2 class="tramo__titulo" id="h4s"><span class="tramo__num">4</span>About you, not the game</h2>
+
+      <div class="campo" data-estado="neutro">
+        <label for="carta">A short letter to the officers <span class="req" aria-hidden="true">*</span></label>
+        <textarea id="carta" name="carta" rows="5" maxlength="700" placeholder="Why this guild, what you are like on a wipe, and what you expect from a static roster." aria-describedby="carta-ayuda"></textarea>
+        <div class="conteo"><span class="conteo__pips" id="cartaPips" aria-hidden="true"></span><span id="cartaCuenta">0 of 700, 120 minimum</span></div>
+        <p class="ayuda" id="carta-ayuda">One hundred and twenty to seven hundred characters. This is the only free text the officers read word for word.</p>
+        <p class="err" id="carta-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="discord">Discord handle <span class="req" aria-hidden="true">*</span></label>
+        <div class="barra-manojo">
+          <span class="sufijo" aria-hidden="true">@</span>
+          <input id="discord" name="discord" type="text" autocomplete="off" spellcheck="false" maxlength="24" placeholder="niners" aria-describedby="discord-ayuda" aria-invalid="false">
+        </div>
+        <p class="ayuda" id="discord-ayuda">Two to twenty four characters, letters, digits, dot, underscore and dot. The whole guild lives in one voice server and we cannot invite somebody we cannot find.</p>
+        <p class="err" id="discord-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+        <input id="email" name="email" type="text" inputmode="email" autocomplete="email" maxlength="60" placeholder="you@home.net" aria-describedby="email-ayuda" aria-invalid="false">
+        <p class="ayuda" id="email-ayuda">Only used to send the decision, which is a yes or a no with a reason. It is never shared outside the three officers.</p>
+        <p class="err" id="email-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo-5" aria-labelledby="h5s">
+      <h2 class="tramo__titulo" id="h5s"><span class="tramo__num">5</span>The two rules</h2>
+
+      <div class="campo" data-estado="neutro">
+        <span class="etiqueta">The guild asks for two things</span>
+        <ul class="normas" id="normas" aria-label="Guild rules you are accepting"></ul>
+        <p class="ayuda" id="normas-ayuda">Both are ticked individually. The officers do not read the rest of a guild application as carefully as this.</p>
+        <p class="err" id="normas-err" role="alert"></p>
+      </div>
+
+      <div class="campo campo--check" data-estado="neutro">
+        <input id="leido" name="leido" type="checkbox" aria-describedby="leido-ayuda">
+        <label for="leido">I have read the guild charter and the raid expectations before ticking the boxes above</label>
+        <span class="glifo" aria-hidden="true"></span>
+        <p class="ayuda" id="leido-ayuda">The charter is two pages and the raid expectations are one table. Nobody is admitted who has not read them.</p>
+        <p class="err" id="leido-err" role="alert"></p>
+      </div>
+    </section>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenTitulo">The application will not be sent yet</b>
+        <ul id="resumenLista"></ul>
+      </div>
+    </div>
+
+    <footer class="banda">
+      <dl class="banda__cuentas">
+        <div><dt>Sections</dt><dd id="tSecciones">0 of 5</dd></div>
+        <div><dt>Character</dt><dd id="tPersonaje">nobody</dd></div>
+        <div><dt>Raiding nights</dt><dd id="tNoches">0</dd></div>
+        <div class="banda__total"><dt>Readiness</dt><dd id="tListo">0 %</dd></div>
+      </dl>
+      <button class="enviar" type="submit" id="enviar">
+        <span class="enviar__destello" aria-hidden="true"></span>
+        <span id="enviarTexto">Send the application</span>
+      </button>
+    </footer>
+  </form>
+
+  <aside class="ficha" aria-label="Live character sheet">
+    <p class="ficha__etiqueta">Character sheet</p>
+    <article class="tarjeta" id="tarjeta" data-clase="none">
+      <span class="tarjeta__banda" aria-hidden="true"></span>
+      <span class="tarjeta__luz" aria-hidden="true"></span>
+
+      <div class="tarjeta__cab">
+        <span class="emblema" id="emblema" aria-hidden="true"><i class="emblema__gema"></i><i class="emblema__alas"></i></span>
+        <div class="tarjeta__quien">
+          <p class="tarjeta__clase" id="tClase">class pending</p>
+          <h2 id="tNombre">Nobody yet</h2>
+          <p class="tarjeta__handle" id="tHandle">@handle pending</p>
+        </div>
+        <span class="nivel-sello" id="tNivelSello">LV 0</span>
+      </div>
+
+      <dl class="tarjeta__datos">
+        <div><dt>Region</dt><dd id="dRegion">not set</dd></div>
+        <div><dt>Language</dt><dd id="dIdioma">not set</dd></div>
+        <div><dt>Roles</dt><dd id="dRoles">none ticked</dd></div>
+        <div><dt>Strengths</dt><dd id="dFortalezas">none ticked</dd></div>
+        <div><dt>Nights</dt><dd id="dNoches">none ticked</dd></div>
+        <div><dt>Pulls at</dt><dd id="dSalida">an hour</dd></div>
+      </dl>
+
+      <p class="tarjeta__logro" id="tLogro">No raid written yet.</p>
+
+      <ul class="tarjeta__etiquetas" id="tEtiquetas" aria-label="Strengths on the sheet"></ul>
+
+      <div class="tarjeta__medidor">
+        <span class="tarjeta__medidor-cabecera"><span>Application readiness</span><b id="tPct">0 %</b></span>
+        <span class="tarjeta__pista" aria-hidden="true"><i id="tRelleno"></i></span>
+      </div>
+
+      <footer class="tarjeta__pie">
+        <span class="sello-mini" aria-hidden="true"></span>
+        <span id="tPie">Order of the Ninth Lantern, roster sheet</span>
+      </footer>
+    </article>
+  </aside>
+</main>
+
+<section class="recibida" id="recibida" hidden tabindex="-1" aria-live="polite">
+  <span class="recibida__aro" aria-hidden="true"></span>
+  <span class="recibida__sello" aria-hidden="true"><span class="recibida__tic"></span></span>
+  <p class="antetitulo">Application sent</p>
+  <h1 class="recibida__titulo" id="recTitulo">The officers have it</h1>
+  <p class="recibida__lead" id="recLead">One of the three reads it, and answers within four days.</p>
+  <dl class="recibida__datos">
+    <div><dt>Application</dt><dd id="rRef">ONL-0000</dd></div>
+    <div><dt>Character</dt><dd id="rNombre">nobody</dd></div>
+    <div><dt>Role offered</dt><dd id="rRol">not decided</dd></div>
+    <div><dt>Answer by</dt><dd id="rPlazo">four days</dd></div>
+  </dl>
+  <ul class="recibida__pasos" id="rPasos"></ul>
+  <button class="otra" type="button" id="otra">Write another application</button>
+</section>
+
+<footer class="pie">
+  <span>Order of the Ninth Lantern &middot; forty one members, eleven on the raid roster</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Applications are read by people with names</span>
+</footer>
+</body>
+</html>

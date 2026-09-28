@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raid Night Signup Console</title>
+<meta name="description" content="Raid night signup written as a console with a command line per field, tab autocompletion for aliases and classes, loadout token parsing, live validation, a party frame and a ready check.">
+<meta name="description-es" content="Apuntarse a la noche de incursión escrito como consola, con una línea de comando por campo, autocompletado con tabulador para alias y clases, análisis de tokens de equipo, validación en vivo, marcador de grupo y comprobación de listo.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="sala" aria-hidden="true">
+  <span class="sala__resplandor"></span>
+  <span class="sala__lineas"></span>
+  <span class="sala__barrido"></span>
+  <span class="sala__vineta"></span>
+</div>
+
+<header class="marca-barra">
+  <span class="marca"><span class="marca__cubo" aria-hidden="true"></span>VOIDWATCH</span>
+  <p class="marca-barra__nota">Raid night console &middot; next run Thursday 20:00 &middot; patch 11.4</p>
+</header>
+
+<main class="escena">
+  <div class="terminal">
+    <div class="terminal__barra">
+      <span class="terminal__puntos" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="terminal__ruta">/guild/voidwatch/raid-night<span class="terminal__cursor" aria-hidden="true"></span></span>
+      <span class="terminal__reloj" id="reloj">00:00:00</span>
+    </div>
+
+    <div class="pantalla">
+      <div class="cinta" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="registro" id="registro" role="log" aria-live="polite" aria-label="Console transcript"></div>
+
+      <form class="consola" id="form" novalidate>
+        <div class="fila-campo" data-estado="neutro">
+          <label for="alias"><span class="prompt" aria-hidden="true">&gt;</span> raid --alias</label>
+          <div class="linea">
+            <input id="alias" name="alias" type="text" autocomplete="off" spellcheck="false" maxlength="18" placeholder="nightledger" aria-describedby="alias-ayuda" aria-autocomplete="list" aria-controls="sugerencias" aria-expanded="false" role="combobox">
+            <span class="glifo" aria-hidden="true"></span>
+          </div>
+          <div class="sugerencias" id="sugerencias" role="listbox" aria-label="Guild members" hidden></div>
+          <p class="ayuda" id="alias-ayuda">Tab completes. The list has the eleven members who came to the last four runs.</p>
+          <p class="err" id="alias-err" role="alert"></p>
+        </div>
+
+        <div class="fila-campo" data-estado="neutro">
+          <label for="clase"><span class="prompt" aria-hidden="true">&gt;</span> spec</label>
+          <div class="linea">
+            <input id="clase" name="clase" type="text" autocomplete="off" spellcheck="false" maxlength="16" placeholder="hunter" aria-describedby="clase-ayuda" aria-autocomplete="list" aria-controls="sugerenciasClase" aria-expanded="false" role="combobox">
+            <span class="glifo" aria-hidden="true"></span>
+          </div>
+          <div class="sugerencias" id="sugerenciasClase" role="listbox" aria-label="Playable classes" hidden></div>
+          <p class="ayuda" id="clase-ayuda">One of the eight. Tab completes it, and the roster counts tanks and healers separately.</p>
+          <p class="err" id="clase-err" role="alert"></p>
+        </div>
+
+        <div class="dobles">
+          <div class="fila-campo" data-estado="neutro">
+            <label for="nivel"><span class="prompt" aria-hidden="true">&gt;</span> ilvl</label>
+            <div class="linea">
+              <input id="nivel" name="nivel" type="text" inputmode="numeric" maxlength="3" placeholder="80" aria-describedby="nivel-ayuda">
+              <span class="glifo" aria-hidden="true"></span>
+            </div>
+            <p class="ayuda" id="nivel-ayuda">Sixty to eighty. Under sixty pulls a warning on the roster.</p>
+            <p class="err" id="nivel-err" role="alert"></p>
+          </div>
+
+          <div class="fila-campo" data-estado="neutro">
+            <label for="rol"><span class="prompt" aria-hidden="true">&gt;</span> role</label>
+            <div class="linea">
+              <input id="rol" name="rol" type="text" autocomplete="off" spellcheck="false" maxlength="10" placeholder="damage" aria-describedby="rol-ayuda">
+              <span class="glifo" aria-hidden="true"></span>
+            </div>
+            <p class="ayuda" id="rol-ayuda">TANK, HEALER or DAMAGE. Two tanks and one healer is a full party.</p>
+            <p class="err" id="rol-err" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="fila-campo" data-estado="neutro">
+          <label for="asistencia"><span class="prompt" aria-hidden="true">&gt;</span> attend</label>
+          <div class="linea">
+            <input id="asistencia" name="asistencia" type="text" autocomplete="off" spellcheck="false" maxlength="8" placeholder="si" aria-describedby="asistencia-ayuda">
+            <span class="glifo" aria-hidden="true"></span>
+          </div>
+          <p class="ayuda" id="asistencia-ayuda">SI, QUIZA or NO. Only SI counts towards the two pulls the guild runs.</p>
+          <p class="err" id="asistencia-err" role="alert"></p>
+        </div>
+
+        <div class="fila-campo" data-estado="neutro">
+          <label for="carga"><span class="prompt" aria-hidden="true">&gt;</span> loadout</label>
+          <div class="linea">
+            <input id="carga" name="carga" type="text" autocomplete="off" spellcheck="false" maxlength="90" placeholder="2r 2h frost dkp" aria-describedby="carga-ayuda">
+            <span class="glifo" aria-hidden="true"></span>
+          </div>
+          <div class="tokens" id="tokens" aria-label="Parsed loadout tokens"></div>
+          <p class="ayuda" id="carga-ayuda">Space separated tokens. At least two, and every one of them has to be in the vault.</p>
+          <p class="err" id="carga-err" role="alert"></p>
+        </div>
+
+        <div class="fila-campo" data-estado="neutro">
+          <label for="nota"><span class="prompt" aria-hidden="true">&gt;</span> note</label>
+          <div class="linea">
+            <textarea id="nota" name="nota" rows="2" maxlength="160" placeholder="I can cover the second pull if we go early." aria-describedby="nota-ayuda"></textarea>
+          </div>
+          <p class="ayuda" id="nota-ayuda">Up to one hundred and sixty characters. Optional, and never shown to anyone outside the guild.</p>
+          <p class="err" id="nota-err" role="alert"></p>
+        </div>
+
+        <div class="fila-campo fila-campo--check" data-estado="neutro">
+          <div class="casilla">
+            <input id="logPublico" name="logPublico" type="checkbox" aria-describedby="logPublico-ayuda">
+            <label for="logPublico">Put me on the public log next to the screenshot</label>
+          </div>
+          <p class="ayuda" id="logPublico-ayuda">Off means the run stays inside the guild channel.</p>
+          <p class="err" id="logPublico-err" role="alert"></p>
+        </div>
+
+        <div class="resumen" id="resumenError" role="alert" hidden>
+          <span class="resumen__marca" aria-hidden="true"></span>
+          <div>
+            <b id="resumenErrorTitulo">The signup was not sent</b>
+            <ul id="resumenErrorLista"></ul>
+          </div>
+        </div>
+
+        <div class="consola__pie">
+          <p class="teclas" aria-hidden="true">Tab completes &middot; Enter sends &middot; Esc clears the focused line</p>
+          <button class="enviar" type="submit">
+            <span class="enviar__pulso" aria-hidden="true"></span>
+            <span id="enviarTexto">run signup</span>
+          </button>
+        </div>
+      </form>
+
+      <div class="pantalla__cristal" aria-hidden="true"></div>
+    </div>
+
+    <div class="terminal__pie">
+      <span class="latido" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span id="pieEstado">console idle, nothing sent</span>
+      <span class="terminal__pie-sep" aria-hidden="true"></span>
+      <span id="pieParty">party 1 of 5 &middot; tanks 0 &middot; healers 0</span>
+    </div>
+  </div>
+
+  <aside class="marco" aria-label="Party frame">
+    <p class="marco__titulo">Party frame</p>
+    <ul class="grupo" id="grupo"></ul>
+    <p class="marco__nota" id="marcoNota">Nobody signed up for Thursday yet. The frame fills as the console sends lines.</p>
+  </aside>
+</main>
+
+<section class="listo" id="listo" hidden tabindex="-1" aria-live="polite">
+  <div class="listo__marco">
+    <span class="listo__sello" aria-hidden="true"><span class="listo__tic"></span></span>
+    <p class="listo__kicker">Signup received</p>
+    <h1 class="listo__titulo" id="listoTitulo">nightledger is on the roster</h1>
+    <p class="listo__lead" id="listoLead">The raid lead sees the line and the roster updates in the guild channel.</p>
+    <dl class="listo__datos">
+      <div><dt>Ticket</dt><dd id="listoRef">RN-0000</dd></div>
+      <div><dt>Character</dt><dd id="listoAlias">not set</dd></div>
+      <div><dt>Loadout</dt><dd id="listoCarga">none</dd></div>
+      <div><dt>Public log</dt><dd id="listoLog">off</dd></div>
+    </dl>
+    <p class="listo__nota" id="listoNota">Change it any time before Wednesday noon, one line at the console.</p>
+    <button class="otra" type="button" id="otra">Sign up somebody else</button>
+  </div>
+</section>
+
+<footer class="pie">
+  <span>VOIDWATCH</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Two guild raids a week, no voice comms required</span>
+</footer>
+</body>
+</html>

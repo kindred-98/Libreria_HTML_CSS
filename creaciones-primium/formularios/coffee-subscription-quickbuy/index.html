@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coffee Subscription Quick Buy</title>
+<meta name="description" content="Product card for a coffee subscription with a quick buy panel that unfolds out of the card, a bag weight choice, a grind picker, an email field and a roasted subscription receipt.">
+<meta name="description-es" content="Tarjeta de producto de una suscripción de café con compra rápida que se despliega desde la tarjeta, elección de peso de bolsa, molienda, campo de correo y resguardo de la suscripción tostada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="obrador" aria-hidden="true">
+  <span class="obrador__vapor obrador__vapor--a"></span>
+  <span class="obrador__vapor obrador__vapor--b"></span>
+  <span class="obrador__saco"></span>
+  <span class="obrador__destello"></span>
+  <span class="obrador__banda"></span>
+</div>
+
+<header class="barra">
+  <span class="marca"><span class="marca__sello" aria-hidden="true">BR</span>Bruma Roasters</span>
+  <p class="barra__nota">Roasted on Tuesdays &middot; shipped the same afternoon &middot; pause whenever you like</p>
+</header>
+
+<main class="escena" id="ficha">
+  <article class="ficha">
+    <div class="ficha__arte">
+      <span class="arte__luz" aria-hidden="true"></span>
+      <span class="arte__lote">Lot 41</span>
+
+      <div class="bolsa" aria-hidden="true">
+        <span class="bolsa__cinta"></span>
+        <span class="bolsa__cuerpo">
+          <span class="bolsa__marca">BRUMA</span>
+          <span class="bolsa__linea"></span>
+          <span class="bolsa__nombre">Nightjar</span>
+          <span class="bolsa__nota">Medium roast</span>
+          <span class="bolsa__valve"></span>
+        </span>
+        <span class="bolsa__sombra"></span>
+      </div>
+
+      <ul class="arte__datos">
+        <li><b>250</b><span>grams</span></li>
+        <li><b>1:15</b><span>ratio</span></li>
+        <li><b>14</b><span>days fresh</span></li>
+      </ul>
+    </div>
+
+    <div class="ficha__cuerpo">
+      <p class="antetitulo">Ref. BR-NJ-41</p>
+      <h1>Nightjar, a medium roast subscription</h1>
+      <p class="entradilla">Cocoa, toasted almond and a finish that sits for ten minutes. One bag every two weeks, roasted the Tuesday before it ships, and a one click pause when you run out early.</p>
+
+      <div class="precio-bloque">
+        <span class="precio" id="precioGrande">16,90 <small>EUR</small></span>
+        <span class="precio-nota" id="precioNota">one 250 g bag, every two weeks, shipping included</span>
+        <span class="stock" data-stock="disponible"><span class="stock__punto" aria-hidden="true"></span>Roasting on the next Tuesday, ships the same afternoon</span>
+      </div>
+
+      <ul class="caracteristicas">
+        <li><span class="pip" aria-hidden="true"></span>Whole bean or ground, and you can change the grind next time</li>
+        <li><span class="pip" aria-hidden="true"></span>One bag a fortnight, pause or skip from the mail you receive</li>
+        <li><span class="pip" aria-hidden="true"></span>Roast date printed on the bag, not a best before</li>
+      </ul>
+
+      <button class="disparador" type="button" id="disparador" aria-expanded="false" aria-controls="cajon">
+        <span class="disparador__txt">
+          <b>Quick buy</b>
+          <small>Takes less than a minute, no account needed</small>
+        </span>
+        <span class="disparador__flecha" aria-hidden="true"></span>
+      </button>
+
+      <section class="cajon" id="cajon" aria-label="Quick buy form" hidden>
+        <form class="hoja" id="form" novalidate>
+          <span class="hoja__filo" aria-hidden="true"></span>
+
+          <div class="hoja__cab">
+            <span class="hoja__titulo">Quick buy</span>
+            <span class="hoja__lote" id="hojaLote">lot 41</span>
+          </div>
+
+          <fieldset class="campo conjunto" data-estado="neutro" id="conjunto-peso">
+            <legend>Bag size</legend>
+            <div class="pesos" role="radiogroup" aria-labelledby="conjunto-peso" aria-describedby="peso-ayuda" aria-invalid="false">
+              <label class="peso"><input type="radio" id="peso250" name="peso" value="250" checked><span class="peso__caja"><b>250 g</b><small>about 16 cups</small></span><span class="peso__precio">16,90</span></label>
+              <label class="peso"><input type="radio" id="peso500" name="peso" value="500"><span class="peso__caja"><b>500 g</b><small>about 32 cups</small></span><span class="peso__precio">29,40</span></label>
+              <label class="peso"><input type="radio" id="peso1000" name="peso" value="1000"><span class="peso__caja"><b>1 kg</b><small>about 64 cups</small></span><span class="peso__precio">49,80</span></label>
+            </div>
+            <p class="ayuda" id="peso-ayuda" role="status">250 g, the one in the photo, ships every two weeks.</p>
+            <p class="err" id="peso-err" role="alert"></p>
+          </fieldset>
+
+          <fieldset class="campo conjunto" data-estado="neutro" id="conjunto-molienda">
+            <legend>Grind</legend>
+            <div class="opciones" role="radiogroup" aria-labelledby="conjunto-molienda" aria-describedby="molienda-ayuda" aria-invalid="false">
+              <label class="opcion"><input type="radio" id="molienda-grano" name="molienda" value="Whole bean" checked><span class="opcion__caja">Whole bean</span></label>
+              <label class="opcion"><input type="radio" id="molienda-filtro" name="molienda" value="Filter"><span class="opcion__caja">Filter</span></label>
+              <label class="opcion"><input type="radio" id="molienda-prensa" name="molienda" value="Press"><span class="opcion__caja">Press</span></label>
+              <label class="opcion"><input type="radio" id="molienda-itapana" name="molienda" value="Stovetop moka"><span class="opcion__caja">Moka</span></label>
+            </div>
+            <p class="ayuda" id="molienda-ayuda">Whole bean keeps fourteen days. Ground keeps seven, so the bag arrives a little fresher.</p>
+            <p class="err" id="molienda-err" role="alert"></p>
+          </fieldset>
+
+          <div class="campo" data-estado="neutro">
+            <label for="correo">Where the subscription goes <span class="req" aria-hidden="true">*</span></label>
+            <input id="correo" name="correo" type="text" inputmode="email" autocomplete="email" maxlength="64" placeholder="you@home.net" aria-describedby="correo-ayuda" aria-invalid="false">
+            <p class="ayuda" id="correo-ayuda">One address. The subscription starts with the first roast after you press the button.</p>
+            <p class="err" id="correo-err" role="alert"></p>
+          </div>
+
+          <div class="campo campo--check" data-estado="neutro">
+            <input id="primera" name="primera" type="checkbox" aria-describedby="primera-ayuda">
+            <label for="primera">This is my first order, send the one bag brewing guide</label>
+            <span class="glifo" aria-hidden="true"></span>
+            <p class="ayuda" id="primera-ayuda">A single sheet, no account, and nothing else in the post.</p>
+            <p class="err" id="primera-err" role="alert"></p>
+          </div>
+
+          <div class="resumen" id="resumenError" role="alert" hidden>
+            <span class="resumen__marca" aria-hidden="true"></span>
+            <div>
+              <b id="resumenTitulo">The subscription is not started yet</b>
+              <ul id="resumenLista"></ul>
+            </div>
+          </div>
+
+          <div class="hoja__fila">
+            <span class="hoja__total" id="hojaTotal">16,90 EUR every two weeks</span>
+            <button class="comprar" type="submit" id="comprar">
+              <span class="comprar__destello" aria-hidden="true"></span>
+              <span id="comprarTexto">Start the subscription</span>
+            </button>
+          </div>
+          <p class="nota-legal">No card is asked for here. The first roast is charged when it is roasted, and one click in the mail pauses it.</p>
+        </form>
+      </section>
+    </div>
+  </article>
+</main>
+
+<section class="listo" id="listo" hidden tabindex="-1" aria-live="polite">
+  <span class="listo__aro" aria-hidden="true"></span>
+  <span class="listo__sello" aria-hidden="true"><span class="listo__tic"></span></span>
+  <p class="antetitulo">Subscription started</p>
+  <h2 id="listoTitulo">The first roast is booked</h2>
+  <p id="listoTexto">A note goes out the moment the coffee is roasted.</p>
+  <dl class="listo__datos">
+    <div><dt>Bag</dt><dd id="lPeso">250 g</dd></div>
+    <div><dt>Grind</dt><dd id="lMolienda">Whole bean</dd></div>
+    <div><dt>First roast</dt><dd id="lRocha">next Tuesday</dd></div>
+    <div><dt>Every two weeks</dt><dd id="lImporte">16,90 EUR</dd></div>
+  </dl>
+  <button class="comprar listo__boton" type="button" id="otra">Close and keep looking</button>
+</section>
+
+<footer class="pie">
+  <span>Bruma Roasters &middot; Unit 3, Kiln Yard</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Four hundred bags a week, nothing pre-ground</span>
+</footer>
+</body>
+</html>

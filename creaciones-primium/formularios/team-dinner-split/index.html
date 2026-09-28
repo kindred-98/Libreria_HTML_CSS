@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Team Dinner Split</title>
+<meta name="description" content="Split a team dinner bill with a per dish stepper for every guest, a live running total, an animated bar that fills as shares are assigned and a settled split receipt.">
+<meta name="description-es" content="Reparto de la cuenta de una cena de equipo con selector por plato para cada comensal, total en vivo, barra de progreso animada y resguardo del reparto saldado.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="comedor" aria-hidden="true">
+  <span class="comedor__lampara comedor__lampara--a"></span>
+  <span class="comedor__lampara comedor__lampara--b"></span>
+  <span class="comedor__mantel"></span>
+  <span class="comedor__copas"></span>
+  <span class="comedor__barrido"></span>
+</div>
+
+<main class="mesa">
+  <header class="mesa__cab">
+    <span class="cuchara" aria-hidden="true"><i></i><i></i><i></i></span>
+    <div>
+      <p class="antetitulo">Bodega Sella &middot; long table, table 6</p>
+      <h1>Split the dinner</h1>
+    </div>
+    <p class="cab-nota">One bill, five dishes, seven people. Give everybody at least one share and the bar tells you how much of the bill is still unclaimed.</p>
+  </header>
+
+  <form class="hoja" id="form" novalidate>
+    <section class="bloque">
+      <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">01</span>What is on the table</h2>
+      <ul class="lineas" id="lineas"></ul>
+    </section>
+
+    <section class="bloque">
+      <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">02</span>Who ate what</h2>
+      <p class="bloque__pista">Move the stepper to give somebody a share of a dish. Nobody is charged for a plate they did not ask for, and the cost of a dish is divided evenly between the people who took it.</p>
+
+      <ul class="comensales" id="comensales"></ul>
+      <p class="vacio" id="comensalesVacio" hidden>Nobody at the table yet. Add the people below so the bar can start moving.</p>
+      <p class="err" id="comensales-err" role="alert"></p>
+    </section>
+
+    <section class="bloque">
+      <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">03</span>Add somebody</h2>
+
+      <div class="anadir">
+        <div class="campo" data-estado="neutro">
+          <label for="nombre">Name at the table</label>
+          <input id="nombre" name="nombre" type="text" autocomplete="off" maxlength="18" placeholder="Marta" aria-describedby="nombre-ayuda" aria-invalid="false">
+          <p class="ayuda" id="nombre-ayuda">Two to eighteen characters. Adding somebody already on the list does nothing, the table says so.</p>
+          <p class="err" id="nombre-err" role="alert"></p>
+        </div>
+        <button class="anadir-btn" type="button" id="anadir">
+          <span class="anadir-btn__raya" aria-hidden="true"></span>
+          Add to the table
+        </button>
+      </div>
+    </section>
+
+    <section class="resumen-bloque">
+      <div class="barra-caja">
+        <span class="barra-cabecera">
+          <span id="barraTitulo">0 of 0 shares assigned</span>
+          <span id="barraEstado">0,00 EUR still unclaimed</span>
+        </span>
+        <span class="barra-pista" role="progressbar" aria-labelledby="barraTitulo" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-valuetext="0 of 0 shares assigned" id="barra">
+          <i id="barraRelleno"></i>
+        </span>
+      </div>
+
+      <dl class="cuentas">
+        <div><dt>Bill total</dt><dd id="cTotal">0,00 EUR</dd></div>
+        <div><dt>Claimed so far</dt><dd id="cAsignado">0,00 EUR</dd></div>
+        <div><dt>Still on the table</dt><dd id="cResto">0,00 EUR</dd></div>
+        <div class="cuentas__total"><dt>Cost of one share, dish by dish</dt><dd id="cPorciones">varies</dd></div>
+      </dl>
+
+      <div class="resumen" id="resumenError" role="alert" hidden>
+        <span class="resumen__marca" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The bill is not split yet</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <button class="cerrar" type="submit" id="cerrar">
+        <span class="cerrar__destello" aria-hidden="true"></span>
+        <span id="cerrarTexto">Settle the bill</span>
+      </button>
+      <p class="pie-legal">The numbers stay in this browser. Nothing is sent to the restaurant, and you can keep changing the split afterwards.</p>
+    </section>
+  </form>
+
+  <section class="listo" id="listo" hidden tabindex="-1" aria-live="polite">
+    <span class="listo__aro" aria-hidden="true"></span>
+    <span class="listo__sello" aria-hidden="true"><span class="listo__tic"></span></span>
+    <p class="antetitulo">Bill settled</p>
+    <h2 id="listoTitulo">Nobody argues about the bill any more</h2>
+    <p id="listoTexto">Here is who pays what.</p>
+    <ul class="listo__lista" id="listoLista"></ul>
+    <dl class="listo__datos">
+      <div><dt>Table</dt><dd id="lMesa">table 6</dd></div>
+      <div><dt>Shares</dt><dd id="lPorciones">0 of 0</dd></div>
+      <div><dt>Total</dt><dd id="lTotal">0,00 EUR</dd></div>
+      <div><dt>Split by</dt><dd id="lModo">dishes claimed</dd></div>
+    </dl>
+    <button class="cerrar cerrar--tenue" type="button" id="otra">Split it a different way</button>
+  </section>
+
+  <p class="pie-pagina">Bodega Sella &middot; one bill, one oven, no arguing &middot; the split lives in this browser</p>
+</main>
+</body>
+</html>

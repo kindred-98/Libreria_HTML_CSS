@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clan Tournament Roster</title>
+<meta name="description" content="Three step tournament roster entry with per step validation, a call up board whose starting five re flows with an animated flip, and a locked squad receipt.">
+<meta name="description-es" content="Alta de plantilla de torneo en tres pasos con validación por paso, un banquillo cuyas reorganizaciones se animan con flip y un resguardo de escuadra bloqueada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="bracket" aria-hidden="true">
+  <span class="arco arco-a"></span>
+  <span class="arco arco-b"></span>
+  <span class="polvo"></span>
+  <span class="raya-raya"></span>
+</div>
+
+<main class="bracket-marco">
+  <header class="marca-cab">
+    <span class="escudo" aria-hidden="true"><span class="escudo-raya"></span></span>
+    <div>
+      <p class="antetitulo">Crown Circuit &middot; winter qualifier</p>
+      <h1>Register your clan for the bracket</h1>
+    </div>
+    <p class="cab-reloj"><b id="reloj">02:00:00</b><span>until the entries close</span></p>
+  </header>
+
+  <ol class="pasos" aria-label="Registration steps">
+    <li class="paso-ind" data-paso="1"><span class="paso-circ" aria-hidden="true">1</span><span class="paso-txt">Clan sheet</span></li>
+    <li class="paso-ind" data-paso="2"><span class="paso-circ" aria-hidden="true">2</span><span class="paso-txt">Starting five</span></li>
+    <li class="paso-ind" data-paso="3"><span class="paso-circ" aria-hidden="true">3</span><span class="paso-txt">Lock the roster</span></li>
+  </ol>
+
+  <form class="hoja" id="form" novalidate>
+    <section class="tramo" id="tramo1" aria-labelledby="t1">
+      <h2 class="tramo-titulo" id="t1"><span class="tramo-n" aria-hidden="true">01</span>Clan sheet</h2>
+      <p class="tramo-pista">Everything the draw needs before the bracket is seeded. You can come back and change it until you lock the roster.</p>
+
+      <div class="rejilla">
+        <div class="campo" data-estado="neutro">
+          <label for="tag">Clan tag <span class="req" aria-hidden="true">*</span></label>
+          <input id="tag" name="tag" type="text" autocomplete="off" spellcheck="false" maxlength="4" placeholder="NRVX" aria-describedby="tag-ayuda" aria-invalid="false">
+          <p class="ayuda" id="tag-ayuda">Three or four letters and numbers, shown in capitals on the bracket. No spaces.</p>
+          <p class="error" id="tag-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="equipo">Team name <span class="req" aria-hidden="true">*</span></label>
+          <input id="equipo" name="equipo" type="text" maxlength="26" placeholder="Nova Vex Collective" aria-describedby="equipo-ayuda" aria-invalid="false">
+          <p class="ayuda" id="equipo-ayuda">Between 4 and 26 characters. This is the name on the stream overlay.</p>
+          <p class="error" id="equipo-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="region">Region <span class="req" aria-hidden="true">*</span></label>
+          <select id="region" name="region" aria-describedby="region-ayuda" aria-invalid="false">
+            <option value="">Pick the region you play from</option>
+            <option value="eu-west">EU West, Dublin</option>
+            <option value="eu-north">EU North, Stockholm</option>
+            <option value="us-east">US East, Ashburn</option>
+            <option value="us-west">US West, Portland</option>
+            <option value="ap-south">AP South, Singapore</option>
+          </select>
+          <p class="ayuda" id="region-ayuda">Groups are cut by region first, so rivals do not meet before the semis.</p>
+          <p class="error" id="region-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="semilla">Seeding <span class="req" aria-hidden="true">*</span></label>
+          <select id="semilla" name="semilla" aria-describedby="semilla-ayuda" aria-invalid="false">
+            <option value="">How did you qualify</option>
+            <option value="liga">League table, top two</option>
+            <option value="abierta">Open qualifier, first place</option>
+            <option value="invitacion">Direct invitation from the last edition</option>
+            <option value="reserva">Reserve from the waiting list</option>
+          </select>
+          <p class="ayuda" id="semilla-ayuda">Reserve entries only enter the draw if a seeded team drops out.</p>
+          <p class="error" id="semilla-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="tramo-pie">
+        <p class="pista-teclas" aria-hidden="true">Enter goes to the next step</p>
+        <button class="boton boton-ok" type="button" data-ir="2">Next, the starting five <span class="flecha" aria-hidden="true"></span></button>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo2" hidden aria-labelledby="t2">
+      <h2 class="tramo-titulo" id="t2"><span class="tramo-n" aria-hidden="true">02</span>Starting five</h2>
+      <p class="tramo-pista">Call up five players from the list. The bench re flows on its own when a role or the sort order changes, so you always see the shape of the team you are locking.</p>
+
+      <div class="banco">
+        <div class="banco-lado">
+          <div class="banco-cab">
+            <h3>Available players</h3>
+            <span class="contador" id="contadorDisponibles" role="status">12 on the list</span>
+          </div>
+          <ul class="lista-jugadores" id="listaJugadores"></ul>
+        </div>
+
+        <div class="banco-lado">
+          <div class="banco-cab">
+            <h3>Starting five</h3>
+            <span class="contador" id="contadorTitulares" role="status">0 of 5 called up</span>
+          </div>
+          <div class="orden" role="group" aria-label="Order the bench by">
+            <span class="orden-etiqueta">Show the bench by</span>
+            <button class="orden-btn" type="button" data-orden="rol" aria-pressed="true">Role</button>
+            <button class="orden-btn" type="button" data-orden="puntos" aria-pressed="false">Rating</button>
+            <button class="orden-btn" type="button" data-orden="pais" aria-pressed="false">Country</button>
+          </div>
+          <ul class="banquillo" id="banquillo" aria-label="Starting five"></ul>
+          <p class="banquillo-vacio" id="banquilloVacio">Nobody called up yet. Tick a player on the left to bring him onto the bench.</p>
+          <p class="ayuda" id="banquillo-ayuda">The captain is the one who talks to the referee. Pick exactly one, and he has to be on the bench.</p>
+        </div>
+      </div>
+
+      <div class="tramo-pie">
+        <button class="boton boton-tenue" type="button" data-ir="1">Back to the clan sheet</button>
+        <p class="pista-teclas" aria-hidden="true">Esc takes you back a step</p>
+        <button class="boton boton-ok" type="button" data-ir="3">Next, lock the roster <span class="flecha" aria-hidden="true"></span></button>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo3" hidden aria-labelledby="t3">
+      <h2 class="tramo-titulo" id="t3"><span class="tramo-n" aria-hidden="true">03</span>Lock the roster</h2>
+      <p class="tramo-pista">Read it back once. After this the sheet is submitted to the draw and only an organiser can unlock it.</p>
+
+      <div class="revision">
+        <dl class="revision-cabecera">
+          <div><dt>Clan tag</dt><dd id="revTag">NRVX</dd></div>
+          <div><dt>Team name</dt><dd id="revEquipo">Nova Vex Collective</dd></div>
+          <div><dt>Region</dt><dd id="revRegion">EU West</dd></div>
+          <div><dt>Seeding</dt><dd id="revSemilla">League table</dd></div>
+          <div><dt>Captain</dt><dd id="revCapitan">nobody yet</dd></div>
+          <div><dt>Average rating</dt><dd id="revMedia">0</dd></div>
+        </dl>
+        <div class="revision-tabla" id="revisionTabla" role="table" aria-label="Starting five as it will be submitted"></div>
+      </div>
+
+      <div class="campo campo-check" data-estado="neutro">
+        <input id="cerrado" name="cerrado" type="checkbox" aria-describedby="cerrado-ayuda">
+        <label for="cerrado">Nobody on this five plays twice, and I am the manager of the account</label>
+        <p class="ayuda" id="cerrado-ayuda">Ticking this is the lock. It is the only box that cannot be unticked after submitting.</p>
+        <p class="error" id="cerrado-error" role="alert"></p>
+      </div>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The roster cannot be submitted yet</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <div class="tramo-pie">
+        <button class="boton boton-tenue" type="button" data-ir="2">Back to the bench</button>
+        <p class="pista-teclas" aria-hidden="true">Esc takes you back a step</p>
+        <button class="boton boton-ok" type="submit" id="enviar">Submit to the draw <span class="flecha" aria-hidden="true"></span></button>
+      </div>
+    </section>
+  </form>
+
+  <section class="resguardo" id="resguardo" hidden tabindex="-1" aria-live="polite">
+    <span class="resguardo-aro" aria-hidden="true"></span>
+    <span class="resguardo-sello" aria-hidden="true"><span class="resguardo-tic"></span></span>
+    <p class="antetitulo">Entry received</p>
+    <h2 id="resTitulo">Roster locked for the winter qualifier</h2>
+    <p id="resTexto">The bracket draw happens on Friday at 18:00 CET.</p>
+    <div class="resguardo-tabla" id="resguardoTabla"></div>
+    <dl class="resguardo-datos">
+      <div><dt>Entry number</dt><dd id="resNumero">CC-0000</dd></div>
+      <div><dt>Group</dt><dd id="resGrupo">pending</dd></div>
+      <div><dt>Captain</dt><dd id="resCapitan">nobody yet</dd></div>
+      <div><dt>First match</dt><dd id="resPartido">Friday 18:00 CET</dd></div>
+    </dl>
+    <button class="boton boton-ok" type="button" id="otra">Register a different clan</button>
+  </section>
+
+  <p class="pie-pagina">Crown Circuit &middot; one entry per account &middot; the draw is public and final</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stream Overlay Go Live</title>
+<meta name="description" content="Stream go live setup with a sticky progress bar across the top, pre flight checks that run before going out, audio gain with a drawn slider, overlay fields and a live state with the stream key.">
+<meta name="description-es" content="Puesta en directo de un stream con barra de progreso fija arriba, comprobaciones previas antes de emitir, ganancia de audio con deslizador dibujado, campos de overlay y estado en vivo con la clave de emisión.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="estudio" aria-hidden="true">
+  <span class="estudio__foco estudio__foco--a"></span>
+  <span class="estudio__foco estudio__foco--b"></span>
+  <span class="estudio__pared"></span>
+  <span class="estudio__linea"></span>
+</div>
+
+<header class="barra" id="barra">
+  <div class="barra__fila">
+    <span class="marca"><span class="marca__ojo" aria-hidden="true"></span>Nightledger Studio</span>
+    <span class="barra__estado" id="barraEstado" data-estado="preparando">Preparing</span>
+    <span class="barra__reloj" id="barraReloj">00:00:00</span>
+  </div>
+  <div class="medidor" id="medidor" role="img" aria-label="Setup 0 of 4 stages done">
+    <span class="medidor__pista"><span class="medidor__relleno" id="medidorRelleno"></span></span>
+    <ol class="medidor__etapas" id="medidorEtapas"></ol>
+  </div>
+</header>
+
+<main class="escena">
+  <section class="monitor" aria-label="Stream preview">
+    <div class="monitor__marco">
+      <div class="monitor__pantalla">
+        <span class="monitor__lineas" aria-hidden="true"></span>
+        <span class="monitor__candado" id="monitorCandado" aria-hidden="true"></span>
+        <span class="monitor__vivo" id="monitorVivo" hidden>LIVE</span>
+        <p class="monitor__titulo" id="monitorTitulo">Your stream title appears here</p>
+        <span class="monitor__tercera" id="monitorTercera" hidden><i></i><b id="monitorTerceraTexto">Lower third</b></span>
+        <span class="monitor__aviso" id="monitorAviso" hidden>New follower</span>
+        <div class="monitor__esquina">
+          <span class="monitor__reloj" id="monitorReloj">00:00:00</span>
+          <span class="monitor__espectadores" id="monitorEspectadores">0 watching</span>
+        </div>
+      </div>
+      <div class="monitor__pie">
+        <span class="monitor__pista-info" id="monitorInfo">Canvas 1920 by 1080 at 60 frames</span>
+        <span class="monitor__bitrate" id="monitorBitrate">6000 kbps target</span>
+      </div>
+    </div>
+  </section>
+
+  <form class="panel" id="form" novalidate>
+    <section class="tramo" id="tramo-1" aria-labelledby="s1">
+      <h2 class="tramo__titulo" id="s1"><span class="tramo__paso">1</span>What you are streaming</h2>
+
+      <div class="campo" data-estado="neutro">
+        <label for="titulo">Stream title</label>
+        <input id="titulo" name="titulo" type="text" maxlength="80" placeholder="Ranked climb to Radiant, no backseating" aria-describedby="titulo-ayuda">
+        <p class="ayuda" id="titulo-ayuda">Between 8 and 80 characters. This is the first line in the recommendation feed.</p>
+        <p class="conteo"><span class="conteo__pips" id="tituloPips" aria-hidden="true"></span><span id="tituloCuenta">0 of 80</span></p>
+        <p class="err" id="titulo-err" role="alert"></p>
+      </div>
+
+      <div class="doble">
+        <div class="campo" data-estado="neutro">
+          <label for="categoria">Category</label>
+          <select id="categoria" name="categoria" aria-describedby="categoria-ayuda">
+            <option value="">Choose a category</option>
+            <option value="fps">First person shooters</option>
+            <option value="strategy">Strategy</option>
+            <option value="rpg">Role playing</option>
+            <option value="justchatting">Just chatting</option>
+            <option value="deportes">Sports</option>
+            <option value="iracing">Sim racing</option>
+          </select>
+          <p class="ayuda" id="categoria-ayuda">A stream in the wrong category is demoted within minutes.</p>
+          <p class="err" id="categoria-err" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="idioma">Stream language</label>
+          <select id="idioma" name="idioma" aria-describedby="idioma-ayuda">
+            <option value="">Choose a language</option>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="pt">Portuguese</option>
+          </select>
+          <p class="ayuda" id="idioma-ayuda">Used for the auto captions and the moderation queue.</p>
+          <p class="err" id="idioma-err" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <span class="etiqueta" id="etiquetaTags">Tags, at least three</span>
+        <div class="etiquetas" id="etiquetas" role="group" aria-labelledby="etiquetaTags" aria-describedby="etiquetas-ayuda"></div>
+        <p class="ayuda" id="etiquetas-ayuda">Between 3 and 5 tags. The first one is the one the algorithm reads first.</p>
+        <p class="err" id="etiquetas-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo-2" aria-labelledby="s2">
+      <h2 class="tramo__titulo" id="s2"><span class="tramo__paso">2</span>Audio</h2>
+
+      <div class="campo" data-estado="neutro">
+        <label for="microfono">Microphone</label>
+        <select id="microfono" name="microfono" aria-describedby="microfono-ayuda">
+          <option value="">Choose an input</option>
+          <option value="usb1">USB condenser, desk side</option>
+          <option value="usb2">USB dynamic, arm mounted</option>
+          <option value="lavalier">Lavalier on the mixer</option>
+          <option value="agregado">System default</option>
+        </select>
+        <p class="ayuda" id="microfono-ayuda">The meter below has to reach the green band before you can go live.</p>
+        <p class="err" id="microfono-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="ganancia">Input gain</label>
+        <div class="deslizador">
+          <span class="deslizador__banda" aria-hidden="true"><i></i><i></i><i></i></span>
+          <input id="ganancia" name="ganancia" type="range" min="0" max="100" step="1" value="0" aria-describedby="ganancia-ayuda">
+          <span class="deslizador__pista" aria-hidden="true"></span>
+          <span class="deslizador__cap" id="capGanancia" aria-hidden="true"></span>
+        </div>
+        <p class="ayuda" id="ganancia-ayuda">Drag it until the meter sits in the green band. Arrow keys move it by one, Home and End jump to the ends.</p>
+        <p class="err" id="ganancia-err" role="alert"></p>
+      </div>
+
+      <div class="metro" id="metro" role="img" aria-label="Input level 0 percent">
+        <div class="metro__pista">
+          <span class="metro__relleno" id="metroRelleno"></span>
+          <span class="metro__banda"></span>
+        </div>
+        <p class="metro__pie"><span id="metroTexto">No input selected</span><span id="metroValor">0 dB</span></p>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo-3" aria-labelledby="s3">
+      <h2 class="tramo__titulo" id="s3"><span class="tramo__paso">3</span>Overlay</h2>
+
+      <div class="campo" data-estado="neutro">
+        <label for="tercera">Lower third text</label>
+        <input id="tercera" name="tercera" type="text" maxlength="34" placeholder="Radiant II, 14 wins" aria-describedby="tercera-ayuda">
+        <p class="ayuda" id="tercera-ayuda">Between 4 and 34 characters. Appears in the corner for eight seconds when you press T.</p>
+        <p class="err" id="tercera-err" role="alert"></p>
+      </div>
+
+      <div class="campo campo--check" data-estado="neutro">
+        <input id="avisos" name="avisos" type="checkbox" aria-describedby="avisos-ayuda">
+        <label for="avisos">Follow and subscription alerts on screen</label>
+        <p class="ayuda" id="avisos-ayuda">Alerts play a sound. If you record locally, that sound ends up in the microphone.</p>
+        <p class="err" id="avisos-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="volumenAvisos">Alert volume</label>
+        <div class="deslizador">
+          <span class="deslizador__banda" aria-hidden="true"><i></i><i></i><i></i></span>
+          <input id="volumenAvisos" name="volumenAvisos" type="range" min="0" max="100" step="1" value="55" aria-describedby="volumenAvisos-ayuda">
+          <span class="deslizador__pista" aria-hidden="true"></span>
+          <span class="deslizador__cap" id="capAvisos" aria-hidden="true"></span>
+        </div>
+        <p class="ayuda" id="volumenAvisos-ayuda">Keep it under sixty unless the alerts are routed to headphones only.</p>
+        <p class="err" id="volumenAvisos-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="tramo" id="tramo-4" aria-labelledby="s4">
+      <h2 class="tramo__titulo" id="s4"><span class="tramo__paso">4</span>Pre flight</h2>
+
+      <ul class="lista-comprobacion" id="listaComprobacion" aria-label="Pre flight checks"></ul>
+
+      <div class="campo campo--check" data-estado="neutro">
+        <input id="respaldo" name="respaldo" type="checkbox" aria-describedby="respaldo-ayuda">
+        <label for="respaldo">I have a second line ready in case the upload drops</label>
+        <p class="ayuda" id="respaldo-ayuda">A phone hotspot counts. Without it, a five minute dropout takes the whole stream down.</p>
+        <p class="err" id="respaldo-err" role="alert"></p>
+      </div>
+    </section>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">You cannot go live yet</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <footer class="acciones">
+      <p class="acciones__nota" id="accionesNota">Go live starts the encoder immediately. You can always end the broadcast and start again.</p>
+      <button class="salir" type="submit" id="salir">
+        <span class="salir__aro" aria-hidden="true"></span>
+        <span id="salirTexto">Go live</span>
+      </button>
+    </footer>
+  </form>
+
+  <section class="previo" id="previo" hidden aria-live="polite">
+    <p class="previo__titulo">Pre flight run</p>
+    <ol class="previo__pasos" id="previoPasos"></ol>
+    <p class="previo__nota" id="previoNota">Checking the upload, the encoder and the alert path. Three seconds.</p>
+  </section>
+</main>
+
+<section class="envivo" id="envivo" hidden tabindex="-1" aria-live="polite">
+  <span class="envivo__pulso" aria-hidden="true"></span>
+  <p class="envivo__kicker">You are on air</p>
+  <h1 class="envivo__titulo" id="envivoTitulo">Stream key issued</h1>
+  <p class="envivo__lead" id="envivoLead">Paste the key into the encoder. It disappears from this page when you end the broadcast.</p>
+  <dl class="envivo__datos">
+    <div><dt>Stream key</dt><dd id="envivoClave">live_0000</dd></div>
+    <div><dt>Broadcast</dt><dd id="envivoId">00000000</dd></div>
+    <div><dt>Category</dt><dd id="envivoCategoria">not set</dd></div>
+    <div><dt>Quality</dt><dd id="envivoCalidad">6000 kbps, 1080p60</dd></div>
+  </dl>
+  <div class="envivo__barra">
+    <p class="envivo__barra-titulo">Session</p>
+    <dl class="envivo__marcas">
+      <div><dt>Uptime</dt><dd id="envivoTiempo">00:00:00</dd></div>
+      <div><dt>Peak viewers</dt><dd id="envivoPico">0</dd></div>
+      <div><dt>Dropped frames</dt><dd id="envivoCaidos">0</dd></div>
+    </dl>
+  </div>
+  <button class="terminar" type="button" id="terminar">End the broadcast</button>
+</section>
+
+<footer class="pie">
+  <span>Nightledger Studio</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Upload 11,4 Mbps from a wired line</span>
+</footer>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hotel Night Booking</title>
+<meta name="description" content="Hotel booking with a real keyboard calendar, blocked dates, room and rate selects, a guest block and a side summary that adds up nights, taxes and the total live as the dates change.">
+<meta name="description-es" content="Reserva de noches de hotel con calendario de teclado real, días bloqueados, selección de habitación y tarifa, bloque de huéspedes y resumen lateral que suma noches, impuestos y total en vivo al cambiar las fechas.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="atrio" aria-hidden="true">
+  <span class="atrio__lampara atrio__lampara--a"></span>
+  <span class="atrio__lampara atrio__lampara--b"></span>
+  <span class="atrio__alfombra"></span>
+  <span class="atrio__candelabro"></span>
+  <span class="atrio__cortina"></span>
+</div>
+
+<main class="mostrador">
+  <header class="mostrador__cab">
+    <span class="hotel" aria-hidden="true"><i class="hotel__tejado"></i><i class="hotel__cuerpo"></i><i class="hotel__farol"></i></span>
+    <div>
+      <p class="antetitulo">Casa Ferran &middot; booking desk</p>
+      <h1>Book the nights</h1>
+    </div>
+    <p class="cab-nota">Nineteen rooms, one rate per season, and a calendar that knows which nights the house is full. The summary on the right adds up as you pick.</p>
+  </header>
+
+  <div class="escena">
+    <form class="hoja" id="form" novalidate>
+      <section class="bloque">
+        <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">01</span>Which nights</h2>
+
+        <div class="calendario-caja">
+          <div class="calendario-cab">
+            <button class="mes-btn" type="button" id="mesAnt" aria-label="Previous month"><span aria-hidden="true"></span></button>
+            <h3 id="mesTitulo" aria-live="polite">Month</h3>
+            <button class="mes-btn mes-btn--der" type="button" id="mesSig" aria-label="Next month"><span aria-hidden="true"></span></button>
+          </div>
+          <div class="calendario">
+            <div class="dias-semana" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+            <div class="dias" id="dias" role="group" aria-label="Days of the month" aria-describedby="calendario-ayuda"></div>
+          </div>
+          <ul class="leyenda" aria-label="Calendar legend">
+            <li><span class="leyenda__pt leyenda__pt--libre" aria-hidden="true"></span>free</li>
+            <li><span class="leyenda__pt leyenda__pt--lleno" aria-hidden="true"></span>full house</li>
+            <li><span class="leyenda__pt leyenda__pt--elegido" aria-hidden="true"></span>your nights</li>
+          </ul>
+          <p class="ayuda" id="calendario-ayuda">Arrow keys walk the days, Home and End jump to the ends of the week, Page Up and Page Down change month. Full nights are not selectable, and the arrival has to come before the departure.</p>
+          <p class="err" id="fechas-err" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">02</span>Which room</h2>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="habitacion">Room type <span class="req" aria-hidden="true">*</span></label>
+            <select id="habitacion" name="habitacion" aria-describedby="habitacion-ayuda" aria-invalid="false">
+              <option value="">Pick a room</option>
+              <option value="doble">Double, courtyard, 18 m2</option>
+              <option value="techo">Double with terrace, 24 m2</option>
+              <option value="suite">Corner suite, 38 m2</option>
+              <option value="familiar">Family room, two doubles, 32 m2</option>
+            </select>
+            <p class="ayuda" id="habitacion-ayuda">The corner suite sleeps two and is the only one with a bath tub, and it is the last to go on a Saturday.</p>
+            <p class="err" id="habitacion-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="tarifa">Rate <span class="req" aria-hidden="true">*</span></label>
+            <select id="tarifa" name="tarifa" aria-describedby="tarifa-ayuda" aria-invalid="false">
+              <option value="">Pick a rate</option>
+              <option value="flexible">Flexible, cancel until two days before</option>
+              <option value="avanzada">Advance purchase, pay on arrival</option>
+              <option value="nocturno">Nightly, no breakfast</option>
+            </select>
+            <p class="ayuda" id="tarifa-ayuda">The flexible rate is fourteen per cent dearer and is the only one that lets you move the dates free of charge.</p>
+            <p class="err" id="tarifa-err" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo campo--check" data-estado="neutro">
+          <input id="desayuno" name="desayuno" type="checkbox" aria-describedby="desayuno-ayuda">
+          <label for="desayuno">Breakfast on the terrace, nine euros a head</label>
+          <span class="glifo" aria-hidden="true"></span>
+          <p class="ayuda" id="desayuno-ayuda">Served from seven to eleven. It is added per night and per guest, and it shows up in the summary straight away.</p>
+          <p class="err" id="desayuno-err" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">03</span>Who is coming</h2>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="huesped">Guest name <span class="req" aria-hidden="true">*</span></label>
+            <input id="huesped" name="huesped" type="text" autocomplete="name" maxlength="40" placeholder="Irene Saldana" aria-describedby="huesped-ayuda" aria-invalid="false">
+            <p class="ayuda" id="huesped-ayuda">The name on the passport of whoever is arriving, three to forty characters.</p>
+            <p class="err" id="huesped-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="correo">Email for the confirmation <span class="req" aria-hidden="true">*</span></label>
+            <input id="correo" name="correo" type="text" inputmode="email" autocomplete="email" maxlength="60" placeholder="you@home.net" aria-describedby="correo-ayuda" aria-invalid="false">
+            <p class="ayuda" id="correo-ayuda">One address. The door code and the breakfast time go there, and nowhere else.</p>
+            <p class="err" id="correo-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="adultos">Adults <span class="req" aria-hidden="true">*</span></label>
+            <select id="adultos" name="adultos" aria-describedby="adultos-ayuda" aria-invalid="false">
+              <option value="1">1 adult</option>
+              <option value="2" selected>2 adults</option>
+              <option value="3">3 adults</option>
+              <option value="4">4 adults</option>
+            </select>
+            <p class="ayuda" id="adultos-ayuda">The family room is the only one that takes four, so picking a fourth adult narrows the rooms that work.</p>
+            <p class="err" id="adultos-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="ninos">Children under twelve</label>
+            <select id="ninos" name="ninos" aria-describedby="ninos-ayuda" aria-invalid="false">
+              <option value="0" selected>none</option>
+              <option value="1">1 child</option>
+              <option value="2">2 children</option>
+            </select>
+            <p class="ayuda" id="ninos-ayuda">Children sleep free in the family room and cost half in the others, which the summary shows as its own line.</p>
+            <p class="err" id="ninos-err" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="notas">Anything the desk should know</label>
+          <textarea id="notas" name="notas" rows="3" maxlength="220" placeholder="Optional. Late arrival, a cot, a birthday, a room away from the stairs." aria-describedby="notas-ayuda"></textarea>
+          <div class="cuenta" id="notasCuenta">0 of 220</div>
+          <p class="ayuda" id="notas-ayuda">Up to 220 characters. Arrivals after eleven at night need a phone number, and the desk will ring you.</p>
+          <p class="err" id="notas-err" role="alert"></p>
+        </div>
+      </section>
+
+      <div class="resumen" id="resumenError" role="alert" hidden>
+        <span class="resumen__marca" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The booking is not made yet</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <button class="reservar" type="submit" id="reservar">
+        <span class="reservar__destello" aria-hidden="true"></span>
+        <span id="reservarTexto">Book the nights</span>
+      </button>
+      <p class="pie-legal">Nothing is charged here. The desk sends a hold for forty eight hours and takes the card when you confirm.</p>
+    </form>
+
+    <aside class="tarjeta" aria-label="Live booking summary">
+      <p class="tarjeta__etiqueta">Your stay</p>
+      <article class="resumen-tarjeta" id="resumenTarjeta">
+        <span class="resumen-tarjeta__banda" aria-hidden="true"></span>
+        <p class="resumen-tarjeta__hotel">Casa Ferran, nineteen rooms</p>
+        <h2 id="rCuando">Pick your nights</h2>
+        <p class="resumen-tarjeta__quien" id="rQuien">No room chosen yet</p>
+
+        <dl class="resumen-tarjeta__datos">
+          <div><dt>Nights</dt><dd id="rNoches">0</dd></div>
+          <div><dt>Guests</dt><dd id="rHuespedes">0</dd></div>
+          <div><dt>Room</dt><dd id="rHabitacion">not chosen</dd></div>
+          <div><dt>Rate</dt><dd id="rTarifa">not chosen</dd></div>
+        </dl>
+
+        <ul class="resumen-tarjeta__lineas" id="rLineas"></ul>
+
+        <dl class="resumen-tarjeta__cuentas">
+          <div><dt>Room total</dt><dd id="rHabTotal">0,00 EUR</dd></div>
+          <div><dt>Breakfast</dt><dd id="rDesayuno">0,00 EUR</dd></div>
+          <div><dt>City tax, per adult night</dt><dd id="rImpuesto">0,00 EUR</dd></div>
+          <div class="resumen-tarjeta__total"><dt>Total</dt><dd id="rTotal">0,00 EUR</dd></div>
+        </dl>
+
+        <ul class="resumen-tarjeta__puntos" id="rPuntos"></ul>
+
+        <footer class="resumen-tarjeta__pie">
+          <span class="resumen-sello" aria-hidden="true"></span>
+          <span id="rPie">Nothing held yet</span>
+        </footer>
+      </article>
+
+      <div class="medidor" role="progressbar" aria-labelledby="medidorTitulo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 per cent of the booking filled in" id="medidor">
+        <span class="medidor__cabecera">
+          <span id="medidorTitulo">Booking 0 % ready</span>
+          <span id="medidorFalta">5 steps to go</span>
+        </span>
+        <span class="medidor__pista" aria-hidden="true"><i id="medidorRelleno"></i></span>
+      </div>
+    </aside>
+  </div>
+
+  <section class="confirmada" id="confirmada" hidden tabindex="-1" aria-live="polite">
+    <span class="confirmada__aro" aria-hidden="true"></span>
+    <span class="confirmada__sello" aria-hidden="true"><span class="confirmada__tic"></span></span>
+    <p class="antetitulo">Nights held</p>
+    <h2 id="confTitulo">See you at the desk</h2>
+    <p id="confTexto">A confirmation is on its way to your inbox.</p>
+    <dl class="confirmada__datos">
+      <div><dt>Reference</dt><dd id="confRef">CF-000000</dd></div>
+      <div><dt>Arriving</dt><dd id="confLlegada">no date yet</dd></div>
+      <div><dt>Leaving</dt><dd id="confSalida">no date yet</dd></div>
+      <div><dt>Total</dt><dd id="confTotal">0,00 EUR</dd></div>
+    </dl>
+    <button class="reservar reservar--tenue" type="button" id="otra">Book other nights</button>
+  </section>
+
+  <p class="pie-pagina">Casa Ferran &middot; open from March to November &middot; the desk answers the phone until eleven at night</p>
+</main>
+</body>
+</html>

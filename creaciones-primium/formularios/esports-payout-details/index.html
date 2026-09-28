@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Esports Team Payout Details</title>
+<meta name="description" content="Esports team payout form with live IBAN formatting, mod ninety seven checksum, account holder matching, player versus company banking and a validated treasury confirmation.">
+<meta name="description-es" content="Formulario de datos de cobro de un equipo de esports con formato de IBAN en vivo, comprobación del módulo noventa y siete, coincidencia del titular, banca de jugador o de empresa y confirmación validada de tesorería.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="ara" aria-hidden="true">
+  <span class="ara__foco ara__foco--a"></span>
+  <span class="ara__foco ara__foco--b"></span>
+  <span class="ara__rejilla"></span>
+  <span class="ara__barrido"></span>
+  <span class="ara__aro"></span>
+</div>
+
+<main class="tesoreria">
+  <header class="tesoreria__cab">
+    <span class="escudo" aria-hidden="true"><span class="escudo__c"></span><span class="escudo__franja"></span></span>
+    <div>
+      <p class="antetitulo">Ninefold Collective &middot; season 12</p>
+      <h1>Where the prize money lands</h1>
+    </div>
+    <p class="cab-nota">The rules below are the ones the payments league enforces. Every field is checked here, in the browser, before the treasury receives anything.</p>
+  </header>
+
+  <div class="escena">
+    <form class="hoja" id="form" novalidate>
+      <section class="bloque">
+        <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">01</span>Who is being paid</h2>
+
+        <fieldset class="campo conjunto" data-estado="neutro" id="conjunto-tipo">
+          <legend>The account belongs to <span class="req" aria-hidden="true">*</span></legend>
+          <div class="tipos" role="radiogroup" aria-labelledby="conjunto-tipo" aria-describedby="tipo-ayuda" aria-invalid="false">
+            <label class="tipo"><input type="radio" id="tipo-jugador" name="tipo" value="jugador" checked><span class="tipo__caja"><b>The player</b><small>One person, prize money goes straight to their account</small></span></label>
+            <label class="tipo"><input type="radio" id="tipo-equipo" name="tipo" value="equipo"><span class="tipo__caja"><b>The team entity</b><small>A registered company, with a tax number and a named director</small></span></label>
+          </div>
+          <p class="ayuda" id="tipo-ayuda">Player account chosen. That hides the company fields and unlocks the player identification block.</p>
+          <p class="err" id="tipo-err" role="alert"></p>
+        </fieldset>
+
+        <div class="rejilla" id="bloque-jugador">
+          <div class="campo" data-estado="neutro">
+            <label for="jugador">Player handle <span class="req" aria-hidden="true">*</span></label>
+            <input id="jugador" name="jugador" type="text" autocomplete="off" spellcheck="false" maxlength="18" placeholder="nineofniners" aria-describedby="jugador-ayuda" aria-invalid="false">
+            <p class="ayuda" id="jugador-ayuda">Three to eighteen characters, lower case. It is matched against the roster entry, not typed freely.</p>
+            <p class="err" id="jugador-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="tag">Roster tag <span class="req" aria-hidden="true">*</span></label>
+            <input id="tag" name="tag" type="text" autocomplete="off" spellcheck="false" maxlength="8" placeholder="N9NR" aria-describedby="tag-ayuda" aria-invalid="false">
+            <p class="ayuda" id="tag-ayuda">Four to eight characters, upper case and digits. The tag shown on the broadcast overlay.</p>
+            <p class="err" id="tag-err" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="rejilla" id="bloque-equipo" hidden>
+          <div class="campo" data-estado="neutro">
+            <label for="razon">Company legal name <span class="req" aria-hidden="true">*</span></label>
+            <input id="razon" name="razon" type="text" autocomplete="organization" maxlength="48" placeholder="Ninefold Collective Ltd" aria-describedby="razon-ayuda" aria-invalid="false">
+            <p class="ayuda" id="razon-ayuda">The exact string on the tax invoice. Three to forty eight characters.</p>
+            <p class="err" id="razon-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="iva">Company tax number <span class="req" aria-hidden="true">*</span></label>
+            <input id="iva" name="iva" type="text" autocomplete="off" spellcheck="false" maxlength="16" placeholder="GB123456789" aria-describedby="iva-ayuda" aria-invalid="false">
+            <p class="ayuda" id="iva-ayuda">Two letters and nine digits, upper case. The league cross checks it against the register before it pays.</p>
+            <p class="err" id="iva-err" role="alert"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">02</span>The account itself</h2>
+
+        <div class="campo" data-estado="neutro">
+          <label for="iban">IBAN <span class="req" aria-hidden="true">*</span></label>
+          <div class="barra-iban">
+            <input id="iban" name="iban" type="text" inputmode="text" autocomplete="off" spellcheck="false" maxlength="34" placeholder="GB29 NWBK 6016 1331 9268 19" aria-describedby="iban-ayuda" aria-invalid="false">
+            <span class="pais-sello" id="paisSello" aria-hidden="true">--</span>
+          </div>
+          <p class="ayuda" id="iban-ayuda" role="status">Type it however you like, spaces are added as you go. Two letters, two digits, then up to thirty alphanumeric characters.</p>
+          <p class="err" id="iban-err" role="alert"></p>
+        </div>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="titular">Account holder <span class="req" aria-hidden="true">*</span></label>
+            <input id="titular" name="titular" type="text" autocomplete="cc-name" maxlength="40" placeholder="NINE OF NINERS" aria-describedby="titular-ayuda" aria-invalid="false">
+            <p class="ayuda" id="titular-ayuda">Exactly as the bank holds it. Upper case. A mismatch is the single most common reason a payout bounces.</p>
+            <p class="err" id="titular-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="swift">BIC or SWIFT <span class="opcional">optional in the EEA</span></label>
+            <input id="swift" name="swift" type="text" autocomplete="off" spellcheck="false" maxlength="11" placeholder="NWBKGB2L" aria-describedby="swift-ayuda" aria-invalid="false">
+            <p class="ayuda" id="swift-ayuda">Eight or eleven characters. Inside the EEA the bank can be worked out from the IBAN, so it is not required.</p>
+            <p class="err" id="swift-err" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="direccion">Registered address of the holder <span class="req" aria-hidden="true">*</span></label>
+          <input id="direccion" name="direccion" type="text" autocomplete="street-address" maxlength="70" placeholder="14 Kiln Yard, Unit 3" aria-describedby="direccion-ayuda" aria-invalid="false">
+          <p class="ayuda" id="direccion-ayuda">Ten to seventy characters. The bank asks for this on every cross border payout, so a wrong one costs a week.</p>
+          <p class="err" id="direccion-err" role="alert"></p>
+          <p class="coincidencia" id="coincidencia" role="status" hidden></p>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">03</span>Money and paperwork</h2>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="moneda">Prize money currency <span class="req" aria-hidden="true">*</span></label>
+            <select id="moneda" name="moneda" aria-describedby="moneda-ayuda" aria-invalid="false">
+              <option value="eur">Euro, EUR</option>
+              <option value="usd">United States dollar, USD</option>
+              <option value="gbp">Pound sterling, GBP</option>
+              <option value="sek">Swedish krona, SEK</option>
+            </select>
+            <p class="ayuda" id="moneda-ayuda">The treasury holds one currency at a time. The bank takes the payout in the currency of the account, not the one on this line.</p>
+            <p class="err" id="moneda-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="frecuencia">How often the league pays out</label>
+            <select id="frecuencia" name="frecuencia" aria-describedby="frecuencia-ayuda" aria-invalid="false">
+              <option value="trimestral">Every quarter, after the split</option>
+              <option value="mensual">Every month, after the split</option>
+              <option value="final">Once, when the season closes</option>
+            </select>
+            <p class="ayuda" id="frecuencia-ayuda">Quarterly is the league default. Fewer transfers means fewer fees and fewer things to go wrong.</p>
+            <p class="err" id="frecuencia-err" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo campo--check" data-estado="neutro">
+          <input id="w8" name="w8" type="checkbox" aria-describedby="w8-ayuda">
+          <label for="w8">I have a signed tax residency form on file with the league</label>
+          <span class="glifo" aria-hidden="true"></span>
+          <p class="ayuda" id="w8-ayuda">Without it the treasury withholds at the standard rate, which for a company account is usually worse than signing it.</p>
+          <p class="err" id="w8-err" role="alert"></p>
+        </div>
+
+        <div class="campo campo--check" data-estado="neutro">
+          <input id="carta" name="carta" type="checkbox" aria-describedby="carta-ayuda">
+          <label for="carta">Send me the bank letter confirming the account name</label>
+          <span class="glifo" aria-hidden="true"></span>
+          <p class="ayuda" id="carta-ayuda">A signed PDF from the bank, the only document that settles a name dispute. It arrives within three working days.</p>
+          <p class="err" id="carta-err" role="alert"></p>
+        </div>
+      </section>
+
+      <div class="seguridad">
+        <span class="seguridad__escudo" aria-hidden="true"></span>
+        <p><b>Checked here, never sent to us.</b> The IBAN checksum runs in this page with the mod ninety seven rule, the same one your bank runs. Nothing you type leaves the browser, and the treasury only ever sees the account after you press the button.</p>
+      </div>
+
+      <div class="resumen" id="resumenError" role="alert" hidden>
+        <span class="resumen__marca" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The treasury cannot open the account yet</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <button class="guardar" type="submit" id="guardar">
+        <span class="guardar__destello" aria-hidden="true"></span>
+        <span id="guardarTexto">Send the details to the treasury</span>
+      </button>
+      <p class="pie-legal">Fields marked with an asterisk are needed to open a payout account. The treasury answers within two working days with a test transfer of one unit.</p>
+    </form>
+
+    <aside class="panel" aria-label="Live check of the payout account">
+      <p class="panel__etiqueta">Account check</p>
+      <article class="tarjeta" id="tarjeta">
+        <span class="tarjeta__franja" aria-hidden="true"></span>
+        <span class="tarjeta__luz" aria-hidden="true"></span>
+
+        <div class="tarjeta__cab">
+          <span class="marca-equipo" aria-hidden="true"><i></i><i></i><i></i></span>
+          <div class="tarjeta__quien">
+            <p class="tarjeta__tipo" id="tTipo">player account</p>
+            <h2 id="tNombre">Payee pending</h2>
+            <p class="tarjeta__sub" id="tSub">Ninefold Collective, season 12</p>
+          </div>
+        </div>
+
+        <div class="tarjeta__iban">
+          <span class="tarjeta__iban-etiqueta">IBAN</span>
+          <b id="tIban">not set</b>
+        </div>
+
+        <dl class="tarjeta__datos">
+          <div><dt>Holder</dt><dd id="tTitular">not set</dd></div>
+          <div><dt>Country</dt><dd id="tPais">unknown</dd></div>
+          <div><dt>Check digits</dt><dd id="tControl">not checked</dd></div>
+          <div><dt>BIC</dt><dd id="tSwift">not given</dd></div>
+        </dl>
+
+        <ul class="tarjeta__pasos" id="tPasos" aria-label="Checks passed"></ul>
+
+        <footer class="tarjeta__pie">
+          <span class="sello-mini" aria-hidden="true"></span>
+          <span id="tPie">Ninefold Collective treasury, season 12</span>
+        </footer>
+      </article>
+
+      <div class="medidor" role="progressbar" aria-labelledby="medidorTitulo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 per cent of the account filled in" id="medidor">
+        <span class="medidor__cabecera">
+          <span id="medidorTitulo">Account 0 % filled in</span>
+          <span id="medidorFaltan">7 fields still open</span>
+        </span>
+        <span class="medidor__pista" aria-hidden="true"><i id="medidorRelleno"></i></span>
+      </div>
+    </aside>
+  </div>
+
+  <section class="sellado" id="sellado" hidden tabindex="-1" aria-live="polite">
+    <span class="sellado__aro" aria-hidden="true"></span>
+    <span class="sellado__sello" aria-hidden="true"><span class="sellado__tic"></span></span>
+    <p class="antetitulo">Account opened</p>
+    <h2 id="sellTitulo">The treasury has the account</h2>
+    <p id="sellTexto">A test transfer of one unit goes out within two working days.</p>
+    <dl class="sellado__datos">
+      <div><dt>File</dt><dd id="sRef">NF-000000</dd></div>
+      <div><dt>Payee</dt><dd id="sNombre">nobody</dd></div>
+      <div><dt>Account</dt><dd id="sIban">not set</dd></div>
+      <div><dt>First payout</dt><dd id="sPago">quarterly, after the split</dd></div>
+    </dl>
+    <button class="guardar guardar--tenue" type="button" id="otra">Send different details</button>
+  </section>
+
+  <p class="pie-pagina">Ninefold Collective &middot; treasury &middot; the checksum runs in this page, the money moves at the league</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Console Cart Rebuild</title>
+<meta name="description" content="Three step console store cart where the chosen parts physically fly out of the shelf and into the crate with a measured animated flip, live totals, per step checks and an order receipt.">
+<meta name="description-es" content="Reconstrucción del carrito de una tienda de consolas en tres pasos, con las piezas elegidas volando del expositor a la caja mediante un flip medido, total en vivo, validación por paso y resguardo de pedido.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="depot" aria-hidden="true">
+  <span class="depot__rayo depot__rayo--a"></span>
+  <span class="depot__rayo depot__rayo--b"></span>
+  <span class="depot__polvo depot__rayo--a"></span>
+  <span class="depot__rejilla"></span>
+  <span class="depot__cinta"></span>
+</div>
+
+<header class="barra">
+  <span class="marca"><span class="marca__glifo" aria-hidden="true"><i></i><i></i></span>Ridgeback Depot</span>
+  <p class="barra__nota">Build night &middot; free next day on crates over 300 &middot; fourteen day returns on sealed boxes</p>
+</header>
+
+<main class="escena">
+  <ol class="pasos" id="pasos">
+    <li class="paso" data-paso="1">
+      <span class="paso__punto" aria-hidden="true"><span class="paso__num">1</span></span>
+      <span class="paso__txt"><b>Console</b><small>What you play on</small></span>
+    </li>
+    <li class="paso" data-paso="2">
+      <span class="paso__punto" aria-hidden="true"><span class="paso__num">2</span></span>
+      <span class="paso__txt"><b>Games</b><small>Three at most</small></span>
+    </li>
+    <li class="paso" data-paso="3">
+      <span class="paso__punto" aria-hidden="true"><span class="paso__num">3</span></span>
+      <span class="paso__txt"><b>Extras</b><small>And who it is for</small></span>
+    </li>
+  </ol>
+
+  <div class="disposicion">
+    <form class="flujo" id="form" novalidate>
+      <section class="hoja" data-panel="1" aria-label="Step 1, pick a console">
+        <p class="antetitulo">Step 1 of 3 &middot; the box everything starts with</p>
+        <h1 class="hoja__titulo">Choose the console</h1>
+        <p class="hoja__intro">One console per order. Picking one moves it straight into the crate on the right, and the shelf closes over the gap.</p>
+        <div class="rejilla" id="rejilla1"></div>
+        <p class="pista" id="pista1">Everything on this shelf is sealed, region free and covered for two years.</p>
+      </section>
+
+      <section class="hoja" data-panel="2" aria-label="Step 2, pick games" hidden>
+        <p class="antetitulo">Step 2 of 3 &middot; what to put on it</p>
+        <h1 class="hoja__titulo">Add up to three games</h1>
+        <p class="hoja__intro">Physical discs, not keys, so they still work on a console bought secondhand. Keys are twenty percent off if you would rather have those.</p>
+        <div class="rejilla" id="rejilla2"></div>
+        <p class="pista" id="pista2">No games yet. The crate can hold three, and the fourth comes back off the shelf.</p>
+      </section>
+
+      <section class="hoja" data-panel="3" aria-label="Step 3, extras and details" hidden>
+        <p class="antetitulo">Step 3 of 3 &middot; the small print</p>
+        <h1 class="hoja__titulo">Extras and where it goes</h1>
+        <p class="hoja__intro">Nothing here is required to order. Everything here makes the delivery land the way you want it to.</p>
+        <div class="rejilla" id="rejilla3"></div>
+
+        <div class="datos">
+          <div class="campo" data-estado="neutro">
+            <label for="jugador">Player handle <span class="req" aria-hidden="true">*</span></label>
+            <input id="jugador" name="jugador" type="text" autocomplete="nickname" maxlength="18" placeholder="nineofniners" aria-describedby="jugador-ayuda" aria-invalid="false">
+            <p class="ayuda" id="jugador-ayuda">Three to eighteen characters. It goes on the packing slip and on the account the console registers to.</p>
+            <p class="err" id="jugador-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="correo">Mail for the delivery note <span class="req" aria-hidden="true">*</span></label>
+            <input id="correo" name="correo" type="text" inputmode="email" autocomplete="email" maxlength="60" placeholder="you@home.net" aria-describedby="correo-ayuda" aria-invalid="false">
+            <p class="ayuda" id="correo-ayuda">One address, one carrier mail. It goes in the box, never to anybody else.</p>
+            <p class="err" id="correo-err" role="alert"></p>
+          </div>
+        </div>
+
+        <fieldset class="campo conjunto" data-estado="neutro" id="conjunto-dia">
+          <legend>Delivery day</legend>
+          <div class="opciones" role="radiogroup" aria-labelledby="conjunto-dia" aria-describedby="dia-ayuda">
+            <div class="opcion"><input type="radio" id="dia-lab" name="dia" value="estandar" checked><label for="dia-lab"><span class="opcion__caja"><b>Any weekday</b><small>Free over a 300 crate, otherwise 9,00</small></span></label></div>
+            <div class="opcion"><input type="radio" id="dia-sab" name="dia" value="sabado"><label for="dia-sab"><span class="opcion__caja"><b>Saturday morning</b><small>Always 14,00, the van only runs one</small></span></label></div>
+            <div class="opcion"><input type="radio" id="dia-tarde" name="dia" value="tarde"><label for="dia-tarde"><span class="opcion__caja"><b>Evening drop</b><small>Free, needs a safe place to leave it</small></span></label></div>
+          </div>
+          <p class="ayuda" id="dia-ayuda">The evening drop is free because the driver is already out. Tell us where to put it on the note.</p>
+          <p class="err" id="dia-err" role="alert"></p>
+        </fieldset>
+      </section>
+
+      <div class="resumen" id="resumenError" role="alert" hidden>
+        <span class="resumen__marca" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The order is not placed yet</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <footer class="acciones">
+        <button class="boton boton--tenue" type="button" id="atras" hidden><span class="flecha-izq" aria-hidden="true"></span>Back</button>
+        <span class="acciones__hueco"></span>
+        <button class="boton boton--fuerte" type="submit" id="continuar">
+          <span id="continuarTexto">To the games</span>
+          <span class="flecha-der" aria-hidden="true"></span>
+        </button>
+      </footer>
+    </form>
+
+    <aside class="caja" aria-label="Your crate">
+      <div class="caja__cab">
+        <p class="caja__etiqueta">Your crate</p>
+        <span class="caja__conteo" id="cajaConteo" role="status">empty</span>
+      </div>
+      <ul class="caja__lista" id="cajaLista" aria-label="Items in the crate"></ul>
+      <p class="caja__vacio" id="cajaVacio">Nothing in the crate yet. Whatever you pick flies over here.</p>
+
+      <dl class="cuentas">
+        <div><dt>Items</dt><dd id="cSubtotal">0,00 EUR</dd></div>
+        <div><dt>Delivery</dt><dd id="cEnvio">0,00 EUR</dd></div>
+        <div class="cuentas__total"><dt>Total</dt><dd id="cTotal">0,00 EUR</dd></div>
+      </dl>
+      <p class="caja__pie" id="cajaPie">Delivery is worked out on what is in the crate right now.</p>
+    </aside>
+  </div>
+</main>
+
+<section class="listo" id="listo" hidden tabindex="-1" aria-live="polite">
+  <span class="listo__aro" aria-hidden="true"></span>
+  <span class="listo__sello" aria-hidden="true"><span class="listo__tic" aria-hidden="true"></span></span>
+  <p class="antetitulo">Order placed</p>
+  <h1 class="listo__titulo" id="listoTitulo">The crate is sealed</h1>
+  <p class="listo__texto" id="listoTexto">A note goes out with the tracking number.</p>
+  <dl class="listo__datos">
+    <div><dt>Order</dt><dd id="lRef">RD-000000</dd></div>
+    <div><dt>Account</dt><dd id="lJugador">nobody</dd></div>
+    <div><dt>Delivery</dt><dd id="lDia">not chosen</dd></div>
+    <div><dt>Total</dt><dd id="lTotal">0,00 EUR</dd></div>
+  </dl>
+  <ul class="listo__piezas" id="lPiezas"></ul>
+  <button class="boton boton--fuerte listo__boton" type="button" id="otra">Start another crate</button>
+</section>
+
+<footer class="pie">
+  <span>Ridgeback Depot &middot; unit 9, Ironmarket</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Build night every Thursday</span>
+</footer>
+</body>
+</html>

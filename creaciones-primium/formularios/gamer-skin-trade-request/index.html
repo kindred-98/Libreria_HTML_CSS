@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gamer Skin Trade Request</title>
+<meta name="description" content="Skin trade request as a long one column form with sticky section anchors, live value comparison, platform and trade safety checks, and a generated trade reference.">
+<meta name="description-es" content="Solicitud de intercambio de objetos como formulario largo de una columna con anclas fijas por sección, comparación de valor en vivo, comprobaciones de plataforma y seguridad, y referencia de intercambio generada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="sala" aria-hidden="true">
+  <span class="sala__nucleo sala__nucleo--a"></span>
+  <span class="sala__nucleo sala__nucleo--b"></span>
+  <span class="sala__rejilla"></span>
+  <span class="sala__barrido"></span>
+</div>
+
+<header class="cabecera">
+  <a class="marca" href="#ficha">
+    <span class="marca__hex" aria-hidden="true"></span>
+    <span class="marca__texto">Vault<em>Swap</em></span>
+  </a>
+  <p class="cabecera__nota">Trade desk &middot; queue 3 &middot; median answer 11 minutes</p>
+</header>
+
+<main class="escena" id="ficha">
+  <nav class="anclas" aria-label="Sections of this form">
+    <p class="anclas__titulo">Sections</p>
+    <ol class="anclas__lista" id="anclasLista"></ol>
+    <div class="anclas__medidor" role="img" id="anclasMedidor" aria-label="Form 0 percent read">
+      <span class="anclas__barra" id="anclasBarra"></span>
+      <span class="anclas__cifra" id="anclasCifra">0%</span>
+    </div>
+  </nav>
+
+  <form class="largo" id="form" novalidate>
+    <header class="largo__cab">
+      <p class="antetitulo">Trade request</p>
+      <h1>Trade skins without losing your account</h1>
+      <p class="intro">Six sections, one page. Everything is checked before the request reaches a human, and the trade link only comes from us.</p>
+    </header>
+
+    <section class="bloque" id="sec-1" aria-labelledby="t1">
+      <h2 class="bloque__titulo" id="t1"><span class="bloque__num">01</span>What you are offering</h2>
+      <p class="bloque__intro">Pick the item you would send. The desk checks the wear, the stickers and the price history before it reaches anyone.</p>
+
+      <div class="campo" data-estado="neutro">
+        <label for="miItem">Your item</label>
+        <select id="miItem" name="miItem" aria-describedby="miItem-ayuda">
+          <option value="">Choose an item from your inventory</option>
+          <option value="ak47-neon">AK-47 | Neon Rift, Factory New</option>
+          <option value="m4a1-ghost">M4A1-S | Ghost Circuit, Minimal Wear</option>
+          <option value="karambit-fade">Karambit | Fade, Factory New</option>
+          <option value="glock-tide">Glock-18 | Tidewater, Field-Tested</option>
+          <option value="aWP-dragon">AWP | Dragon Coil, Souvenir</option>
+        </select>
+        <p class="ayuda" id="miItem-ayuda">The desk reads the float and the pattern seed. Anything above 0,90 gets a second look from a human.</p>
+        <p class="err" id="miItem-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="miValor">What you think it is worth</label>
+        <div class="con-unidad">
+          <input id="miValor" name="miValor" type="text" inputmode="decimal" maxlength="7" placeholder="145" aria-describedby="miValor-ayuda">
+          <span class="unidad" aria-hidden="true">credits</span>
+        </div>
+        <p class="ayuda" id="miValor-ayuda">A whole number between 1 and 99999. We compare it with the wanted side and tell you before anyone answers.</p>
+        <p class="err" id="miValor-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="bloque" id="sec-2" aria-labelledby="t2">
+      <h2 class="bloque__titulo" id="t2"><span class="bloque__num">02</span>What you want back</h2>
+      <p class="bloque__intro">One item, one ask. Splitting a trade into several requests gets it queued behind everyone else.</p>
+
+      <div class="campo" data-estado="neutro">
+        <label for="suItem">Wanted item</label>
+        <select id="suItem" name="suItem" aria-describedby="suItem-ayuda">
+          <option value="">Choose the item you want</option>
+          <option value="usps-silver">USP-S | Silverline, Factory New</option>
+          <option value="karambit-fade">Karambit | Fade, Factory New</option>
+          <option value="deagle-tide">Desert Eagle | Tidal, Minimal Wear</option>
+          <option value="m4a1-ghost">M4A1-S | Ghost Circuit, Minimal Wear</option>
+          <option value="glock-tide">Glock-18 | Tidewater, Field-Tested</option>
+          <option value="aWP-dragon">AWP | Dragon Coil, Souvenir</option>
+        </select>
+        <p class="ayuda" id="suItem-ayuda">It cannot be the same item you are offering, or a cheaper version of it.</p>
+        <p class="err" id="suItem-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="suValor">What you would pay for it</label>
+        <div class="con-unidad">
+          <input id="suValor" name="suValor" type="text" inputmode="decimal" maxlength="7" placeholder="190" aria-describedby="suValor-ayuda">
+          <span class="unidad" aria-hidden="true">credits</span>
+        </div>
+        <p class="ayuda" id="suValor-ayuda">Whole number, 1 to 99999. If the two numbers are far apart we say so in the balance bar.</p>
+        <p class="err" id="suValor-err" role="alert"></p>
+      </div>
+
+      <div class="caja-balanza" id="balanza" aria-live="polite">
+        <p class="caja-balanza__titulo">Value balance</p>
+        <div class="balanza">
+          <span class="balanza__lado" id="ladoOferta">0</span>
+          <span class="balanza__pista"><span class="balanza__relleno" id="balanzaRelleno"></span></span>
+          <span class="balanza__lado" id="ladoPeticion">0</span>
+        </div>
+        <p class="caja-balanza__nota" id="balanzaNota">Put a number on both sides and the difference appears here.</p>
+      </div>
+    </section>
+
+    <section class="bloque" id="sec-3" aria-labelledby="t3">
+      <h2 class="bloque__titulo" id="t3"><span class="bloque__num">03</span>Platform and account</h2>
+      <p class="bloque__intro">Skins only exist on a platform, and a trade only happens inside the game client.</p>
+
+      <div class="rejilla">
+        <div class="campo" data-estado="neutro">
+          <label for="plataforma">Platform</label>
+          <select id="plataforma" name="plataforma" aria-describedby="plataforma-ayuda">
+            <option value="">Choose a platform</option>
+            <option value="steam">Steam</option>
+            <option value="xbox">Xbox</option>
+            <option value="playstation">PlayStation</option>
+            <option value="epic">Epic Games</option>
+            <option value="battlenet">Battle.net</option>
+          </select>
+          <p class="ayuda" id="plataforma-ayuda">Cross platform trades need a different escrow flow and take two extra days.</p>
+          <p class="err" id="plataforma-err" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="modo">Type of trade</label>
+          <select id="modo" name="modo" aria-describedby="modo-ayuda">
+            <option value="">Choose a type</option>
+            <option value="objetos">Items only</option>
+            <option value="creditos">Items plus credits</option>
+            <option value="intercambio">Straight swap, same value band</option>
+          </select>
+          <p class="ayuda" id="modo-ayuda">Straight swaps clear in about six hours. Anything with credits needs a second reviewer.</p>
+          <p class="err" id="modo-err" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="perfil">Profile or trade URL</label>
+        <input id="perfil" name="perfil" type="text" spellcheck="false" maxlength="90" placeholder="steamcommunity.com/id/nightledger" aria-describedby="perfil-ayuda">
+        <p class="ayuda" id="perfil-ayuda">Either your profile address or an offer link you already made. Between 12 and 90 characters.</p>
+        <p class="err" id="perfil-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="bloque" id="sec-4" aria-labelledby="t4">
+      <h2 class="bloque__titulo" id="t4"><span class="bloque__num">04</span>What you say to the trader</h2>
+      <p class="bloque__intro">This goes out word for word. Keep it short and do not put a price on it twice.</p>
+
+      <div class="campo" data-estado="neutro">
+        <label for="mensaje">Message to the trader</label>
+        <textarea id="mensaje" name="mensaje" rows="5" maxlength="600" placeholder="I have the Neon Rift at 0,03 float, no stickers, ready to send today. Looking for the Silverline in the same session." aria-describedby="mensaje-ayuda"></textarea>
+        <p class="conteo" id="mensaje-ayuda"><span class="conteo__pips" id="mensajePips" aria-hidden="true"></span><span id="mensajeCuenta">0 of 600 characters, 20 minimum</span></p>
+        <p class="err" id="mensaje-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="nota">Note for the moderator</label>
+        <textarea id="nota" name="nota" rows="3" maxlength="300" placeholder="Timezone is UTC+2, I can trade most evenings after 19:00." aria-describedby="nota-ayuda"></textarea>
+        <p class="conteo" id="nota-ayuda"><span class="conteo__pips" id="notaPips" aria-hidden="true"></span><span id="notaCuenta">0 of 300 characters, optional</span></p>
+        <p class="err" id="nota-err" role="alert"></p>
+      </div>
+
+      <div class="campo campo--check" data-estado="neutro">
+        <input id="listo" name="listo" type="checkbox" aria-describedby="listo-ayuda">
+        <label for="listo">I am online now and can accept a trade offer within the hour</label>
+        <p class="ayuda" id="listo-ayuda">Requests marked offline wait five days before they are closed automatically.</p>
+        <p class="err" id="listo-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="bloque" id="sec-5" aria-labelledby="t5">
+      <h2 class="bloque__titulo" id="t5"><span class="bloque__num">05</span>Trade safety</h2>
+      <p class="bloque__intro">Three ticks. They are not decoration, they are what the desk files against your account if something goes wrong.</p>
+
+      <fieldset class="garantias" data-estado="neutro">
+        <legend>Safety confirmations</legend>
+
+        <div class="campo campo--check" data-estado="neutro">
+          <input id="g1" name="g1" type="checkbox" aria-describedby="g1-ayuda">
+          <label for="g1">I understand the trade hold on my account and the seven day cooldown it can trigger</label>
+          <p class="ayuda" id="g1-ayuda">Two trades in seven days is the limit before the cooldown starts.</p>
+          <p class="err" id="g1-err" role="alert"></p>
+        </div>
+
+        <div class="campo campo--check" data-estado="neutro">
+          <input id="g2" name="g2" type="checkbox" aria-describedby="g2-ayuda">
+          <label for="g2">I will only accept trade offers that come from the VaultSwap desk</label>
+          <p class="ayuda" id="g2-ayuda">We never ask for your password, your mobile code or a direct trade link.</p>
+          <p class="err" id="g2-err" role="alert"></p>
+        </div>
+
+        <div class="campo campo--check" data-estado="neutro">
+          <input id="g3" name="g3" type="checkbox" aria-describedby="g3-ayuda">
+          <label for="g3">If the trade fails I will open a ticket instead of reversing the charge myself</label>
+          <p class="ayuda" id="g3-ayuda">Ticket response is 11 minutes at the median, 24 hours at the worst.</p>
+          <p class="err" id="g3-err" role="alert"></p>
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="bloque" id="sec-6" aria-labelledby="t6">
+      <h2 class="bloque__titulo" id="t6"><span class="bloque__num">06</span>How we answer you</h2>
+      <p class="bloque__intro">One channel, and we only use it for this request.</p>
+
+      <div class="rejilla">
+        <div class="campo" data-estado="neutro">
+          <label for="canal">Preferred channel</label>
+          <select id="canal" name="canal" aria-describedby="canal-ayuda">
+            <option value="">Choose a channel</option>
+            <option value="chat">Trade chat inside the client</option>
+            <option value="correo">Email</option>
+            <option value="app">Push notification in the app</option>
+          </select>
+          <p class="ayuda" id="canal-ayuda">Chat is the fastest and the only one that can hold a trade window open.</p>
+          <p class="err" id="canal-err" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="contacto">Handle or address</label>
+          <input id="contacto" name="contacto" type="text" spellcheck="false" maxlength="60" placeholder="nightledger" aria-describedby="contacto-ayuda">
+          <p class="ayuda" id="contacto-ayuda">For chat give the in game handle, for email give the full address.</p>
+          <p class="err" id="contacto-err" role="alert"></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">The request is not ready yet</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <footer class="acciones">
+      <p class="acciones__nota">Filing a request does not lock anything. You can withdraw it from your desk at any time.</p>
+      <button class="enviar" type="submit">
+        <span class="enviar__destello" aria-hidden="true"></span>
+        <span id="enviarTexto">File the trade request</span>
+      </button>
+    </footer>
+  </form>
+</main>
+
+<section class="registrada" id="registrada" hidden tabindex="-1" aria-live="polite">
+  <span class="registrada__aro" aria-hidden="true"></span>
+  <span class="registrada__sello" aria-hidden="true"><span class="registrada__tic"></span></span>
+  <p class="registrada__kicker">Request filed</p>
+  <h1 class="registrada__titulo" id="registradaTitulo">Your request is in the queue</h1>
+  <p class="registrada__lead" id="registradaLead">A reviewer picks it up and sends the trade offer from the desk.</p>
+  <dl class="registrada__datos">
+    <div><dt>Reference</dt><dd id="registradaRef">TR-0000</dd></div>
+    <div><dt>Your side</dt><dd id="registradaOfrece">nothing selected</dd></div>
+    <div><dt>Wanted side</dt><dd id="registradaPide">nothing selected</dd></div>
+    <div><dt>Balance</dt><dd id="registradaBalance">unknown</dd></div>
+  </dl>
+  <ul class="registrada__pasos" id="registradaPasos"></ul>
+  <button class="otra" type="button" id="otra">File another request</button>
+</section>
+
+<footer class="pie">
+  <span>VaultSwap &middot; trade desk</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>0,4 per cent of requests need a rollback</span>
+</footer>
+</body>
+</html>

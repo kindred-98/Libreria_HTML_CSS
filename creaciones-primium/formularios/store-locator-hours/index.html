@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Store Locator Hours</title>
+<meta name="description" content="Table reservation form floating over a drawn city map with clickable branch pins, a day selector that rebuilds the opening hours, a party size slider, a time list built from those hours and a confirmed table.">
+<meta name="description-es" content="Formulario de reserva de mesa sobre un mapa urbano dibujado con sucursales seleccionables, selector de día que rehace los horarios, deslizador de tamaño de grupo, lista de horas según el horario y mesa confirmada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="panel-fondo" aria-hidden="true">
+  <span class="panel-fondo__mancha panel-fondo__mancha--a"></span>
+  <span class="panel-fondo__mancha panel-fondo__mancha--b"></span>
+  <span class="panel-fondo__grano"></span>
+</div>
+
+<header class="barra">
+  <span class="marca"><span class="marca__tenedor" aria-hidden="true"></span>Salt &amp; Ember</span>
+  <p class="barra__nota">Four rooms across the city &middot; reservations open sixty days ahead</p>
+</header>
+
+<main class="escena">
+  <section class="mapa" aria-label="City map with the four rooms">
+    <div class="mapa__lienzo" id="lienzo">
+      <span class="mapa__base" aria-hidden="true"></span>
+      <span class="mapa__bloques" aria-hidden="true"></span>
+      <span class="mapa__parque" aria-hidden="true"><i></i></span>
+      <span class="mapa__rio" aria-hidden="true"></span>
+      <span class="mapa__calle mapa__calle--a" aria-hidden="true"></span>
+      <span class="mapa__calle mapa__calle--b" aria-hidden="true"></span>
+      <span class="mapa__calle mapa__calle--c" aria-hidden="true"></span>
+      <span class="mapa__via" aria-hidden="true"></span>
+      <span class="mapa__semaforo mapa__semaforo--a" aria-hidden="true"></span>
+      <span class="mapa__semaforo mapa__semaforo--b" aria-hidden="true"></span>
+      <div class="mapa__pins" id="pins"></div>
+      <span class="mapa__brillo" aria-hidden="true"></span>
+    </div>
+
+    <div class="mapa__leyenda">
+      <span class="mapa__leyenda-item"><i class="mapa__punto mapa__punto--libre"></i>Open now</span>
+      <span class="mapa__leyenda-item"><i class="mapa__punto mapa__punto--cerrado"></i>Closed on this day</span>
+      <span class="mapa__leyenda-nota">Pins are clickable. The card follows whichever room you pick.</span>
+    </div>
+  </section>
+
+  <form class="tarjeta" id="form" novalidate>
+    <header class="tarjeta__cab">
+      <p class="antetitulo">Reserve a table</p>
+      <h1 class="tarjeta__titulo" id="salaTitulo">The Old Counter</h1>
+      <p class="tarjeta__dir" id="salaDireccion">14 Quarry Lane, on the corner</p>
+      <span class="estado" id="estado" data-abierto="1">Open now, closes at 23:00</span>
+    </header>
+
+    <div class="campo" data-estado="neutro">
+      <span class="etiqueta" id="etiquetaDia">Day you want</span>
+      <div class="dias" id="dias" role="group" aria-labelledby="etiquetaDia"></div>
+      <p class="ayuda" id="dias-ayuda">The hours and the time list below are rebuilt for the day you pick.</p>
+      <p class="err" id="dias-err" role="alert"></p>
+    </div>
+
+    <div class="horario" aria-live="polite">
+      <p class="horario__titulo">Opening hours <span id="horarioDia">today</span></p>
+      <ul class="horario__lista" id="horarioLista"></ul>
+    </div>
+
+    <div class="doble">
+      <div class="campo" data-estado="neutro">
+        <label for="personas">How many of you</label>
+        <div class="deslizador">
+          <span class="deslizador__pista" aria-hidden="true"></span>
+          <input id="personas" name="personas" type="range" min="1" max="12" step="1" value="2" aria-describedby="personas-ayuda">
+          <span class="deslizador__cap" id="capPersonas" aria-hidden="true"></span>
+        </div>
+        <p class="ayuda" id="personas-ayuda">Between one and twelve. Above eight the room asks for a deposit.</p>
+        <p class="err" id="personas-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="servicio">Where you want to sit</label>
+        <select id="servicio" name="servicio" aria-describedby="servicio-ayuda">
+          <option value="">Choose a spot</option>
+          <option value="sala">In the dining room</option>
+          <option value="terraza">On the terrace</option>
+          <option value="barra">At the counter</option>
+        </select>
+        <p class="ayuda" id="servicio-ayuda">The terrace closes with the sun, so it is not on the list after eight in the evening.</p>
+        <p class="err" id="servicio-err" role="alert"></p>
+      </div>
+    </div>
+
+    <div class="campo" data-estado="neutro">
+      <label for="hora">Time</label>
+      <select id="hora" name="hora" aria-describedby="hora-ayuda"></select>
+      <p class="ayuda" id="hora-ayuda">Half hour slots, thirty minutes before the kitchen closes.</p>
+      <p class="err" id="hora-err" role="alert"></p>
+    </div>
+
+    <div class="doble">
+      <div class="campo" data-estado="neutro">
+        <label for="nombre">Name for the table</label>
+        <input id="nombre" name="nombre" type="text" autocomplete="name" maxlength="46" placeholder="Rowan Ellis" aria-describedby="nombre-ayuda">
+        <p class="ayuda" id="nombre-ayuda">The name the host will look for at the door.</p>
+        <p class="err" id="nombre-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="telefono">Mobile</label>
+        <input id="telefono" name="telefono" type="text" inputmode="tel" autocomplete="tel" maxlength="18" placeholder="+34 600 000 000" aria-describedby="telefono-ayuda">
+        <p class="ayuda" id="telefono-ayuda">Nine to fifteen digits, spaces and the plus sign allowed.</p>
+        <p class="err" id="telefono-err" role="alert"></p>
+      </div>
+    </div>
+
+    <div class="campo" data-estado="neutro">
+      <label for="correo">Email</label>
+      <input id="correo" name="correo" type="text" inputmode="email" autocomplete="email" spellcheck="false" maxlength="60" placeholder="rowan@correo.com" aria-describedby="correo-ayuda">
+      <p class="ayuda" id="correo-ayuda">The confirmation and the reminder the day before go here.</p>
+      <p class="err" id="correo-err" role="alert"></p>
+    </div>
+
+    <div class="campo campo--check" data-estado="neutro">
+      <input id="avisos" name="avisos" type="checkbox" aria-describedby="avisos-ayuda">
+      <label for="avisos">Text me a reminder the day before</label>
+      <p class="ayuda" id="avisos-ayuda">One message, at six in the evening. Nothing else from this form.</p>
+      <p class="err" id="avisos-err" role="alert"></p>
+    </div>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">The table is not booked yet</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <button class="reservar" type="submit">
+      <span class="reservar__cinta" aria-hidden="true"></span>
+      <span id="reservarTexto">Book the table</span>
+    </button>
+
+    <p class="tarjeta__legal">No card is needed. The table is held for fifteen minutes past the booked time and then released.</p>
+  </form>
+</main>
+
+<section class="confirmada" id="confirmada" hidden tabindex="-1" aria-live="polite">
+  <div class="confirmada__marco">
+    <span class="confirmada__carta" aria-hidden="true"><span class="confirmada__tic"></span></span>
+    <p class="confirmada__kicker">Table held</p>
+    <h1 class="confirmada__titulo" id="confirmadaTitulo">See you at the Old Counter</h1>
+    <p class="confirmada__lead" id="confirmadaLead">Rowan, two at 20:30 on the terrace. The host has the list.</p>
+    <dl class="confirmada__datos">
+      <div><dt>Booking</dt><dd id="confirmadaRef">RES-0000</dd></div>
+      <div><dt>Room</dt><dd id="confirmadaSala">The Old Counter</dd></div>
+      <div><dt>When</dt><dd id="confirmadaCuando">not set</dd></div>
+      <div><dt>People</dt><dd id="confirmadaGente">0</dd></div>
+    </dl>
+    <p class="confirmada__nota" id="confirmadaNota">Change the booking from the link in the email. Cancel free up to four hours before.</p>
+    <button class="otra" type="button" id="otra">Book another table</button>
+  </div>
+</section>
+
+<footer class="pie">
+  <span>Salt &amp; Ember</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Kitchen closes thirty minutes before the room does</span>
+</footer>
+</body>
+</html>

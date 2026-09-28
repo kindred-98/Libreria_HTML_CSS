@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ladder Frequency Value</title>
+<meta name="description" content="A band centre frequency that climbs a notched ladder: the four cream drums roll one figure at a time, a green index rides the toothed rail and clicks when it passes an octave rung, and the response curve slides its peak across the scope.">
+<meta name="description-es" content="Una frecuencia central de banda que sube por una escalera dentada: los cuatro tambores crema giran cifra a cifra, un índice verde recorre el riel dentado y chasquea al pasar por cada escalón de octava, y la curva de respuesta desplaza su pico por el pantoscopio.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="page">
+  <header class="head">
+    <p class="head__kicker">Ferrand &amp; Cie &middot; bench four</p>
+    <h1>Ladder Frequency</h1>
+    <p class="head__lead">Slide the band and the cream drums roll up the ladder one figure at a time while the green index climbs the toothed rail. Let go and the value snaps onto the nearest octave with a click, and the curve on the scope carries its peak to the new place.</p>
+  </header>
+
+  <section class="bench">
+    <span class="sweep" aria-hidden="true"></span>
+    <span class="screw screw--tl" aria-hidden="true"></span>
+    <span class="screw screw--tr" aria-hidden="true"></span>
+    <span class="screw screw--bl" aria-hidden="true"></span>
+    <span class="screw screw--br" aria-hidden="true"></span>
+
+    <div class="bench__top">
+      <div class="brand">
+        <b>FERRAND</b>
+        <s>band equaliser &middot; octave ladder</s>
+      </div>
+      <div class="leds" aria-hidden="true">
+        <span class="led" id="ledSig"><i></i><s>signal</s></span>
+        <span class="led" id="ledDet"><i></i><s>detent</s></span>
+        <span class="led led--on" id="ledPow"><i></i><s>power</s></span>
+      </div>
+    </div>
+
+    <div class="scope" id="scope">
+      <div class="scope__grid" aria-hidden="true"></div>
+      <div class="scope__skirt" id="skirt" aria-hidden="true"></div>
+      <div class="scope__curve" id="curve" aria-hidden="true"></div>
+      <div class="scope__flag" id="flag" aria-hidden="true"><i></i><s>peak</s></div>
+      <div class="scope__carrier" id="carrier" aria-hidden="true"><i></i></div>
+      <div class="scope__scan" aria-hidden="true"></div>
+      <div class="scope__axis" aria-hidden="true">
+        <span style="--x:0">125</span>
+        <span style="--x:.3333">500</span>
+        <span style="--x:.6667">2k</span>
+        <span style="--x:1">8k</span>
+      </div>
+      <span class="scope__unit" aria-hidden="true">hertz</span>
+    </div>
+
+    <div class="rack">
+      <span class="mark mark--l" aria-hidden="true"><b>four band</b><s>24 db per octave</s></span>
+      <div class="ladder" aria-hidden="true">
+        <div class="ladder__rail">
+          <span class="ladder__teeth" id="teeth"></span>
+          <b style="--y:0">125</b>
+          <b style="--y:.1667">250</b>
+          <b style="--y:.3333">500</b>
+          <b style="--y:.5">1k</b>
+          <b style="--y:.6667">2k</b>
+          <b style="--y:.8333">4k</b>
+          <b style="--y:1">8k</b>
+          <span class="ladder__index" id="index"></span>
+        </div>
+        <em>octave</em>
+      </div>
+
+      <div class="unit" id="unit">
+        <div class="unit__window" aria-hidden="true">
+          <span class="drum"><span class="strip" id="d0" style="transform:translate3d(0,-5%,0)"><s>0</s><s>1</s><s>2</s><s>3</s><s>4</s><s>5</s><s>6</s><s>7</s><s>8</s><s>9</s><s>0</s><s>1</s><s>2</s><s>3</s><s>4</s><s>5</s><s>6</s><s>7</s><s>8</s><s>9</s></span></span>
+          <span class="drum"><span class="strip" id="d1"><s>0</s><s>1</s><s>2</s><s>3</s><s>4</s><s>5</s><s>6</s><s>7</s><s>8</s><s>9</s><s>0</s><s>1</s><s>2</s><s>3</s><s>4</s><s>5</s><s>6</s><s>7</s><s>8</s><s>9</s></span></span>
+          <span class="drum"><span class="strip" id="d2"><s>0</s><s>1</s><s>2</s><s>3</s><s>4</s><s>5</s><s>6</s><s>7</s><s>8</s><s>9</s><s>0</s><s>1</s><s>2</s><s>3</s><s>4</s><s>5</s><s>6</s><s>7</s><s>8</s><s>9</s></span></span>
+          <span class="drum"><span class="strip" id="d3"><s>0</s><s>1</s><s>2</s><s>3</s><s>4</s><s>5</s><s>6</s><s>7</s><s>8</s><s>9</s><s>0</s><s>1</s><s>2</s><s>3</s><s>4</s><s>5</s><s>6</s><s>7</s><s>8</s><s>9</s></span></span>
+          <span class="unit__indexline"></span>
+          <span class="unit__glare"></span>
+        </div>
+
+        <div class="unit__plate">
+          <span class="unit__label">centre</span>
+          <span class="unit__tag">hz</span>
+          <span class="unit__note" id="note">on octave</span>
+        </div>
+
+        <input class="slider" id="freq" type="range" min="0" max="100" step="1" value="50"
+          aria-label="Band centre frequency" aria-valuetext="1000 hertz">
+      </div>
+
+      <div class="meter" aria-hidden="true">
+        <span class="meter__bar"><i style="--d:0s;--s:.5"></i><i style="--d:-.2s;--s:.8"></i><i style="--d:-.4s;--s:.35"></i><i style="--d:-.6s;--s:.7"></i></span>
+        <span class="meter__bar"><i style="--d:-.1s;--s:.65"></i><i style="--d:-.3s;--s:.9"></i><i style="--d:-.5s;--s:.45"></i><i style="--d:-.7s;--s:.75"></i></span>
+        <em>drive</em>
+      </div>
+      <span class="mark mark--r" aria-hidden="true"><b>silver oxide</b><s>ferrand lyon</s></span>
+    </div>
+
+    <div class="bench__bottom">
+      <span class="legend">octave detent &middot; release to seat</span>
+      <span class="plate">125 to 8k</span>
+      <span class="plate plate--lock">q fixed 1.4</span>
+    </div>
+  </section>
+
+  <p class="foot">Arrows nudge one step, Page Up and Page Down jump five, Home and End run to the stops, and Space seats the index on the nearest octave.</p>
+</main>
+</body>
+</html>

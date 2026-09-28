@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clinic Appointment Desk</title>
+<meta name="description" content="Clinic booking form with a real keyboard calendar, specialty and clinician selects, slot picker and a booking summary that updates live as the choices change.">
+<meta name="description-es" content="Formulario de reserva de cita en clínica con calendario de teclado real, selects de especialidad y profesional, elección de hora y resumen de reserva que se actualiza en vivo.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="recepcion" aria-hidden="true">
+  <span class="halo halo-a"></span>
+  <span class="halo halo-b"></span>
+  <span class="baldosa"></span>
+  <span class="pulso"></span>
+</div>
+
+<main class="mostrador">
+  <header class="mostrador-cab">
+    <span class="cruz" aria-hidden="true"><i></i><i></i></span>
+    <div>
+      <p class="antetitulo">Riverside clinic &middot; reception</p>
+      <h1>Book an appointment</h1>
+    </div>
+    <p class="cab-nota">Slots are forty minutes and they are held for you once you send the form. Bring a reference and something to show the clinician.</p>
+  </header>
+
+  <div class="escena">
+    <form class="hoja" id="form" novalidate>
+      <section class="bloque">
+        <h2 class="bloque-titulo"><span class="bloque-n" aria-hidden="true">01</span>What kind of visit</h2>
+
+        <div class="campo" data-estado="neutro">
+          <label for="especialidad">Specialty <span class="req" aria-hidden="true">*</span></label>
+          <select id="especialidad" name="especialidad" aria-describedby="especialidad-ayuda" aria-invalid="false">
+            <option value="">Choose a specialty</option>
+            <option value="general">General medicine</option>
+            <option value="dental">Dentistry</option>
+            <option value="fisio">Physiotherapy</option>
+            <option value="oftalmo">Ophthalmology</option>
+            <option value="derma">Dermatology</option>
+          </select>
+          <p class="ayuda" id="especialidad-ayuda">The list of clinicians below changes with this, and so does the length of the slot.</p>
+          <p class="error" id="especialidad-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="profesional">Clinician <span class="req" aria-hidden="true">*</span></label>
+          <select id="profesional" name="profesional" aria-describedby="profesional-ayuda" aria-invalid="false"></select>
+          <p class="ayuda" id="profesional-ayuda" role="status">Pick a specialty first and the clinicians appear here.</p>
+          <p class="error" id="profesional-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque-titulo"><span class="bloque-n" aria-hidden="true">02</span>Day and hour</h2>
+
+        <div class="calendario-caja">
+          <div class="calendario-cab">
+            <button class="mes-btn" type="button" id="mesAnt" aria-label="Previous month">left</button>
+            <h3 id="mesTitulo" aria-live="polite">Month</h3>
+            <button class="mes-btn" type="button" id="mesSig" aria-label="Next month">right</button>
+          </div>
+          <div class="calendario" role="group" aria-labelledby="mesTitulo">
+            <div class="dias-semana" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+            <div class="dias" id="dias" role="group" aria-label="Days of the month" aria-describedby="calendario-ayuda"></div>
+          </div>
+          <p class="ayuda" id="calendario-ayuda">Arrow keys walk the days, Home and End jump to the ends of the week, Page Up and Page Down change month. Closed days are not selectable.</p>
+          <p class="error" id="fecha-error" role="alert"></p>
+        </div>
+
+        <fieldset class="campo conjunto" id="env-hora" data-estado="neutro">
+          <legend>Hour <span class="req" aria-hidden="true">*</span></legend>
+          <div class="horas" id="horas" role="radiogroup" aria-describedby="hora-ayuda" aria-invalid="false"></div>
+          <p class="ayuda" id="hora-ayuda" role="status">Pick a day first and the free hours show up here.</p>
+          <p class="error" id="hora-error" role="alert"></p>
+        </fieldset>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque-titulo"><span class="bloque-n" aria-hidden="true">03</span>Who is coming</h2>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="paciente">Patient name <span class="req" aria-hidden="true">*</span></label>
+            <input id="paciente" name="paciente" type="text" autocomplete="name" maxlength="40" placeholder="Marta Quinones" aria-describedby="paciente-ayuda" aria-invalid="false">
+            <p class="ayuda" id="paciente-ayuda">Between 3 and 40 characters, the name on the record.</p>
+            <p class="error" id="paciente-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="telefono">Phone <span class="req" aria-hidden="true">*</span></label>
+            <input id="telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" maxlength="18" placeholder="+44 7700 900188" aria-describedby="telefono-ayuda" aria-invalid="false">
+            <p class="ayuda" id="telefono-ayuda">We send one reminder text forty eight hours before. Numbers only, spaces, plus and dashes.</p>
+            <p class="error" id="telefono-error" role="alert"></p>
+          </div>
+
+          <div class="campo campo-ancho" data-estado="neutro">
+            <label for="motivo">Reason for the visit</label>
+            <textarea id="motivo" name="motivo" rows="3" maxlength="180" placeholder="Optional. Two lines so the clinician can read it before you sit down." aria-describedby="motivo-ayuda"></textarea>
+            <div class="cuenta" id="motivoCuenta">0 of 180</div>
+            <p class="ayuda" id="motivo-ayuda">Up to 180 characters. If it is an emergency do not book here, ring the out of hours line.</p>
+            <p class="error" id="motivo-error" role="alert"></p>
+          </div>
+
+          <div class="campo campo-check campo-ancho" data-estado="neutro">
+            <input id="nueva" name="nueva" type="checkbox" aria-describedby="nueva-ayuda">
+            <label for="nueva">First visit, the record has to be opened</label>
+            <p class="ayuda" id="nueva-ayuda">Add ten minutes for registration and twenty minutes on the day for the records. It is shown in the summary straight away.</p>
+            <p class="error" id="nueva-error" role="alert"></p>
+          </div>
+        </div>
+      </section>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The appointment is not booked yet</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <button class="reservar" type="submit" id="reservar">Book the appointment <span class="flecha" aria-hidden="true"></span></button>
+      <p class="pie-legal">Fields marked with an asterisk are needed to hold a slot. Nothing is charged here, the clinic bills you after the visit.</p>
+    </form>
+
+    <aside class="resumen" aria-label="Booking summary">
+      <p class="resumen-etiqueta">Your booking</p>
+      <article class="resumen-tarjeta" id="resumenTarjeta">
+        <span class="resumen-barra" aria-hidden="true"></span>
+        <p class="resumen-clinica">Riverside clinic</p>
+        <h2 id="rCuando">Pick a day and an hour</h2>
+        <p class="resumen-quien" id="rQuien">No clinician chosen yet</p>
+
+        <dl class="resumen-datos">
+          <div><dt>Specialty</dt><dd id="rEspecialidad">not chosen</dd></div>
+          <div><dt>Length</dt><dd id="rDuracion">40 minutes</dd></div>
+          <div><dt>Room fee</dt><dd id="rPrecio">0,00 EUR</dd></div>
+          <div><dt>Record</dt><dd id="rFicha">existing patient</dd></div>
+        </dl>
+
+        <ul class="resumen-puntos" id="rPuntos">
+          <li>Reminder text forty eight hours before</li>
+          <li>Free to move up to twenty four hours ahead</li>
+        </ul>
+
+        <footer class="resumen-pie">
+          <span class="resumen-sello" aria-hidden="true"></span>
+          <span id="rPie">Nothing held yet</span>
+        </footer>
+      </article>
+
+      <div class="medidor" role="progressbar" aria-labelledby="medidorTitulo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 per cent of the booking filled in" id="medidor">
+        <span class="medidor-cabecera">
+          <span id="medidorTitulo">Booking 0 % ready</span>
+          <span id="medidorFalta">5 steps to go</span>
+        </span>
+        <span class="medidor-pista"><i id="medidorRelleno"></i></span>
+      </div>
+    </aside>
+  </div>
+
+  <section class="confirmada" id="confirmada" hidden tabindex="-1" aria-live="polite">
+    <span class="confirmada-aro" aria-hidden="true"></span>
+    <span class="confirmada-sello" aria-hidden="true"><span class="confirmada-tic"></span></span>
+    <p class="antetitulo">Appointment held</p>
+    <h2 id="confTitulo">See you on the day</h2>
+    <p id="confTexto">A confirmation text is on its way to your phone.</p>
+    <dl class="confirmada-datos">
+      <div><dt>Reference</dt><dd id="confRef">RV-000000</dd></div>
+      <div><dt>When</dt><dd id="confCuando">no date yet</dd></div>
+      <div><dt>Clinician</dt><dd id="confQuien">nobody yet</dd></div>
+      <div><dt>Room</dt><dd id="confSala">to be assigned</dd></div>
+    </dl>
+    <button class="reservar reservar-tenue" type="button" id="otra">Book another visit</button>
+  </section>
+
+  <p class="pie-pagina">Riverside clinic &middot; open Monday to Saturday &middot; out of hours ring 111 for anything urgent</p>
+</main>
+</body>
+</html>

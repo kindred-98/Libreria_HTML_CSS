@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SaaS Checkout Glass</title>
+<meta name="description" content="SaaS checkout with a glass bank card that tilts in three dimensions under the cursor, holographic foil that follows the tilt, Luhn and expiry checks, brand aware security code, a billing cycle switch and a paid receipt.">
+<meta name="description-es" content="Cobro de SaaS con tarjeta de cristal que se inclina en tres dimensiones bajo el cursor, holograma que sigue la inclinación, comprobación de Luhn y caducidad, código de seguridad según la marca, conmutador de ciclo de facturación y recibo pagado.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="sala" aria-hidden="true">
+  <span class="sala__vineta"></span>
+  <span class="sala__nube sala__nube--a"></span>
+  <span class="sala__nube sala__nube--b"></span>
+  <span class="sala__nube sala__nube--c"></span>
+  <span class="sala__polvo"></span>
+  <span class="sala__raya"></span>
+</div>
+
+<header class="barra">
+  <span class="marca"><span class="marca__prisma" aria-hidden="true"></span>Meridian Cloud</span>
+  <p class="barra__nota">Secure checkout &middot; PCI DSS level 1 &middot; nothing is stored on this page</p>
+</header>
+
+<main class="escena">
+  <section class="vitrina" aria-label="Your card">
+    <div class="escenario" id="escenario">
+      <div class="sombra" aria-hidden="true"></div>
+      <div class="cristal" id="cristal">
+        <span class="cristal__lente" aria-hidden="true"></span>
+        <span class="cristal__holo" aria-hidden="true"></span>
+        <span class="cristal__brillo" aria-hidden="true"></span>
+        <span class="cristal__borde" aria-hidden="true"></span>
+        <div class="cristal__cara">
+          <div class="cristal__sup">
+            <span class="chip" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
+            <span class="inalambrico" aria-hidden="true"></span>
+          </div>
+          <p class="cristal__num" id="verNumero">0000 0000 0000 0000</p>
+          <div class="cristal__pie">
+            <span class="dato"><small>Card holder</small><b id="verTitular">YOUR NAME</b></span>
+            <span class="dato"><small>Expires</small><b id="verCaduca">MM/YY</b></span>
+            <span class="dato dato--marca"><small>Network</small><b id="verMarca">GLASS</b></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="pista" id="pista">Move the pointer across the card to see the glass move. On a phone, drag it.</p>
+
+    <div class="ciclo" id="cicloCaja" data-anual="0">
+      <span class="ciclo__texto">
+        <b id="cicloTitulo">Monthly</b>
+        <small id="cicloPrecio">68,00 per month, cancel any time</small>
+      </span>
+      <button class="conmutador" type="button" id="ciclo" role="switch" aria-checked="false" aria-label="Bill yearly instead of monthly">
+        <span class="conmutador__pista" aria-hidden="true"></span>
+        <span class="conmutador__perilla" aria-hidden="true"></span>
+      </button>
+      <span class="ciclo__ahorro" id="cicloAhorro">save 20 per cent</span>
+    </div>
+
+    <dl class="factura" id="factura">
+      <div><dt>Starter, 12 seats</dt><dd id="lineaBase">68,00</dd></div>
+      <div class="factura__linea" id="lineaExtra"></div>
+      <div class="factura__sub"><dt>Subtotal</dt><dd id="lineaSub">68,00</dd></div>
+      <div class="factura__desc" id="lineaDesc" hidden><dt>Yearly discount</dt><dd id="lineaDescValor">0,00</dd></div>
+      <div class="factura__imp"><dt>Recoverable tax, 21 per cent</dt><dd id="lineaImp">0,00</dd></div>
+      <div class="factura__total"><dt>Due today</dt><dd id="lineaTotal">68,00</dd></div>
+      <p class="factura__pie" id="facturaPie">Renews the same day next month. Cancel from the billing tab in two clicks.</p>
+    </dl>
+  </section>
+
+  <form class="panel" id="form" novalidate>
+    <header class="panel__cab">
+      <p class="antetitulo">Payment</p>
+      <h1 class="panel__titulo">Pay <span id="panelTotal">68,00</span> for Meridian Cloud</h1>
+      <p class="panel__intro">Your card is only read in this tab. We never see the security code and we never store the number.</p>
+    </header>
+
+    <div class="seccion">
+      <h2 class="seccion__titulo" id="s1"><span class="seccion__num">1</span>Card details</h2>
+
+      <div class="campo" data-estado="neutro">
+        <label for="numero">Card number</label>
+        <div class="caja caja--numero">
+          <span class="marca-fantasma" id="marcaFantasma" aria-hidden="true"></span>
+          <input id="numero" name="numero" type="text" inputmode="numeric" autocomplete="cc-number" spellcheck="false" maxlength="23" placeholder="4242 4242 4242 4242" aria-describedby="numero-ayuda">
+          <button class="pegar" type="button" id="pegar" title="Paste the card number from the clipboard is not available offline, this fills a test number">Test number</button>
+        </div>
+        <p class="ayuda" id="numero-ayuda">Sixteen digits, grouped in fours. Try 4242 4242 4242 4242 to see it pass, or 4242 4242 4242 4243 to see the check digit complain.</p>
+        <p class="err" id="numero-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="titular">Name on the card</label>
+        <input id="titular" name="titular" type="text" autocomplete="cc-name" spellcheck="false" maxlength="46" placeholder="ROWAN ELLIS" aria-describedby="titular-ayuda">
+        <p class="ayuda" id="titular-ayuda">Exactly as printed, five to forty six characters, letters and spaces.</p>
+        <p class="err" id="titular-err" role="alert"></p>
+      </div>
+
+      <div class="doble">
+        <div class="campo" data-estado="neutro">
+          <label for="caducidad">Expiry</label>
+          <input id="caducidad" name="caducidad" type="text" inputmode="numeric" autocomplete="cc-exp" spellcheck="false" maxlength="5" placeholder="11/29" aria-describedby="caducidad-ayuda">
+          <p class="ayuda" id="caducidad-ayuda">Month over year, two digits each.</p>
+          <p class="err" id="caducidad-err" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="cvc">Security code</label>
+          <div class="caja caja--cvc">
+            <input id="cvc" name="cvc" type="password" inputmode="numeric" autocomplete="cc-csc" spellcheck="false" maxlength="4" placeholder="123" aria-describedby="cvc-ayuda">
+            <button class="ojo" type="button" id="verCvc" aria-pressed="false" aria-label="Show the security code"><span aria-hidden="true"></span></button>
+          </div>
+          <p class="ayuda" id="cvc-ayuda">Three digits, four on American Express. It never leaves this tab.</p>
+          <p class="err" id="cvc-err" role="alert"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="seccion">
+      <h2 class="seccion__titulo" id="s2"><span class="seccion__num">2</span>Billing</h2>
+
+      <div class="campo" data-estado="neutro">
+        <label for="correo">Receipt address</label>
+        <input id="correo" name="correo" type="text" inputmode="email" autocomplete="email" spellcheck="false" maxlength="70" placeholder="rowan@meridian.example" aria-describedby="correo-ayuda">
+        <p class="ayuda" id="correo-ayuda">The invoice and the card receipt go here. One address, no forwarding.</p>
+        <p class="err" id="correo-err" role="alert"></p>
+      </div>
+
+      <div class="doble">
+        <div class="campo" data-estado="neutro">
+          <label for="pais">Country</label>
+          <select id="pais" name="pais" aria-describedby="pais-ayuda">
+            <option value="">Choose a country</option>
+            <option value="ES">Spain</option>
+            <option value="DE">Germany</option>
+            <option value="FR">France</option>
+            <option value="NL">Netherlands</option>
+            <option value="PT">Portugal</option>
+            <option value="IE">Ireland</option>
+            <option value="US">United States</option>
+          </select>
+          <p class="ayuda" id="pais-ayuda">It sets the tax rate on the invoice.</p>
+          <p class="err" id="pais-err" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="cp">Post code</label>
+          <input id="cp" name="cp" type="text" autocomplete="postal-code" spellcheck="false" maxlength="12" placeholder="28004" aria-describedby="cp-ayuda">
+          <p class="ayuda" id="cp-ayuda">Between three and twelve characters, letters and digits.</p>
+          <p class="err" id="cp-err" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="iva">VAT number, if you have one</label>
+        <div class="caja caja--iva">
+          <input id="iva" name="iva" type="text" spellcheck="false" maxlength="16" placeholder="optional" aria-describedby="iva-ayuda">
+        </div>
+        <p class="ayuda" id="iva-ayuda">A valid number reverses the tax on the invoice. Try ESB1234567T to see the check letter pass.</p>
+        <p class="err" id="iva-err" role="alert"></p>
+      </div>
+    </div>
+
+    <div class="campo campo--check" data-estado="neutro">
+      <input id="guardar" name="guardar" type="checkbox" aria-describedby="guardar-ayuda">
+      <label for="guardar">Keep this card for the renewal next month</label>
+      <p class="ayuda" id="guardar-ayuda">Stored by the processor, not by us. You can wipe it from the billing tab at any time.</p>
+      <p class="err" id="guardar-err" role="alert"></p>
+    </div>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">We cannot take this payment yet</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <div class="seguridad">
+      <span class="escudo" aria-hidden="true"></span>
+      <p><b>Verified with 3D Secure.</b> Your bank asks for a code only in your own window. We never see it, and we never ask for it here.</p>
+    </div>
+
+    <button class="pagar" type="submit" id="pagar">
+      <span class="pagar__cinta" aria-hidden="true"></span>
+      <span class="pagar__anillo" aria-hidden="true"></span>
+      <span class="pagar__texto" id="pagarTexto">Pay 68,00</span>
+    </button>
+
+    <p class="panel__legal">By paying you accept the service terms and the automatic renewal at the price shown above. Cancel any time before the renewal date.</p>
+  </form>
+</main>
+
+<section class="pagada" id="pagada" hidden tabindex="-1" aria-live="polite">
+  <div class="pagada__marco">
+    <span class="pagada__sello" aria-hidden="true"><span class="pagada__tic"></span></span>
+    <p class="pagada__kicker">Payment taken</p>
+    <h1 class="pagada__titulo" id="pagadaTitulo">Meridian Cloud is yours</h1>
+    <p class="pagada__lead" id="pagadaLead">The receipt is on its way to your inbox and the workspace opens in a moment.</p>
+    <dl class="pagada__datos">
+      <div><dt>Operation</dt><dd id="pagadaRef">MC-000000</dd></div>
+      <div><dt>Amount</dt><dd id="pagadaImporte">0,00</dd></div>
+      <div><dt>Card</dt><dd id="pagadaTarjeta">no card</dd></div>
+      <div><dt>Renewal</dt><dd id="pagadaRenuevo">not scheduled</dd></div>
+    </dl>
+    <p class="pagada__nota" id="pagadaNota">Keep the operation code, the support team answers in four minutes at the median.</p>
+    <button class="otra" type="button" id="otra">Start another checkout</button>
+  </div>
+</section>
+
+<footer class="pie">
+  <span>Meridian Cloud</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Average uptime last quarter: 99,98 per cent</span>
+</footer>
+</body>
+</html>

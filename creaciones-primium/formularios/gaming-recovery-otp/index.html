@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Game Account Recovery Code</title>
+<meta name="description" content="Six box account recovery code panel with a paste key that fills every box, arrow key navigation, a resend timer and a recovered account confirmation.">
+<meta name="description-es" content="Panel de código de recuperación de cuenta con seis casillas, botón de pegado que rellena todas, navegación con flechas, cuenta atrás de reenvío y confirmación de cuenta recuperada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="nicho" aria-hidden="true">
+  <span class="luz-fria"></span>
+  <span class="luz-calida"></span>
+  <span class="rejilla"></span>
+  <span class="barrido"></span>
+</div>
+
+<main class="armario">
+  <header class="armario-cab">
+    <span class="escudo" aria-hidden="true"><span class="escudo-cinta"></span><span class="escudo-luz"></span></span>
+    <div class="cab-txt">
+      <p class="antetitulo">Vaultgate recovery</p>
+      <h1>Enter your recovery code</h1>
+    </div>
+    <span class="cinta-teclas" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+  </header>
+
+  <form class="armario-cuerpo" id="form" novalidate>
+    <p class="intro">We sent a six digit code to the mailbox on file for <b>NovaVex</b>. It is good for ten minutes and for one try.</p>
+
+    <div class="campo campo-codigo" id="envCodigo" data-estado="neutro">
+      <span class="etiqueta" id="etiquetaCodigo">Recovery code</span>
+      <div class="casillas" id="casillas" role="group" aria-labelledby="etiquetaCodigo" aria-describedby="codigo-ayuda" aria-invalid="false">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 1">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 2">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 3">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 4">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 5">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 6">
+      </div>
+      <div class="fila-ayuda">
+        <p class="ayuda" id="codigo-ayuda">Type the six digits, or paste the whole code. Pasting drops it into the six boxes in order.</p>
+        <button class="pegar" type="button" id="pegar" aria-label="Paste the recovery code from the clipboard">Paste code</button>
+      </div>
+      <p class="error" id="codigo-error" role="alert"></p>
+    </div>
+
+    <div class="campo" data-estado="neutro">
+      <label for="motivo">Why are you unlocking it</label>
+      <select id="motivo" name="motivo" aria-describedby="motivo-ayuda" aria-invalid="false">
+        <option value="">Pick a reason</option>
+        <option value="nuevo">New machine, first sign in here</option>
+        <option value="compra">A purchase was declined</option>
+        <option value="robo">I think someone else plays on this account</option>
+        <option value="migracion">Moving the account to a new console</option>
+      </select>
+      <p class="ayuda" id="motivo-ayuda">We keep the reason with the log for thirty days. If you pick the third one the account is frozen while we look.</p>
+      <p class="error" id="motivo-error" role="alert"></p>
+    </div>
+
+    <div class="campo campo-flag" data-estado="neutro">
+      <input id="confiar" name="confiar" type="checkbox" aria-describedby="confiar-ayuda">
+      <label for="confiar">Trust this console for sixty days</label>
+      <span class="glifo" aria-hidden="true"></span>
+      <p class="ayuda" id="confiar-ayuda">Only on a console that lives in your own house. On a shared one, leave it off.</p>
+      <p class="error" id="confiar-error" role="alert"></p>
+    </div>
+
+    <div class="aviso">
+      <span class="aviso-escudo" aria-hidden="true"></span>
+      <p><b>Nobody from Vaultgate will ever ask you for this code.</b> We cannot see it after you submit it and it is not stored in the browser, so there is nothing to leak from this page.</p>
+    </div>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenTitulo">We cannot unlock the account yet</b>
+        <ul id="resumenLista"></ul>
+      </div>
+    </div>
+
+    <div class="acciones">
+      <button class="reenviar" type="button" id="reenviar">Send a new code</button>
+      <span class="cuenta" id="cuenta" role="status">You can ask for a new code whenever you want</span>
+      <span class="hueco"></span>
+      <button class="entrar" type="submit" id="entrar">Unlock the account <span class="flecha" aria-hidden="true"></span></button>
+    </div>
+  </form>
+
+  <section class="pasaporte" id="pasaporte" hidden tabindex="-1" aria-live="polite">
+    <span class="pasaporte-sello" aria-hidden="true"><span class="pasaporte-tic"></span></span>
+    <p class="antetitulo">Account recovered</p>
+    <h2 id="pasTitulo">Vault is open again</h2>
+    <p id="pasTexto">Your session on this console is live.</p>
+    <dl class="pasaporte-datos">
+      <div><dt>Code used</dt><dd id="pasCodigo">000000</dd></div>
+      <div><dt>Account</dt><dd id="pasCuenta">NovaVex</dd></div>
+      <div><dt>Trust window</dt><dd id="pasConfianza">only this session</dd></div>
+      <div><dt>Session ends</dt><dd id="pasHasta">--:--</dd></div>
+    </dl>
+    <button class="entrar" type="button" id="volver">Check another code</button>
+  </section>
+
+  <p class="pie-pagina">Vaultgate &middot; the code is checked on the server and forgotten &middot; ten minute window</p>
+</main>
+</body>
+</html>

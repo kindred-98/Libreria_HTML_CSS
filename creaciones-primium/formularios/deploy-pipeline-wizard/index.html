@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deploy Pipeline Wizard</title>
+<meta name="description" content="Five step deployment wizard with per step validation, secret rows you can add and remove, region selection, a canary slider, going back without losing anything and a live pipeline timeline at the end.">
+<meta name="description-es" content="Asistente de despliegue de cinco pasos con validación por paso, filas de secretos que se pueden añadir y quitar, selección de regiones, deslizador de canario, vuelta atrás sin perder lo escrito y una línea de tiempo de despliegue en vivo al final.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="taller" aria-hidden="true">
+  <span class="taller__resplandor taller__resplandor--a"></span>
+  <span class="taller__resplandor taller__resplandor--b"></span>
+  <span class="taller__rejilla"></span>
+  <span class="taller__haz"></span>
+</div>
+
+<header class="barra">
+  <span class="marca"><span class="marca__hexa" aria-hidden="true"></span>Farrow Deploy</span>
+  <p class="barra__nota">Pipeline runner eu-west-3 &middot; 4 builds in flight &middot; median lead time 3 min 20 s</p>
+</header>
+
+<main class="escena">
+  <nav class="riel" aria-label="Deployment steps">
+    <p class="riel__titulo">Release 2026.10.4</p>
+    <ol class="riel__pasos" id="rielPasos"></ol>
+    <div class="riel__aviso">
+      <span class="riel__Candado" aria-hidden="true"></span>
+      <p>Going back never clears a field. Secrets stay in this tab and are dropped when the tab closes.</p>
+    </div>
+  </nav>
+
+  <form class="hoja" id="form" novalidate>
+    <header class="hoja__cab">
+      <p class="antetitulo" id="pasoAntetitulo">Step 1 of 5</p>
+      <h1 class="hoja__titulo" id="pasoTitulo">Where does the code come from</h1>
+      <p class="hoja__intro" id="pasoIntro">The pipeline pulls one branch and one commit, and it never moves on its own.</p>
+    </header>
+
+    <div class="paso" id="paso"></div>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">This step is not ready yet</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <footer class="hoja__pie">
+      <button class="atras" type="button" id="atras">
+        <span class="flecha-atras" aria-hidden="true"></span>
+        <span id="atrasTexto">Back</span>
+      </button>
+      <p class="hoja__aviso" id="hojaAviso">Nothing is sent to the runner until the last step.</p>
+      <button class="siguiente" type="submit">
+        <span id="siguienteTexto">Continue</span>
+        <span class="flecha-sig" aria-hidden="true"></span>
+      </button>
+    </footer>
+  </form>
+</main>
+
+<section class="lanzado" id="lanzado" hidden tabindex="-1" aria-live="polite">
+  <div class="lanzado__marco">
+    <span class="lanzado__pulso" aria-hidden="true"></span>
+    <p class="lanzado__kicker">Release queued</p>
+    <h1 class="lanzado__titulo" id="lanzadoTitulo">2026.10.4 is on its way</h1>
+    <p class="lanzado__lead" id="lanzadoLead">The runner picked it up. Each stage below turns green as the report comes back.</p>
+
+    <ol class="linea-tiempo" id="lineaTiempo"></ol>
+
+    <dl class="lanzado__datos">
+      <div><dt>Release</dt><dd id="lanzadoRef">REL-0000</dd></div>
+      <div><dt>Commit</dt><dd id="lanzadoCommit">not set</dd></div>
+      <div><dt>Regions</dt><dd id="lanzadoRegiones">none</dd></div>
+      <div><dt>Canary</dt><dd id="lanzadoCanario">0 per cent</dd></div>
+    </dl>
+
+    <p class="lanzado__nota" id="lanzadoNota">The rollback plan is attached to the release, so one click puts the previous version back.</p>
+    <button class="otra" type="button" id="otra">Cut another release</button>
+  </div>
+</section>
+
+<footer class="pie">
+  <span>Farrow Deploy</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Four regions, one runner, no manual steps</span>
+</footer>
+</body>
+</html>

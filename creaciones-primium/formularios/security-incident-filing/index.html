@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Security Incident Filing</title>
+<meta name="description" content="Security incident report with real severity buttons, a classification matrix, evidence attachments with a paste button, a ticket preview that rebuilds on every change and a filed case receipt.">
+<meta name="description-es" content="Parte de incidente de seguridad con severidad elegida en botones reales, matriz de clasificación, adjuntos con botón de pegar, vista previa del ticket que se rehace con cada cambio y resguardo del caso abierto.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="sotano" aria-hidden="true">
+  <span class="sotano__lamp sotano__lamp--a"></span>
+  <span class="sotano__lamp sotano__lamp--b"></span>
+  <span class="sotano__rejilla"></span>
+  <span class="sotano__barrido"></span>
+  <span class="sotano__cinta"></span>
+</div>
+
+<main class="puesto">
+  <header class="puesto__cab">
+    <span class="escudo" aria-hidden="true"><span class="escudo__raya"></span><span class="escudo__ojo"></span></span>
+    <div>
+      <p class="antetitulo">Halberd Trust &middot; security operations</p>
+      <h1>File a security incident</h1>
+    </div>
+    <p class="cab-reloj"><b id="reloj">--:--:--</b><span>analyst on duty &middot; case intake open</span></p>
+  </header>
+
+  <p class="intro">The case on the right is written as you type, so you can read the exact wording the analyst on duty receives. Nothing is filed until you press send, and nothing leaves this browser.</p>
+
+  <div class="escena">
+    <form class="hoja" id="form" novalidate>
+      <section class="bloque">
+        <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">01</span>What is being classified</h2>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="sistema">Affected system <span class="req" aria-hidden="true">*</span></label>
+            <select id="sistema" name="sistema" aria-describedby="sistema-ayuda" aria-invalid="false">
+              <option value="">Pick the system that was touched</option>
+              <option value="correo">Mail gateway and relay</option>
+              <option value="vpn">Remote access and VPN</option>
+              <option value="repo">Source repository and CI</option>
+              <option value="rrhh">People and payroll records</option>
+              <option value="almacen">Customer data warehouse</option>
+              <option value="portal">Self service customer portal</option>
+            </select>
+            <p class="ayuda" id="sistema-ayuda">One case per system. If two were touched, file twice, the routing is different.</p>
+            <p class="err" id="sistema-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="vector">How the access came in <span class="req" aria-hidden="true">*</span></label>
+            <select id="vector" name="vector" aria-describedby="vector-ayuda" aria-invalid="false">
+              <option value="">Pick the entry vector</option>
+              <option value="credencial">Stolen or reused credentials</option>
+              <option value="phishing">Phishing or social engineering</option>
+              <option value="software">A vulnerable dependency or unpatched host</option>
+              <option value="interno">Somebody with legitimate access</option>
+              <option value="desconocido">Genuinely unknown</option>
+            </select>
+            <p class="ayuda" id="vector-ayuda">Pick the worst thing you are sure of. Genuinely unknown is a real answer and it routes to the same queue.</p>
+            <p class="err" id="vector-err" role="alert"></p>
+          </div>
+        </div>
+
+        <fieldset class="campo conjunto" id="conjunto-severidad" data-estado="neutro">
+          <legend>Severity <span class="req" aria-hidden="true">*</span></legend>
+          <p class="conjunto__pista">This is the only field the pager reacts to. Take the worst thing true right now, not the worst thing you expect.</p>
+          <div class="severidades" role="radiogroup" aria-labelledby="conjunto-severidad" aria-describedby="severidad-ayuda" aria-invalid="false">
+            <div class="sev sev--1">
+              <input type="radio" id="sev1" name="severidad" value="SEV1">
+              <label for="sev1">
+                <span class="sev__code">SEV1</span>
+                <span class="sev__txt"><b>Data is leaving the building</b><small>Personal records, credentials or card data in motion. The officer is paged now.</small></span>
+                <span class="sev__lampara" aria-hidden="true"></span>
+              </label>
+            </div>
+            <div class="sev sev--2">
+              <input type="radio" id="sev2" name="severidad" value="SEV2">
+              <label for="sev2">
+                <span class="sev__code">SEV2</span>
+                <span class="sev__txt"><b>Compromise confirmed, contained</b><small>Somebody was in. You have cut the session, and you do not yet know what they read.</small></span>
+                <span class="sev__lampara" aria-hidden="true"></span>
+              </label>
+            </div>
+            <div class="sev sev--3">
+              <input type="radio" id="sev3" name="severidad" value="SEV3">
+              <label for="sev3">
+                <span class="sev__code">SEV3</span>
+                <span class="sev__txt"><b>Suspicious, not yet proven</b><small>One alert, no confirmed access. Handle it inside the working day.</small></span>
+                <span class="sev__lampara" aria-hidden="true"></span>
+              </label>
+            </div>
+            <div class="sev sev--4">
+              <input type="radio" id="sev4" name="severidad" value="SEV4">
+              <label for="sev4">
+                <span class="sev__code">SEV4</span>
+                <span class="sev__txt"><b>Policy breach with no exposure</b><small>Somebody did something they should not have, and no data moved. Log it and move on.</small></span>
+                <span class="sev__lampara" aria-hidden="true"></span>
+              </label>
+            </div>
+          </div>
+          <p class="ayuda" id="severidad-ayuda">Move with the arrow keys. The lamp beside each code lights when it is the active one.</p>
+          <p class="err" id="severidad-err" role="alert"></p>
+        </fieldset>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">02</span>What was exposed</h2>
+
+        <div class="matriz campo" id="matriz" data-estado="neutro" role="group" aria-labelledby="matriz-titulo" aria-describedby="matriz-ayuda" aria-invalid="false">
+          <span class="oculto" id="matriz-titulo">Data classes touched</span>
+          <p class="conjunto__pista">Tick every class that could have been read, not just the one you are certain about. An empty row is a slow case.</p>
+          <div class="matriz__filas" id="matrizFilas"></div>
+          <p class="ayuda" id="matriz-ayuda" role="status">Nothing ticked yet. The case reads as no exposure until you say otherwise.</p>
+          <p class="err" id="matriz-err" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="volumen">Records in scope <span class="req" aria-hidden="true">*</span></label>
+          <div class="lectura">
+            <output class="lectura__num" id="volumenValor">0</output>
+            <span class="lectura__texto" id="volumenTexto">no estimate yet</span>
+          </div>
+          <div class="deslizador">
+            <span class="deslizador__pista" aria-hidden="true"><i id="volumenRelleno"></i></span>
+            <input id="volumen" name="volumen" type="range" min="0" max="100" step="1" value="0" aria-describedby="volumen-ayuda">
+            <span class="deslizador__cap" id="volumenCap" aria-hidden="true"></span>
+          </div>
+          <p class="ayuda" id="volumen-ayuda">Zero means a single account. One hundred means the whole customer table. This is the number that decides the notification clock.</p>
+          <p class="err" id="volumen-err" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">03</span>Evidence</h2>
+
+        <div class="campo" data-estado="neutro">
+          <label for="resumen">What you have seen so far <span class="req" aria-hidden="true">*</span></label>
+          <div class="barra-pegar">
+            <textarea id="resumen" name="resumen" rows="4" maxlength="900" placeholder="Timestamps, account names, error codes, what you already rotated. The first thirty characters are what the analyst reads." aria-describedby="resumen-ayuda" aria-invalid="false"></textarea>
+            <button class="pegar" type="button" id="pegar">
+              <span class="pegar__pin" aria-hidden="true"></span>
+              Paste evidence
+            </button>
+          </div>
+          <div class="cuenta" id="resumenCuenta">0 of 900</div>
+          <p class="ayuda" id="resumen-ayuda">Forty to nine hundred characters. Paste a log block if you have one, a single block is plenty.</p>
+          <p class="err" id="resumen-err" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <span class="etiqueta" id="anexos-titulo">Attachments</span>
+          <div class="anexos" id="anexos" role="group" aria-labelledby="anexos-titulo" aria-describedby="anexos-ayuda">
+            <label class="anexo"><input type="checkbox" name="anexo" value="Session log, 2 hours"><span class="anexo__marca" aria-hidden="true"></span><span class="anexo__txt">Session log, last 2 hours</span></label>
+            <label class="anexo"><input type="checkbox" name="anexo" value="Firewall extract"><span class="anexo__marca" aria-hidden="true"></span><span class="anexo__txt">Firewall extract</span></label>
+            <label class="anexo"><input type="checkbox" name="anexo" value="Access review, 30 days"><span class="anexo__marca" aria-hidden="true"></span><span class="anexo__txt">Access review, 30 days</span></label>
+            <label class="anexo"><input type="checkbox" name="anexo" value="Screenshot of the alert"><span class="anexo__marca" aria-hidden="true"></span><span class="anexo__txt">Screenshot of the alert</span></label>
+            <label class="anexo"><input type="checkbox" name="anexo" value="Rotated credential list"><span class="anexo__marca" aria-hidden="true"></span><span class="anexo__txt">Rotated credential list</span></label>
+          </div>
+          <p class="ayuda" id="anexos-ayuda" role="status">Nothing attached. A case with no evidence is a case the analyst has to go and gather itself.</p>
+          <p class="err" id="anexos-err" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque__titulo"><span class="bloque__n" aria-hidden="true">04</span>Who is filing it</h2>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="analista">Reported by <span class="req" aria-hidden="true">*</span></label>
+            <select id="analista" name="analista" aria-describedby="analista-ayuda" aria-invalid="false">
+              <option value="">Pick the person filing this</option>
+              <option value="oyelaran">Rina Oyelaran, security</option>
+              <option value="brandt">Tomas Brandt, platform</option>
+              <option value="kawae">Mika Kawae, infrastructure</option>
+              <option value="duarte">Sofia Duarte, people ops</option>
+            </select>
+            <p class="ayuda" id="analista-ayuda">The case is signed with this name and the conversation goes to their queue.</p>
+            <p class="err" id="analista-err" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="contacto">Phone for the callback <span class="req" aria-hidden="true">*</span></label>
+            <input id="contacto" name="contacto" type="tel" inputmode="tel" autocomplete="tel" maxlength="18" placeholder="+44 7700 900318" aria-describedby="contacto-ayuda" aria-invalid="false">
+            <p class="ayuda" id="contacto-ayuda">International format: digits, spaces, plus and dashes. It is masked on the printed case.</p>
+            <p class="err" id="contacto-err" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo campo--check" data-estado="neutro">
+          <input id="pagado" name="pagado" type="checkbox" aria-describedby="pagado-ayuda">
+          <label for="pagado">Page the duty officer now, do not wait for the working day</label>
+          <span class="glifo" aria-hidden="true"></span>
+          <p class="ayuda" id="pagado-ayuda">Only worth it at SEV1 and SEV2. Below that the case waits in the queue until eight in the morning.</p>
+          <p class="err" id="pagado-err" role="alert"></p>
+        </div>
+      </section>
+
+      <div class="resumen" id="resumenError" role="alert" hidden>
+        <span class="resumen__marca" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The case is not filed yet</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <button class="enviar" type="submit" id="enviar">
+        <span class="enviar__destello" aria-hidden="true"></span>
+        <span id="enviarTexto">File the case</span>
+      </button>
+      <p class="pie-legal">Filing opens a private case file and starts the regulatory notification clock. Nothing here is shared with customers, regulators or colleagues.</p>
+    </form>
+
+    <aside class="monitor" aria-label="Live preview of the case">
+      <p class="monitor__etiqueta">Case preview</p>
+      <article class="caso" id="caso" data-sev="none">
+        <span class="caso__cinta" aria-hidden="true"></span>
+
+        <header class="caso__cab">
+          <span class="caso__id" id="cId">SEC-000000</span>
+          <span class="caso__sev" id="cSev">no severity</span>
+        </header>
+
+        <h2 class="caso__titulo" id="cResumen">Your evidence summary goes here</h2>
+        <p class="caso__sistema" id="cSistema">system not set</p>
+
+        <div class="caso__medidor">
+          <span class="caso__medidor-cabecera"><span>Records in scope</span><b id="cVolumen">0</b></span>
+          <span class="caso__pista" aria-hidden="true"><i id="cRelleno"></i></span>
+        </div>
+
+        <ul class="caso__datos" id="cDatos">
+          <li><span>Entry vector</span><b id="cVector">not set</b></li>
+          <li><span>Data classes</span><b id="cClases">none ticked</b></li>
+          <li><span>Evidence</span><b id="cAnexos">nothing attached</b></li>
+          <li><span>Reported by</span><b id="cAnalista">nobody yet</b></li>
+          <li><span>Callback</span><b id="cContacto">not set</b></li>
+          <li><span>Paging</span><b id="cPaging">waits for 08:00</b></li>
+        </ul>
+
+        <footer class="caso__pie">
+          <span class="caso__sello" aria-hidden="true"></span>
+          <span id="cPie">Halberd Trust, draft not filed</span>
+        </footer>
+      </article>
+
+      <div class="cola" role="status">
+        <span class="cola__lampara" id="colaLampara" aria-hidden="true"></span>
+        <span id="colaTexto">Draft. Nothing has left this browser.</span>
+      </div>
+    </aside>
+  </div>
+
+  <section class="archivada" id="archivada" hidden tabindex="-1" aria-live="polite">
+    <span class="archivada__aro" aria-hidden="true"></span>
+    <span class="archivada__sello" aria-hidden="true"><span class="archivada__tic"></span></span>
+    <p class="antetitulo">Case filed</p>
+    <h2 id="archTitulo">The officer has been told</h2>
+    <p id="archTexto">The case is in the queue with the evidence you attached.</p>
+    <dl class="archivada__datos">
+      <div><dt>Case</dt><dd id="aId">SEC-000000</dd></div>
+      <div><dt>Severity</dt><dd id="aSev">SEV3</dd></div>
+      <div><dt>Assigned to</dt><dd id="aRota">security on duty</dd></div>
+      <div><dt>Notification clock</dt><dd id="aReloj">72 hours</dd></div>
+    </dl>
+    <button class="enviar enviar--tenue" type="button" id="otra">File another incident</button>
+  </section>
+
+  <p class="pie-pagina">Halberd Trust &middot; security operations &middot; one case per system &middot; the clock starts when you file</p>
+</main>
+</body>
+</html>

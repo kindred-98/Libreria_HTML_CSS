@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly Digest Subscribe</title>
+<meta name="description" content="Company weekly digest sign up with one email field, a cadence picker that changes the copy, a double opt in consent and a stamped board card celebrating the subscription.">
+<meta name="description-es" content="Suscripción al resumen semanal de la empresa con un único campo de correo, selector de cadencia que cambia el texto, consentimiento de doble confirmación y una tarjeta de tablón sellada que celebra la suscripción.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="oficina" aria-hidden="true">
+  <span class="oficina__sol oficina__sol--a"></span>
+  <span class="oficina__sol oficina__sol--b"></span>
+  <span class="oficina__pauta"></span>
+  <span class="oficina__bandeja"></span>
+  <span class="oficina__rayo"></span>
+</div>
+
+<header class="barra">
+  <span class="marca"><span class="marca__glifo" aria-hidden="true"><i></i><i></i><i></i></span>Halcyon Works</span>
+  <p class="barra__nota">One digest every Friday &middot; 214 readers on the floor &middot; no tracking pixels, ever</p>
+</header>
+
+<main class="tablero">
+  <div class="pauta-impresa" aria-hidden="true">
+    <span class="pauta-impresa__percha"></span>
+    <div class="pauta-impresa__hoja">
+      <p class="pauta-impresa__kicker">Week 38</p>
+      <h2 class="pauta-impresa__titulo">What landed this week</h2>
+      <p class="pauta-impresa__entrada"><b>Support</b> answered forty one tickets, down from fifty eight.</p>
+      <p class="pauta-impresa__entrada"><b>Workshop</b> the new jig cut the setup on the door from forty minutes to nine.</p>
+      <p class="pauta-impresa__entrada"><b>Kitchen</b> the coffee machine is back. Please do not open the second drawer.</p>
+      <p class="pauta-impresa__entrada"><b>Yard</b> two hundred and eleven boxes went out on Tuesday, on time.</p>
+      <p class="pauta-impresa__pie">Set by hand on Thursday afternoon &middot; circulated on Friday at four</p>
+    </div>
+  </div>
+
+  <form class="tarjeta" id="form" novalidate>
+    <span class="tarjeta__tornillo tarjeta__tornillo--l" aria-hidden="true"></span>
+    <span class="tarjeta__tornillo tarjeta__tornillo--r" aria-hidden="true"></span>
+    <span class="tarjeta__luz" aria-hidden="true"></span>
+
+    <p class="antetitulo">The Friday digest</p>
+    <h1 class="tarjeta__titulo">One mail a week, nothing else</h1>
+    <p class="tarjeta__intro" id="intro">What the shop did this week, in one page, written by a person. No offers, no sponsored posts, and one click in every mail leaves you out for good.</p>
+
+    <div class="campo" data-estado="neutro">
+      <label for="email">Work email</label>
+      <div class="barra-correo">
+        <span class="arroba" aria-hidden="true">@</span>
+        <input id="email" name="email" type="text" inputmode="email" autocomplete="email" spellcheck="false" maxlength="64" placeholder="you@halcyon.works" aria-describedby="email-ayuda" aria-invalid="false">
+        <span class="lampara" aria-hidden="true"></span>
+      </div>
+      <p class="ayuda" id="email-ayuda" role="status">Try kate@ or name@mailinator.com to watch the check refuse them. A personal address works, a throwaway one does not.</p>
+      <p class="err" id="email-err" role="alert"></p>
+    </div>
+
+    <div class="cadencia" role="group" aria-labelledby="cadencia-titulo" aria-describedby="cadencia-ayuda">
+      <span class="cadencia__titulo" id="cadencia-titulo">How often</span>
+      <div class="cadencia__botones">
+        <button class="cad" type="button" id="cad-semanal" aria-pressed="true">Every Friday</button>
+        <button class="cad" type="button" id="cad-quincenal" aria-pressed="false">Every other Friday</button>
+        <button class="cad" type="button" id="cad-mensual" aria-pressed="false">First Monday of the month</button>
+      </div>
+      <p class="ayuda" id="cadencia-ayuda" role="status">Every Friday, the default. The other two arrive at the same time of day, just less often.</p>
+    </div>
+
+    <div class="campo campo--check" data-estado="neutro">
+      <input id="consent" name="consent" type="checkbox" aria-describedby="consent-ayuda">
+      <label for="consent">Send me the digest and nothing else</label>
+      <span class="glifo" aria-hidden="true"></span>
+      <p class="ayuda" id="consent-ayuda">Double opt in. You get one confirmation mail, and the digest only starts once you press the link inside it.</p>
+      <p class="err" id="consent-err" role="alert"></p>
+    </div>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenTitulo">We cannot send the digest yet</b>
+        <ul id="resumenLista"></ul>
+      </div>
+    </div>
+
+    <button class="enviar" type="submit" id="enviar">
+      <span class="enviar__destello" aria-hidden="true"></span>
+      <span id="enviarTexto">Put me on the digest</span>
+    </button>
+    <p class="fino">Nothing here leaves this page. Halcyon Works will not sell the list, share it with a partner, or add you to anything else.</p>
+  </form>
+
+  <section class="sello" id="sello" hidden tabindex="-1" aria-live="polite">
+    <div class="sello__confeti" id="confeti" aria-hidden="true"></div>
+    <span class="sello__sello" aria-hidden="true"><span class="sello__tic"></span></span>
+    <p class="antetitulo">You are on the list</p>
+    <h2 class="sello__titulo" id="selloTitulo">Check your inbox to confirm</h2>
+    <p class="sello__lead" id="selloLead">We sent one confirmation mail. The digest only starts once you press the link inside.</p>
+    <dl class="sello__datos">
+      <div><dt>Address</dt><dd id="dMail">no address</dd></div>
+      <div><dt>Reader number</dt><dd id="dNum">FR-00000</dd></div>
+      <div><dt>First digest</dt><dd id="dCuando">not scheduled</dd></div>
+    </dl>
+    <button class="otra" type="button" id="otra">Use a different address</button>
+  </section>
+
+  <footer class="pie">
+    <span>Halcyon Works &middot; Unit 4, Kiln Yard</span>
+    <span class="pie__punto" aria-hidden="true"></span>
+    <span>Written by hand since 2019</span>
+  </footer>
+</main>
+</body>
+</html>

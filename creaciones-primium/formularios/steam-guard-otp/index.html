@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Account Guardian Code Check</title>
+<meta name="description" content="Two step login check with six code boxes that fill themselves, a paste button that spreads the whole code, arrow key navigation, a resend timer and a session grant confirmation.">
+<meta name="description-es" content="Verificación en dos pasos con seis casillas que se rellenan solas, botón de pegar que reparte el código entero, navegación con flechas, cuenta atrás de reenvío y confirmación de sesión concedida.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="nave" aria-hidden="true">
+  <span class="nave__rayo nave__rayo--a"></span>
+  <span class="nave__rayo nave__rayo--b"></span>
+  <span class="nave__niebla"></span>
+  <span class="nave__rejilla"></span>
+  <span class="nave__pulso"></span>
+</div>
+
+<main class="terminal">
+  <header class="terminal__cab">
+    <span class="terminal__logo" aria-hidden="true"><i class="terminal__gema"></i><i class="terminal__aro"></i></span>
+    <div class="terminal__txt">
+      <p class="antetitulo">Ashgate Online &middot; session guard</p>
+      <h1>Check your authenticator</h1>
+    </div>
+    <span class="terminal__lampara" aria-hidden="true"></span>
+  </header>
+
+  <div class="terminal__cuerpo">
+    <form class="hoja" id="form" novalidate>
+      <p class="intro">The six digit code from your guard app is good for one login. Open the app on your phone and type what it shows.</p>
+
+      <div class="campo campo--codigo" id="envCodigo" data-estado="neutro">
+        <div class="campo__cab">
+          <label class="etiqueta" for="casilla0">Six digit code</label>
+          <button class="pegar" type="button" id="pegar">
+            <span class="pegar__pin" aria-hidden="true"></span>
+            Paste code
+          </button>
+        </div>
+        <div class="casillas" id="casillas" role="group" aria-labelledby="casilla0" aria-describedby="codigo-ayuda">
+          <input type="text" id="casilla0" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 1 of 6">
+          <input type="text" id="casilla1" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 2 of 6">
+          <input type="text" id="casilla2" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 3 of 6">
+          <input type="text" id="casilla3" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 4 of 6">
+          <input type="text" id="casilla4" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 5 of 6">
+          <input type="text" id="casilla5" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 6 of 6">
+        </div>
+        <p class="ayuda" id="codigo-ayuda">Type the six digits, or press paste and we spread them across the boxes. Arrows move between boxes, Backspace clears back.</p>
+        <p class="err" id="codigo-err" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="motivo">Why is the code being asked for</label>
+        <select id="motivo" name="motivo" aria-describedby="motivo-ayuda" aria-invalid="false">
+          <option value="">Choose a reason</option>
+          <option value="sesion">Starting a session on this machine</option>
+          <option value="pago">Confirming a payment on the store</option>
+          <option value="correo">Changing the mail on the account</option>
+          <option value="rescate">A support agent asked for a rescue code</option>
+        </select>
+        <p class="ayuda" id="motivo-ayuda">If nobody asked you for this, close the window and do not type the code anywhere.</p>
+        <p class="err" id="motivo-err" role="alert"></p>
+      </div>
+
+      <div class="campo campo--flag" data-estado="neutro">
+        <input id="confiar" name="confiar" type="checkbox" aria-describedby="confiar-ayuda">
+        <label for="confiar">Keep me signed in on this machine for thirty days</label>
+        <span class="glifo" aria-hidden="true"></span>
+        <p class="ayuda" id="confiar-ayuda">Only on a machine nobody else can log into. On a shared computer leave this off.</p>
+        <p class="err" id="confiar-err" role="alert"></p>
+      </div>
+
+      <div class="resumen" id="resumenError" role="alert" hidden>
+        <span class="resumen__marca" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The session is not open yet</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <button class="reenviar" type="button" id="reenviar">Send a new code</button>
+        <span class="acciones__hueco"></span>
+        <span class="cuenta" id="cuenta" role="status">You can ask for another code whenever you want</span>
+      </div>
+
+      <button class="entrar" type="submit" id="entrar">
+        <span class="entrar__destello" aria-hidden="true"></span>
+        <span id="entrarTexto">Check the code and sign in</span>
+      </button>
+    </form>
+
+    <section class="sesion" id="sesion" hidden tabindex="-1" aria-live="polite">
+      <span class="sesion__sello" aria-hidden="true"><span class="sesion__tic"></span></span>
+      <p class="antetitulo">Code accepted</p>
+      <h2 id="sesionTitulo">Second factor passed</h2>
+      <p class="sesion__texto" id="sesionTexto">Your session is open for thirty minutes.</p>
+      <dl class="sesion__datos">
+        <div><dt>Code checked</dt><dd id="sCodigo">000000</dd></div>
+        <div><dt>Machine</dt><dd id="sMaquina">this browser</dd></div>
+        <div><dt>Trust window</dt><dd id="sConfianza">not stored</dd></div>
+      </dl>
+      <button class="entrar entrar--tenue" type="button" id="otra">Check another code</button>
+    </section>
+  </div>
+
+  <footer class="terminal__pie">
+    <span>Ashgate Online &middot; session guard</span>
+    <span class="terminal__punto" aria-hidden="true"></span>
+    <span>Codes never leave this page</span>
+  </footer>
+</main>
+</body>
+</html>

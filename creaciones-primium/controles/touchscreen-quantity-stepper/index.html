@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kiosk Quantity Stepper</title>
+<meta name="description" content="A kiosk touch panel seen flat on the counter: two fat target buttons ripple under the thumb, the quantity rolls like a drum behind glass inside firm limits, and the total underneath is worked out again on every tap.">
+<meta name="description-es" content="Un panel táctil de quiosco visto en horizontal sobre el mostrador: dos botones grandes ondean la onda al pulsarlos, la cantidad rueda como un tambor tras el cristal dentro de unos límites firmes y el total de abajo se vuelve a calcular en cada toque.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="page">
+  <header class="head">
+    <p class="head__kicker">Counter 3 &middot; kiosk 07</p>
+    <h1>Quantity Stepper</h1>
+    <p class="head__lead">Two fat targets, a drum that rolls the count and a total that is worked out again on every tap. Type in the field, use the arrow keys, or hold the buttons down and watch the ripples spread.</p>
+  </header>
+
+  <div class="counter" aria-hidden="true"></div>
+
+  <section class="deck">
+    <span class="deck__glare" aria-hidden="true"></span>
+    <span class="deck__stripe" aria-hidden="true"></span>
+    <span class="screw screw--tl" aria-hidden="true"></span>
+    <span class="screw screw--tr" aria-hidden="true"></span>
+    <span class="screw screw--bl" aria-hidden="true"></span>
+    <span class="screw screw--br" aria-hidden="true"></span>
+
+    <div class="deck__bar">
+      <span class="kiosk"><i></i><b>KIOSK 07</b><u>counter 3 &middot; lane b</u></span>
+      <span class="deck__status">
+        <span class="batt" aria-hidden="true"><i></i></span>
+        <span class="batt__label" aria-hidden="true">84 %</span>
+        <span class="clock" id="clock" aria-hidden="true">--:--</span>
+      </span>
+    </div>
+
+    <div class="deck__body">
+      <div class="cart">
+        <span class="cart__tag">art 4471</span>
+        <span class="cup" aria-hidden="true"><i class="cup__lid"></i><i class="cup__sleeve"></i></span>
+        <b class="cart__name">Filter Coffee</b>
+        <span class="cart__size">250 ml &middot; ground &middot; dark roast</span>
+        <span class="cart__rule" aria-hidden="true"></span>
+        <span class="cart__row"><i>unit price</i><u>2.40</u></span>
+        <span class="cart__row"><i>vat</i><u>21 % incl</u></span>
+        <span class="cart__bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="cart__code">8 410237 447109</span>
+      </div>
+
+      <div class="pad">
+        <span class="pad__label">quantity</span>
+        <span class="pad__hint">tap the targets or type</span>
+        <div class="qty">
+          <button class="step step--minus" id="minus" type="button" aria-label="One less">
+            <span class="step__face">
+              <span class="step__cap" aria-hidden="true"></span>
+              <span class="step__glyph step__glyph--minus" aria-hidden="true"></span>
+            </span>
+          </button>
+
+          <span class="qty__window" id="window">
+            <span class="qty__drum" id="drum" aria-hidden="true"></span>
+            <span class="qty__glass" aria-hidden="true"></span>
+            <input class="qty__input" id="qty" type="number" min="0" max="24" step="1" value="3"
+              inputmode="numeric" aria-label="Quantity of filter coffee">
+          </span>
+
+          <button class="step step--plus" id="plus" type="button" aria-label="One more">
+            <span class="step__face">
+              <span class="step__cap" aria-hidden="true"></span>
+              <span class="step__glyph step__glyph--plus" aria-hidden="true"></span>
+            </span>
+          </button>
+        </div>
+        <span class="qty__scale" aria-hidden="true">
+          <i style="--p:0">0</i><i style="--p:.5">12</i><i style="--p:1">24</i>
+        </span>
+        <p class="pad__note">Limits 0 to 24 per order. Home and End run to the stops, Page keys jump six.</p>
+        <span class="stock" aria-hidden="true"><i></i>in stock 41</span>
+      </div>
+
+      <div class="total">
+        <span class="total__cap">total due</span>
+        <span class="total__row" id="totalRow">
+          <b class="total__num" id="totalOut">7.20</b>
+          <u class="total__cur">eur</u>
+        </span>
+        <span class="total__rule" aria-hidden="true"></span>
+        <span class="total__line"><i>items</i><u id="linesOut">3 &times; 2.40</u></span>
+        <span class="total__line"><i>vat 21 %</i><u id="vatOut">1.27</u></span>
+        <span class="level" aria-hidden="true"><i id="levelFill"></i></span>
+        <span class="level__cap" aria-hidden="true">basket <b id="levelOut">3</b> of 24 in the drum</span>
+        <span class="pay">
+          <span class="pay__text">pay now</span>
+          <span class="pay__sheen" aria-hidden="true"></span>
+        </span>
+        <span class="total__code">auth code 0044 &middot; terminal 7b</span>
+      </div>
+    </div>
+
+    <p class="sr" id="live" aria-live="polite"></p>
+
+    <div class="ticker" aria-hidden="true">
+      <span class="ticker__run"><i>touch the target</i><i>limits 0 to 24</i><i>total recalculated live</i><i>tap and hold to ripple</i><i>thank you</i></span>
+      <span class="ticker__run"><i>touch the target</i><i>limits 0 to 24</i><i>total recalculated live</i><i>tap and hold to ripple</i><i>thank you</i></span>
+    </div>
+  </section>
+
+  <p class="foot"><span class="foot__pip" aria-hidden="true"><i></i></span>The drum only clips because the frame around it carries the overflow, never the transform.</p>
+</main>
+</body>
+</html>

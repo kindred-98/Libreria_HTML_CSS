@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coach Athlete Profile Editor</title>
+<meta name="description" content="Coach and athlete profile editor with a monogram avatar built from the name, live card preview on every keystroke, discipline chips and a published profile receipt.">
+<meta name="description-es" content="Editor de ficha de entrenador o deportista con avatar de monograma construido a partir del nombre, vista previa en vivo en cada pulsación, etiquetas de disciplina y resguardo de ficha publicada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="vestuario" aria-hidden="true">
+  <span class="lampara"></span>
+  <span class="rayos"></span>
+  <span class="percha"></span>
+  <span class="barrido"></span>
+</div>
+
+<main class="taquilla">
+  <header class="taquilla-cab">
+    <span class="escudo" aria-hidden="true"><span class="escudo-raya"></span></span>
+    <div>
+      <p class="antetitulo">Ridgeline academy &middot; season 2026</p>
+      <h1>Coach and athlete record</h1>
+    </div>
+    <p class="cab-nota">The card on the right rebuilds itself as you type. Nothing is saved until you publish, and nothing is sent anywhere but this page.</p>
+  </header>
+
+  <div class="escena">
+    <form class="editor" id="form" novalidate>
+      <section class="bloque">
+        <h2 class="bloque-titulo"><span class="bloque-n" aria-hidden="true">01</span>Who is on the card</h2>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="nombre">First name <span class="req" aria-hidden="true">*</span></label>
+            <input id="nombre" name="nombre" type="text" autocomplete="given-name" maxlength="24" placeholder="Irene" aria-describedby="nombre-ayuda" aria-invalid="false">
+            <p class="ayuda" id="nombre-ayuda">Letters, spaces and dashes only. This gives the first letter of the avatar.</p>
+            <p class="error" id="nombre-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="apellidos">Surname <span class="req" aria-hidden="true">*</span></label>
+            <input id="apellidos" name="apellidos" type="text" autocomplete="family-name" maxlength="24" placeholder="Saldana" aria-describedby="apellidos-ayuda" aria-invalid="false">
+            <p class="ayuda" id="apellidos-ayuda">Same rules as the first name. Together they set the initials on the badge.</p>
+            <p class="error" id="apellidos-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="deporte">Discipline <span class="req" aria-hidden="true">*</span></label>
+            <select id="deporte" name="deporte" aria-describedby="deporte-ayuda" aria-invalid="false">
+              <option value="">Pick the discipline</option>
+              <option value="alpinismo">Alpinism</option>
+              <option value="btt">Mountain bike</option>
+              <option value="escalada">Indoor climbing</option>
+              <option value="esqui">Ski and snowboard</option>
+              <option value="trail">Trail running</option>
+              <option value="kayak">Whitewater kayak</option>
+            </select>
+            <p class="ayuda" id="deporte-ayuda">It decides which badge and which ranking table the athlete is filed under.</p>
+            <p class="error" id="deporte-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="pais">Country <span class="req" aria-hidden="true">*</span></label>
+            <select id="pais" name="pais" aria-describedby="pais-ayuda" aria-invalid="false">
+              <option value="">Country of registration</option>
+              <option value="ES">Spain</option>
+              <option value="FR">France</option>
+              <option value="IT">Italy</option>
+              <option value="NO">Norway</option>
+              <option value="CH">Switzerland</option>
+              <option value="CL">Chile</option>
+              <option value="NZ">New Zealand</option>
+            </select>
+            <p class="ayuda" id="pais-ayuda">Two letter code from the federation list. The flag strip on the card follows it.</p>
+            <p class="error" id="pais-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="club">Club or team <span class="req" aria-hidden="true">*</span></label>
+            <input id="club" name="club" type="text" maxlength="30" placeholder="Ridgeline Vertical" aria-describedby="club-ayuda" aria-invalid="false">
+            <p class="ayuda" id="club-ayuda">Between 3 and 30 characters. Free agents write Independent.</p>
+            <p class="error" id="club-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="licencia">Licence number</label>
+            <input id="licencia" name="licencia" type="text" autocomplete="off" spellcheck="false" maxlength="9" placeholder="FED-4021-E" aria-describedby="licencia-ayuda" aria-invalid="false">
+            <p class="ayuda" id="licencia-ayuda">Optional. Three letters, four digits, one letter, upper case.</p>
+            <p class="error" id="licencia-error" role="alert"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque-titulo"><span class="bloque-n" aria-hidden="true">02</span>Measurements</h2>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="nacimiento">Year of birth <span class="req" aria-hidden="true">*</span></label>
+            <input id="nacimiento" name="nacimiento" type="text" inputmode="numeric" maxlength="4" placeholder="1994" aria-describedby="nacimiento-ayuda" aria-invalid="false">
+            <p class="ayuda" id="nacimiento-ayuda">Four digits between 1950 and 2012. Age is worked out on the card.</p>
+            <p class="error" id="nacimiento-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="altura">Height in cm <span class="req" aria-hidden="true">*</span></label>
+            <input id="altura" name="altura" type="text" inputmode="numeric" maxlength="3" placeholder="168" aria-describedby="altura-ayuda" aria-invalid="false">
+            <p class="ayuda" id="altura-ayuda">Whole centimetres between 120 and 230.</p>
+            <p class="error" id="altura-error" role="alert"></p>
+          </div>
+
+          <div class="campo campo-ancho" data-estado="neutro">
+            <label for="bio">Two lines about the athlete</label>
+            <textarea id="bio" name="bio" rows="3" maxlength="200" placeholder="Optional. Ten years on the north face and two winter seasons as a mountain guide." aria-describedby="bio-ayuda"></textarea>
+            <div class="cuenta" id="bioCuenta">0 of 200</div>
+            <p class="ayuda" id="bio-ayuda">Up to 200 characters. If you leave it blank the card says nothing about the athlete.</p>
+            <p class="error" id="bio-error" role="alert"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bloque">
+        <h2 class="bloque-titulo" id="esp-titulo"><span class="bloque-n" aria-hidden="true">03</span>Specialities <span class="req" aria-hidden="true">*</span></h2>
+        <p class="bloque-pista">At least one. The chips on the card light up as you tick them.</p>
+
+        <div class="campo" data-estado="neutro">
+          <div class="especialidades" role="group" aria-labelledby="esp-titulo" aria-describedby="especial-ayuda" id="especialidades" aria-invalid="false">
+            <label class="chip"><input type="checkbox" name="especial" value="Escalada"><span class="chip-txt">Climbing</span></label>
+            <label class="chip"><input type="checkbox" name="especial" value="Guias"><span class="chip-txt">Guiding</span></label>
+            <label class="chip"><input type="checkbox" name="especial" value="Primerosauxilios"><span class="chip-txt">First aid</span></label>
+            <label class="chip"><input type="checkbox" name="especial" value="Arranque"><span class="chip-txt">Belay and lead</span></label>
+            <label class="chip"><input type="checkbox" name="especial" value="Urbano"><span class="chip-txt">Bouldering</span></label>
+            <label class="chip"><input type="checkbox" name="especial" value="Fisiologia"><span class="chip-txt">Training plans</span></label>
+          </div>
+          <p class="ayuda" id="especial-ayuda" role="status">Nothing ticked yet. The card shows a dash next to the specialities.</p>
+          <p class="error" id="especial-error" role="alert"></p>
+        </div>
+      </section>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The record is not ready to publish</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <button class="publicar" type="submit" id="publicar">Publish the record <span class="flecha" aria-hidden="true"></span></button>
+      <p class="pie-legal">Fields marked with an asterisk are needed to publish. The card is public inside the academy and the licence number is only visible to the office.</p>
+    </form>
+
+    <aside class="vitrina" aria-label="Live preview of the record">
+      <p class="vitrina-etiqueta">Live preview</p>
+      <article class="tarjeta" id="tarjeta">
+        <span class="tarjeta-banda" aria-hidden="true"></span>
+        <span class="tarjeta-luz" aria-hidden="true"></span>
+
+        <div class="tarjeta-cab">
+          <span class="avatar" id="avatar" aria-hidden="true"><span class="avatar-letras" id="avatarLetras">IS</span></span>
+          <div class="tarjeta-quien">
+            <p class="tarjeta-badge" id="tarjetaBadge">discipline pending</p>
+            <h2 id="tarjetaNombre">Your name here</h2>
+            <p class="tarjeta-club" id="tarjetaClub">Club pending</p>
+          </div>
+          <span class="licencia" id="tarjetaLicencia" hidden><small>licence</small><b id="licenciaTexto">FED-0000-X</b></span>
+        </div>
+
+        <dl class="tarjeta-datos">
+          <div><dt>Country</dt><dd id="datoPais">not set</dd></div>
+          <div><dt>Year of birth</dt><dd id="datoNacimiento">not set</dd></div>
+          <div><dt>Height</dt><dd id="datoAltura">not set</dd></div>
+          <div><dt>Specialities</dt><dd id="datoEspeciales">none ticked</dd></div>
+        </dl>
+
+        <p class="tarjeta-bio" id="tarjetaBio">Nothing written about this athlete yet.</p>
+
+        <ul class="tarjeta-chips" id="tarjetaChips" aria-label="Specialities on the card"></ul>
+
+        <div class="tarjeta-pie">
+          <span class="sello-mini" aria-hidden="true"></span>
+          <span id="tarjetaSello">Ridgeline academy, season 2026</span>
+        </div>
+      </article>
+
+      <div class="medidor" role="progressbar" aria-labelledby="medidorTitulo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 per cent of the record filled in" id="medidor">
+        <span class="medidor-cabecera">
+          <span id="medidorTitulo">Record 0 % filled in</span>
+          <span id="medidorFaltan">7 fields still open</span>
+        </span>
+        <span class="medidor-pista"><i id="medidorRelleno"></i></span>
+      </div>
+    </aside>
+  </div>
+
+  <section class="publicada" id="publicada" hidden tabindex="-1" aria-live="polite">
+    <span class="publicada-aro" aria-hidden="true"></span>
+    <span class="publicada-sello" aria-hidden="true"><span class="publicada-tic"></span></span>
+    <p class="antetitulo">Record published</p>
+    <h2 id="pubTitulo">The card is live in the academy</h2>
+    <p id="pubTexto">Coaches and the office can see it from now on.</p>
+    <dl class="publicada-datos">
+      <div><dt>Athlete</dt><dd id="pubNombre">no name</dd></div>
+      <div><dt>Discipline</dt><dd id="pubDeporte">pending</dd></div>
+      <div><dt>Club</dt><dd id="pubClub">pending</dd></div>
+      <div><dt>Record number</dt><dd id="pubNumero">RA-0000</dd></div>
+    </dl>
+    <button class="publicar publicar-tenue" type="button" id="otra">Edit the record again</button>
+  </section>
+
+  <p class="pie-pagina">Ridgeline academy &middot; public inside the academy &middot; licence visible to the office only</p>
+</main>
+</body>
+</html>

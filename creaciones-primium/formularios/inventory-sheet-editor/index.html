@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventory Sheet Editor</title>
+<meta name="description" content="Inventory count sheet as a real spreadsheet grid with arrow key navigation, one tab stop, Enter to edit a cell, Escape to cancel, a recalculated stock total and a posted count sheet at the end.">
+<meta name="description-es" content="Hoja de conteo de inventario como rejilla de hoja de cálculo real con navegación por flechas, un único punto de tabulación, Enter para editar celda, Escape para cancelar, total deExistencias recalculado y hoja de conteo cerrada al final.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="deposito" aria-hidden="true">
+  <span class="deposito__luz deposito__luz--a"></span>
+  <span class="deposito__luz deposito__luz--b"></span>
+  <span class="deposito__rejilla"></span>
+  <span class="deposito__cinta"></span>
+</div>
+
+<header class="cabecera">
+  <span class="marca"><span class="marca__caja" aria-hidden="true"></span>Halyard Logistics</span>
+  <p class="cabecera__nota">Warehouse 4, aisle B &middot; cycle count open &middot; 12 lines on the sheet</p>
+</header>
+
+<main class="escena">
+  <div class="portada">
+    <p class="antetitulo">Cycle count sheet</p>
+    <h1>Count the aisle, not the spreadsheet</h1>
+    <p class="intro">One tab stop in the whole grid. Arrow keys walk the cells, Enter edits, Escape throws the edit away, and the totals move with every keystroke.</p>
+  </div>
+
+  <div class="hoja-envoltura">
+    <div class="hoja__barra">
+      <p class="hoja__ref">Sheet <b id="refHoja">not posted yet</b> &middot; warehouse 4, aisle B</p>
+      <span class="hoja__aviso" id="avisoHoja" data-estado="ok">Nothing below the reorder point</span>
+    </div>
+
+    <table class="hoja" id="rejilla" role="grid" aria-label="Inventory count lines" aria-describedby="ayudaTeclado" aria-rowcount="13" aria-colcount="8">
+      <thead>
+        <tr role="row">
+          <th role="columnheader" scope="col" class="col-sku">SKU</th>
+          <th role="columnheader" scope="col" class="col-item">Item</th>
+          <th role="columnheader" scope="col">Location</th>
+          <th role="columnheader" scope="col" class="col-num">On hand</th>
+          <th role="columnheader" scope="col" class="col-num">Reserved</th>
+          <th role="columnheader" scope="col" class="col-num">Reorder</th>
+          <th role="columnheader" scope="col" class="col-num">Unit cost</th>
+          <th role="columnheader" scope="col" class="col-num">Line value</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo"></tbody>
+    </table>
+
+    <p class="ayuda-teclado" id="ayudaTeclado">
+      <span><kbd>Tab</kbd> in and out of the grid, once</span>
+      <span><kbd>Arrow</kbd> walk the cells</span>
+      <span><kbd>Home</kbd><kbd>End</kbd> ends of the row</span>
+      <span><kbd>Ctrl</kbd> + <kbd>Home</kbd> first cell of the sheet</span>
+      <span><kbd>Page</kbd> up and down by six rows</span>
+      <span><kbd>Enter</kbd> edit, <kbd>Esc</kbd> cancel the edit</span>
+    </p>
+
+    <div class="hoja__acciones">
+      <button class="anade" type="button" id="anade">
+        <span class="anade__mas" aria-hidden="true"></span>
+        Add a line
+      </button>
+      <button class="quita" type="button" id="quita">Remove the selected line</button>
+      <p class="hoja__nota" id="notaHoja">A cell keeps its value when you walk away from it. Nothing is posted until the button at the bottom.</p>
+    </div>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">The count cannot be posted yet</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <div class="totales">
+      <dl class="totales__cuentas">
+        <div><dt>Lines</dt><dd id="totLineas">0</dd></div>
+        <div><dt>Units on hand</dt><dd id="totUnidades">0</dd></div>
+        <div><dt>Units reserved</dt><dd id="totReservadas">0</dd></div>
+        <div class="totales__fuerte"><dt>Stock value</dt><dd id="totValor">0,00</dd></div>
+      </dl>
+      <button class="publicar" type="submit" id="publicar" form="formCierre">
+        <span class="publicar__cinta" aria-hidden="true"></span>
+        <span id="publicarTexto">Post the count</span>
+      </button>
+    </div>
+  </div>
+
+  <form id="formCierre" hidden>
+    <input type="hidden" name="confirmado" value="1">
+  </form>
+</main>
+
+<section class="cerrada" id="cerrada" hidden tabindex="-1" aria-live="polite">
+  <div class="cerrada__marco">
+    <span class="cerrada__sello" aria-hidden="true"><span class="cerrada__tic"></span></span>
+    <p class="cerrada__kicker">Count posted</p>
+    <h1 class="cerrada__titulo" id="cerradaTitulo">Aisle B is reconciled</h1>
+    <p class="cerrada__lead" id="cerradaLead">The system now trusts these numbers and the purchase orders follow from them.</p>
+    <dl class="cerrada__datos">
+      <div><dt>Sheet</dt><dd id="cerradaRef">unposted</dd></div>
+      <div><dt>Lines</dt><dd id="cerradaLineas">0</dd></div>
+      <div><dt>Stock value</dt><dd id="cerradaValor">0,00</dd></div>
+      <div><dt>Reorder notes</dt><dd id="cerradaRepos">0</dd></div>
+    </dl>
+    <ul class="cerrada__pasos" id="cerradaPasos"></ul>
+    <button class="otra" type="button" id="otra">Open a fresh sheet</button>
+  </div>
+</section>
+
+<footer class="pie">
+  <span>Halyard Logistics</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Counts are posted per aisle, never per line</span>
+</footer>
+</body>
+</html>

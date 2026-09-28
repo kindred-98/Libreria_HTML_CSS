@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loadout Configurator Sheet</title>
+<meta name="description" content="Spreadsheet style loadout configurator with editable cells, full keyboard navigation, a live formula bar, a drag weight budget meter and a sealed squad sheet.">
+<meta name="description-es" content="Configurador de equipamiento como hoja de cálculo con celdas editables, navegación completa por teclado, barra de fórmulas en vivo, medidor de peso y hoja de escuadra sellada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="rejilla-fondo" aria-hidden="true"></div>
+<div class="neon neon-a" aria-hidden="true"></div>
+<div class="neon neon-b" aria-hidden="true"></div>
+
+<main class="banco">
+  <header class="banco-cab">
+    <div>
+      <p class="antetitulo">Bay 04 &middot; match sheet</p>
+      <h1>Loadout configurator</h1>
+    </div>
+    <dl class="cab-cifras" aria-label="Sheet totals">
+      <div><dt>slots filled</dt><dd id="cabSlots">0 of 12</dd></div>
+      <div><dt>drag</dt><dd id="cabPeso">0,0 kg</dd></div>
+      <div><dt>credits</dt><dd id="cabPresup">0 cr</dd></div>
+    </dl>
+  </header>
+
+  <p class="intro">Type straight into any cell. Arrow keys walk the sheet, Home and End jump to the row ends, Page Up and Page Down to the column ends, Enter drops a line and Delete clears. Fields marked with an asterisk are needed before a sheet can be sealed. Nothing leaves this browser.</p>
+
+  <form class="chapa" id="form" novalidate>
+    <div class="chapa-barra">
+      <span class="chapa-puntos" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="chapa-titulo">loadout.sheet &middot; kept in this browser</span>
+      <span class="chapa-ref" id="chapaRef">cell A2 is empty</span>
+    </div>
+
+    <div class="barra-formula">
+      <label for="formula">Formula bar</label>
+      <input id="formula" name="formula" type="text" spellcheck="false" autocomplete="off" placeholder="Pick a cell, then type in this bar or in the cell itself" aria-describedby="formula-ayuda">
+      <p class="ayuda" id="formula-ayuda">Editing here writes into the selected cell, exactly like a desktop sheet.</p>
+    </div>
+
+    <div class="hoja-scroll" role="application" aria-label="Loadout grid with twelve editable slots" aria-describedby="formula-ayuda" id="hojaScroll">
+      <table class="hoja">
+        <thead>
+          <tr>
+            <th class="esquina" scope="col"><span aria-hidden="true">#</span><span class="sr">Row number</span></th>
+            <th class="col-letra" scope="col">A<span class="sr">Slot name</span></th>
+            <th class="col-letra" scope="col">B<span class="sr">Tier</span></th>
+            <th class="col-letra" scope="col">C<span class="sr">Drag in kilograms</span></th>
+            <th class="col-letra" scope="col">D<span class="sr">Crew</span></th>
+            <th class="col-letra" scope="col">E<span class="sr">Notes</span></th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo"></tbody>
+        <tfoot>
+          <tr class="totales">
+            <th class="esquina" scope="row"><span aria-hidden="true">sum</span></th>
+            <td class="suma"><span class="sr">Total drag in kilograms</span><span aria-hidden="true" id="sumaPeso">0,0</span></td>
+            <td class="suma"><span class="sr">Total credits from the tier table</span><span aria-hidden="true" id="sumaPrecio">0</span></td>
+            <td class="suma"><span class="sr">Total crew assigned</span><span aria-hidden="true" id="sumaCrew">0</span></td>
+            <td class="suma" colspan="2"><span class="sr">Filled slots</span><span aria-hidden="true" id="sumaSlots">0 of 12</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="medidor">
+      <span class="medidor-cabecera">
+        <span id="medidorEtiqueta">Drag budget 0,0 kg of 24,0 kg</span>
+        <span id="medidorEstado">12 slots still free</span>
+      </span>
+      <span class="medidor-pista" role="progressbar" aria-labelledby="medidorEtiqueta" aria-valuemin="0" aria-valuemax="24" aria-valuenow="0" aria-valuetext="0,0 kilograms of 24,0 used" id="medidorBarra">
+        <i id="medidorRelleno"></i>
+        <span class="medidor-marca m25" aria-hidden="true"></span>
+        <span class="medidor-marca m50" aria-hidden="true"></span>
+        <span class="medidor-marca m75" aria-hidden="true"></span>
+      </span>
+    </div>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenTitulo">The sheet will not seal yet</b>
+        <ul id="resumenLista"></ul>
+      </div>
+    </div>
+
+    <div class="chapa-pie">
+      <button class="boton boton-tenue" type="button" id="anadir">Add slot</button>
+      <button class="boton boton-tenue" type="button" id="borrar">Remove last row</button>
+      <button class="boton boton-tenue" type="button" id="vaciar">Clear sheet</button>
+      <span class="pista-teclas" aria-hidden="true">Esc leaves the grid &middot; Tab walks the row</span>
+      <button class="boton boton-ok" type="submit" id="guardar">Seal squad <span class="flecha" aria-hidden="true"></span></button>
+    </div>
+  </form>
+
+  <div class="columnas">
+    <section class="aviso">
+      <h2>House rules</h2>
+      <ul>
+        <li>Slot names take up to 18 characters and no two slots may share the same name.</li>
+        <li>Drag is a whole number of kilograms, capped by the tier ceiling in the table below.</li>
+        <li>Drag for the whole squad may never pass 24 kg. The meter turns red before that happens.</li>
+        <li>Sealing a sheet needs at least five filled slots. Blank rows are skipped by the sums.</li>
+      </ul>
+    </section>
+
+    <section class="tier-tabla">
+      <h2>Tier table</h2>
+      <ul>
+        <li><span class="punto punto-1" aria-hidden="true"></span><span>Tier field</span><b>0 cr</b><em>max 0 kg</em></li>
+        <li><span class="punto punto-2" aria-hidden="true"></span><span>Tier core</span><b>120 cr</b><em>max 4 kg</em></li>
+        <li><span class="punto punto-3" aria-hidden="true"></span><span>Tier prime</span><b>340 cr</b><em>max 8 kg</em></li>
+        <li><span class="punto punto-4" aria-hidden="true"></span><span>Tier legend</span><b>760 cr</b><em>max 12 kg</em></li>
+      </ul>
+      <p class="tier-nota">Choosing a tier writes its ceiling into the sheet, so a heavy item on a field tier is caught before you seal.</p>
+    </section>
+  </div>
+</main>
+
+<section class="sello" id="sello" hidden tabindex="-1" aria-live="polite">
+  <span class="sello-aro" aria-hidden="true"></span>
+  <span class="sello-circulo" aria-hidden="true"><span class="sello-tic"></span></span>
+  <p class="antetitulo">Squad sealed</p>
+  <h2 id="selloTitulo">Loadout locked for match day</h2>
+  <p id="selloTexto">The sheet is signed and stored with this squad.</p>
+  <div class="sello-tabla" id="selloTabla"></div>
+  <button class="boton boton-ok" type="button" id="otra">Reopen the sheet</button>
+</section>
+
+<p class="pie-pagina">Bay 04 &middot; the sheet never leaves this browser &middot; twelve slots, one squad</p>
+</body>
+</html>

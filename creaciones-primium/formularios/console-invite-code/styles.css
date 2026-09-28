@@ -1,0 +1,660 @@
+:root {
+  --fondo: #110c05;
+  --fondo-2: #1d1509;
+  --acento: #ffb03a;
+  --acento-claro: #ffd79a;
+  --texto: #ffdfae;
+  --texto-tenue: rgba(255, 223, 174, 0.6);
+  --linea: rgba(255, 176, 58, 0.22);
+  --linea-fuerte: rgba(255, 176, 58, 0.52);
+  --ok: #7ce0a3;
+  --mal: #ff7f63;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --salto: cubic-bezier(0.2, 1.5, 0.4, 1);
+  --fuente: ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "Cascadia Code", Consolas, "Courier New", monospace}
+
+* { box-sizing: border-box}
+
+[hidden] { display: none !important}
+
+html { -webkit-text-size-adjust: 100%}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--mono);
+  color: var(--texto);
+  background: var(--fondo);
+  overflow-x: hidden}
+
+.lineas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0) 0 2px, rgba(0, 0, 0, 0.26) 2px 3px);
+  opacity: 0.55;
+  animation: respira 9s ease-in-out infinite}
+
+@keyframes respira {
+  0%, 100% { opacity: 0.34}
+  50% { opacity: 0.62}
+}
+
+.halo {
+  position: fixed;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(76px);
+  pointer-events: none;
+  will-change: transform}
+
+.halo-a {
+  width: 52vw;
+  height: 52vw;
+  top: -20vw;
+  left: -14vw;
+  background: radial-gradient(circle, rgba(255, 176, 58, 0.34), transparent 68%);
+  animation: deriva-a 24s var(--ease) infinite}
+
+.halo-b {
+  width: 44vw;
+  height: 44vw;
+  bottom: -22vw;
+  right: -12vw;
+  background: radial-gradient(circle, rgba(168, 108, 30, 0.34), transparent 70%);
+  animation: deriva-b 29s var(--ease) infinite}
+
+@keyframes deriva-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1)}
+  40% { transform: translate3d(9vw, 8vh, 0) scale(1.16)}
+  72% { transform: translate3d(2vw, 15vh, 0) scale(0.92)}
+}
+
+@keyframes deriva-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.06)}
+  45% { transform: translate3d(-8vw, -9vh, 0) scale(0.9)}
+  80% { transform: translate3d(-3vw, -4vh, 0) scale(1.22)}
+}
+
+.mesa {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 900px);
+  margin: 0 auto;
+  padding: clamp(26px, 5vw, 58px) clamp(14px, 4vw, 28px) 54px}
+
+.cabecera {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px 26px;
+  flex-wrap: wrap;
+  padding: 0 4px 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px dashed var(--linea)}
+
+.antetitulo {
+  margin: 0;
+  font: 600 0.68rem/1 var(--mono);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--acento)}
+
+h1 {
+  margin: 10px 0 0;
+  font-size: clamp(1.4rem, 3.6vw, 2.1rem);
+  letter-spacing: -0.01em;
+  line-height: 1.08}
+
+.cabecera-nota {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--texto-tenue)}
+
+.terminal {
+  position: relative;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(38, 27, 12, 0.94), rgba(16, 11, 5, 0.97));
+  border: 1px solid var(--linea-fuerte);
+  box-shadow:
+    0 1px 0 rgba(255, 215, 154, 0.16) inset,
+    0 36px 74px -30px rgba(0, 0, 0, 0.92),
+    0 0 0 1px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  animation: monta 0.55s var(--ease) both}
+
+@keyframes monta {
+  from { opacity: 0; transform: translateY(16px) scale(0.985)}
+}
+
+.terminal-barra {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 16px;
+  background: linear-gradient(180deg, rgba(255, 176, 58, 0.16), rgba(255, 176, 58, 0.03));
+  border-bottom: 1px solid var(--linea)}
+
+.puntos { display: flex; gap: 6px; flex: none}
+
+.puntos i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 176, 58, 0.26);
+  box-shadow: inset 0 0 0 1px rgba(255, 215, 154, 0.2)}
+
+.puntos i:first-child { background: var(--acento); animation: punto 3.4s ease-in-out infinite}
+.puntos i:nth-child(2) { background: rgba(255, 176, 58, 0.62); animation: punto 3.4s ease-in-out infinite 0.4s}
+.puntos i:nth-child(3) { background: rgba(255, 176, 58, 0.38); animation: punto 3.4s ease-in-out infinite 0.8s}
+
+@keyframes punto {
+  0%, 100% { opacity: 0.45}
+  50% { opacity: 1}
+}
+
+.ruta {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.78rem;
+  color: var(--acento-claro);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis}
+
+.cursor-bloque {
+  display: inline-block;
+  width: 7px;
+  height: 0.95em;
+  margin-left: 5px;
+  vertical-align: -2px;
+  background: var(--acento);
+  animation: titila 1.05s steps(2, end) infinite}
+
+@keyframes titila {
+  0%, 49% { opacity: 1}
+  50%, 100% { opacity: 0}
+}
+
+.sesion { flex: none; font-size: 0.72rem; color: var(--texto-tenue); letter-spacing: 0.06em}
+
+.terminal-cuerpo { position: relative; padding: 16px clamp(14px, 3vw, 26px) 8px}
+
+.espectro {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+  height: 46px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border: 1px solid rgba(255, 176, 58, 0.14);
+  border-radius: 10px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 176, 58, 0.06) 0 1px, transparent 1px 18px),
+    rgba(6, 4, 1, 0.6);
+  overflow: hidden}
+
+.barra {
+  width: 5px;
+  height: 30px;
+  border-radius: 2px;
+  transform-origin: bottom center;
+  background: linear-gradient(180deg, var(--acento-claro), rgba(255, 176, 58, 0.14));
+  box-shadow: 0 0 8px rgba(255, 176, 58, 0.35);
+  animation: salto-barra 2.4s ease-in-out infinite;
+  will-change: transform}
+
+.barra:nth-child(3n) { height: 24px; animation-duration: 3s}
+.barra:nth-child(4n) { height: 48px; animation-duration: 2s}
+.barra:nth-child(5n) { height: 32px; animation-duration: 3.4s}
+.barra:nth-child(7n) { animation-delay: 0.4s}
+
+@keyframes salto-barra {
+  0%, 100% { transform: scaleY(0.16); opacity: 0.5}
+  50% { transform: scaleY(1); opacity: 1}
+}
+
+.espectro-base {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, rgba(255, 176, 58, 0.34) 0 6px, transparent 6px 12px)}
+
+.registro {
+  max-height: 118px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--linea-fuerte) transparent}
+
+.fila {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--texto-tenue);
+  animation: entra-fila 0.4s var(--ease) both}
+
+@keyframes entra-fila {
+  from { opacity: 0; transform: translateY(-6px)}
+}
+
+.fila b { color: var(--acento-claro); font-weight: 600}
+.marca { flex: none; color: var(--acento)}
+.fila-ok .marca { color: var(--ok)}
+.fila-error .marca { color: var(--mal)}
+.fila-error { color: rgba(255, 183, 158, 0.85)}
+.fila-ok { color: rgba(160, 235, 194, 0.8)}
+
+.prompt {
+  margin: 0 0 14px;
+  font-size: 0.86rem;
+  color: var(--acento)}
+
+.prompt span { opacity: 0.6; animation: latido-prompt 2.6s ease-in-out infinite}
+
+@keyframes latido-prompt {
+  0%, 100% { opacity: 0.4}
+  50% { opacity: 1}
+}
+
+.campo { margin-bottom: 13px}
+
+.linea {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--linea);
+  background: rgba(6, 4, 1, 0.55);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.24s var(--ease)}
+
+.linea label {
+  flex: none;
+  width: 170px;
+  font-size: 0.76rem;
+  line-height: 1.35;
+  color: var(--texto-tenue)}
+
+.linea label .orden { display: block; color: var(--acento-claro); font-size: 0.7rem; letter-spacing: 0.08em}
+
+.campo-flag .linea label { width: auto; flex: 1}
+
+.prompt-mini { flex: none; color: var(--acento); font-size: 0.9rem; animation: latido-prompt 2.6s ease-in-out infinite}
+
+.linea input[type="text"],
+.linea input[type="email"],
+.linea select {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 4px;
+  font: inherit;
+  font-size: 0.88rem;
+  color: var(--texto);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px dashed rgba(255, 176, 58, 0.22);
+  border-radius: 0;
+  appearance: none}
+
+.linea select { cursor: pointer}
+.linea select option { color: var(--texto); background: #1d1509}
+
+.linea input::placeholder { color: rgba(255, 223, 174, 0.26)}
+
+.linea input:focus,
+.linea select:focus {
+  outline: none;
+  border-bottom-color: var(--acento);
+  box-shadow: 0 1px 0 0 var(--acento)}
+
+.linea input:focus-visible,
+.linea select:focus-visible { outline: 2px solid var(--acento-claro); outline-offset: 3px}
+
+.pegar {
+  flex: none;
+  padding: 4px 9px;
+  font: inherit;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--acento-claro);
+  background: rgba(255, 176, 58, 0.1);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s var(--ease), transform 0.2s var(--ease)}
+
+.pegar:hover { background: rgba(255, 176, 58, 0.22); color: var(--texto); transform: translateY(-1px)}
+.pegar:focus-visible { outline: 2px solid var(--acento-claro); outline-offset: 2px}
+
+.glifo {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--linea-fuerte);
+  position: relative;
+  transition: border-color 0.24s var(--ease), transform 0.3s var(--salto)}
+
+.glifo::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 7px;
+  width: 8px;
+  height: 1.5px;
+  background: var(--texto-tenue);
+  border-radius: 1px}
+
+.glifo-cuadro { border-radius: 5px}
+
+.campo[data-estado="neutro"] .glifo { background: transparent}
+
+.campo[data-estado="ok"] .linea { border-color: var(--linea-fuerte); background: rgba(255, 176, 58, 0.06)}
+.campo[data-estado="ok"] .glifo { background: var(--acento); border-color: var(--acento); transform: scale(1.06)}
+.campo[data-estado="ok"] .glifo::after { left: 4px; top: 2px; width: 4px; height: 7px; background: transparent; border-right: 1.8px solid #201404; border-bottom: 1.8px solid #201404; transform: rotate(45deg) translate(1px, -1px)}
+.campo[data-estado="ok"] .ayuda { color: var(--ok)}
+
+.campo[data-estado="error"] .linea { border-color: rgba(255, 127, 99, 0.6); background: rgba(255, 127, 99, 0.07)}
+.campo[data-estado="error"] .glifo { background: rgba(255, 127, 99, 0.22); border-color: var(--mal); animation: sacude 0.34s var(--ease)}
+.campo[data-estado="error"] .glifo::after { background: var(--mal); transform: rotate(45deg) scaleX(1.4)}
+.campo[data-estado="error"] .ayuda { color: rgba(255, 183, 158, 0.88)}
+
+@keyframes sacude {
+  0% { transform: translateX(-4px)}
+  60% { transform: translateX(3px)}
+  100% { transform: translateX(0)}
+}
+
+.ayuda {
+  position: relative;
+  margin: 8px 0 0;
+  padding-left: 16px;
+  font-size: 0.73rem;
+  line-height: 1.5;
+  color: var(--texto-tenue);
+  transition: color 0.24s var(--ease)}
+
+.ayuda::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--linea-fuerte);
+  transition: border-color 0.24s var(--ease), transform 0.3s var(--salto)}
+
+.campo[data-estado="ok"] .ayuda::before { background: var(--ok); border-color: var(--ok); transform: scale(0.7)}
+.campo[data-estado="error"] .ayuda::before { background: var(--mal); border-color: var(--mal)}
+
+.error {
+  display: none;
+  margin: 8px 0 0;
+  padding: 8px 11px;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: #ffcbb8;
+  background: rgba(255, 127, 99, 0.12);
+  border: 1px solid rgba(255, 127, 99, 0.38);
+  border-left-width: 3px;
+  border-radius: 6px;
+  animation: sacude 0.34s var(--ease)}
+
+.campo[data-estado="error"] .error { display: block}
+
+.campo-flag input[type="checkbox"] {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  opacity: 0}
+
+.campo-flag input:checked ~ .glifo-cuadro {
+  background: var(--acento);
+  border-color: var(--acento-claro);
+  box-shadow: 0 0 12px rgba(255, 176, 58, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4)}
+
+.campo-flag input:checked ~ .glifo-cuadro::after {
+  left: 5px;
+  top: 3px;
+  width: 6px;
+  height: 10px;
+  background: transparent;
+  border-right: 2px solid #201404;
+  border-bottom: 2px solid #201404;
+  transform: rotate(42deg)}
+
+.campo-flag input:focus-visible ~ .glifo-cuadro { outline: 2px solid var(--acento-claro); outline-offset: 2px}
+.campo-flag[data-estado="ok"] .glifo-cuadro { background: var(--ok); border-color: var(--ok)}
+.campo-flag[data-estado="error"] .glifo-cuadro { border-color: var(--mal); background: rgba(255, 127, 99, 0.22)}
+
+.resumen-error {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 22px 0 0;
+  padding: 13px 15px;
+  border-radius: 9px;
+  background: rgba(255, 127, 99, 0.1);
+  border: 1px solid rgba(255, 127, 99, 0.4);
+  animation: entra-fila 0.35s var(--ease) both}
+
+.resumen-icono {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--mal);
+  position: relative}
+
+.resumen-icono::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid #341005;
+  border-bottom: 2px solid #341005;
+  transform: rotate(45deg)}
+
+.resumen-error b { font-size: 0.82rem}
+.resumen-error ul { margin: 6px 0 0; padding-left: 18px; font-size: 0.76rem; color: #ffcab6}
+.resumen-error li { margin-bottom: 3px}
+
+.pie-consola {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 0 18px;
+  margin-top: 4px;
+  border-top: 1px dashed rgba(255, 176, 58, 0.2)}
+
+.teclas { flex: 1; margin: 0; font-size: 0.7rem; color: rgba(255, 223, 174, 0.4)}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #201404;
+  background: linear-gradient(140deg, var(--acento), #e08a12);
+  border: 1px solid var(--acento-claro);
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 12px 26px -12px rgba(255, 176, 58, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: transform 0.2s var(--ease), filter 0.24s var(--ease)}
+
+.boton:hover { transform: translateY(-2px); box-shadow: 0 18px 32px -12px rgba(255, 176, 58, 1), inset 0 1px 0 rgba(255, 255, 255, 0.5)}
+.boton:active { transform: translateY(0)}
+.boton:focus-visible { outline: 2px solid var(--texto); outline-offset: 3px}
+
+.boton-tenue {
+  color: var(--acento-claro);
+  background: rgba(255, 176, 58, 0.08);
+  border-color: var(--linea);
+  box-shadow: none}
+
+.boton-tenue:hover { background: rgba(255, 176, 58, 0.18); color: var(--texto); box-shadow: none}
+
+.flecha {
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.22s var(--ease)}
+
+.boton:hover .flecha { transform: rotate(45deg) translateX(3px)}
+
+.terminal-pie {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  color: rgba(255, 223, 174, 0.45);
+  background: rgba(6, 4, 1, 0.7);
+  border-top: 1px solid var(--linea)}
+
+.separador { flex: 1}
+
+.latido { display: flex; align-items: flex-end; gap: 2px; height: 11px}
+.latido i { width: 3px; border-radius: 1px; background: var(--acento); animation: latido 1.4s ease-in-out infinite}
+.latido i:nth-child(1) { height: 5px}
+.latido i:nth-child(2) { height: 11px; animation-delay: 0.16s}
+.latido i:nth-child(3) { height: 7px; animation-delay: 0.32s}
+
+@keyframes latido {
+  0%, 100% { transform: scaleY(0.35)}
+  50% { transform: scaleY(1)}
+}
+
+.sello {
+  position: relative;
+  margin-top: 26px;
+  padding: clamp(24px, 4vw, 38px);
+  text-align: center;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 176, 58, 0.15), rgba(20, 14, 6, 0.95));
+  border: 1px solid var(--linea-fuerte);
+  box-shadow: 0 1px 0 rgba(255, 215, 154, 0.18) inset, 0 32px 64px -32px rgba(0, 0, 0, 0.9);
+  animation: monta 0.5s var(--ease) both}
+
+.sello:focus { outline: none}
+
+.sello-aro {
+  position: absolute;
+  top: 62px;
+  left: 50%;
+  width: 128px;
+  height: 128px;
+  margin-left: -64px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 176, 58, 0.45);
+  animation: gira 20s linear infinite}
+
+@keyframes gira {
+  to { transform: rotate(360deg)}
+}
+
+.sello-circulo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #f0b23a, var(--acento-claro));
+  box-shadow: 0 16px 36px -12px rgba(255, 176, 58, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  animation: late 2.8s ease-in-out infinite}
+
+@keyframes late {
+  0%, 100% { transform: scale(1)}
+  50% { transform: scale(1.06)}
+}
+
+.sello-tic {
+  width: 22px;
+  height: 12px;
+  border-left: 3px solid #201404;
+  border-bottom: 3px solid #201404;
+  transform: rotate(-45deg) translate(2px, -3px);
+  animation: tic 0.5s var(--salto) 0.15s both}
+
+@keyframes tic {
+  from { opacity: 0; transform: rotate(-45deg) translate(2px, -3px) scale(0.3)}
+  to { opacity: 1; transform: rotate(-45deg) translate(2px, -3px) scale(1)}
+}
+
+.sello h2 { margin: 0 0 8px; font-size: clamp(1.3rem, 3.4vw, 1.8rem)}
+.sello > p { margin: 0 0 24px; font-size: 0.82rem; color: var(--texto-tenue)}
+
+.registro-datos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 0 26px;
+  padding: 1px;
+  background: var(--linea);
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: left}
+
+.registro-datos div { padding: 11px 14px; background: rgba(8, 5, 1, 0.9)}
+.registro-datos dt { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--texto-tenue)}
+.registro-datos dd { margin: 4px 0 0; font-size: 0.82rem; color: var(--acento-claro); word-break: break-all}
+
+.pie-pagina {
+  margin: 22px 0 0;
+  text-align: center;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 223, 174, 0.3)}
+
+@media (max-width: 900px) {
+  .linea { flex-wrap: wrap}
+  .linea label { width: 100%; order: -1}
+  .prompt-mini { display: none}
+  .registro { max-height: 128px}
+}
+
+@media (max-width: 560px) {
+  .sesion { display: none}
+  .espectro { height: 38px}
+  .registro-datos { grid-template-columns: 1fr}
+  .pie-consola { flex-direction: column; align-items: stretch}
+  .boton { justify-content: center}
+  .teclas { text-align: center}
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important}
+}

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search Filter Bar</title>
+<meta name="description" content="Compact single row search and filter bar with a segmented category control, a sort selector, an in stock switch, keyboard shortcuts, a live result count and a no results state.">
+<meta name="description-es" content="Barra compacta de una sola fila para buscar y filtrar, con control segmentado de categorías, selector de orden, conmutador de solo disponibles, atajos de teclado, contador de resultados en vivo y estado sin resultados.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="aire" aria-hidden="true">
+  <span class="aire__mancha aire__mancha--a"></span>
+  <span class="aire__mancha aire__mancha--b"></span>
+  <span class="aire__puntos"></span>
+  <span class="aire__banda"></span>
+</div>
+
+<header class="marca-barra">
+  <a class="marca" href="#barra">
+    <span class="marca__gota" aria-hidden="true"></span>
+    Paperlane
+  </a>
+  <p class="marca-barra__nota">The reading room catalogue &middot; 61,204 pages</p>
+</header>
+
+<main class="escena">
+  <div class="portada">
+    <p class="antetitulo">Find a page</p>
+    <h1>One bar, one row, everything you need</h1>
+    <p class="intro">Type at least two characters and press Enter. Press the slash key to jump back into the box from anywhere on the page.</p>
+  </div>
+
+  <form class="barra" id="form" novalidate>
+    <div class="barra__lente" aria-hidden="true"></div>
+
+    <div class="barra__campo" data-estado="neutro">
+      <label class="oculto" for="consulta">Search the catalogue</label>
+      <span class="barra__lupa" aria-hidden="true"></span>
+      <input id="consulta" name="consulta" type="text" autocomplete="off" spellcheck="false" maxlength="60" placeholder="search the catalogue" aria-describedby="consulta-ayuda">
+      <kbd class="barra__atajo" id="atajoTecla" aria-hidden="true">/</kbd>
+    </div>
+
+    <div class="barra__corte" aria-hidden="true"></div>
+
+    <div class="segmento" role="group" aria-label="Where to look" id="segmento">
+      <div class="segmento__vistas" id="vistas"></div>
+    </div>
+
+    <div class="barra__corte" aria-hidden="true"></div>
+
+    <select id="orden" name="orden" aria-label="Order the results" aria-describedby="consulta-ayuda">
+      <option value="relevancia">Relevance</option>
+      <option value="nuevos">Newest first</option>
+      <option value="vistos">Most read</option>
+      <option value="corto">Shortest read</option>
+    </select>
+
+    <button class="conmutador" type="button" id="gratis" role="switch" aria-checked="false" aria-label="Show only the pages you can read for free" title="Only the pages you can read for free">
+      <span class="conmutador__via" aria-hidden="true"></span>
+      <span class="conmutador__perilla" aria-hidden="true"></span>
+    </button>
+
+    <button class="lanzar" type="submit">
+      <span class="lanzar__destello" aria-hidden="true"></span>
+      <span id="lanzarTexto">Search</span>
+      <kbd class="lanzar__tecla" aria-hidden="true">Enter</kbd>
+    </button>
+
+    <p class="ayuda barra__ayuda" id="consulta-ayuda">Two to sixty characters. The list filters while you type, the count only lands when you press Search. The pills pick a section, the dropdown orders them, and the switch keeps only the free pages.</p>
+
+    <div class="resumen" id="resumenError" role="alert" hidden>
+      <span class="resumen__marca" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">The search did not run</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+  </form>
+
+  <section class="resultados" aria-label="Search results">
+    <div class="resultados__cab">
+      <p class="resultados__conteo" id="conteo" role="status">Type something to see the count</p>
+      <button class="limpiar" type="button" id="limpiar" hidden>Clear the search</button>
+    </div>
+
+    <ul class="lista" id="lista"></ul>
+
+    <div class="ocio" id="ocio">
+      <p class="ocio__titulo">Nothing searched yet</p>
+      <p class="ocio__nota">The catalogue holds twelve pages in five sections. Pick one of these to see the bar react, or write your own.</p>
+      <div class="ocio__muestras" id="muestras"></div>
+    </div>
+
+    <div class="vacio" id="vacio" hidden>
+      <span class="vacio__lupa" aria-hidden="true"></span>
+      <p class="vacio__titulo">Nothing matches that</p>
+      <p class="vacio__nota" id="vacioNota">Try two or three words, or drop the order filter.</p>
+    </div>
+  </section>
+
+  <p class="atajos" id="atajos">
+    <span><kbd>/</kbd> focus the box</span>
+    <span><kbd>Ctrl</kbd><kbd>K</kbd> same, from anywhere</span>
+    <span><kbd>Esc</kbd> clear the query and the filters</span>
+  </p>
+</main>
+
+<footer class="pie">
+  <span>Paperlane</span>
+  <span class="pie__punto" aria-hidden="true"></span>
+  <span>Search runs on this page, nothing leaves the browser</span>
+</footer>
+</body>
+</html>

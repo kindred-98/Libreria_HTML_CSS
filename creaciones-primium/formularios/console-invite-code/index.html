@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Invite Code Redemption Console</title>
+<meta name="description" content="Terminal styled invite code redemption with a live format validator, plan picker, rolling console log and an issued membership seal.">
+<meta name="description-es" content="Canje de código de invitación con estilo terminal, validación de formato en vivo, elección de plan, registro de consola y sello de membresía emitido.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="halo halo-a" aria-hidden="true"></div>
+<div class="halo halo-b" aria-hidden="true"></div>
+<div class="lineas" aria-hidden="true"></div>
+
+<main class="mesa">
+  <header class="cabecera">
+    <div>
+      <p class="antetitulo">Guest access broker</p>
+      <h1>Redeem your invite code</h1>
+    </div>
+    <p class="cabecera-nota">Codes are single use. Redeeming one binds it to this browser and frees a seat on the plan you pick below.</p>
+  </header>
+
+  <div class="terminal">
+    <div class="terminal-barra">
+      <span class="puntos" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="ruta">/var/invites/redeem<span class="cursor-bloque" aria-hidden="true"></span></span>
+      <span class="sesion" id="sesion">session 00:00:00</span>
+    </div>
+
+    <div class="terminal-cuerpo">
+      <div class="espectro" aria-hidden="true">
+        <span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span>
+        <span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span>
+        <span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span>
+        <span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span><span class="barra"></span>
+        <span class="espectro-base"></span>
+      </div>
+
+      <div class="registro" id="registro" role="log" aria-label="Console log" aria-live="polite">
+        <p class="fila fila-sistema"><span class="marca">::</span> Broker ready. Waiting for a code from the keyboard.</p>
+        <p class="fila fila-info"><span class="marca">01</span> The code is twelve characters, three groups of four, for example BRIG-7K4P-9QX2.</p>
+        <p class="fila fila-ok"><span class="marca">ok</span> 2 of 3 daily attempts still available on this terminal.</p>
+      </div>
+
+      <form class="consola" id="form" novalidate>
+        <p class="prompt"><span aria-hidden="true">&gt;</span> invites redeem --code --plan</p>
+
+        <div class="campo" id="env-codigo" data-estado="neutro">
+          <div class="linea">
+            <label for="codigo"><span class="orden">--code</span> Invite code</label>
+            <span class="prompt-mini" aria-hidden="true">&gt;</span>
+            <input id="codigo" name="codigo" type="text" autocomplete="off" spellcheck="false" maxlength="14" placeholder="BRIG-7K4P-9QX2" aria-describedby="codigo-ayuda" aria-invalid="false">
+            <button class="pegar" type="button" id="pegar" aria-label="Paste the invite code from the clipboard">paste</button>
+            <span class="glifo" aria-hidden="true"></span>
+          </div>
+          <p class="ayuda" id="codigo-ayuda">Twelve characters in three groups of four. We check the shape as you type, no need to wait.</p>
+          <p class="error" id="codigo-error" role="alert"></p>
+        </div>
+
+        <div class="campo" id="env-correo" data-estado="neutro">
+          <div class="linea">
+            <label for="correo"><span class="orden">--email</span> Where we send the seat</label>
+            <span class="prompt-mini" aria-hidden="true">&gt;</span>
+            <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="you@studio.com" aria-describedby="correo-ayuda" aria-invalid="false">
+            <span class="glifo" aria-hidden="true"></span>
+          </div>
+          <p class="ayuda" id="correo-ayuda">The invite is only worth anything if we can tell you which seat you got.</p>
+          <p class="error" id="correo-error" role="alert"></p>
+        </div>
+
+        <div class="campo" id="env-plan" data-estado="neutro">
+          <div class="linea">
+            <label for="plan"><span class="orden">--plan</span> Seat type</label>
+            <span class="prompt-mini" aria-hidden="true">&gt;</span>
+            <select id="plan" name="plan" aria-describedby="plan-ayuda" aria-invalid="false">
+              <option value="">Choose a seat</option>
+              <option value="bench">Bench, 30 day trial, read only</option>
+              <option value="studio">Studio, monthly, full access</option>
+              <option value="atelier">Atelier, annual, full access plus archive</option>
+            </select>
+            <span class="glifo" aria-hidden="true"></span>
+          </div>
+          <p class="ayuda" id="plan-ayuda">One invite, one seat. Upgrading later keeps the same code on file.</p>
+          <p class="error" id="plan-error" role="alert"></p>
+        </div>
+
+        <div class="campo campo-flag" id="env-condiciones" data-estado="neutro">
+          <div class="linea">
+            <input id="condiciones" name="condiciones" type="checkbox" aria-describedby="condiciones-ayuda">
+            <label for="condiciones"><span class="orden">--accept</span> I accept the seat terms and the archive policy</label>
+            <span class="glifo glifo-cuadro" aria-hidden="true"></span>
+          </div>
+          <p class="ayuda" id="condiciones-ayuda">Without this we cannot open the seat, even with a valid code.</p>
+          <p class="error" id="condiciones-error" role="alert"></p>
+        </div>
+
+        <div class="resumen-error" id="resumenError" role="alert" hidden>
+          <span class="resumen-icono" aria-hidden="true"></span>
+          <div>
+            <b id="resumenTitulo">Redemption halted</b>
+            <ul id="resumenLista"></ul>
+          </div>
+        </div>
+
+        <div class="pie-consola">
+          <p class="teclas" aria-hidden="true">Tab moves between lines &middot; Enter redeems &middot; Escape clears the code</p>
+          <button class="boton" type="submit" id="canjear">redeem invite <span class="flecha" aria-hidden="true"></span></button>
+        </div>
+      </form>
+    </div>
+
+    <div class="terminal-pie">
+      <span class="latido" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span id="intentos">Attempts used: 0 of 3</span>
+      <span class="separador" aria-hidden="true"></span>
+      <span>broker 2.7.1 &middot; region eu-west</span>
+    </div>
+  </div>
+
+  <section class="sello" id="sello" hidden tabindex="-1" aria-live="polite">
+    <span class="sello-aro" aria-hidden="true"></span>
+    <span class="sello-circulo" aria-hidden="true"><span class="sello-tic"></span></span>
+    <h2>Seat issued</h2>
+    <p id="selloTexto">Your invite is now bound to this browser.</p>
+    <dl class="registro-datos">
+      <div><dt>Code</dt><dd id="selloCodigo">BRIG-0000-0000</dd></div>
+      <div><dt>Seat</dt><dd id="selloPlan">bench</dd></div>
+      <div><dt>Holder</dt><dd id="selloCorreo">nobody</dd></div>
+      <div><dt>Serial</dt><dd id="selloSerial">IV-000000</dd></div>
+    </dl>
+    <button class="boton boton-tenue" type="button" id="otra">Redeem another code</button>
+  </section>
+
+  <p class="pie-pagina">Invite broker &middot; codes never leave this device &middot; one code, one seat</p>
+</main>
+</body>
+</html>

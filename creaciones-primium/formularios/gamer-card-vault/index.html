@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Game Card Vault</title>
+<meta name="description" content="Clan treasury card form with a laser etched card, real number masking, a timed unmask, Luhn validation, expiry and security code checks and a saved card receipt.">
+<meta name="description-es" content="Formulario de tarjetas de tesorería de clan con tarjeta grabada al láser, enmascarado real del número, desbloqueo temporizado, validación Luhn, comprobación de caducidad y código de seguridad y resguardo de tarjeta guardada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="boveda" aria-hidden="true">
+  <span class="foco foco-a"></span>
+  <span class="foco foco-b"></span>
+  <span class="rejilla-fondo"></span>
+  <span class="escaneo"></span>
+</div>
+
+<main class="mesa">
+  <header class="mesa-cab">
+    <span class="marca" aria-hidden="true"><span class="marca-gema"></span></span>
+    <div>
+      <p class="antetitulo">Clan treasury &middot; payout card</p>
+      <h1>Put a card in the vault</h1>
+    </div>
+    <p class="cab-nota">The card below is the one the prize money lands on. It is a payment card like any other, so the rules about masking and codes are the same ones your bank uses.</p>
+  </header>
+
+  <div class="escena">
+    <div class="torre">
+      <div class="escena-3d">
+        <div class="tarjeta" id="tarjeta">
+          <span class="tarjeta-textura" aria-hidden="true"></span>
+          <span class="tarjeta-luz" aria-hidden="true"></span>
+          <span class="tarjeta-grabado" aria-hidden="true">CLAN VAULT 03</span>
+
+          <div class="tarjeta-cab">
+            <span class="chip" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="contacto" aria-hidden="true"></span>
+          </div>
+
+          <p class="tarjeta-num" id="verNumero">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;</p>
+
+          <div class="tarjeta-pie">
+            <span class="tarjeta-dato"><small>Card holder</small><b id="verTitular">CARD HOLDER</b></span>
+            <span class="tarjeta-dato"><small>Expires</small><b id="verCaduca">MM/AA</b></span>
+            <span class="marca-red" id="verMarca">VAULT</span>
+          </div>
+        </div>
+        <p class="pista" id="pista">The number is etched as you type. Only the last four digits are ever shown.</p>
+      </div>
+
+      <div class="mascara">
+        <button class="mascara-btn" type="button" id="verNum" aria-pressed="false" aria-describedby="mascaraAyuda">Show the whole number</button>
+        <button class="mascara-btn" type="button" id="verCvv" aria-pressed="false" aria-describedby="mascaraAyuda">Show the security code</button>
+        <p class="mascara-ayuda" id="mascaraAyuda" role="status">Both are covered. Uncovering a number covers it again in fifteen seconds.</p>
+        <span class="mascara-cuenta" id="mascaraCuenta" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <form class="formulario" id="form" novalidate>
+      <div class="campo" data-estado="neutro">
+        <label for="guardada">Card already in the vault</label>
+        <select id="guardada" name="guardada" aria-describedby="guardada-ayuda" aria-invalid="false">
+          <option value="">No, use a new card</option>
+          <option value="final-4417">Vault ending 4417, added in March</option>
+          <option value="final-9082">Vault ending 9082, added in January</option>
+        </select>
+        <p class="ayuda" id="guardada-ayuda">Picking one fills the form from the vault. The stored number never leaves the page.</p>
+        <p class="error" id="guardada-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="numero">Card number <span class="req" aria-hidden="true">*</span></label>
+        <div class="barra-cifras">
+          <input id="numero" name="numero" type="text" inputmode="numeric" autocomplete="cc-number" maxlength="23" placeholder="4242 4242 4242 4242" aria-describedby="numero-ayuda" aria-invalid="false">
+          <span class="marca-viva" id="marcaViva" aria-hidden="true">VAULT</span>
+        </div>
+        <p class="ayuda" id="numero-ayuda">Sixteen digits, grouped in fours. We check the control digit the moment you finish typing.</p>
+        <p class="error" id="numero-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="titular">Card holder <span class="req" aria-hidden="true">*</span></label>
+        <input id="titular" name="titular" type="text" autocomplete="cc-name" maxlength="26" placeholder="NOVA VEX COLLECTIVE" aria-describedby="titular-ayuda" aria-invalid="false">
+        <p class="ayuda" id="titular-ayuda">Exactly as it is engraved on the card, capitals. The bank will not match it otherwise.</p>
+        <p class="error" id="titular-error" role="alert"></p>
+      </div>
+
+      <div class="doble">
+        <div class="campo" data-estado="neutro">
+          <label for="caduca">Expires <span class="req" aria-hidden="true">*</span></label>
+          <input id="caduca" name="caduca" type="text" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="09/28" aria-describedby="caduca-ayuda" aria-invalid="false">
+          <p class="ayuda" id="caduca-ayuda">Month and year, like 09/28. A card that has already run out cannot be saved.</p>
+          <p class="error" id="caduca-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="cvv">Security code <span class="req" aria-hidden="true">*</span></label>
+          <div class="barra-cifras">
+            <input id="cvv" name="cvv" type="password" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" aria-describedby="cvv-ayuda" aria-invalid="false">
+            <span class="ojo" id="ojoCvv" aria-hidden="true"></span>
+          </div>
+          <p class="ayuda" id="cvv-ayuda">Three digits on the back. Four on an American Express card, and we accept both.</p>
+          <p class="error" id="cvv-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="rejilla">
+        <div class="campo" data-estado="neutro">
+          <label for="facturacion">Billing postcode <span class="req" aria-hidden="true">*</span></label>
+          <input id="facturacion" name="facturacion" type="text" autocomplete="postal-code" maxlength="10" placeholder="E1 6AN" aria-describedby="facturacion-ayuda" aria-invalid="false">
+          <p class="ayuda" id="facturacion-ayuda">Between 3 and 10 characters, letters, digits and one space. The bank checks it against the card.</p>
+          <p class="error" id="facturacion-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="moneda">Prize money currency</label>
+          <select id="moneda" name="moneda" aria-describedby="moneda-ayuda" aria-invalid="false">
+            <option value="eur">Euro, EUR</option>
+            <option value="usd">United States dollar, USD</option>
+            <option value="gbp">Pound sterling, GBP</option>
+            <option value="sek">Swedish krona, SEK</option>
+          </select>
+          <p class="ayuda" id="moneda-ayuda">The treasury holds one currency at a time. Change it and every figure on the card is recalculated.</p>
+          <p class="error" id="moneda-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo campo-check" data-estado="neutro">
+        <input id="guardar" name="guardar" type="checkbox" aria-describedby="guardar-ayuda">
+        <label for="guardar">Keep this card in the vault for next season</label>
+        <p class="ayuda" id="guardar-ayuda">Stored encrypted by the bank, never by us. You can throw it away from the vault at any time.</p>
+        <p class="error" id="guardar-error" role="alert"></p>
+      </div>
+
+      <div class="seguridad">
+        <span class="seguridad-escudo" aria-hidden="true"></span>
+        <p><b>We never see the security code.</b> It goes straight from your keyboard to the bank over an encrypted channel. We cannot store it, we cannot show it again, and nobody from the circuit can ask you for it.</p>
+      </div>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenTitulo">The card is not ready for the vault</b>
+          <ul id="resumenLista"></ul>
+        </div>
+      </div>
+
+      <button class="guardar" type="submit" id="guardarBtn">Put the card in the vault <span class="flecha" aria-hidden="true"></span></button>
+      <p class="pie-legal">Fields marked with an asterisk are needed to save a card. Nothing on this page is sent anywhere until you press the button.</p>
+    </form>
+  </div>
+
+  <section class="sellado" id="sellado" hidden tabindex="-1" aria-live="polite">
+    <span class="sellado-aro" aria-hidden="true"></span>
+    <span class="sellado-sello" aria-hidden="true"><span class="sellado-tic"></span></span>
+    <p class="antetitulo">Card vaulted</p>
+    <h2 id="sellTitulo">The payout card is on file</h2>
+    <p id="sellTexto">Prize money will land on this card when the season closes.</p>
+    <dl class="sellado-datos">
+      <div><dt>Card</dt><dd id="sellTarjeta">ending 0000</dd></div>
+      <div><dt>Holder</dt><dd id="sellTitularTxt">nobody</dd></div>
+      <div><dt>Expires</dt><dd id="sellCaduca">MM/AA</dd></div>
+      <div><dt>Reference</dt><dd id="sellRef">CV-000000</dd></div>
+    </dl>
+    <button class="guardar guardar-tenue" type="button" id="otra">Add a different card</button>
+  </section>
+
+  <p class="pie-pagina">Clan treasury &middot; masked by default &middot; the security code is never stored, by us or by the bank</p>
+</main>
+</body>
+</html>
