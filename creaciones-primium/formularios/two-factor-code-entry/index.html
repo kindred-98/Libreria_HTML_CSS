@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two Factor Code Entry</title>
+<meta name="description" content="Six box two factor verification panel with paste redistribution, arrow key navigation, resend countdown and an issued pass confirmation.">
+<meta name="description-es" content="Panel de verificación en dos pasos con seis casillas, reparto al pegar, navegación con flechas, cuenta atrás de reenvío y confirmación de acceso concedido.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="placa" aria-hidden="true">
+  <span class="raya raya-1"></span>
+  <span class="raya raya-2"></span>
+  <span class="raya raya-3"></span>
+  <span class="lapa"></span>
+</div>
+<div class="chispa chispa-a" aria-hidden="true"></div>
+<div class="chispa chispa-b" aria-hidden="true"></div>
+
+<main class="armario">
+  <header class="armario-cab">
+    <span class="escudo" aria-hidden="true"><span class="escudo-barra"></span></span>
+    <div class="cab-txt">
+      <p class="antetitulo">Bóveda de acceso</p>
+      <h1>Verificación en dos pasos</h1>
+    </div>
+    <span class="nivel" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+  </header>
+
+  <form class="armario-cuerpo" id="form" novalidate>
+    <p class="intro">Hemos enviado un código de seis cifras a <b id="destino">+34 6•• •• •• 41</b> por mensaje de texto. Caduca en 9 minutos.</p>
+
+    <div class="campo campo-codigo" id="campoCodigo" data-estado="neutro">
+      <span class="etiqueta" id="etiquetaCodigo">Código de 6 cifras</span>
+      <div class="casillas" id="casillas" role="group" aria-labelledby="etiquetaCodigo" aria-describedby="codigo-ayuda">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Cifra 1">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Cifra 2">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Cifra 3">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Cifra 4">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Cifra 5">
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Cifra 6">
+      </div>
+      <p class="ayuda" id="codigo-ayuda">Puedes escribir las seis cifras seguidas o pegarlas con el teclado. Se reparten solas.</p>
+      <p class="error" id="codigo-error" role="alert"></p>
+    </div>
+
+    <div class="campo" data-estado="neutro">
+      <label for="motivo">Motivo del código</label>
+      <select id="motivo" name="motivo" aria-describedby="motivo-ayuda">
+        <option value="">Elige por qué lo(has) pedido</option>
+        <option value="acceso">Inicio de sesión en un equipo nuevo</option>
+        <option value="pago">Confirmación de un pago</option>
+        <option value="correo">Cambio del correo de la cuenta</option>
+        <option value="soporte">Una petición del equipo de soporte</option>
+      </select>
+      <p class="ayuda" id="motivo-ayuda">Lo usamos para detectar accesos sospechosos. Si no reconoces el motivo, cancels y habla con soporte.</p>
+      <p class="error" id="motivo-error" role="alert"></p>
+    </div>
+
+    <div class="campo campo-flag" data-estado="neutro">
+      <input id="confiar" name="confiar" type="checkbox" aria-describedby="confiar-ayuda">
+      <label for="confiar">Confiar en este dispositivo durante 30 días</label>
+      <span class="glifo" aria-hidden="true"></span>
+      <p class="ayuda" id="confiar-ayuda">Recomendado solo en el ordenador de casa. En un equipo compartido no lo actives.</p>
+      <p class="error" id="confiar-error" role="alert"></p>
+    </div>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-error-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">Faltan datos</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <div class="barra-acciones">
+      <button class="reenviar" type="button" id="reenviar">Reenviar código</button>
+      <span class="cuenta" id="cuenta" role="status">Puedes pedir otro código cuando quieras</span>
+      <span class="hueco"></span>
+      <button class="verificar" type="submit" id="verificar">Verificar y entrar <span class="flecha" aria-hidden="true"></span></button>
+    </div>
+  </form>
+
+  <section class="pasaporte" id="pasaporte" hidden tabindex="-1" aria-live="polite">
+    <span class="pasaporte-sello" aria-hidden="true"><span class="pasaporte-tic"></span></span>
+    <p class="antetitulo">Acceso verificado</p>
+    <h2 id="pasaporteTitulo">Segundo factor superado</h2>
+    <p class="pasaporte-txt" id="pasaporteTexto">Tu sesión queda abierta durante 30 minutos.</p>
+    <dl class="pasaporte-datos">
+      <div><dt>Código validado</dt><dd id="pasCodigo">000000</dd></div>
+      <div><dt>Dispositivo</dt><dd id="pasDispositivo">este navegador</dd></div>
+      <div><dt>Ventana de confianza</dt><dd id="pasConfianza">no guardada</dd></div>
+    </dl>
+    <button class="verificar" type="button" id="volver">Verificar otro código</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

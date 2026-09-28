@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan Cancellation Flow</title>
+<meta name="description" content="Empathetic plan cancellation conversation with reason chips, a retention offer with countdown, a final confirmation and a clear closing receipt.">
+<meta name="description-es" content="Conversación empática de baja de plan con motivos seleccionables, oferta de retención con cuenta atrás, confirmación final y comprobante de cierre.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="rescoldo" aria-hidden="true"><span class="brasa brasa-a"></span><span class="brasa brasa-b"></span><span class="chispa chispa-a"></span><span class="chispa chispa-b"></span></div>
+
+<main class="tarjeta" id="inicio">
+  <header class="cab">
+    <span class="retrato" aria-hidden="true"><span class="retrato-luz"></span></span>
+    <div class="cab-txt">
+      <b>Equipo desocios</b>
+      <small id="estadoAgente">Ana, te escuchamos</small>
+    </div>
+    <span class="pulso" aria-hidden="true"></span>
+  </header>
+
+  <div class="hilo" id="hilo" role="log" aria-live="polite" aria-label="Conversación de baja">
+    <div class="paso-linea" aria-hidden="true"><i class="hecho"></i></div>
+    <article class="turno turno-agente">
+      <span class="avatar-agente" aria-hidden="true">N</span>
+      <div class="ficha">
+        <p>Hola, soy Nuria, del equipo de socios. Veo que quieres cancelar el plan Editorial y me parece bien: si no te está sirviendo, no tiene sentido que lo pagues.</p>
+        <p>Solo te pido un minuto. Dime qué pasó y, si puedo ayudarte a arreglarlo, lo intentamos antes de nada.</p>
+      </div>
+    </article>
+  </div>
+
+  <form class="zona" id="form" novalidate>
+    <div class="etapa" data-etapa="1">
+      <div class="campo" data-estado="neutro">
+        <span class="etiqueta" id="motivo-etiqueta">¿Cuál es el motivo principal de la baja?</span>
+        <div class="fichas" role="radiogroup" aria-labelledby="motivo-etiqueta" aria-describedby="motivo-ayuda">
+          <div class="ficha-opcion">
+            <input type="radio" id="motivo_precio" name="motivo" value="Me está resultando caro">
+            <label for="motivo_precio">Me está resultando caro</label>
+          </div>
+          <div class="ficha-opcion">
+            <input type="radio" id="motivo_uso" name="motivo" value="No lo uso lo suficiente">
+            <label for="motivo_uso">No lo uso lo suficiente</label>
+          </div>
+          <div class="ficha-opcion">
+            <input type="radio" id="motivo_fallos" name="motivo" value="Ha dado fallos o errores">
+            <label for="motivo_fallos">Ha dado fallos o errores</label>
+          </div>
+          <div class="ficha-opcion">
+            <input type="radio" id="motivo_contenidos" name="motivo" value="Los contenidos no son los que busco">
+            <label for="motivo_contenidos">Los contenidos no son los que busco</label>
+          </div>
+          <div class="ficha-opcion">
+            <input type="radio" id="motivo_pausa" name="motivo" value="Solo quiero pausar unos meses">
+            <label for="motivo_pausa">Solo quiero pausar unos meses</label>
+          </div>
+          <div class="ficha-opcion">
+            <input type="radio" id="motivo_otro" name="motivo" value="Otro motivo">
+            <label for="motivo_otro">Otro motivo</label>
+          </div>
+        </div>
+        <p class="ayuda" id="motivo-ayuda">El motivo nos ayuda a mejorar, pero no condiciona la baja. Puedes cancelar igual.</p>
+        <p class="error" id="motivo-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="detalle">Cuéntanos un poco más, si te apetece</label>
+        <textarea id="detalle" name="detalle" rows="3" maxlength="300" placeholder="Llevo cuatro números sin abrir la app y me da apena seguir pagando." aria-describedby="detalle-ayuda"></textarea>
+        <p class="ayuda" id="detalle-ayuda">Entre 10 y 300 caracteres. Lo lee una persona del equipo, no un algoritmo.</p>
+        <p class="error" id="detalle-error" role="alert"></p>
+      </div>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">Nos falta un detalle</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <button class="accion" type="submit" id="seguir1">Continuar <span class="flecha" aria-hidden="true"></span></button>
+    </div>
+
+    <div class="etapa" data-etapa="2" hidden>
+      <article class="turno turno-agente">
+        <span class="avatar-agente" aria-hidden="true">N</span>
+        <div class="ficha">
+          <p id="respuestaMotivo">Gracias por contarlo. Lo entiendo y no hay ningún problema en cancelarlo.</p>
+          <p>Antes de cerrar, quiero ofrecerte algo por si te sirve: dos meses al 50 % de precio en el plan que tengas elegido ahora mismo. Sin compromiso y sin cambiar nada de tu cuenta.</p>
+        </div>
+      </article>
+
+      <div class="oferta" id="oferta">
+        <span class="oferta-cinta" aria-hidden="true">Solo para ti</span>
+        <div class="oferta-cuerpo">
+          <p class="oferta-titulo">Dos meses al 50 %</p>
+          <p class="oferta-cifra"><b id="ofertaPrecio">4,25</b> €<small>al mes durante dos meses</small></p>
+          <p class="oferta-ahorro" id="ofertaAhorro">Te ahorras 8,50 € frente al precio habitual.</p>
+          <p class="oferta-cuenta" id="ofertaCuenta">La oferta caduca en 09:58</p>
+        </div>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <span class="etiqueta" id="oferta-etiqueta">¿Quieres aprovechar la oferta?</span>
+        <div class="fichas fichas-lineales" role="radiogroup" aria-labelledby="oferta-etiqueta" aria-describedby="oferta-ayuda">
+          <div class="ficha-opcion">
+            <input type="radio" id="oferta_si" name="oferta" value="Acepto la oferta">
+            <label for="oferta_si">Sí, quiero el descuento</label>
+          </div>
+          <div class="ficha-opcion">
+            <input type="radio" id="oferta_no" name="oferta" value="Prefiero cancelar">
+            <label for="oferta_no">No gracias, prefiero cancelar</label>
+          </div>
+        </div>
+        <p class="ayuda" id="oferta-ayuda">Puedes cambiar de idea más adelante desde tu perfil, sin penalizaciones.</p>
+        <p class="error" id="oferta-error" role="alert"></p>
+      </div>
+
+      <button class="accion" type="submit" id="seguir2">Aplicar y continuar <span class="flecha" aria-hidden="true"></span></button>
+      <p class="alternar-linea"><button class="enlace" type="button" id="irFinal">Prefiero no ver la oferta, ir directamente a la baja</button></p>
+    </div>
+
+    <div class="etapa" data-etapa="3" hidden>
+      <article class="turno turno-agente">
+        <span class="avatar-agente" aria-hidden="true">N</span>
+        <div class="ficha">
+          <p>De acuerdo, cancelamos la suscripción. Te acompaño en el último paso para que quede bien cerrado y no te cobremos nada más.</p>
+          <p>Necesito una última confirmación y el correo donde quieres que te llegue el justificante.</p>
+        </div>
+      </article>
+
+      <div class="campo" data-estado="neutro">
+        <span class="etiqueta" id="cierre-etiqueta">¿Cómo quieres cerrar?</span>
+        <div class="fichas fichas-lineales" role="radiogroup" aria-labelledby="cierre-etiqueta" aria-describedby="cierre-ayuda">
+          <div class="ficha-opcion">
+            <input type="radio" id="cierre_baja" name="cierre" value="Confirmo la baja definitiva">
+            <label for="cierre_baja">Confirmo la baja definitiva</label>
+          </div>
+          <div class="ficha-opcion">
+            <input type="radio" id="cierre_quedo" name="cierre" value="Mejor me quedo con la suscripción">
+            <label for="cierre_quedo">Mejor me quedo con la suscripción</label>
+          </div>
+        </div>
+        <p class="ayuda" id="cierre-ayuda">Si te quedas, no ocurre nada y no vuelve a aparecer esta pantalla hasta 2028.</p>
+        <p class="error" id="cierre-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="correo">Correo para el justificante</label>
+        <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="ana.morales@correo.com" aria-describedby="correo-ayuda">
+        <p class="ayuda" id="correo-ayuda">Te enviamos la baja y las fechas exactas de tu último periodo facturado.</p>
+        <p class="error" id="correo-error" role="alert"></p>
+      </div>
+
+      <div class="resumen-error" id="resumenError3" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b>Falta confirmar la baja</b>
+          <ul id="resumenErrorLista3"></ul>
+        </div>
+      </div>
+
+      <button class="accion" type="submit" id="seguir3">Cerrar el proceso <span class="flecha" aria-hidden="true"></span></button>
+    </div>
+  </form>
+
+  <section class="cierre" id="cierre" hidden tabindex="-1" aria-live="polite">
+    <span class="cierre-sello" aria-hidden="true"><span class="cierre-tic"></span></span>
+    <h2 id="cierreTitulo">Suscripción cancelada</h2>
+    <p id="cierreTexto">No se cobre ningún importe adicional.</p>
+    <dl class="cierre-datos">
+      <div><dt>Socia</dt><dd id="cSocia">sin definir</dd></div>
+      <div><dt>Plan</dt><dd id="cPlan">sin definir</dd></div>
+      <div><dt>Motivo</dt><dd id="cMotivo">sin definir</dd></div>
+      <div><dt>Hasta el</dt><dd id="cHasta">sin definir</dd></div>
+      <div><dt>Justificante</dt><dd id="cRef">BA-000000</dd></div>
+      <div><dt>Reactivación</dt><dd id="cVuelve">sin definir</dd></div>
+    </dl>
+    <p class="cierre-nota" id="cierreNota">Puedes volver a suscribirte cuando quieras con el mismo correo. Tus reseñas y comentarios se quedan guardados.</p>
+    <button class="accion cierre-btn" type="button" id="volver">Empezar de nuevo</button>
+  </section>
+
+  <p class="pie">Club de lectores Nexo &middot; baja sin llamadas comerciales y sin penalizaciones</p>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

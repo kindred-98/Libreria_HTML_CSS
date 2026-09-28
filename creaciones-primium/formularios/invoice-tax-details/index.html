@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoice And Tax Details</title>
+<meta name="description" content="Long single column tax invoicing form with side section anchors, NIF, NIE and CIF control letter checks and a live fiscal summary.">
+<meta name="description-es" content="Formulario largo de una columna para facturación fiscal con anclas laterales, comprobación de letras de control de NIF, NIE y CIF y resumen fiscal en vivo.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="lampara" aria-hidden="true"><span class="lampara-halo"></span><span class="lampara-halo lampara-halo-b"></span></div>
+<div class="polvo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<main class="hoja">
+  <header class="hoja-cab">
+    <p class="antetitulo">Alta de emisor de facturas</p>
+    <h1>Datos fiscales y de facturación</h1>
+    <p class="intro">Rellenamos estos datos una vez y los aplicamos a todas tus facturas. Puedes volver a editarlos cuando cambie tu situación.</p>
+    <div class="aviso">
+      <span class="aviso-icono" aria-hidden="true"></span>
+      <p>Los datos deben coincidir exactamente con lo que consta en el registro tributario. Si algo no cuadra, la factura quedará pendiente y avisaremos a la dirección de correo.</p>
+    </div>
+  </header>
+
+  <div class="disposicion">
+    <nav class="anclas" aria-label="Secciones del formulario">
+      <p class="anclas-titulo">Saltar a</p>
+      <ol class="anclas-lista">
+        <li><a href="#sec-fiscal"><span class="anclas-num">01</span> Identificación fiscal</a></li>
+        <li><a href="#sec-régimen"><span class="anclas-num">02</span> Régimen y actividad</a></li>
+        <li><a href="#sec-domicilio"><span class="anclas-num">03</span> Domicilio fiscal</a></li>
+        <li><a href="#sec-facturacion"><span class="anclas-num">04</span> Emisión y avisos</a></li>
+      </ol>
+      <p class="anclas-nota">Los enlaces llevan a cada bloque. Con el teclado puedes recorrerlos y volver arriba con la tecla Inicio.</p>
+    </nav>
+
+    <form class="columna" id="form" novalidate>
+      <section class="bloque" id="sec-fiscal" tabindex="-1">
+        <p class="bloque-num">Bloque 01</p>
+        <h2>Identificación fiscal</h2>
+        <p class="bloque-intro">Es el identificador con el que la Agencia Tributaria te reconoce. Según el tipo, hay que comprobar la letra de control.</p>
+
+        <div class="campo" data-estado="neutro">
+          <label for="tipo-id">Tipo de identificación</label>
+          <select id="tipo-id" name="tipo-id" aria-describedby="tipo-id-ayuda">
+            <option value="">Elige una opción</option>
+            <option value="NIF">NIF de persona física</option>
+            <option value="NIE">NIE de extranjero</option>
+            <option value="CIF">CIF de empresa</option>
+          </select>
+          <p class="ayuda" id="tipo-id-ayuda">El NIF son ocho cifras y una letra, el NIE empieza por X, Y o Z y el CIF por una letra.</p>
+          <p class="error" id="tipo-id-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="numero-id">Número de identificación</label>
+          <input id="numero-id" name="numero-id" type="text" placeholder="53820093D" aria-describedby="numero-id-ayuda">
+          <p class="ayuda" id="numero-id-ayuda">Comprobamos la letra de control y la avisamos si no encaja con el tipo elegido.</p>
+          <p class="error" id="numero-id-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="razon">Razón social</label>
+          <input id="razon" name="razon" type="text" placeholder="Panadería La Farola, S. L." aria-describedby="razon-ayuda">
+          <p class="ayuda" id="razon-ayuda">Tal y como figura en el registro mercantil, incluidas las formas sociales.</p>
+          <p class="error" id="razon-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="comercial">Nombre comercial</label>
+          <input id="comercial" name="comercial" type="text" placeholder="La Farola" aria-describedby="comercial-ayuda">
+          <p class="ayuda" id="comercial-ayuda">Opcional. Es el nombre que verá el cliente en la factura.</p>
+          <p class="error" id="comercial-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque" id="sec-regimen" tabindex="-1">
+        <p class="bloque-num">Bloque 02</p>
+        <h2>Régimen y actividad</h2>
+        <p class="bloque-intro">Con esto calculamos los impuestos de cada factura sin tener que preguntarte nada más.</p>
+
+        <div class="campo" data-estado="neutro">
+          <label for="regimen">Régimen fiscal</label>
+          <select id="regimen" name="regimen" aria-describedby="regimen-ayuda">
+            <option value="">Elige un régimen</option>
+            <option value="general">General</option>
+            <option value="simplificado">Especial de IVA aplicado a precios</option>
+            <option value="recargo">Recargo de equivalencia</option>
+            <option value="agricultura">Agricultura, Pesca y Silvicultura</option>
+            <option value="exenta">Entidades exentas</option>
+          </select>
+          <p class="ayuda" id="regimen-ayuda">El régimen de simplificación cambia la frecuencia con la que declaras, no el IVA que cobras.</p>
+          <p class="error" id="regimen-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="epigrafe">Epígrafe del IAE</label>
+          <select id="epigrafe" name="epigrafe" aria-describedby="epigrafe-ayuda">
+            <option value="">Elige el epígrafe</option>
+            <option value="0111">0111 · Panadería y obradoría</option>
+            <option value="0112">0112 · Panadería y pastelería</option>
+            <option value="0971">0971 · Cafeterías</option>
+            <option value="6431">6431 · Comercio al por mayor de alimentación</option>
+            <option value="6521">6521 · Comercio al por menor de alimentación</option>
+            <option value="0119">0119 · Otros servicios de alimentación</option>
+          </select>
+          <p class="ayuda" id="epigrafe-ayuda">El que mejor se ajuste a tu actividad habitual. Si tienes dudas, pregúntalo a tu gestoría.</p>
+          <p class="error" id="epigrafe-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="volumen">Facturación anual estimada</label>
+          <input id="volumen" name="volumen" type="text" inputmode="numeric" placeholder="84000" aria-describedby="volumen-ayuda">
+          <p class="ayuda" id="volumen-ayuda">Sin puntos ni símbolos, en euros. Solo sirve para saber qué régimen te conviene.</p>
+          <p class="error" id="volumen-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque" id="sec-domicilio" tabindex="-1">
+        <p class="bloque-num">Bloque 03</p>
+        <h2>Domicilio fiscal</h2>
+        <p class="bloque-intro">El domicilio que consta en tus declaraciones. Puede ser distinto del de entrega, por eso lo pedimos aparte.</p>
+
+        <div class="campo" data-estado="neutro">
+          <label for="provincia">Provincia</label>
+          <input id="provincia" name="provincia" type="text" placeholder="Valencia" aria-describedby="provincia-ayuda">
+          <p class="ayuda" id="provincia-ayuda">Sin la palabra provincia delante. Debe coincidir con el código postal.</p>
+          <p class="error" id="provincia-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="cp">Código postal</label>
+          <input id="cp" name="cp" type="text" inputmode="numeric" maxlength="5" placeholder="46004" aria-describedby="cp-ayuda">
+          <p class="ayuda" id="cp-ayuda">Cinco cifras cuyo prefijo tenga que corresponder a la provincia indicada.</p>
+          <p class="error" id="cp-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="direccion">Dirección fiscal</label>
+          <input id="direccion" name="direccion" type="text" placeholder="Carrer de la Pau 24, bajo" aria-describedby="direccion-ayuda">
+          <p class="ayuda" id="direccion-ayuda">Calle, número, piso y escalera en una sola línea.</p>
+          <p class="error" id="direccion-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="municipio">Municipio</label>
+          <input id="municipio" name="municipio" type="text" placeholder="Valencia" aria-describedby="municipio-ayuda">
+          <p class="ayuda" id="municipio-ayuda">El municipio de la provincia anterior. No vale la capital si el CP es de otra.</p>
+          <p class="error" id="municipio-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque" id="sec-facturacion" tabindex="-1">
+        <p class="bloque-num">Bloque 04</p>
+        <h2>Emisión y avisos</h2>
+        <p class="bloque-intro">Dónde mandamos las facturas y cómo avisamos de cualquier incidencia con la parte fiscal.</p>
+
+        <div class="campo" data-estado="neutro">
+          <label for="email">Correo de facturación</label>
+          <input id="email" name="email" type="email" inputmode="email" placeholder="facturacion@lafarola.com" aria-describedby="email-ayuda">
+          <p class="ayuda" id="email-ayuda">Aquí llegará la copia de cada factura y los avisos de la plataforma.</p>
+          <p class="error" id="email-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="pago">Forma de pago por defecto</label>
+          <select id="pago" name="pago" aria-describedby="pago-ayuda">
+            <option value="">Elige una forma de pago</option>
+            <option value="transferencia">Transferencia a 30 días</option>
+            <option value="domiciliado">Domiciliación bancaria SEPA</option>
+            <option value="tarjeta">Tarjeta de crédito</option>
+            <option value="bizum">Bizum</option>
+          </select>
+          <p class="ayuda" id="pago-ayuda">Podrás cambiarlo factura a factura en el momento de emitirla.</p>
+          <p class="error" id="pago-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="observaciones">Observaciones internas</label>
+          <textarea id="observaciones" name="observaciones" rows="3" maxlength="300" placeholder="Facturamos los sábados con el parte de la panadería." aria-describedby="observaciones-ayuda"></textarea>
+          <p class="ayuda" id="observaciones-ayuda">Solo las ve tu equipo. No se imprimen en la factura, así que evita datos fiscales aquí.</p>
+          <p class="error" id="observaciones-error" role="alert"></p>
+        </div>
+
+        <div class="campo campo-check" data-estado="neutro">
+          <input id="declaracion" name="declaracion" type="checkbox" aria-describedby="declaracion-ayuda">
+          <label for="declaracion">Declaro que los datos de este formulario son correctos y que el domicilio fiscal coincide con el declarado ante la Agencia Tributaria</label>
+          <span class="glifio" aria-hidden="true"></span>
+          <p class="ayuda" id="declaracion-ayuda">Sin esta declaración no podemos emitir facturas a tu nombre.</p>
+          <p class="error" id="declaracion-error" role="alert"></p>
+        </div>
+      </section>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">Faltan datos fiscales</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <p class="ayuda-legal">Guardamos estos datos cifrados. Puedes solicitar su eliminación desde el apartado de privacidad en cualquier momento.</p>
+        <button class="guardar" type="submit" id="guardar">Guardar datos fiscales <span class="flecha" aria-hidden="true"></span></button>
+      </div>
+    </form>
+
+    <aside class="resumen" aria-label="Resumen fiscal en vivo">
+      <div class="resumen-fija">
+        <p class="resumen-titulo">Resumen en vivo</p>
+        <div class="anillo" id="anillo" data-valor="0">
+          <span class="anillo-aro" aria-hidden="true"></span>
+          <span class="anillo-num" id="anilloNum">0</span>
+        </div>
+        <p class="resumen-ayuda" id="resumenCuenta">0 de 15 campos completos</p>
+        <dl class="resumen-lista">
+          <div><dt>Identificación</dt><dd id="rId">sin definir</dd></div>
+          <div><dt>Razón social</dt><dd id="rRazon">sin definir</dd></div>
+          <div><dt>Régimen</dt><dd id="rRegimen">sin definir</dd></div>
+          <div><dt>Actividad</dt><dd id="rEpigrafe">sin definir</dd></div>
+          <div><dt>Domicilio</dt><dd id="rDomicilio">sin definir</dd></div>
+          <div><dt>Facturación a</dt><dd id="rEmail">sin definir</dd></div>
+        </dl>
+        <p class="resumen-pie">Vista previa. Nada se guarda hasta que pulses el botón del final.</p>
+      </div>
+    </aside>
+  </div>
+
+  <section class="guardado" id="guardado" hidden tabindex="-1" aria-live="polite">
+    <span class="guardado-sello" aria-hidden="true"><span class="guardado-tic"></span></span>
+    <h2>Datos fiscales guardados</h2>
+    <p id="guardadoTexto">Ya puedes emitir facturas con estos datos.</p>
+    <dl class="guardado-datos">
+      <div><dt>Emisor</dt><dd id="gEmisor">sin definir</dd></div>
+      <div><dt>Identificación</dt><dd id="gId">sin definir</dd></div>
+      <div><dt>Domicilio fiscal</dt><dd id="gDomicilio">sin definir</dd></div>
+      <div><dt>Régimen</dt><dd id="gRegimen">sin definir</dd></div>
+      <div><dt>Facturas desde</dt><dd id="gDesde">sin definir</dd></div>
+      <div><dt>Referencia interna</dt><dd id="gRef">AE-0000</dd></div>
+    </dl>
+    <button class="guardar guardado-btn" type="button" id="seguir">Seguir editando</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

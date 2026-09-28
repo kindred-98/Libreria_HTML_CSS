@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile Identity Editor</title>
+<meta name="description" content="Profile data editor with a live identity card, avatar initials that follow the name field and interest tags that update as you type.">
+<meta name="description-es" content="Editor de datos de perfil con tarjeta de identidad en vivo, iniciales de avatar que siguen el nombre y etiquetas de intereses que se actualizan al escribir.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="tinta tinta-a" aria-hidden="true"></div>
+<div class="tinta tinta-b" aria-hidden="true"></div>
+<div class="puntos" aria-hidden="true"></div>
+
+<main class="hoja">
+  <header class="hoja-cab">
+    <p class="antetitulo">Ficha de socio</p>
+    <h1>Editar perfil</h1>
+    <p class="intro">Los datos que escribas a la izquierda aparecen al instante en tu tarjeta pública. Nada se guarda hasta que pulses el botón.</p>
+  </header>
+
+  <form class="hoja-cuerpo" id="form" novalidate>
+    <div class="columna-editor">
+      <fieldset class="bloque">
+        <legend>Identidad</legend>
+
+        <div class="campo" data-estado="neutro">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" name="nombre" type="text" autocomplete="given-name" placeholder="Ana" aria-describedby="nombre-ayuda">
+          <p class="ayuda" id="nombre-ayuda">Es el nombre que verás arriba en todo el producto.</p>
+          <p class="error" id="nombre-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="apellidos">Apellidos</label>
+          <input id="apellidos" name="apellidos" type="text" autocomplete="family-name" placeholder="Morales Prats" aria-describedby="apellidos-ayuda">
+          <p class="ayuda" id="apellidos-ayuda">Opcional. Se muestra en tu perfil y en las facturas.</p>
+          <p class="error" id="apellidos-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="alias">Alias público</label>
+          <input id="alias" name="alias" type="text" placeholder="anamorales" aria-describedby="alias-ayuda">
+          <p class="ayuda" id="alias-ayuda">Entre 3 y 24 caracteres, en minúsculas, sin espacios.</p>
+          <p class="error" id="alias-error" role="alert"></p>
+        </div>
+      </fieldset>
+
+      <fieldset class="bloque">
+        <legend>Contacto</legend>
+
+        <div class="campo" data-estado="neutro">
+          <label for="correo">Correo electrónico</label>
+          <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="ana.morales@correo.com" aria-describedby="correo-ayuda">
+          <p class="ayuda" id="correo-ayuda">Solo lo usamos para avisos de seguridad y novedades del club.</p>
+          <p class="error" id="correo-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="telefono">Teléfono</label>
+          <input id="telefono" name="telefono" type="tel" inputmode="numeric" autocomplete="tel" placeholder="612 34 56 78" aria-describedby="telefono-ayuda">
+          <p class="ayuda" id="telefono-ayuda">Nueve dígitos. Al publicar le añadimos el prefijo de España.</p>
+          <p class="error" id="telefono-error" role="alert"></p>
+        </div>
+      </fieldset>
+
+      <fieldset class="bloque">
+        <legend>Sobre ti</legend>
+
+        <div class="campo" data-estado="neutro">
+          <label for="ciudad">Ciudad</label>
+          <input id="ciudad" name="ciudad" type="text" placeholder="Valencia" aria-describedby="ciudad-ayuda">
+          <p class="ayuda" id="ciudad-ayuda">Se muestra junto a tu nombre para saber dónde escribes reseñas.</p>
+          <p class="error" id="ciudad-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="bio">Biografía corta</label>
+          <textarea id="bio" name="bio" rows="3" maxlength="180" placeholder="Diseño de producto desde 2014. Escribo sobre tipografía y sistemas de color." aria-describedby="bio-ayuda"></textarea>
+          <div class="cuenta-bio"><span id="bioCuenta">0</span> de 180 caracteres</div>
+          <p class="ayuda" id="bio-ayuda">Dos frases bastan. Aparece en tu ficha y en las firmas de los comentarios.</p>
+          <p class="error" id="bio-error" role="alert"></p>
+        </div>
+      </fieldset>
+
+      <fieldset class="bloque">
+        <legend>Intereses</legend>
+        <div class="campo" data-estado="neutro">
+          <p class="leyenda-bloque" id="leyendaIntereses">Marca al menos uno. Con esto elegimos los artículos que te recomendamos en la portada.</p>
+          <div class="opciones" role="group" aria-labelledby="leyendaIntereses">
+            <div class="opcion">
+              <input type="checkbox" id="int_diseno" name="int_diseno" value="Diseño editorial">
+              <label for="int_diseno"><span class="marca" aria-hidden="true"></span>Diseño editorial</label>
+            </div>
+            <div class="opcion">
+              <input type="checkbox" id="int_tecnologia" name="int_tecnologia" value="Tecnología">
+              <label for="int_tecnologia"><span class="marca" aria-hidden="true"></span>Tecnología</label>
+            </div>
+            <div class="opcion">
+              <input type="checkbox" id="int_cocina" name="int_cocina" value="Cocina y responsable">
+              <label for="int_cocina"><span class="marca" aria-hidden="true"></span>Cocina y responsable</label>
+            </div>
+            <div class="opcion">
+              <input type="checkbox" id="int_musica" name="int_musica" value="Música">
+              <label for="int_musica"><span class="marca" aria-hidden="true"></span>Música</label>
+            </div>
+            <div class="opcion">
+              <input type="checkbox" id="int_viajes" name="int_viajes" value="Viajes">
+              <label for="int_viajes"><span class="marca" aria-hidden="true"></span>Viajes</label>
+            </div>
+            <div class="opcion">
+              <input type="checkbox" id="int_fotografia" name="int_fotografia" value="Fotografía">
+              <label for="int_fotografia"><span class="marca" aria-hidden="true"></span>Fotografía</label>
+            </div>
+          </div>
+          <p class="ayuda" id="intereses-ayuda">Seis intereses como máximo. Puedes cambiarlos cuando quieras.</p>
+          <p class="error" id="intereses-error" role="alert"></p>
+        </div>
+      </fieldset>
+
+      <fieldset class="bloque">
+        <legend>Visibilidad</legend>
+        <div class="campo" data-estado="neutro">
+          <div class="opciones opciones-radio" role="radiogroup" aria-label="Visibilidad del perfil" id="visibilidad">
+            <div class="opcion">
+              <input type="radio" id="vis_publico" name="visibilidad" value="Público" checked>
+              <label for="vis_publico"><span class="marca" aria-hidden="true"></span>Público: cualquiera puede ver tu ficha</label>
+            </div>
+            <div class="opcion">
+              <input type="radio" id="vis_socios" name="visibilidad" value="Solo socios">
+              <label for="vis_socios"><span class="marca" aria-hidden="true"></span>Solo socios con sesión iniciada</label>
+            </div>
+          </div>
+          <p class="ayuda" id="visibilidad-ayuda">Los intereses y el teléfono nunca se muestran a desconocidos aunque el perfil sea público.</p>
+          <p class="error" id="visibilidad-error" role="alert"></p>
+        </div>
+      </fieldset>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">Revisa estos campos</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <button class="descartar" type="button" id="descartar">Descartar cambios</button>
+        <button class="guardar" type="submit" id="guardar">Guardar perfil <span class="flecha" aria-hidden="true"></span></button>
+      </div>
+    </div>
+
+    <aside class="columna-vista">
+      <p class="vista-titulo">Vista previa</p>
+      <div class="tarjeta" id="tarjeta">
+        <span class="tarjeta-brillo" aria-hidden="true"></span>
+        <div class="tarjeta-cab">
+          <span class="avatar" id="avatar" aria-hidden="true"><span class="avatar-inicial" id="avatarInicial">AM</span></span>
+          <span class="tarjeta-sello" aria-hidden="true"></span>
+        </div>
+        <h2 class="tarjeta-nombre" id="verNombre">Ana Morales</h2>
+        <p class="tarjeta-alias" id="verAlias">@anamorales</p>
+        <p class="tarjeta-lugar" id="verLugar">Valencia, España</p>
+        <p class="tarjeta-bio" id="verBio">Diseño de producto desde 2014. Escribo sobre tipografía y sistemas de color.</p>
+        <ul class="etiquetas" id="verEtiquetas">
+          <li class="vacia">Sin intereses marcados todavía</li>
+        </ul>
+        <dl class="tarjeta-datos">
+          <div><dt>Correo</dt><dd id="verCorreo">sin definir</dd></div>
+          <div><dt>Teléfono</dt><dd id="verTelefono">sin definir</dd></div>
+          <div><dt>Visibilidad</dt><dd id="verVisibilidad">Público</dd></div>
+        </dl>
+        <p class="tarjeta-pie">Socia desde marzo de 2019 &middot; 34 reseñas</p>
+      </div>
+      <p class="vista-nota">Así verán tu perfil los demás. La imagen es ilustrativa, no se sube ningún archivo.</p>
+    </aside>
+  </form>
+
+  <section class="guardado" id="guardado" hidden tabindex="-1" aria-live="polite">
+    <span class="guardado-sello" aria-hidden="true"><span class="guardado-tic"></span></span>
+    <h2>Perfil actualizado</h2>
+    <p id="guardadoTexto">Tus datos ya están guardados y visibles en tu ficha.</p>
+    <dl class="guardado-datos">
+      <div><dt>Nombre público</dt><dd id="gNombre">sin definir</dd></div>
+      <div><dt>Intereses</dt><dd id="gIntereses">sin definir</dd></div>
+      <div><dt>Visibilidad</dt><dd id="gVisibilidad">sin definir</dd></div>
+      <div><dt>Referencia</dt><dd id="gRef">NX-0000</dd></div>
+    </dl>
+    <button class="guardar" type="button" id="seguir">Seguir editando</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

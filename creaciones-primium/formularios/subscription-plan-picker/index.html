@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subscription Plan Picker</title>
+<meta name="description" content="Subscription signup with a single email field that unfolds a plan panel on focus, monthly and annual pricing with savings and a live order summary.">
+<meta name="description-es" content="Alta de suscripción con un único campo de correo que despliega el panel de planes al enfocarse, precios mensuales y anuales con ahorro y resumen del pedido en vivo.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="lavanda" aria-hidden="true"><span class="mancha mancha-a"></span><span class="mancha mancha-b"></span></div>
+<div class="punteado" aria-hidden="true"></div>
+
+<main class="envoltorio">
+  <header class="cab">
+    <span class="sello" aria-hidden="true"><span class="sello-nucleo"></span></span>
+    <p class="antetitulo">Club de lectores</p>
+    <h1>Empieza tu suscripción</h1>
+    <p class="intro">Escribe tu correo y se abrirá el panel con los tres planes. Solo te cobramos cuando elijas uno.</p>
+  </header>
+
+  <form class="formulario" id="form" novalidate>
+    <div class="campo campo-clave" data-estado="neutro">
+      <label for="correo">Correo electrónico</label>
+      <div class="fila-correo">
+        <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="ana.morales@correo.com" aria-describedby="correo-ayuda" aria-expanded="false" aria-controls="panel">
+        <span class="sobre" aria-hidden="true"></span>
+      </div>
+      <p class="ayuda" id="correo-ayuda">Aquí llegan los números y el enlace para gestionar la suscripción.</p>
+      <p class="error" id="correo-error" role="alert"></p>
+      <p class="invitacion" id="invitacion"><span class="flecha-abajo" aria-hidden="true"></span>Al escribir en el campo se despliegan los tres planes</p>
+    </div>
+
+    <div class="panel campo" id="panel" data-estado="neutro" hidden>
+      <div class="panel-barra">
+        <p class="panel-titulo">Elige tu plan</p>
+        <fieldset class="conmutador" id="conmutador">
+          <legend class="sr">Periodicidad de la suscripción</legend>
+          <div class="opcion opcion-switch">
+            <input type="radio" id="per_mensual" name="periodicidad" value="Mensual" checked>
+            <label for="per_mensual"><span class="marca" aria-hidden="true"></span>Mensual</label>
+          </div>
+          <div class="opcion opcion-switch">
+            <input type="radio" id="per_anual" name="periodicidad" value="Anual">
+            <label for="per_anual"><span class="marca" aria-hidden="true"></span>Anual</label>
+            <span class="ahorro">Ahorras 20 %</span>
+          </div>
+        </fieldset>
+      </div>
+
+      <fieldset class="planes" id="planes" role="group" aria-labelledby="plan-legenda">
+        <legend class="sr" id="plan-legenda">Planes disponibles</legend>
+
+        <div class="plan" data-plan="esencial">
+          <div class="opcion">
+            <input type="radio" id="plan_esencial" name="plan" value="Esencial">
+            <label for="plan_esencial">
+              <span class="marca" aria-hidden="true"></span>
+              <span class="plan-cuerpo">
+                <b class="plan-nombre">Esencial</b>
+                <small class="plan-para">Para leer dos números al mes sin más complicación.</small>
+                <span class="plan-precio"><b class="plan-cifra" data-mensual="4,90" data-anual="47,04">4,90</b><small>€ al mes</small></span>
+                <span class="plan-extra" data-anual="Facturado una vez al año: 47,04 €.">Se renueva cada mes hasta que lo canceles.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="plan plan-destacado" data-plan="editorial">
+          <span class="cinta" aria-hidden="true">El más elegido</span>
+          <div class="opcion">
+            <input type="radio" id="plan_editorial" name="plan" value="Editorial">
+            <label for="plan_editorial">
+              <span class="marca" aria-hidden="true"></span>
+              <span class="plan-cuerpo">
+                <b class="plan-nombre">Editorial</b>
+                <small class="plan-para">Todos los números, el archivo completo y el resumen del lunes.</small>
+                <span class="plan-precio"><b class="plan-cifra" data-mensual="8,50" data-anual="81,60">8,50</b><small>€ al mes</small></span>
+                <span class="plan-extra" data-anual="Facturado una vez al año: 81,60 €.">Se renueva cada mes hasta que lo canceles.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="plan" data-plan="colectivo">
+          <div class="opcion">
+            <input type="radio" id="plan_colectivo" name="plan" value="Colectivo">
+            <label for="plan_colectivo">
+              <span class="marca" aria-hidden="true"></span>
+              <span class="plan-cuerpo">
+                <b class="plan-nombre">Colectivo</b>
+                <small class="plan-para">Hasta cinco lectores, reuniones trimestrales y envío en papel.</small>
+                <span class="plan-precio"><b class="plan-cifra" data-mensual="14,00" data-anual="134,40">14,00</b><small>€ al mes</small></span>
+                <span class="plan-extra" data-anual="Facturado una vez al año: 134,40 €.">Se renueva cada mes hasta que lo canceles.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </fieldset>
+
+      <p class="ayuda planes-ayuda" id="planes-ayuda" aria-live="polite">Puedes cambiar de plan o cancelar en dos clics desde el correo que te enviamos.</p>
+      <p class="error" id="planes-error" role="alert"></p>
+    </div>
+
+    <div class="campo campo-check" data-estado="neutro">
+      <input id="renovacion" name="renovacion" type="checkbox" checked aria-describedby="renovacion-ayuda">
+      <label for="renovacion">Renovar automáticamente cada periodo</label>
+      <span class="glifo" aria-hidden="true"></span>
+      <p class="ayuda" id="renovacion-ayuda">Si lo quitas, te avisamos por correo antes de que termine el periodo.</p>
+      <p class="error" id="renovacion-error" role="alert"></p>
+    </div>
+
+    <div class="resumen" aria-live="polite">
+      <p class="resumen-titulo">Resumen del pedido</p>
+      <dl class="resumen-lista">
+        <div><dt>Plan</dt><dd id="sPlan">sin elegir</dd></div>
+        <div><dt>Periodicidad</dt><dd id="sPeriodo">Mensual</dd></div>
+        <div><dt>Importe</dt><dd id="sImporte">0,00 €</dd></div>
+        <div><dt>Ahorro anual</dt><dd id="sAhorro">0,00 €</dd></div>
+        <div class="resumen-total"><dt>Total a pagar ahora</dt><dd id="sTotal">0,00 €</dd></div>
+      </dl>
+      <p class="resumen-nota" id="sNota">Elige un plan para ver el desglose.</p>
+    </div>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-error-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">Falta un paso</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <button class="alta" type="submit" id="alta">Empezar la suscripción <span class="flecha" aria-hidden="true"></span></button>
+
+    <p class="pie-legal">Si eliges el pago anual, se cobra entero el primer día. El precio no cambia durante el primer año.</p>
+  </form>
+
+  <section class="alta-lista" id="altaLista" hidden tabindex="-1" aria-live="polite">
+    <span class="alta-sello" aria-hidden="true"><span class="alta-tic"></span></span>
+    <h2>Ya eres socia del club</h2>
+    <p id="altaTexto">Te hemos enviado el número de enero a tu correo.</p>
+    <dl class="alta-datos">
+      <div><dt>Socia</dt><dd id="aSocia">sin definir</dd></div>
+      <div><dt>Plan</dt><dd id="aPlan">sin definir</dd></div>
+      <div><dt>Importe</dt><dd id="aImporte">sin definir</dd></div>
+      <div><dt>Número de socia</dt><dd id="aNumero">SO-000000</dd></div>
+    </dl>
+    <button class="alta alta-btn" type="button" id="otra">Empezar de nuevo</button>
+  </section>
+
+  <p class="pie-pagina">Club de lectores Nexo &middot; publicación quincenal desde 2011</p>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

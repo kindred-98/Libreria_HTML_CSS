@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product Feedback Drawer</title>
+<meta name="description" content="Product feedback side drawer with a satisfaction slider, tagged categories, notes field, trapped focus, escape to close and a sent confirmation.">
+<meta name="description-es" content="Hoja lateral de comentarios de producto con deslizador de satisfacción, categorías marcadas, campo de notas, foco atrapado, cierre con Escape y confirmación de envío.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="fondo" aria-hidden="true"><span class="bruma bruma-a"></span><span class="bruma bruma-b"></span><span class="rejilla"></span></div>
+
+<main class="pagina" id="principal">
+  <header class="barra">
+    <span class="marca" aria-hidden="true"><span class="marca-glifo"></span></span>
+    <span class="marca-txt">Taller Brasa</span>
+    <span class="barra-ruta">Cafeteras de goteo</span>
+    <span class="barra-sello" aria-hidden="true">Envío gratis desde 40 €</span>
+  </header>
+
+  <div class="ficha">
+    <div class="ilustracion" aria-hidden="true">
+      <span class="cafetera-cuerpo"></span>
+      <span class="cafetera-tetera"></span>
+      <span class="cafetera-asa"></span>
+      <span class="cafetera-bandeja"></span>
+      <span class="vapor vapor-1"></span>
+      <span class="vapor vapor-2"></span>
+      <span class="vapor vapor-3"></span>
+    </div>
+
+    <div class="detalle">
+      <p class="antetitulo">Ref. TB-1204</p>
+      <h1>Cafetera de goteo Brava, 1,2 litros</h1>
+      <div class="precio"><b>64,50 €</b><s>79,00 €</s><span class="chollo">Ahorras 14,50 €</span></div>
+      <p class="descripcion">Cuerpo de acero inoxidable y jarra Carlisle, calentador de 1.000 W y temporizador de hasta 24 horas. La jarra es apta para lavavajillas y cabe bajo un armario de cocina normal.</p>
+      <ul class="caracteristicas">
+        <li><span class="pip" aria-hidden="true"></span>Capacidad de 1,2 litros, unas seis tazas</li>
+        <li><span class="pip" aria-hidden="true"></span>Programación de 24 horas con reloj digital</li>
+        <li><span class="pip" aria-hidden="true"></span>Función de mantener el calor 40 minutos</li>
+        <li><span class="pip" aria-hidden="true"></span>Garantía de dos años y recambios disponibles</li>
+      </ul>
+      <div class="acciones-producto">
+        <p class="stock"><span class="stock-punto" aria-hidden="true"></span>Quedan 7 unidades en el almacén de Valencia</p>
+        <button class="anadir" type="button">Añadir al carrito</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="opiniones">
+    <h2>Lo que dicen quienes ya la tienen</h2>
+    <div class="fichas-opinion">
+      <article class="opinion">
+        <span class="opinion-nota" aria-hidden="true">5</span>
+        <p>La jarra no pierde nada aunque la lleves al lavavajillas. La uso a diario desde hace cuatro meses.</p>
+        <small>Marta R. &middot; compra verificada</small>
+      </article>
+      <article class="opinion">
+        <span class="opinion-nota" aria-hidden="true">4</span>
+        <p>Muy buena relación calidad precio. Solo echo en falta que el cable sea algo más corto.</p>
+        <small>Iván P. &middot; compra verificada</small>
+      </article>
+    </div>
+  </section>
+
+  <div class="zona-lanzador">
+    <button class="lanzador" type="button" id="abrir" aria-haspopup="dialog" aria-expanded="false" aria-controls="cajon">
+      <span class="lanzador-anillo" aria-hidden="true"></span>
+      <span class="lanzador-icono" aria-hidden="true"></span>
+      <span class="lanzador-txt"><b>Cuéntanos qué tal</b><small>Tarda menos de un minuto</small></span>
+    </button>
+  </div>
+</main>
+
+<div class="velo" id="velo" hidden></div>
+
+<aside class="cajon" id="cajon" role="dialog" aria-modal="true" aria-labelledby="cajonTitulo" hidden>
+  <header class="cajon-cab">
+    <span class="cajon-marca" aria-hidden="true"><span class="cajon-glifo"></span></span>
+    <div class="cajon-txt">
+      <p class="antetitulo">Comentarios</p>
+      <h2 id="cajonTitulo">¿Qué te ha parecido la cafetera?</h2>
+    </div>
+    <button class="cerrar" type="button" id="cerrar" aria-label="Cerrar el panel de comentarios">
+      <span aria-hidden="true"></span>
+    </button>
+  </header>
+
+  <div class="cajon-cuerpo">
+    <form class="panel-form" id="form" novalidate>
+      <div class="campo campo-deslizador" data-estado="neutro">
+        <label for="satisfaccion">Tu satisfacción con la compra</label>
+        <div class="lectura">
+          <output class="lectura-num" id="lecturaNum">7</output>
+          <span class="lectura-texto" id="lecturaTexto">Bien, con detalles que podrían mejorar</span>
+        </div>
+        <div class="deslizador-envoltura">
+          <input id="satisfaccion" name="satisfaccion" type="range" min="0" max="10" step="1" value="7" aria-describedby="satisfaccion-ayuda">
+        </div>
+        <div class="deslizador-marcas" aria-hidden="true"><span>Muy mal</span><span>Regular</span><span>Excelente</span></div>
+        <p class="ayuda" id="satisfaccion-ayuda">Muévete con las flechas del teclado o haz clic en cualquier punto de la barra.</p>
+        <p class="error" id="satisfaccion-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <span class="etiqueta" id="cat-etiqueta">¿Sobre qué quieres hablar?</span>
+        <div class="etiquetas-sel" role="group" aria-labelledby="cat-etiqueta" aria-describedby="cat-ayuda">
+          <div class="et">
+            <input type="checkbox" id="cat_envio" name="cat" value="Envío y embalaje">
+            <label for="cat_envio"><span class="et-marca" aria-hidden="true"></span>Envío y embalaje</label>
+          </div>
+          <div class="et">
+            <input type="checkbox" id="cat_calidad" name="cat" value="Calidad de materiales">
+            <label for="cat_calidad"><span class="et-marca" aria-hidden="true"></span>Calidad de materiales</label>
+          </div>
+          <div class="et">
+            <input type="checkbox" id="cat_atencion" name="cat" value="Atención al cliente">
+            <label for="cat_atencion"><span class="et-marca" aria-hidden="true"></span>Atención al cliente</label>
+          </div>
+          <div class="et">
+            <input type="checkbox" id="cat_precio" name="cat" value="Precio y descuentos">
+            <label for="cat_precio"><span class="et-marca" aria-hidden="true"></span>Precio y descuentos</label>
+          </div>
+          <div class="et">
+            <input type="checkbox" id="cat_web" name="cat" value="Web y catálogo">
+            <label for="cat_web"><span class="et-marca" aria-hidden="true"></span>Web y catálogo</label>
+          </div>
+          <div class="et">
+            <input type="checkbox" id="cat_accesibilidad" name="cat" value="Accesibilidad">
+            <label for="cat_accesibilidad"><span class="et-marca" aria-hidden="true"></span>Accesibilidad</label>
+          </div>
+        </div>
+        <p class="ayuda" id="cat-ayuda">Marca al menos una. Cuantas más, mejor llega al equipo adecuado.</p>
+        <p class="error" id="cat-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="notas">Cuéntanos con tu palabras</label>
+        <textarea id="notas" name="notas" rows="4" maxlength="600" placeholder="El calentador tarda algo más de lo que dice la caja, pero el café queda bien." aria-describedby="notas-ayuda"></textarea>
+        <div class="cuenta" id="notasCuenta">0 de 600</div>
+        <p class="ayuda" id="notas-ayuda">Entre 20 y 600 caracteres. Cuéntanos lo que harías distinto, no solo lo que te gustó.</p>
+        <p class="error" id="notas-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="correo">Correo si quieres respuesta <span class="opcional">Opcional</span></label>
+        <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="ana.morales@correo.com" aria-describedby="correo-ayuda">
+        <p class="ayuda" id="correo-ayuda">Solo lo usamos para contestarte. No lo compartimos con nadie.</p>
+        <p class="error" id="correo-error" role="alert"></p>
+      </div>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">Faltan detalles</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <button class="enviar" type="submit" id="enviar">Enviar comentarios <span class="flecha" aria-hidden="true"></span></button>
+      <p class="pie-legal">Se publica como opinion verificada junto al producto. Puedes editarlo o borrarlo cuando quieras.</p>
+    </form>
+
+    <section class="enviado" id="enviado" hidden tabindex="-1" aria-live="polite">
+      <span class="enviado-aro" aria-hidden="true"></span>
+      <span class="enviado-sello" aria-hidden="true"><span class="enviado-tic"></span></span>
+      <h2>Gracias, ya lo hemos recibido</h2>
+      <p id="enviadoTexto">Le damos una vuelta al equipo esta misma semana.</p>
+      <dl class="enviado-datos">
+        <div><dt>Satisfacción</dt><dd id="eNota">sin definir</dd></div>
+        <div><dt>Temas</dt><dd id="eTemas">sin definir</dd></div>
+        <div><dt>Referencia</dt><dd id="eRef">FB-000000</dd></div>
+        <div><dt>Respuesta</dt><dd id="eRespuesta">no solicitada</dd></div>
+      </dl>
+      <blockquote class="cita" id="eCita">Sin notas adicionales.</blockquote>
+      <button class="enviar enviado-btn" type="button" id="otra">Enviar más comentarios</button>
+    </section>
+  </div>
+</aside>
+
+<script src="script.js"></script>
+</body>
+</html>

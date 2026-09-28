@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bizum Mobile Pay Bar</title>
+<meta name="description" content="Single row Bizum payment bar with phone and alias validation, amount limits, a live receipt preview and a sent confirmation strip.">
+<meta name="description-es" content="Barra compacta de pago Bizum con validación de teléfono y alias, límite de importe, vista previa del justificante y confirmación de envío.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="vaho vaho-a" aria-hidden="true"></div>
+<div class="vaho vaho-b" aria-hidden="true"></div>
+<div class="rejilla" aria-hidden="true"></div>
+
+<main class="barra-pago">
+  <header class="barra-cab">
+    <span class="logotipo" aria-hidden="true"><span class="logotipo-raya"></span><span class="logotipo-punto"></span></span>
+    <div class="cab-txt">
+      <p class="antetitulo">Pago móvil</p>
+      <h1>Pagar con Bizum</h1>
+    </div>
+    <p class="cab-plazo">La solicitud caduca en <b>4:58</b></p>
+  </header>
+
+  <section class="concepto">
+    <div class="concepto-linea">
+      <span class="concepto-icono" aria-hidden="true"></span>
+      <div>
+        <b>Panadería La Farola, S. L.</b>
+        <small>Pedido 88214 &middot; dos barras de masa madre y un cortado</small>
+      </div>
+    </div>
+    <p class="concepto-total"><small>A pagar</small><b id="totalVivo">24,90 €</b></p>
+  </section>
+
+  <form class="fila" id="form" novalidate>
+    <div class="celda campo" data-estado="neutro">
+      <label for="telefono">Teléfono</label>
+      <div class="control">
+        <span class="prefijo" aria-hidden="true">+34</span>
+        <input id="telefono" name="telefono" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="9" placeholder="612345678" aria-describedby="telefono-ayuda">
+        <span class="glifo" aria-hidden="true"></span>
+      </div>
+      <p class="ayuda" id="telefono-ayuda">Nueve cifras, empezando por 6 u 8.</p>
+      <p class="error" id="telefono-error" role="alert"></p>
+    </div>
+
+    <span class="divisor" aria-hidden="true"></span>
+
+    <div class="celda campo" data-estado="neutro">
+      <label for="alias">Alias Bizum</label>
+      <div class="control">
+        <input id="alias" name="alias" type="text" autocomplete="off" spellcheck="false" placeholder="anamorales" aria-describedby="alias-ayuda">
+        <span class="glifo" aria-hidden="true"></span>
+      </div>
+      <p class="ayuda" id="alias-ayuda">De 4 a 20 caracteres: letras, números, punto y guion.</p>
+      <p class="error" id="alias-error" role="alert"></p>
+    </div>
+
+    <span class="divisor" aria-hidden="true"></span>
+
+    <div class="celda campo" data-estado="neutro">
+      <label for="importe">Importe</label>
+      <div class="control">
+        <input id="importe" name="importe" type="text" inputmode="decimal" placeholder="0,00" aria-describedby="importe-ayuda">
+        <span class="sufijo" aria-hidden="true">EUR</span>
+        <span class="glifo" aria-hidden="true"></span>
+      </div>
+      <p class="ayuda" id="importe-ayuda">Entre 0,01 y 5000,00 euros.</p>
+      <p class="error" id="importe-error" role="alert"></p>
+    </div>
+
+    <span class="divisor" aria-hidden="true"></span>
+
+    <div class="celda celda-accion">
+      <button class="enviar" type="submit" id="enviar">Enviar <span class="flecha" aria-hidden="true"></span></button>
+      <p class="ayuda ayuda-enviar">Recibirás un aviso en el móvil para confirmar.</p>
+    </div>
+  </form>
+
+  <p class="nota-legal">Bizum es un servicio de la Confederación Española de Cajas de Ahorros. Nexo solo intermedia: el dinero va directo de tu cuenta a la panadería.</p>
+
+  <div class="resumen-error" id="resumenError" role="alert" hidden>
+    <span class="resumen-error-icono" aria-hidden="true"></span>
+    <div>
+      <b id="resumenErrorTitulo">Revisa la barra</b>
+      <ul id="resumenErrorLista"></ul>
+    </div>
+  </div>
+
+  <section class="justificante" aria-label="Vista previa del justificante">
+    <p class="just-titulo">Así verá tu banco la operación</p>
+    <div class="just-cuerpo">
+      <span class="just-marca" aria-hidden="true"></span>
+      <div class="just-datos">
+        <p><small>Desde</small><b id="jDesde">Cuenta Bizum sin definir</b></p>
+        <p><small>Hacia</small><b id="jHacia">Alias sin definir</b></p>
+        <p><small>Importe</small><b id="jImporte">sin definir</b></p>
+      </div>
+      <span class="just-firma" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <section class="listo" id="listo" hidden tabindex="-1" aria-live="polite">
+    <span class="listo-sello" aria-hidden="true"><span class="listo-tic"></span></span>
+    <div class="listo-texto">
+      <h2>Solicitud enviada al móvil</h2>
+      <p id="listoTexto">Abre la notificación de tu banco y confirma con tu PIN. Tenemos la espera abierta 4:58.</p>
+    </div>
+    <dl class="listo-datos">
+      <div><dt>Operación</dt><dd id="lOp">BZ-000000</dd></div>
+      <div><dt>Destinatario</dt><dd id="lDest">sin definir</dd></div>
+      <div><dt>Importe</dt><dd id="lImporte">sin definir</dd></div>
+      <div><dt>Estado</dt><dd>pendiente de confirmar</dd></div>
+    </dl>
+    <button class="enviar listo-btn" type="button" id="otra">Hacer otro pago</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

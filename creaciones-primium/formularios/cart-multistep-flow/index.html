@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cart Multistep Checkout</title>
+<meta name="description" content="Three step checkout that recomposes the view as you move from basket to delivery to payment, with live totals and a card field validated with Luhn.">
+<meta name="description-es" content="Compra en tres pasos que recompone la vista al pasar del carrito al envío y al pago, con total en vivo, validación de tarjeta por Luhn y confirmación de pedido.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bosque" aria-hidden="true">
+  <span class="luz luz-a"></span>
+  <span class="luz luz-b"></span>
+  <span class="luz luz-c"></span>
+  <span class="hojarasca"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#cesta">
+    <span class="marca-cesta" aria-hidden="true"><span class="marca-mango"></span><span class="marca-asa"></span></span>
+    <span class="marca-texto">Vivero<em>del Soto</em></span>
+  </a>
+  <p class="encabezado-nota">Envío gratis desde 45 € · garantía de un mes en todas las plantas</p>
+</header>
+
+<main class="escena" id="cesta">
+  <ol class="migas" id="migas">
+    <li class="miga is-activo" data-paso="1">
+      <span class="miga-punto"><span class="miga-num">1</span></span>
+      <span class="miga-txt"><b>Cesta</b><small>Elige qué te llevas</small></span>
+    </li>
+    <li class="miga" data-paso="2">
+      <span class="miga-punto"><span class="miga-num">2</span></span>
+      <span class="miga-txt"><b>Envío</b><small>A dónde y cómo</small></span>
+    </li>
+    <li class="miga" data-paso="3">
+      <span class="miga-punto"><span class="miga-num">3</span></span>
+      <span class="miga-txt"><b>Pago</b><small>Cierra el pedido</small></span>
+    </li>
+  </ol>
+
+  <div class="disposicion">
+    <form class="flujo" id="form" novalidate>
+      <section class="panel is-activo" data-panel="1" aria-label="Paso 1, elección de artículos">
+        <p class="antetitulo">Paso 1 de 3</p>
+        <h1>Qué plantas se van contigo</h1>
+        <p class="intro">Marca las que quieres y ajusta la cantidad. El total se recalcula solo, sin recargar nada.</p>
+
+        <fieldset class="carro" id="carro">
+          <legend class="visualmente-oculto">Artículos disponibles en la cesta</legend>
+
+          <label class="linea" data-ref="1">
+            <input type="checkbox" name="articulo" value="1" checked>
+            <span class="linea-foto foto-a" aria-hidden="true"></span>
+            <span class="linea-datos">
+              <b>Lavandula angustifolia, 1 L</b>
+              <small>Maceta de barro de 14 cm, resistente a la sequía</small>
+            </span>
+            <span class="linea-precio">8,90 €</span>
+            <span class="linea-cantidad">
+              <label class="visualmente-oculto" for="cant1">Unidades de lavandula</label>
+              <select id="cant1" class="selector" data-ref="1">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </span>
+          </label>
+
+          <label class="linea" data-ref="2">
+            <input type="checkbox" name="articulo" value="2" checked>
+            <span class="linea-foto foto-b" aria-hidden="true"></span>
+            <span class="linea-datos">
+              <b>Hortensia paniculata, 3 L</b>
+              <small>Blanco cremoso en julio, semisombra</small>
+            </span>
+            <span class="linea-precio">24,50 €</span>
+            <span class="linea-cantidad">
+              <label class="visualmente-oculto" for="cant2">Unidades de hortensia</label>
+              <select id="cant2" class="selector" data-ref="2">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </span>
+          </label>
+
+          <label class="linea" data-ref="3">
+            <input type="checkbox" name="articulo" value="3">
+            <span class="linea-foto foto-c" aria-hidden="true"></span>
+            <span class="linea-datos">
+              <b>Hibisco-kubernetes, 2 L</b>
+              <small>Floración larga en terraza y balcón</small>
+            </span>
+            <span class="linea-precio">15,00 €</span>
+            <span class="linea-cantidad">
+              <label class="visualmente-oculto" for="cant3">Unidades de hibisco</label>
+              <select id="cant3" class="selector" data-ref="3">
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </span>
+          </label>
+
+          <label class="linea" data-ref="4">
+            <input type="checkbox" name="articulo" value="4">
+            <span class="linea-foto foto-d" aria-hidden="true"></span>
+            <span class="linea-datos">
+              <b>SustratoUniversal, 20 L</b>
+              <small>Para el transplante de otoño, pH 6,5</small>
+            </span>
+            <span class="linea-precio">11,75 €</span>
+            <span class="linea-cantidad">
+              <label class="visualmente-oculto" for="cant4">Unidades de sustrato</label>
+              <select id="cant4" class="selector" data-ref="4">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </span>
+          </label>
+
+          <label class="linea" data-ref="5">
+            <input type="checkbox" name="articulo" value="5">
+            <span class="linea-foto foto-e" aria-hidden="true"></span>
+            <span class="linea-datos">
+              <b>Cinta de amarre, 50 m</b>
+              <small>Suave con las ramas jóvenes, biodegradable</small>
+            </span>
+            <span class="linea-precio">6,20 €</span>
+            <span class="linea-cantidad">
+              <label class="visualmente-oculto" for="cant5">Unidades de cinta</label>
+              <select id="cant5" class="selector" data-ref="5">
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </span>
+          </label>
+        </fieldset>
+
+        <div class="campo campo-aviso" id="campo-cesta" data-estado="neutro">
+          <p class="aviso" id="cesta-ayuda" role="status">Elige al menos un artículo para poder seguir con el envío.</p>
+          <p class="error" id="cesta-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="2" aria-label="Paso 2, datos de envío" hidden>
+        <p class="antetitulo">Paso 2 de 3</p>
+        <h1>Dónde lo dejamos y en cuánto tiempo</h1>
+        <p class="intro">Las plantas van en caja isotérmica. Si el repartidor no te encuentra, la segunda entrega es gratis.</p>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="nombre">Persona que recibe</label>
+            <input id="nombre" name="nombre" type="text" autocomplete="name" placeholder="Nombre y apellido" aria-describedby="nombre-ayuda">
+            <p class="ayuda" id="nombre-ayuda">Quien firme el paquete. Con eso ya vale, no hace falta que esté en casa todo el día.</p>
+            <p class="error" id="nombre-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="telefono">Teléfono para el repartidor</label>
+            <input id="telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="600 123 456" aria-describedby="telefono-ayuda">
+            <p class="ayuda" id="telefono-ayuda">Nueve cifras, sin el 34. Lo usamos solo el día de la entrega.</p>
+            <p class="error" id="telefono-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="direccion">Dirección completa</label>
+          <input id="direccion" name="direccion" type="text" autocomplete="street-address" placeholder="Calle, número, piso y puerta" aria-describedby="direccion-ayuda">
+          <p class="ayuda" id="direccion-ayuda">Calle, número, piso y letra. El portal y el ascensor nos ahorran mucho tiempo.</p>
+          <p class="error" id="direccion-error" role="alert"></p>
+        </div>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="cp">Código postal</label>
+            <input id="cp" name="cp" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="28004" aria-describedby="cp-ayuda">
+            <p class="ayuda" id="cp-ayuda">Cinco cifras. Si es una Finca, la puerta y el buzón valen igual.</p>
+            <p class="error" id="cp-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="ciudad">Población</label>
+            <input id="ciudad" name="ciudad" type="text" autocomplete="address-level2" placeholder="Madrid" aria-describedby="ciudad-ayuda">
+            <p class="ayuda" id="ciudad-ayuda">La localidad donde vive la persona que recibe.</p>
+            <p class="error" id="ciudad-error" role="alert"></p>
+          </div>
+        </div>
+
+        <fieldset class="envio" data-estado="neutro">
+          <legend>Forma de entrega</legend>
+          <label class="opcion">
+            <input type="radio" name="transporte" value="estandar" checked>
+            <span class="opcion-caja">
+              <b>Estándar, de 2 a 4 días</b>
+              <small>Llega en la franja de mañana, 4,90 € o gratis desde 45 €</small>
+            </span>
+          </label>
+          <label class="opcion">
+            <input type="radio" name="transporte" value="expres">
+            <span class="opcion-caja">
+              <b>Exprés, al día siguiente</b>
+              <small>Entre las 9:00 y las 14:00, 11,50 € sin importe mínimo</small>
+            </span>
+          </label>
+          <label class="opcion">
+            <input type="radio" name="transporte" value="recogida">
+            <span class="opcion-caja">
+              <b>Recogida en el vivero</b>
+              <small>Avenida de la Ribera 214, de martes a domingo, sin coste</small>
+            </span>
+          </label>
+          <p class="ayuda" id="transporte-ayuda">La recogida evita el envío y suma un 5 por ciento de descuento en el vivero.</p>
+          <p class="error" id="transporte-error" role="alert"></p>
+        </fieldset>
+
+        <div class="campo" data-estado="neutro">
+          <label for="nota">Nota para el repartidor <span class="opcional">opcional</span></label>
+          <textarea id="nota" name="nota" rows="3" placeholder="Gato que se escape, portón abierto hasta las 14:00, dejar en el buzón" aria-describedby="nota-ayuda"></textarea>
+          <p class="ayuda" id="nota-ayuda">Máximo 240 caracteres. Aquí es donde se resuelve la mitad de los repartos.</p>
+          <p class="error" id="nota-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="3" aria-label="Paso 3, pago" hidden>
+        <p class="antetitulo">Paso 3 de 3</p>
+        <h1>La última pantalla, y la que más tinta lleva</h1>
+        <p class="intro">Tarjeta de crédito o débito. Comprobamos el número con el algoritmo de Luhn antes de enviarla.</p>
+
+        <div class="campo" data-estado="neutro">
+          <label for="titular">Titular de la tarjeta</label>
+          <input id="titular" name="titular" type="text" autocomplete="cc-name" placeholder="NOMBRE APELLIDOS" aria-describedby="titular-ayuda">
+          <p class="ayuda" id="titular-ayuda">Tal como aparece impreso en la tarjeta, sin puntos ni comas.</p>
+          <p class="error" id="titular-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="tarjeta">Número de tarjeta</label>
+          <div class="tarjeta-caja">
+            <input id="tarjeta" name="tarjeta" type="text" inputmode="numeric" autocomplete="cc-number" maxlength="19" placeholder="4242 4242 4242 4242" aria-describedby="tarjeta-ayuda">
+            <span class="marca-tarjeta" id="marcaTarjeta" aria-hidden="true"></span>
+          </div>
+          <p class="ayuda" id="tarjeta-ayuda">16 cifras, se pueden separar en grupos de cuatro mientras escribes.</p>
+          <p class="error" id="tarjeta-error" role="alert"></p>
+        </div>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="caducidad">Caducidad</label>
+            <input id="caducidad" name="caducidad" type="text" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="09/28" aria-describedby="caducidad-ayuda">
+            <p class="ayuda" id="caducidad-ayuda">Mes y año con barra: 09/28.</p>
+            <p class="error" id="caducidad-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="cvv">Código de seguridad</label>
+            <input id="cvv" name="cvv" type="text" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" aria-describedby="cvv-ayuda">
+            <p class="ayuda" id="cvv-ayuda">Tres cifras en Visa y Mastercard, cuatro en American Express.</p>
+            <p class="error" id="cvv-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo campo-check" data-estado="neutro">
+          <input id="factura" name="factura" type="checkbox" aria-describedby="factura-ayuda">
+          <label for="factura">Quiero la factura con el CIF de mi empresa</label>
+          <p class="ayuda" id="factura-ayuda">Se emite a nombre de quien paga, con el 21 por ciento de IVA desglosado.</p>
+          <p class="error" id="factura-error" role="alert"></p>
+        </div>
+      </section>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">Revisa el paso</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <footer class="acciones">
+        <button class="boton boton-tenue" type="button" id="atras" hidden>
+          <span class="flecha-izq" aria-hidden="true"></span>
+          Atrás
+        </button>
+        <span class="hueco"></span>
+        <button class="boton boton-fuerte" type="submit" id="continuar">
+          <span id="continuarTexto">Ir al envío</span>
+          <span class="flecha-der" aria-hidden="true"></span>
+        </button>
+      </footer>
+    </form>
+
+    <aside class="riel" aria-label="Resumen del pedido">
+      <h2 class="riel-titulo">Tu pedido</h2>
+      <ul class="riel-lista" id="rielLista"></ul>
+      <p class="riel-vacio" id="rielVacio">No has marcado ningún artículo todavía.</p>
+      <dl class="riel-cuentas">
+        <div><dt>Artículos</dt><dd id="rielSubtotal">0,00 €</dd></div>
+        <div><dt>Envío</dt><dd id="rielEnvio">4,90 €</dd></div>
+        <div class="riel-total"><dt>Total</dt><dd id="rielTotal">0,00 €</dd></div>
+      </dl>
+      <p class="riel-pie" id="rielPiso">Plazo de entrega estimado: 2 a 4 días laborables</p>
+    </aside>
+  </div>
+
+  <section class="listo" id="listo" hidden tabindex="-1" aria-live="polite">
+    <span class="listo-sello" aria-hidden="true"><span class="listo-tic" aria-hidden="true"></span></span>
+    <p class="antetitulo">Pedido confirmado</p>
+    <h2 id="listoTitulo">Ya lo tenemos en el carro</h2>
+    <p class="listo-texto" id="listoTexto">Recibirás un correo con la fecha estimada de entrega.</p>
+    <dl class="listo-cuentas">
+      <div><dt>Referencia</dt><dd id="listoRef">VS-000000</dd></div>
+      <div><dt>Entrega en</dt><dd id="listoDestino">Madrid</dd></div>
+      <div><dt>Plazo</dt><dd id="listoPlazo">2 a 4 días laborables</dd></div>
+      <div><dt>Total</dt><dd id="listoTotal">0,00 €</dd></div>
+    </dl>
+    <p class="listo-nota">Si necesitas cambiar algo, escríbenos antes de las 16:00 y lo movemos sin coste.</p>
+    <button class="boton boton-fuerte listo-boton" type="button" id="otra">Empezar otra cesta</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

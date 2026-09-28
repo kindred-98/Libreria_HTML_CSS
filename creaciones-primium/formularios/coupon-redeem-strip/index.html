@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coupon Redeem Strip</title>
+<meta name="description" content="Single row coupon bar with masked code input, minimum amount and expiry requirements and a live discount applied to the order total.">
+<meta name="description-es" content="Barra compacta de una sola fila para canjear cupones, con código enmascarado, requisitos de importe y caducidad, y descuento calculado en vivo sobre el total.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="sala" aria-hidden="true">
+  <span class="halo halo-a"></span>
+  <span class="halo halo-b"></span>
+  <span class="rayas"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#tira">
+    <span class="marca-sello" aria-hidden="true"><span class="marca-nucleo"></span></span>
+    <span class="marca-texto">Papelería<em>Margen</em></span>
+  </a>
+  <p class="encabezado-nota">Pedido nº 48127 · pago pendiente, aquí solo el descuento</p>
+</header>
+
+<main class="escena" id="tira">
+  <section class="ticket" aria-label="Pedido a la espera de cupón">
+    <div class="ticket-agujero ticket-agujero-a" aria-hidden="true"></div>
+    <div class="ticket-agujero ticket-agujero-b" aria-hidden="true"></div>
+    <div class="ticket-pauta" aria-hidden="true"></div>
+
+    <div class="ticket-cabecera">
+      <div>
+        <p class="antetitulo">Tu pedido</p>
+        <h1>Cinco cosas antes de que suene el timbre</h1>
+      </div>
+      <span class="ticket-sello">Guardado 14:02</span>
+    </div>
+
+    <ul class="lineas">
+      <li>
+        <span class="linea-nombre">Cuaderno pauta A5, tapa blanda</span>
+        <span class="linea-detalle">2 × 8,90 €</span>
+        <span class="linea-cifra">17,80 €</span>
+      </li>
+      <li>
+        <span class="linea-nombre">Bolígrafo tinta azul, caja de 12</span>
+        <span class="linea-detalle">1 × 6,40 €</span>
+        <span class="linea-cifra">6,40 €</span>
+      </li>
+      <li>
+        <span class="linea-nombre">Resistentes de lomo, 160 páginas</span>
+        <span class="linea-detalle">3 × 3,10 €</span>
+        <span class="linea-cifra">9,30 €</span>
+      </li>
+      <li class="lineas-transporte">
+        <span class="linea-nombre">Gastos de envío a sucursal de Bilbao</span>
+        <span class="linea-detalle">Tarifa plana</span>
+        <span class="linea-cifra">4,50 €</span>
+      </li>
+    </ul>
+
+    <div class="ticket-total">
+      <span class="ticket-total-etiqueta">Bruto</span>
+      <span class="ticket-total-cifra" id="bruto">38,00 €</span>
+    </div>
+  </section>
+
+  <form class="tira" id="form" novalidate>
+    <div class="tira-borde" aria-hidden="true"></div>
+
+    <div class="tira-codigo campo" data-estado="neutro">
+      <label for="codigo">Código de descuento</label>
+      <div class="casilla-codigo">
+        <span class="perforado" aria-hidden="true"></span>
+        <input id="codigo" name="codigo" type="text" autocomplete="off" spellcheck="false" placeholder="VERANO-20" maxlength="9" aria-describedby="codigo-ayuda">
+        <span class="guion-fijo" aria-hidden="true">-</span>
+      </div>
+      <p class="ayuda" id="codigo-ayuda">Seis letras y dos cifras, en mayúsculas. Toca los puntos suspensivos y prueba con VERANO-20.</p>
+      <p class="error" id="codigo-error" role="alert"></p>
+    </div>
+
+    <div class="tira-campo campo" data-estado="neutro">
+      <label for="importe">Importe del pedido</label>
+      <div class="con-icono">
+        <span class="moneda" aria-hidden="true"></span>
+        <input id="importe" name="importe" type="number" inputmode="decimal" min="1" max="5000" step="0.01" value="38" aria-describedby="importe-ayuda">
+      </div>
+      <p class="ayuda" id="importe-ayuda">El subtotal que aparece en el ticket de arriba. Sin gastos de envío.</p>
+      <p class="error" id="importe-error" role="alert"></p>
+    </div>
+
+    <div class="tira-campo campo" data-estado="neutro">
+      <label for="fecha">Fecha del pedido</label>
+      <input id="fecha" name="fecha" type="date" aria-describedby="fecha-ayuda">
+      <p class="ayuda" id="fecha-ayuda">Hoy como muy pronto y 90 días como mucho.</p>
+      <p class="error" id="fecha-error" role="alert"></p>
+    </div>
+
+    <div class="tira-cierre">
+      <div class="tira-total">
+        <span class="tira-total-etiqueta">Total</span>
+        <span class="tira-total-cifra" id="totalVivo">38,00 €</span>
+        <span class="tira-total-ahorro" id="ahorro" hidden>ahorras 0,00 €</span>
+      </div>
+      <button class="aplicar" type="submit">
+        <span class="aplicar-raya" aria-hidden="true"></span>
+        <span id="aplicarTexto">Aplicar</span>
+      </button>
+    </div>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-error-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">No se puede aplicar todavía</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+  </form>
+
+  <section class="requisitos" id="requisitos" aria-label="Requisitos del cupón" aria-live="polite">
+    <h2 class="requisitos-titulo">Requisitos que se comprueban al instante</h2>
+    <ul class="requisitos-lista">
+      <li data-clave="formato"><span class="pip" aria-hidden="true"></span>El formato del código es válido</li>
+      <li data-clave="existe"><span class="pip" aria-hidden="true"></span>El código existe en la campaña</li>
+      <li data-clave="importe"><span class="pip" aria-hidden="true"></span>Llega al importe mínimo</li>
+      <li data-clave="caduca"><span class="pip" aria-hidden="true"></span>El pedido entra antes de la caducidad</li>
+    </ul>
+  </section>
+
+  <section class="aplicado" id="aplicado" hidden tabindex="-1" aria-live="polite">
+    <span class="aplicado-sello" aria-hidden="true"><span class="aplicado-tic" aria-hidden="true"></span></span>
+    <div class="aplicado-texto">
+      <p class="antetitulo">Cupón canjeado</p>
+      <h2 id="aplicadoTitulo">Descuento del 20 por ciento aplicado</h2>
+      <p id="aplicadoDetalle">Te rebajamos 7,60 € y el pedido pasa a 30,40 €.</p>
+    </div>
+    <dl class="aplicado-cuentas">
+      <div><dt>Bruto</dt><dd id="aplicadoBruto">38,00 €</dd></div>
+      <div><dt>Cupón</dt><dd id="aplicadoCodigo">VERANO-20</dd></div>
+      <div><dt>Te ahorras</dt><dd id="aplicadoAhorro">7,60 €</dd></div>
+      <div class="aplicado-total"><dt>Pagas</dt><dd id="aplicadoTotal">30,40 €</dd></div>
+    </dl>
+    <button class="quitar" type="button" id="quitar">Quitar el cupón</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

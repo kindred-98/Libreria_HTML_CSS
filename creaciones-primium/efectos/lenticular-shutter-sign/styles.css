@@ -1,0 +1,321 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --mag:#e0247e;
+  --turq:#12b8b0;
+  --carbon:#131316;
+  --ease:cubic-bezier(.4,.14,.3,1);
+}
+
+html,body{height:100%}
+
+body{
+  background:#0b0b0d;
+  color:#f0ece2;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+
+.cabinet{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  isolation:isolate;
+  padding:clamp(14px,2.6vw,38px);
+  display:flex;
+  flex-direction:column;
+  gap:clamp(10px,1.6vw,20px);
+  background:linear-gradient(180deg,#141418 0%,#0c0c0f 62%,#08080a 100%);
+}
+
+.back{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(64% 52% at 50% 0%,hsla(320,70%,60%,.1) 0%,transparent 62%),
+    radial-gradient(50% 44% at 8% 82%,hsla(180,70%,50%,.08) 0%,transparent 64%),
+    repeating-linear-gradient(90deg,hsla(300,10%,70%,.04) 0 2px,transparent 2px 96px);
+}
+
+.top{
+  position:relative;
+  z-index:3;
+}
+
+.kicker{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(9px,.74vw,11px);
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  color:hsla(326,74%,68%,.88);
+}
+
+.top h1{
+  margin-top:.5em;
+  font-size:clamp(20px,2.8vw,44px);
+  line-height:1;
+  font-weight:750;
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+}
+
+.lede{
+  margin-top:.6em;
+  max-width:56ch;
+  font-size:clamp(11px,.9vw,14px);
+  line-height:1.5;
+  font-weight:300;
+  color:hsla(300,14%,84%,.44);
+}
+
+.strip{
+  position:relative;
+  z-index:2;
+  flex:1 1 auto;
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:clamp(6px,1vw,16px);
+  padding:clamp(6px,.8vw,12px) 0;
+  align-items:center;
+}
+
+.frame{
+  position:relative;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.7em;
+  animation:frameFeed 9s var(--ease) infinite;
+}
+
+.f1{animation-delay:-.2s}
+.f2{animation-delay:-1.2s}
+.f3{animation-delay:-2.4s}
+.f4{animation-delay:-3.6s}
+.f5{animation-delay:-4.8s}
+.f6{animation-delay:-6s}
+
+.slot{
+  position:relative;
+  display:block;
+  width:100%;
+  aspect-ratio:3/4;
+  padding:clamp(5px,.7vw,12px);
+  background:linear-gradient(180deg,#1a1a1e,#0d0d10);
+  box-shadow:inset 0 0 0 1px hsla(320,20%,70%,.18), 0 16px 26px -20px #000;
+}
+
+.card{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:.3em;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  transform-style:preserve-3d;
+  backface-visibility:hidden;
+  border-radius:2px;
+  box-shadow:0 0 0 1px hsla(0,0%,100%,.14);
+}
+
+.card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(90deg,hsla(0,0%,100%,.1) 0 1px,transparent 1px 4px);
+  mix-blend-mode:overlay;
+}
+
+.face.a b{color:#fff0f7}
+.face.b b{color:#e8fffb}
+
+.card b{
+  font-size:clamp(13px,2vw,28px);
+  font-weight:800;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  line-height:1;
+  text-align:center;
+  z-index:2;
+}
+
+.card i{
+  font-style:normal;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(6px,.68vw,10px);
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  z-index:2;
+  opacity:.72;
+}
+
+.face.a{
+  background:radial-gradient(120% 100% at 30% 14%,hsla(330,86%,64%,1) 0%,hsla(318,72%,42%,1) 54%,hsla(300,64%,26%,1) 100%);
+  color:#ffe6f2;
+  animation:faceA 9s var(--ease) infinite;
+}
+
+.face.b{
+  background:radial-gradient(120% 100% at 70% 20%,hsla(178,80%,58%,1) 0%,hsla(186,72%,38%,1) 56%,hsla(196,64%,22%,1) 100%);
+  color:#dcfffb;
+  animation:faceB 9s var(--ease) infinite;
+}
+
+.f1 .card{transform:rotateY(0deg) scale(.98)}
+.f2 .card{transform:rotateY(7deg) scale(.98)}
+.f3 .card{transform:rotateY(14deg) scale(.98)}
+.f4 .card{transform:rotateY(22deg) scale(.98)}
+.f5 .card{transform:rotateY(30deg) scale(.98)}
+.f6 .card{transform:rotateY(38deg) scale(.98)}
+
+.f1 .card,.f2 .card,.f3 .card{animation-name:faceA}
+.f4 .card,.f5 .card,.f6 .card{animation-name:faceB}
+
+.tag{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(7px,.64vw,10px);
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:hsla(300,12%,80%,.44);
+  white-space:nowrap;
+}
+
+.perf{
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:clamp(8px,1vw,14px);
+  background:
+    repeating-linear-gradient(90deg,hsla(300,20%,80%,.16) 0 6px,transparent 6px 16px);
+  border-bottom:1px solid hsla(300,20%,80%,.1);
+}
+
+.viewer{
+  position:absolute;
+  right:clamp(16px,3vw,44px);
+  top:clamp(96px,18vh,200px);
+  width:clamp(56px,6vw,96px);
+  height:clamp(56px,6vw,96px);
+  z-index:4;
+  animation:viewerSweep 9s var(--ease) infinite;
+}
+
+.viewer .lens{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:radial-gradient(circle at 36% 30%,hsla(200,100%,94%,.9) 0%,hsla(210,60%,50%,.5) 42%,hsla(220,40%,20%,.8) 100%);
+  box-shadow:0 0 0 1px hsla(320,40%,80%,.4), 0 10px 24px -12px #000;
+}
+
+.viewer .glint{
+  position:absolute;
+  left:14%;
+  top:10%;
+  width:38%;
+  height:24%;
+  border-radius:50%;
+  background:hsla(0,0%,100%,.7);
+  filter:blur(2px);
+  transform:rotate(-24deg);
+}
+
+.legend{
+  position:relative;
+  z-index:3;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:clamp(10px,1.8vw,28px);
+  padding-top:clamp(6px,1vw,12px);
+  border-top:1px solid hsla(300,14%,80%,.12);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(9px,.72vw,11px);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:hsla(300,12%,82%,.48);
+}
+
+.key{display:inline-flex;align-items:center;gap:.7em}
+.sw{width:clamp(16px,2vw,28px);height:3px;border-radius:3px}
+.sw-a{background:linear-gradient(90deg,hsla(330,86%,60%,.2),var(--mag))}
+.sw-b{background:linear-gradient(90deg,hsla(180,80%,50%,.2),var(--turq))}
+.sw-ridge{background:linear-gradient(90deg,hsla(0,0%,100%,.06),hsla(0,0%,100%,.5))}
+
+.readout{margin-left:auto;color:hsla(326,60%,70%,.82)}
+
+.grain{
+  position:absolute;
+  inset:-3%;
+  width:106%;
+  height:106%;
+  opacity:.08;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+  z-index:6;
+  background-image:repeating-linear-gradient(0deg,hsla(0,0%,100%,.5) 0 1px,transparent 1px 3px);
+  animation:grainShift 2.6s steps(4,end) infinite;
+}
+
+@keyframes faceA{
+  0%,18%{opacity:1;transform:rotateY(0deg) scale(1)}
+  34%{opacity:.9;transform:rotateY(4deg) scale(1.02)}
+  46%{opacity:0;transform:rotateY(26deg) scale(.96)}
+  54%{opacity:0;transform:rotateY(26deg) scale(.96)}
+  100%{opacity:0;transform:rotateY(26deg) scale(.96)}
+}
+
+@keyframes faceB{
+  0%,42%{opacity:0;transform:rotateY(26deg) scale(.96)}
+  58%{opacity:1;transform:rotateY(0deg) scale(1)}
+  82%{opacity:1;transform:rotateY(2deg) scale(1.01)}
+  100%{opacity:0;transform:rotateY(26deg) scale(.96)}
+}
+
+@keyframes frameFeed{
+  0%{transform:translate3d(0,8px,0)}
+  10%{transform:translate3d(0,0,0)}
+  88%{transform:translate3d(0,0,0)}
+  100%{transform:translate3d(0,8px,0)}
+}
+
+@keyframes viewerSweep{
+  0%{transform:translate3d(-30%,0,0) rotate(-4deg);opacity:.5}
+  30%{transform:translate3d(6%,-4%,0) rotate(2deg);opacity:1}
+  60%{transform:translate3d(-12%,4%,0) rotate(-2deg);opacity:.8}
+  100%{transform:translate3d(-30%,0,0) rotate(-4deg);opacity:.5}
+}
+
+@keyframes grainShift{
+  0%{transform:translate3d(0,0,0)}
+  25%{transform:translate3d(-1%,1%,0)}
+  50%{transform:translate3d(1%,-1%,0)}
+  75%{transform:translate3d(1.2%,1.1%,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+
+@media (max-width:820px){
+  .strip{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-rows:repeat(2,minmax(0,1fr));
+  }
+  .lede{display:none}
+  .viewer{display:none}
+  .readout{margin-left:0}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .frame,.card,.viewer,.grain{
+    animation:none!important;
+  }
+  .f1 .card,.f2 .card,.f3 .card{opacity:1;transform:rotateY(6deg)}
+  .f4 .card,.f5 .card,.f6 .card{opacity:1;transform:rotateY(24deg)}
+  .grain{opacity:.06}
+}

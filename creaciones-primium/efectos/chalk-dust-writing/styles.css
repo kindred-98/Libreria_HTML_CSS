@@ -1,0 +1,318 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --slate:#1d2a25;
+  --chalk:#f2efe4;
+  --pale:#e7dfc0;
+  --ease:cubic-bezier(.4,.14,.3,1);
+}
+
+html,body{height:100%}
+
+body{
+  background:#2a2018;
+  color:var(--chalk);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+
+.slate{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  isolation:isolate;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(10px,1.6vw,20px);
+  padding:clamp(14px,2.6vw,40px);
+  background:linear-gradient(180deg,#332620 0%,#241b14 100%);
+}
+
+.wood{
+  position:absolute;
+  inset:0;
+  background:
+    repeating-linear-gradient(96deg,hsla(28,34%,24%,.5) 0 3px,hsla(28,30%,30%,.35) 3px 9px),
+    radial-gradient(90% 60% at 30% 10%,hsla(34,44%,44%,.4) 0%,transparent 64%);
+  opacity:.9;
+}
+
+.board{
+  position:relative;
+  z-index:2;
+  width:min(94vw,1080px);
+  aspect-ratio:3/1.55;
+  max-height:76vh;
+  padding:clamp(16px,3.2vw,54px) clamp(14px,3vw,48px);
+  background:
+    radial-gradient(120% 90% at 22% 12%,hsla(140,18%,26%,.9) 0%,transparent 62%),
+    linear-gradient(168deg,#25332d 0%,#1b2723 54%,#141e1b 100%);
+  border-radius:5px;
+  box-shadow:
+    inset 0 0 0 5px #2f1d12,
+    inset 0 0 0 7px #4a3320,
+    0 30px 50px -28px hsla(0,0%,0%,.8),
+    0 4px 0 hsla(30,40%,14%,.5);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.line{
+  position:relative;
+  z-index:3;
+  display:flex;
+  justify-content:center;
+  gap:clamp(2px,.5vw,10px);
+  font-size:clamp(38px,9.4vw,124px);
+  line-height:1;
+  font-weight:800;
+  letter-spacing:-.01em;
+  color:var(--chalk);
+}
+
+.line b{
+  display:block;
+  transform-origin:50% 100%;
+  text-shadow:
+    0 0 1px hsla(60,40%,100%,.9),
+    0 2px 6px hsla(60,30%,90%,.28);
+  animation:chalkOn 8s var(--ease) infinite;
+  animation-delay:calc(-1.6s - var(--i) * .44s);
+}
+
+.line b.sp{
+  width:.34em;
+}
+
+.ghost{
+  position:absolute;
+  left:0;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:1;
+  display:flex;
+  justify-content:center;
+  gap:clamp(2px,.5vw,10px);
+  font-size:clamp(38px,9.4vw,124px);
+  line-height:1;
+  font-weight:800;
+  color:hsla(70,26%,86%,.07);
+  pointer-events:none;
+}
+
+.ghost span{
+  transform:translate3d(0,0,0) scale(1.01);
+  animation:ghostBreathe 8s var(--ease) infinite;
+  animation-delay:calc(-1.6s - var(--i) * .44s);
+}
+
+.smear{
+  position:absolute;
+  left:-30%;
+  top:6%;
+  width:34%;
+  height:88%;
+  z-index:4;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,transparent 0%,hsla(150,18%,20%,.85) 26%,hsla(150,22%,24%,.95) 58%,transparent 100%);
+  filter:blur(2px);
+  transform:translate3d(0,0,0);
+  animation:wipe 8s var(--ease) infinite;
+  animation-delay:-5.6s;
+}
+
+.dust{
+  position:absolute;
+  inset:0;
+  z-index:5;
+  pointer-events:none;
+}
+
+.dust i{
+  position:absolute;
+  left:var(--x);
+  top:34%;
+  width:clamp(3px,.44vw,6px);
+  height:clamp(3px,.44vw,6px);
+  border-radius:50%;
+  background:radial-gradient(circle,hsla(56,40%,98%,.95) 0%,hsla(52,36%,86%,.4) 60%,transparent 78%);
+  animation:fall var(--d) linear infinite;
+  animation-delay:var(--dl);
+}
+
+.tray{
+  position:relative;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  gap:clamp(8px,1.2vw,18px);
+  padding:clamp(6px,.9vw,12px) clamp(12px,1.6vw,22px);
+  border-radius:4px;
+  background:linear-gradient(180deg,#2a1c12 0%,#180f0a 100%);
+  box-shadow:0 10px 22px -14px hsla(0,0%,0%,.9), inset 0 1px 0 hsla(34,30%,50%,.3);
+}
+
+.tray .felt{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:clamp(4px,.6vw,8px);
+  height:clamp(6px,.8vw,10px);
+  background:linear-gradient(180deg,#3d1f22,#241214);
+  border-radius:2px;
+}
+
+.tray .piece{
+  position:relative;
+  width:clamp(34px,4.4vw,64px);
+  height:clamp(10px,1.3vw,18px);
+  border-radius:2px;
+  background:linear-gradient(180deg,#fbf8ee,#ddd6c2 60%,#b6ae99);
+  box-shadow:0 2px 5px hsla(0,0%,0%,.6);
+  animation:chalkRoll 8s var(--ease) infinite;
+}
+
+.tray .p1{animation-delay:0s}
+.tray .p2{animation-delay:.08s;background:linear-gradient(180deg,#fdf4d8,#e8dcae 60%,#bcb083)}
+
+.tray .eraser{
+  position:relative;
+  width:clamp(30px,3.8vw,56px);
+  height:clamp(14px,1.8vw,24px);
+  border-radius:3px;
+  background:linear-gradient(180deg,#4a3a2c 0%,#2a2018 60%,#171009 100%);
+  box-shadow:0 3px 8px hsla(0,0%,0%,.7);
+  animation:eraserWork 8s var(--ease) infinite;
+}
+
+.note{
+  position:relative;
+  z-index:3;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(9px,.74vw,11px);
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:hsla(34,32%,72%,.46);
+  text-align:center;
+}
+
+.hud{
+  position:absolute;
+  left:clamp(14px,3vw,48px);
+  right:clamp(14px,3vw,48px);
+  bottom:clamp(10px,1.6vw,22px);
+  z-index:5;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:clamp(8px,1.8vw,26px);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(8px,.68vw,10px);
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:hsla(46,26%,84%,.4);
+}
+
+.stat i{
+  display:block;
+  font-style:normal;
+  font-size:.8em;
+  letter-spacing:.3em;
+  color:hsla(46,30%,78%,.28);
+  margin-bottom:.5em;
+}
+
+.mark{margin-left:auto;color:hsla(46,40%,80%,.6)}
+
+.grain{
+  position:absolute;
+  inset:-3%;
+  width:106%;
+  height:106%;
+  opacity:.1;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+  z-index:8;
+  background-image:repeating-linear-gradient(0deg,hsla(0,0%,100%,.5) 0 1px,transparent 1px 3px);
+  animation:grainShift 2.6s steps(4,end) infinite;
+}
+
+@keyframes chalkOn{
+  0%{transform:translate3d(0,26%,0) scaleY(.04) scaleX(1.06);opacity:0;filter:blur(4px)}
+  4%{opacity:.9}
+  9%{transform:translate3d(0,-2%,0) scaleY(1.06) scaleX(.98);opacity:1;filter:blur(0)}
+  14%{transform:translate3d(0,1%,0) scaleY(.97)}
+  18%,72%{transform:translate3d(0,0,0) scale(1);opacity:1}
+  84%{transform:translate3d(0,0,0) scale(1);opacity:.14;filter:blur(3px)}
+  90%,100%{transform:translate3d(0,14%,0) scaleY(.06);opacity:0;filter:blur(6px)}
+}
+
+@keyframes ghostBreathe{
+  0%{transform:translate3d(0,0,0) scale(1.01);opacity:0}
+  10%{opacity:1}
+  78%{opacity:.8}
+  92%,100%{transform:translate3d(0,6%,0) scale(1.05);opacity:0}
+}
+
+@keyframes wipe{
+  0%{transform:translate3d(0,0,0)}
+  76%{transform:translate3d(0,0,0);opacity:0}
+  80%{transform:translate3d(0,0,0);opacity:1}
+  96%{transform:translate3d(430%,0,0) skewX(-6deg);opacity:1}
+  100%{transform:translate3d(430%,0,0);opacity:0}
+}
+
+@keyframes fall{
+  0%{transform:translate3d(0,0,0) scale(.5);opacity:0}
+  14%{opacity:.9}
+  70%{transform:translate3d(1.4vw,14vh,0) scale(1.1);opacity:.55}
+  100%{transform:translate3d(-1vw,26vh,0) scale(.4);opacity:0}
+}
+
+@keyframes chalkRoll{
+  0%{transform:translate3d(0,0,0) rotate(-3deg)}
+  6%{transform:translate3d(2px,-2px,0) rotate(0)}
+  74%{transform:translate3d(0,0,0) rotate(0)}
+  100%{transform:translate3d(0,0,0) rotate(-3deg)}
+}
+
+@keyframes eraserWork{
+  0%{transform:translate3d(0,0,0) rotate(0)}
+  78%{transform:translate3d(0,0,0) rotate(0)}
+  86%{transform:translate3d(-6px,-8px,0) rotate(-8deg)}
+  96%{transform:translate3d(6px,-4px,0) rotate(4deg)}
+  100%{transform:translate3d(0,0,0) rotate(0)}
+}
+
+@keyframes grainShift{
+  0%{transform:translate3d(0,0,0)}
+  25%{transform:translate3d(-1%,1%,0)}
+  50%{transform:translate3d(1%,-1%,0)}
+  75%{transform:translate3d(1.2%,1.1%,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+
+@media (max-width:640px){
+  .board{aspect-ratio:4/3.4}
+  .line,.ghost{font-size:clamp(34px,11.5vw,74px)}
+  .hud{display:none}
+  .note{font-size:9px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .line b,.ghost span,.smear,.dust i,.tray .piece,.tray .eraser,.grain{
+    animation:none!important;
+  }
+  .line b{transform:none;opacity:1;filter:none}
+  .ghost span{opacity:.7;transform:scale(1.01)}
+  .smear{transform:translate3d(430%,0,0);opacity:0}
+  .dust i{opacity:.5;transform:translate3d(.4vw,4vh,0)}
+  .grain{opacity:.08}
+}

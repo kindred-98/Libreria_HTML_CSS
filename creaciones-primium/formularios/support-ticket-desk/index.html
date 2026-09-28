@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support Ticket Incident Desk</title>
+<meta name="description" content="Long incident report form with severity levels, affected environment, reproduction steps, trace codes and a live ticket preview with its assigned number.">
+<meta name="description-es" content="Formulario largo de informe de incidencia con severidad, entorno afectado, pasos para reproducir, código de traza y vista previa del ticket con su número asignado en vivo.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="nucleo" aria-hidden="true">
+  <span class="pulso pulso-a"></span>
+  <span class="pulso pulso-b"></span>
+  <span class="malla"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#mesa">
+    <span class="marca-onda" aria-hidden="true"><span class="marca-cresta"></span></span>
+    <span class="marca-texto">Centro de<em>servicios</em></span>
+  </a>
+  <p class="encabezado-nota">Turno de mañana · 4 tickets abiertos · respuesta media 2 h 14 min</p>
+</header>
+
+<main class="escena" id="mesa">
+  <div class="disposicion">
+    <form class="informe" id="form" novalidate>
+      <p class="antetitulo">Informe de incidencia</p>
+      <h1>Cuéntanos qué se rompió y cuándo</h1>
+      <p class="intro">Mientras escribes, el panel de la derecha va maquetando el ticket tal como lo verá el equipo técnico.</p>
+
+      <section class="bloque" aria-labelledby="sec1">
+        <h2 class="bloque-titulo" id="sec1"><span class="bloque-num">1</span> Identificación del aviso</h2>
+        <p class="bloque-intro">Con esto el sistema sabe a qué cola va el ticket y a quién responde.</p>
+
+        <div class="campo" data-estado="neutro">
+          <label for="asunto">Asunto en una línea</label>
+          <input id="asunto" name="asunto" type="text" maxlength="110" placeholder="El cálculo del IVA falla al aplicar más de un cupón" aria-describedby="asunto-ayuda">
+          <p class="ayuda" id="asunto-ayuda">Entre 8 y 110 caracteres. Es lo primero que lee quien tria la cola.</p>
+          <p class="error" id="asunto-error" role="alert"></p>
+        </div>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="canal">Por dónde nos ha llegado</label>
+            <select id="canal" name="canal" aria-describedby="canal-ayuda">
+              <option value="">Elige un canal</option>
+              <option value="correo">Correo electrónico</option>
+              <option value="chat">Chat del portal</option>
+              <option value="telefono">Llamada telefónica</option>
+              <option value="web">Formulario web</option>
+              <option value="telemonitor">Aviso del sistema de monitorización</option>
+            </select>
+            <p class="ayuda" id="canal-ayuda">Los avisos del monitor entran con severidad mínima y prioridad alta.</p>
+            <p class="error" id="canal-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="contacto">Correo de contacto</label>
+            <input id="contacto" name="contacto" type="email" inputmode="email" autocomplete="email" placeholder="ana.morales@correo.com" aria-describedby="contacto-ayuda">
+            <p class="ayuda" id="contacto-ayuda">Ahí van las preguntas de seguimiento y el aviso de resolución.</p>
+            <p class="error" id="contacto-error" role="alert"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bloque" aria-labelledby="sec2">
+        <h2 class="bloque-titulo" id="sec2"><span class="bloque-num">2</span> Impacto y severidad</h2>
+        <p class="bloque-intro">La severidad decide el tiempo de respuesta comprometido.</p>
+
+        <fieldset class="severidades" data-estado="neutro">
+          <legend>Severidad del problema</legend>
+          <label class="sev sev-critica">
+            <input type="radio" name="severidad" value="critica">
+            <span class="sev-caja">
+              <b>Crítica</b>
+              <small>Servicio caído o dinero que no cuadra. Respuesta en 15 minutos, 24 horas al día.</small>
+            </span>
+          </label>
+          <label class="sev sev-alta">
+            <input type="radio" name="severidad" value="alta" checked>
+            <span class="sev-caja">
+              <b>Alta</b>
+              <small>Una función entera falla y no hay rodeo. Respuesta en 1 hora en horario laboral.</small>
+            </span>
+          </label>
+          <label class="sev sev-media">
+            <input type="radio" name="severidad" value="media">
+            <span class="sev-caja">
+              <b>Media</b>
+              <small>Se puede trabajar, pero molesta. Respuesta en 4 horas laborables.</small>
+            </span>
+          </label>
+          <label class="sev sev-baja">
+            <input type="radio" name="severidad" value="baja">
+            <span class="sev-caja">
+              <b>Baja</b>
+              <small>Petición de mejora o duda de uso. Entramos en la cola de la semana.</small>
+            </span>
+          </label>
+          <p class="ayuda" id="severidad-ayuda">Se ha marcado alta. Si el servicio entero está parado, súbela a crítica.</p>
+          <p class="error" id="severidad-error" role="alert"></p>
+        </fieldset>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="entorno">Entorno afectado</label>
+            <select id="entorno" name="entorno" aria-describedby="entorno-ayuda">
+              <option value="">Elige el entorno</option>
+              <option value="produccion">Producción, clientes reales</option>
+              <option value="staging">Staging, datos de prueba</option>
+              <option value="movil">Aplicación móvil 8.4</option>
+              <option value="web">Portal web del cliente</option>
+              <option value="api">Integración por API</option>
+              <option value="facturacion">Módulo de facturación</option>
+            </select>
+            <p class="ayuda" id="entorno-ayuda">Si falla en varios, elige el que más moleste al cliente final.</p>
+            <p class="error" id="entorno-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="alcance">Alcance del problema</label>
+            <input id="alcance" name="alcance" type="text" maxlength="80" placeholder="Valdearenas, tienda 4471" aria-describedby="alcance-ayuda">
+            <p class="ayuda" id="alcance-ayuda">Tienda, empresa, módulo o número de clientes afectados.</p>
+            <p class="error" id="alcance-error" role="alert"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bloque" aria-labelledby="sec3">
+        <h2 class="bloque-titulo" id="sec3"><span class="bloque-num">3</span> Detalle técnico</h2>
+        <p class="bloque-intro">Lo que el equipo técnico necesita para reproducirlo sin escribirte.</p>
+
+        <div class="campo" data-estado="neutro">
+          <label for="descripcion">Qué ocurre exactamente</label>
+          <textarea id="descripcion" name="descripcion" rows="6" placeholder="Al aplicar el cupón VERANO-20 y después LIBROS-10, el total del carrito baja dos veces. En la pantalla de confirmación el importe cobrado no coincide con el desglose." aria-describedby="descripcion-ayuda"></textarea>
+          <p class="ayuda" id="descripcion-ayuda">Entre 60 y 2.000 caracteres. Describe el síntoma, no la causa.</p>
+          <p class="error" id="descripcion-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="pasos">Pasos para reproducirlo</label>
+          <textarea id="pasos" name="pasos" rows="6" placeholder="1. Entra como cliente en la tienda 4471.&#10;2. Añade dos artículos al carrito.&#10;3. Aplica VERANO-20 en el carrito.&#10;4. Aplica LIBROS-10 sin quitar el anterior.&#10;5. Pulsa finalizar compra: el total no cuadra." aria-describedby="pasos-ayuda"></textarea>
+          <p class="ayuda" id="pasos-ayuda">Uno por línea, empezando por el estado inicial. Entre 30 y 1.200 caracteres.</p>
+          <p class="error" id="pasos-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="esperado">Qué debería haber pasado</label>
+          <textarea id="esperado" name="esperado" rows="4" placeholder="Solo se puede aplicar un cupón por pedido y el desglose debe mostrar el descuento una vez." aria-describedby="esperado-ayuda"></textarea>
+          <p class="ayuda" id="esperado-ayuda">Entre 20 y 800 caracteres. Nos ahorra una pregunta.</p>
+          <p class="error" id="esperado-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque" aria-labelledby="sec4">
+        <h2 class="bloque-titulo" id="sec4"><span class="bloque-num">4</span> Evidencias</h2>
+        <p class="bloque-intro">Con esto evitamos pedirte una captura por correo.</p>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="traza">Código de traza</label>
+            <input id="traza" name="traza" type="text" autocomplete="off" spellcheck="false" maxlength="12" placeholder="TRZ-9F31AC40" aria-describedby="traza-ayuda">
+            <p class="ayuda" id="traza-ayuda">Tres letras, guion y ocho caracteres en hexadecimal. Sale en la consola del cliente.</p>
+            <p class="error" id="traza-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="registro">Hora exacta del fallo</label>
+            <input id="registro" name="registro" type="datetime-local" aria-describedby="registro-ayuda">
+            <p class="ayuda" id="registro-ayuda">En hora peninsular. Sirve para cruzarlo con los registros del servidor.</p>
+            <p class="error" id="registro-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo campo-check" data-estado="neutro">
+          <input id="consentimiento" name="consentimiento" type="checkbox" aria-describedby="consentimiento-ayuda">
+          <label for="consentimiento">Autorizo a abrir un registro de diagnóstico con mis datos de navegación</label>
+          <p class="ayuda" id="consentimiento-ayuda">Solo para este ticket y se borra a los 90 días al cerrar el caso.</p>
+          <p class="error" id="consentimiento-error" role="alert"></p>
+        </div>
+      </section>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">El informe aún no se puede enviar</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <footer class="acciones">
+        <span class="acciones-pie">El equipo de guardia solo entra entre las 8:00 y las 20:00, salvo incidencias críticas.</span>
+        <span class="hueco"></span>
+        <button class="enviar" type="submit">
+          Registrar la incidencia
+          <span class="flecha-der" aria-hidden="true"></span>
+        </button>
+      </footer>
+    </form>
+
+    <aside class="vista" aria-label="Vista previa del ticket">
+      <div class="vista-cabecera">
+        <p class="vista-antetitulo">Vista previa</p>
+        <span class="vista-num" id="vistaNum">TK-2026-00000</span>
+      </div>
+
+      <div class="ticket" id="ticket">
+        <div class="ticket-banda" data-sev="alta" id="ticketBanda">Severidad alta · respuesta en 1 hora</div>
+        <h2 class="ticket-asunto" id="ticketAsunto">Sin asunto todavía</h2>
+        <p class="ticket-meta" id="ticketMeta">Registrado por el formulario web, sin contacto</p>
+
+        <dl class="ticket-datos">
+          <div><dt>Entorno</dt><dd id="ticketEntorno">sin elegir</dd></div>
+          <div><dt>Alcance</dt><dd id="ticketAlcance">sin indicar</dd></div>
+          <div><dt>Traza</dt><dd id="ticketTraza">sin código</dd></div>
+          <div><dt>Contacto</dt><dd id="ticketContacto">sin correo</dd></div>
+        </dl>
+
+        <p class="ticket-etiqueta-mini">Qué ocurre</p>
+        <p class="ticket-texto" id="ticketDescripcion">Aún no has descrito el problema.</p>
+
+        <p class="ticket-etiqueta-mini">Pasos para reproducir</p>
+        <ol class="ticket-pasos" id="ticketPasos">
+          <li class="ticket-paso-vacio">Sin pasos añadidos</li>
+        </ol>
+
+        <p class="ticket-etiqueta-mini">Esperado</p>
+        <p class="ticket-texto" id="ticketEsperado">Sin especificar.</p>
+      </div>
+
+      <ul class="vista-checks" id="vistaChecks"></ul>
+
+      <p class="vista-pie">El número definitivo se asigna al enviar. Esta vista previa se actualiza con cada tecla.</p>
+    </aside>
+  </div>
+
+  <section class="registrado" id="registrado" hidden tabindex="-1" aria-live="polite">
+    <span class="registrado-sello" aria-hidden="true"><span class="registrado-tic" aria-hidden="true"></span></span>
+    <p class="antetitulo">Incidencia registrada</p>
+    <h2 id="registradoTitulo">Ya está en la cola del equipo técnico</h2>
+    <p class="registrado-texto" id="registradoTexto">Recibirás un acuse con el número del ticket.</p>
+    <dl class="registrado-datos">
+      <div><dt>Ticket</dt><dd id="registradoRef">TK-2026-00000</dd></div>
+      <div><dt>Severidad</dt><dd id="registradoSeveridad">Alta</dd></div>
+      <div><dt>Compromiso</dt><dd id="registradoSla">1 hora</dd></div>
+      <div><dt>Entorno</dt><dd id="registradoEntorno">sin elegir</dd></div>
+    </dl>
+    <p class="registrado-nota">Guarda el número: con él puedes pedir un seguimiento en el chat sin repetir la incidencia.</p>
+    <button class="enviar registrado-boton" type="button" id="otra">Abrir otro informe</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

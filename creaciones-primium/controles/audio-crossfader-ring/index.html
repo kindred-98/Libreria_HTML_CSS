@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audio Crossfader Ring</title>
+<meta name="description" content="A crossfader set inside an audio button panel: the LED ring fills from the A bus to the B bus as the cap travels, the channel meters hand the level over and the pads keep a chase running around the top.">
+<meta name="description-es" content="Un crossfader dentro de una botonera de audio: el anillo LED se llena del bus A al bus B según viaja la capa, los medidores de canal se reparten el nivel y las almohadillas mantienen una persecución por arriba.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="page">
+  <header class="head">
+    <p class="head__kicker">Aurora &middot; cross series</p>
+    <h1>Crossfader Ring</h1>
+    <p class="head__lead">Drag the cap along the well. The ring fills from A to B, the two meters trade the level over, and the pads keep the chase alive.</p>
+  </header>
+
+  <section class="deck">
+    <span class="screw screw--tl" aria-hidden="true"></span>
+    <span class="screw screw--tr" aria-hidden="true"></span>
+    <span class="screw screw--bl" aria-hidden="true"></span>
+    <span class="screw screw--br" aria-hidden="true"></span>
+    <span class="sweep" aria-hidden="true"></span>
+
+    <div class="deck__top">
+      <div class="brand">
+        <b>AURORA</b>
+        <s>crossfader module &middot; xf-2</s>
+      </div>
+
+      <div class="pads" aria-hidden="true">
+        <i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i>
+        <i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i>
+      </div>
+
+      <div class="cue" aria-hidden="true">
+        <span class="cue__lamp"></span>
+        <b class="cue__text">cue</b>
+      </div>
+    </div>
+
+    <div class="deck__mid">
+      <div class="channel channel--a">
+        <span class="channel__name">A</span>
+        <div class="meter" aria-hidden="true">
+          <i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i>
+          <i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i>
+          <i style="--i:8"></i><i style="--i:9"></i><i style="--i:10"></i><i style="--i:11"></i>
+        </div>
+        <span class="channel__unit">dB</span>
+      </div>
+
+      <div class="xf" id="xfBox">
+        <div class="ring" id="ring" aria-hidden="true">
+          <i class="fill" style="--i:0;--a:260deg"></i>
+          <i class="fill" style="--i:1;--a:250deg"></i>
+          <i class="fill" style="--i:2;--a:240deg"></i>
+          <i class="fill" style="--i:3;--a:230deg"></i>
+          <i class="fill" style="--i:4;--a:220deg"></i>
+          <i class="fill" style="--i:5;--a:210deg"></i>
+          <i class="fill" style="--i:6;--a:200deg"></i>
+          <i class="fill" style="--i:7;--a:190deg"></i>
+          <i class="fill" style="--i:8;--a:180deg"></i>
+          <i class="fill" style="--i:9;--a:170deg"></i>
+          <i class="fill" style="--i:10;--a:160deg"></i>
+          <i class="fill" style="--i:11;--a:150deg"></i>
+          <i class="fill" style="--i:12;--a:140deg"></i>
+          <i class="fill" style="--i:13;--a:130deg"></i>
+          <i class="fill" style="--i:14;--a:120deg"></i>
+          <i class="fill" style="--i:15;--a:110deg"></i>
+          <i class="fill" style="--i:16;--a:100deg"></i>
+          <i class="chase" style="--j:0;--a:80deg"></i>
+          <i class="chase" style="--j:1;--a:70deg"></i>
+          <i class="chase" style="--j:2;--a:60deg"></i>
+          <i class="chase" style="--j:3;--a:50deg"></i>
+          <i class="chase" style="--j:4;--a:40deg"></i>
+          <i class="chase" style="--j:5;--a:30deg"></i>
+          <i class="chase" style="--j:6;--a:20deg"></i>
+          <i class="chase" style="--j:7;--a:10deg"></i>
+          <i class="chase" style="--j:8;--a:0deg"></i>
+          <i class="chase" style="--j:9;--a:-10deg"></i>
+          <i class="chase" style="--j:10;--a:-20deg"></i>
+          <i class="chase" style="--j:11;--a:-30deg"></i>
+          <i class="chase" style="--j:12;--a:-40deg"></i>
+          <i class="chase" style="--j:13;--a:-50deg"></i>
+          <i class="chase" style="--j:14;--a:-60deg"></i>
+          <i class="chase" style="--j:15;--a:-70deg"></i>
+          <i class="chase" style="--j:16;--a:-80deg"></i>
+        </div>
+
+        <span class="xf__mark xf__mark--a" aria-hidden="true">bus a</span>
+        <span class="xf__mark xf__mark--b" aria-hidden="true">bus b</span>
+
+        <div class="xf__frame" aria-hidden="true"></div>
+
+        <div class="track" id="track">
+          <span class="track__rail" aria-hidden="true"></span>
+          <span class="track__slot" aria-hidden="true"></span>
+          <span class="track__ticks" aria-hidden="true"></span>
+          <span class="cap" id="cap" aria-hidden="true"><i></i></span>
+          <input class="xf__input" id="crossfader" type="range" min="0" max="100" step="1" value="50"
+            aria-label="Crossfader position from bus A to bus B" aria-valuetext="bus A 50 per cent, bus B 50 per cent">
+        </div>
+
+        <div class="xf__scale" aria-hidden="true">
+          <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+          <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+        </div>
+      </div>
+
+      <div class="channel channel--b">
+        <span class="channel__name">B</span>
+        <div class="meter" aria-hidden="true">
+          <i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i>
+          <i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i>
+          <i style="--i:8"></i><i style="--i:9"></i><i style="--i:10"></i><i style="--i:11"></i>
+        </div>
+        <span class="channel__unit">dB</span>
+      </div>
+    </div>
+
+    <div class="deck__bottom">
+      <div class="knobs" aria-hidden="true">
+        <span class="knob knob--a"><i></i><s>gain a</s></span>
+        <span class="knob knob--b"><i></i><s>gain b</s></span>
+      </div>
+
+      <div class="lcd" aria-hidden="true">
+        <span class="lcd__label">balance</span>
+        <b class="lcd__value" id="lcdValue">50 : 50</b>
+        <span class="lcd__sub" id="lcdSub">equal power</span>
+      </div>
+
+      <div class="plates" aria-hidden="true">
+        <span class="plate">ch 1</span>
+        <span class="plate plate--wide">curve &middot; smooth</span>
+        <span class="plate">ch 2</span>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Focus the cap and use the arrow keys, Home, End, Page Up, Page Down, or Space to seat it on the nearest detent.</p>
+</main>
+</body>
+</html>

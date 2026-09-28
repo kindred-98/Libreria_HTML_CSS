@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Course Enrollment Radial Stepper</title>
+<meta name="description" content="Course enrollment with a radial four step ring, per step validation, identity document check letter control, live total and a final enrollment summary.">
+<meta name="description-es" content="Matrícula con anillo radial de cuatro pasos, validación por paso, comprobación de letra de control del documento, total en vivo y resumen final de la matrícula.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="agua" aria-hidden="true">
+  <span class="onda onda-a"></span>
+  <span class="onda onda-b"></span>
+  <span class="reticulado"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#matricula">
+    <span class="marca-nodo" aria-hidden="true"><span class="marca-nucleo"></span></span>
+    <span class="marca-texto">Campus<em>Nautilus</em></span>
+  </a>
+  <p class="encabezado-nota">Plazo de matrícula abierto · 4 pasos, 6 minutos</p>
+</header>
+
+<main class="escena" id="matricula">
+  <div class="disposicion">
+
+    <section class="radial" aria-label="Pasos de la matrícula">
+      <div class="rueda" id="rueda">
+        <svg class="anillo" viewBox="0 0 440 440" aria-hidden="true" focusable="false">
+          <circle class="anillo-base" cx="220" cy="220" r="140"></circle>
+          <circle class="anillo-prog" cx="220" cy="220" r="140" id="anilloProg"></circle>
+          <g class="orbita" id="orbita">
+            <circle class="orbita-punto" cx="220" cy="80" r="6"></circle>
+          </g>
+        </svg>
+
+        <button class="nodo is-actual" type="button" data-paso="1" aria-current="step">
+          <span class="nodo-circulo"><span class="nodo-num">1</span></span>
+          <span class="nodo-nombre">Curso</span>
+        </button>
+        <button class="nodo" type="button" data-paso="2">
+          <span class="nodo-circulo"><span class="nodo-num">2</span></span>
+          <span class="nodo-nombre">Turno</span>
+        </button>
+        <button class="nodo" type="button" data-paso="3">
+          <span class="nodo-circulo"><span class="nodo-num">3</span></span>
+          <span class="nodo-nombre">Plazo</span>
+        </button>
+        <button class="nodo" type="button" data-paso="4">
+          <span class="nodo-circulo"><span class="nodo-num">4</span></span>
+          <span class="nodo-nombre">Documentación</span>
+        </button>
+
+        <div class="centro" id="centro" aria-hidden="true">
+          <span class="centro-paso" id="centroPaso">Paso 1 de 4</span>
+          <span class="centro-valor" id="centroValor">0,00 €</span>
+          <span class="centro-nota" id="centroNota">Empieza eligiendo curso</span>
+        </div>
+      </div>
+
+      <p class="radial-nota">Puedes saltar a cualquier paso, pero no se guarda nada hasta cerrar la matrícula.</p>
+    </section>
+
+    <form class="hoja" id="form" novalidate>
+      <section class="panel is-activo" data-panel="1" aria-label="Paso 1, curso">
+        <p class="antetitulo">Paso 1 de 4 · Qué quieres estudiar</p>
+        <h1>Elige el curso y cómo lo haces</h1>
+        <p class="intro">Los precios de la tabla son por el curso completo. El instalamento se paga en tres meses sin interés.</p>
+
+        <div class="campo" data-estado="neutro">
+          <label for="curso">Curso</label>
+          <select id="curso" name="curso" aria-describedby="curso-ayuda"></select>
+          <p class="ayuda" id="curso-ayuda">Todos los cursos tienen título universitario y 60 créditos一经.". </p>
+          <p class="error" id="curso-error" role="alert"></p>
+        </div>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="modalidad">Modalidad</label>
+            <select id="modalidad" name="modalidad" aria-describedby="modalidad-ayuda">
+              <option value="presencial">Presencial, con aula</option>
+              <option value="online">En línea, en directo</option>
+              <option value="mixta">Mixta, mitad y mitad</option>
+            </select>
+            <p class="ayuda" id="modalidad-ayuda">El precio de la modalidad en línea lleva un 12 por ciento de descuento.</p>
+            <p class="error" id="modalidad-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="plazas">Plazas que quieres</label>
+            <input id="plazas" name="plazas" type="number" inputmode="numeric" min="1" max="3" step="1" value="1" aria-describedby="plazas-ayuda">
+            <p class="ayuda" id="plazas-ayuda">Entre 1 y 3 plazas, una por persona. Cada plaza necesita su propia documentación.</p>
+            <p class="error" id="plazas-error" role="alert"></p>
+          </div>
+        </div>
+
+        <fieldset class="opciones" data-estado="neutro">
+          <legend>Extras opcionales</legend>
+          <label class="extra">
+            <input type="checkbox" name="extra" value="material">
+            <span class="extra-caja"><b>Material impreso</b><small>El manual del curso en papel, 42 € por plaza.</small></span>
+          </label>
+          <label class="extra">
+            <input type="checkbox" name="extra" value="alojamiento">
+            <span class="extra-caja"><b>Alojamiento en residencia</b><small>Plaza en la residencia del campus, 68 € al mes.</small></span>
+          </label>
+          <p class="ayuda" id="opciones-ayuda">Los dos extras se pueden quitar sin penalización hasta el 1 de septiembre.</p>
+          <p class="error" id="opciones-error" role="alert"></p>
+        </fieldset>
+      </section>
+
+      <section class="panel" data-panel="2" aria-label="Paso 2, turno" hidden>
+        <p class="antetitulo">Paso 2 de 4 · Cuándo vienes</p>
+        <h1>Elige turno, aula y días</h1>
+        <p class="intro">Cada turno tiene un aforo distinto. El aula se asigna sola cuando quedan plazas libres libres.</p>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="turno">Turno</label>
+            <select id="turno" name="turno" aria-describedby="turno-ayuda">
+              <option value="">Elige un turno</option>
+              <option value="manana">Mañana, de 9:00 a 14:00</option>
+              <option value="tarde">Tarde, de 16:00 a 21:00</option>
+              <option value="noche">Noche, de 19:00 a 22:00, solo en línea</option>
+            </select>
+            <p class="ayuda" id="turno-ayuda">El turno de noche solo existe en la modalidad en línea.</p>
+            <p class="error" id="turno-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="aula">Aula preferida</label>
+            <select id="aula" name="aula" aria-describedby="aula-ayuda">
+              <option value="">Sin preferencia</option>
+              <option value="a1">Aula 1, planta baja, con rampa</option>
+              <option value="a4">Aula 4, primera planta</option>
+              <option value="b2">Aula 2 del edificio anexo</option>
+              <option value="lab">Laboratorio, con equipamiento completo</option>
+            </select>
+            <p class="ayuda" id="aula-ayuda">El laboratorio tiene 18 plazas libres y se llena antes que el resto.</p>
+            <p class="error" id="aula-error" role="alert"></p>
+          </div>
+        </div>
+
+        <fieldset class="dias" data-estado="neutro">
+          <legend>Días de clase</legend>
+          <div class="dias-fila">
+            <label class="dia"><input type="checkbox" name="dia" value="lun"><span>Lun</span></label>
+            <label class="dia"><input type="checkbox" name="dia" value="mar"><span>Mar</span></label>
+            <label class="dia"><input type="checkbox" name="dia" value="mie"><span>Mié</span></label>
+            <label class="dia"><input type="checkbox" name="dia" value="jue"><span>Jue</span></label>
+            <label class="dia"><input type="checkbox" name="dia" value="vie"><span>Vie</span></label>
+            <label class="dia"><input type="checkbox" name="dia" value="sab"><span>Sáb</span></label>
+          </div>
+          <p class="ayuda" id="dias-ayuda">Marca al menos dos días. La matrícula en línea no exige días fijos.</p>
+          <p class="error" id="dias-error" role="alert"></p>
+        </fieldset>
+      </section>
+
+      <section class="panel" data-panel="3" aria-label="Paso 3, plazo" hidden>
+        <p class="antetitulo">Paso 3 de 4 · Cuánto dura</p>
+        <h1>Elige las fechas y el ritmo</h1>
+        <p class="intro">El curso va de octubre a junio. Puedes －alargar hasta un mes si aún quedan plazas.</p>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="inicio">Fecha de inicio</label>
+            <input id="inicio" name="inicio" type="date" aria-describedby="inicio-ayuda">
+            <p class="ayuda" id="inicio-ayuda">La primera lunes del mes que elijas, entre el 1 y el 31 de octubre.</p>
+            <p class="error" id="inicio-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="fin">Fecha de fin</label>
+            <input id="fin" name="fin" type="date" aria-describedby="fin-ayuda">
+            <p class="ayuda" id="fin-ayuda">Tiene que ser posterior al inicio y como mucho un año después.</p>
+            <p class="error" id="fin-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="ritmo">Horas semanales de estudio</label>
+          <input id="ritmo" name="ritmo" type="number" inputmode="numeric" min="4" max="40" step="1" value="15" aria-describedby="ritmo-ayuda">
+          <p class="ayuda" id="ritmo-ayuda">Entre 4 y 40 horas. Por debajo de 10 horas no hay título universitario.</p>
+          <p class="error" id="ritmo-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="becas">Solicitud de beca <span class="opcional">opcional</span></label>
+          <select id="becas" name="becas" aria-describedby="becas-ayuda">
+            <option value="ninguna">No, lo pago entero</option>
+            <option value="ministerial">Beca ministerial, 50 por ciento</option>
+            <option value="municipal">Ayuda municipal, 120 € al mes</option>
+            <option value="empresa">Beca de empresa, depende del convenio</option>
+          </select>
+          <p class="ayuda" id="becas-ayuda">Con beca ministerial el precio se recorta a la mitad y se abona al final del curso.</p>
+          <p class="error" id="becas-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="4" aria-label="Paso 4, documentación" hidden>
+        <p class="antetitulo">Paso 4 de 4 · Documentación</p>
+        <h1>Identifícate y cierra</h1>
+        <p class="intro">Comprobamos la letra de control del documento antes de enviar nada. En el centro solo revisamos los originales.</p>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="documento">DNI o NIE</label>
+            <input id="documento" name="documento" type="text" autocomplete="off" spellcheck="false" maxlength="9" placeholder="12345678Z" aria-describedby="documento-ayuda">
+            <p class="ayuda" id="documento-ayuda">Ocho cifras y una letra, o X, Y o Z seguido de siete cifras y letra.</p>
+            <p class="error" id="documento-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="fechanac">Fecha de nacimiento</label>
+            <input id="fechanac" name="fechanac" type="date" aria-describedby="fechanac-ayuda">
+            <p class="ayuda" id="fechanac-ayuda">Entre 16 y 80 años. Sirve para el seguro de la práctica.</p>
+            <p class="error" id="fechanac-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="correo">Correo institucional o personal</label>
+            <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="ana.morales@correo.com" aria-describedby="correo-ayuda">
+            <p class="ayuda" id="correo-ayuda">Allí llega la carta de aceptación con la plaza asignada.</p>
+            <p class="error" id="correo-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="telefono">Teléfono</label>
+            <input id="telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="600 123 456" aria-describedby="telefono-ayuda">
+            <p class="ayuda" id="telefono-ayuda">Nueve cifras, del 600 al 799. Para avisos deSecretaría académica.</p>
+            <p class="error" id="telefono-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="comentario">Nota para burocracia <span class="opcional">opcional</span></label>
+          <textarea id="comentario" name="comentario" rows="4" placeholder="Necesito convalidar dos asignaturas de mi carrera anterior, los certificados los subo en la secretaría." aria-describedby="comentario-ayuda"></textarea>
+          <p class="ayuda" id="comentario-ayuda">Máximo 300 caracteres. La convalidación tarda de tres a seis semanas.</p>
+          <p class="error" id="comentario-error" role="alert"></p>
+        </div>
+
+        <div class="campo campo-check" data-estado="neutro">
+          <input id="firma" name="firma" type="checkbox" aria-describedby="firma-ayuda">
+          <label for="firma">He leído y acepto la matrícula y el tratamiento de mis datos</label>
+          <p class="ayuda" id="firma-ayuda">Firmar aquí no es una firma electrónica: es una casilla de aceptación.</p>
+          <p class="error" id="firma-error" role="alert"></p>
+        </div>
+      </section>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">Este paso tiene algo pendiente</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <footer class="acciones">
+        <button class="boton boton-tenue" type="button" id="atras">
+          <span class="flecha-izq" aria-hidden="true"></span>
+          Anterior
+        </button>
+        <span class="hueco"></span>
+        <button class="boton boton-fuerte" type="submit" id="continuar">
+          <span id="continuarTexto">Ir al turno</span>
+          <span class="flecha-der" aria-hidden="true"></span>
+        </button>
+      </footer>
+    </form>
+  </div>
+
+  <section class="cerrada" id="cerrada" hidden tabindex="-1" aria-live="polite">
+    <span class="cerrada-sello" aria-hidden="true"><span class="cerrada-tic" aria-hidden="true"></span></span>
+    <p class="antetitulo">Matrícula cerrada</p>
+    <h2 id="cerradaTitulo">Tu plaza está reservada</h2>
+    <p class="cerrada-texto" id="cerradaTexto">Recibirás la carta de aceptación en un plazo de cinco días hábiles.</p>
+    <dl class="cerrada-datos">
+      <div><dt>Matrícula</dt><dd id="cerradaRef">CN-000000</dd></div>
+      <div><dt>Curso</dt><dd id="cerradaCurso">sin definir</dd></div>
+      <div><dt>Turno</dt><dd id="cerradaTurno">sin definir</dd></div>
+      <div><dt>Periodo</dt><dd id="cerradaPeriodo">sin definir</dd></div>
+      <div><dt>Plazas</dt><dd id="cerradaPlazas">1</dd></div>
+      <div><dt>Importe</dt><dd id="cerradaTotal">0,00 €</dd></div>
+    </dl>
+    <p class="cerrada-nota">El primer plazo de 120 € se abona en quince días. Si no lo haces, la plaza vuelve a la bolsa común.</p>
+    <button class="boton boton-fuerte cerrada-boton" type="button" id="otra">Empezar una matrícula nueva</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

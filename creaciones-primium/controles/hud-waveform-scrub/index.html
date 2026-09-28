@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HUD Waveform Scrub</title>
+<meta name="description" content="A ship HUD built around a waveform cut control: a phosphor scan line sweeps the trace, the handle scrubs it, and amplitude, offset and sample telemetry answer every step.">
+<meta name="description-es" content="Un HUD de nave construido alrededor de un control de corte de forma de onda: una linea de barrido recorre el trazo de fosforo, el tirador lo desplaza y la telemetria de amplitud, desfase y muestra responde a cada paso.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="page">
+  <header class="head">
+    <p class="head__kicker">Navigation deck / trace 04</p>
+    <h1>Waveform Scrub</h1>
+    <p class="head__lead">The trace is the control. Drag the handle to scrub the sample window while the scan line sweeps the phosphor. Arrow keys step, Home and End run to the stops, Space drops a cut on the nearest zero crossing.</p>
+  </header>
+
+  <section class="hud">
+    <span class="glint" aria-hidden="true"></span>
+    <span class="screw screw--tl" aria-hidden="true"></span>
+    <span class="screw screw--tr" aria-hidden="true"></span>
+    <span class="screw screw--bl" aria-hidden="true"></span>
+    <span class="screw screw--br" aria-hidden="true"></span>
+
+    <div class="hud__bar">
+      <div class="brand">
+        <b>ARGUS</b>
+        <s>signal bay &middot; mk iv</s>
+      </div>
+
+      <ul class="lamps">
+        <li><i></i><span>link</span></li>
+        <li><i></i><span>sync</span></li>
+        <li class="lamps--warn"><i></i><span>rec</span></li>
+      </ul>
+
+      <div class="reticle" aria-hidden="true">
+        <span class="reticle__ring"></span>
+        <span class="reticle__arm reticle__arm--x"></span>
+        <span class="reticle__arm reticle__arm--y"></span>
+        <b class="reticle__dot"></b>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="window" id="window">
+        <span class="grid" aria-hidden="true"></span>
+        <div class="wave" aria-hidden="true">
+          <i style="--h:.12"></i><i style="--h:.28"></i><i style="--h:.46"></i><i style="--h:.62"></i>
+          <i style="--h:.78"></i><i style="--h:.91"></i><i style="--h:.74"></i><i style="--h:.55"></i>
+          <i style="--h:.40"></i><i style="--h:.66"></i><i style="--h:.88"></i><i style="--h:.97"></i>
+          <i style="--h:.72"></i><i style="--h:.48"></i><i style="--h:.31"></i><i style="--h:.52"></i>
+          <i style="--h:.79"></i><i style="--h:.93"></i><i style="--h:.85"></i><i style="--h:.61"></i>
+          <i style="--h:.44"></i><i style="--h:.35"></i><i style="--h:.57"></i><i style="--h:.82"></i>
+          <i style="--h:.96"></i><i style="--h:.88"></i><i style="--h:.66"></i><i style="--h:.43"></i>
+          <i style="--h:.27"></i><i style="--h:.49"></i><i style="--h:.71"></i><i style="--h:.90"></i>
+          <i style="--h:.99"></i><i style="--h:.80"></i><i style="--h:.58"></i><i style="--h:.38"></i>
+          <i style="--h:.24"></i><i style="--h:.45"></i><i style="--h:.68"></i><i style="--h:.86"></i>
+        </div>
+        <span class="scrim" aria-hidden="true"></span>
+        <span class="cut cut--a" aria-hidden="true"></span>
+        <span class="cut cut--b" aria-hidden="true"></span>
+        <span class="cut cut--c" aria-hidden="true"></span>
+        <span class="scan" aria-hidden="true"></span>
+        <span class="scan scan--trail" aria-hidden="true"></span>
+        <span class="playhead" aria-hidden="true"></span>
+        <span class="handle" aria-hidden="true"><i></i></span>
+        <input class="window__input" id="scrub" type="range" min="0" max="1000" step="1" value="418"
+          aria-label="Waveform scrub position">
+      </div>
+
+      <div class="ruler" aria-hidden="true">
+        <span>0.0 s</span><span>1.2 s</span><span>2.4 s</span><span>3.6 s</span><span>4.8 s</span>
+      </div>
+    </div>
+
+    <div class="telemetry">
+      <div class="tele">
+        <span class="tele__label">amplitude</span>
+        <b class="tele__value" id="amp">0.97</b>
+        <s class="tele__unit">peak</s>
+      </div>
+      <div class="tele">
+        <span class="tele__label">offset</span>
+        <b class="tele__value" id="off">&minus;0.37 s</b>
+        <s class="tele__unit">from mark</s>
+      </div>
+      <div class="tele">
+        <span class="tele__label">sample</span>
+        <b class="tele__value" id="smp">4514</b>
+        <s class="tele__unit">of 5120</s>
+      </div>
+      <div class="tele tele--cut">
+        <span class="tele__label">cut</span>
+        <b class="tele__value" id="cut">03</b>
+        <span class="tele__lamp" id="lamp" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <div class="hud__foot">
+      <span class="tag">48 kHz / 24 bit</span>
+      <span class="tag tag--wide">window 4.80 s</span>
+      <span class="tag">beam 12</span>
+    </div>
+  </section>
+
+  <p class="foot">Focus the trace and use the arrow keys, or press Space to drop a cut.</p>
+</main>
+</body>
+</html>

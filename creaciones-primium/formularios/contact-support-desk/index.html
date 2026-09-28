@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Support Desk Modal</title>
+<meta name="description" content="Contact form that opens in a modal over a blurred backdrop with trapped focus, Escape to close, per field validation and a send confirmation with a reference.">
+<meta name="description-es" content="Formulario de contacto que se abre en una ventana modal sobre un fondo desenfocado, con foco atrapado, cierre con Escape, validación por campo y confirmación con referencia.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="suelo" aria-hidden="true">
+  <span class="halo halo-a"></span>
+  <span class="halo halo-b"></span>
+  <span class="malla"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#ayuda">
+    <span class="marca-bocina" aria-hidden="true"><span class="marca-onda"></span></span>
+    <span class="marca-texto">Ayuda<em>Clara</em></span>
+  </a>
+  <nav class="nav" aria-label="Secciones de la ayuda">
+    <a href="#envios">Envíos</a>
+    <a href="#devoluciones">Devoluciones</a>
+    <a href="#facturacion">Facturación</a>
+  </nav>
+</header>
+
+<main class="escena" id="ayuda">
+  <section class="hero">
+    <p class="antetitulo">Servicio de atención</p>
+    <h1>¿Algo no cuadra? Te lo miramos nosotros</h1>
+    <p class="hero-texto">El equipo de soporte está de lunes a viernes de 9:00 a 19:00. Las consultas de fuera de ese horario se responden a primera hora del día siguiente.</p>
+    <div class="hero-acciones">
+      <button class="abrir" type="button" id="abrirModal" aria-haspopup="dialog">
+        Abrir el formulario de contacto
+        <span class="flecha-der" aria-hidden="true"></span>
+      </button>
+      <span class="hero-nota">Sin registro y con respuesta media de 3 h 40 min.</span>
+    </div>
+  </section>
+
+  <ul class="temas">
+    <li class="tema" id="envios">
+      <span class="tema-icono tema-envio" aria-hidden="true"></span>
+      <h2 class="tema-titulo">Envíos y entregas</h2>
+      <p class="tema-texto">Plazos para península, isla y extranjero, seguimiento del paquete y qué pasa si el repartidor no te encuentra.</p>
+      <p class="tema-cifra">42 artículos</p>
+    </li>
+    <li class="tema" id="devoluciones">
+      <span class="tema-icono tema-devolucion" aria-hidden="true"></span>
+      <h2 class="tema-titulo">Devoluciones</h2>
+      <p class="tema-texto">Ventana de catorce días, productos que no admiten devolución y cómo se reembolsa el importe exacto.</p>
+      <p class="tema-cifra">28 artículos</p>
+    </li>
+    <li class="tema" id="facturacion">
+      <span class="tema-icono tema-factura" aria-hidden="true"></span>
+      <h2 class="tema-titulo">Facturación</h2>
+      <p class="tema-texto">Cambiar el CIF, descargar facturas de meses anteriores, IVA desglosado y rehacer facturas con error.</p>
+      <p class="tema-cifra">19 artículos</p>
+    </li>
+  </ul>
+
+  <section class="canales" aria-labelledby="titulo-canales">
+    <h2 class="canales-titulo" id="titulo-canales">Si prefieres hablar con una persona</h2>
+    <dl class="canales-lista">
+      <div><dt>Teléfono</dt><dd>900 41 22 08</dd></div>
+      <div><dt>Chat en la web</dt><dd>De 10:00 a 18:00, con espera de 3 minutos</dd></div>
+      <div><dt>Correo</dt><dd>ayuda@claratie.com</dd></div>
+    </dl>
+  </section>
+</main>
+
+<div class="velo" id="velo" hidden></div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitulo" aria-describedby="modalIntro" hidden>
+  <div class="modal-caja" role="document">
+    <div class="modal-borde" aria-hidden="true"></div>
+    <header class="modal-cabecera">
+      <div>
+        <p class="antetitulo">Formulario de contacto</p>
+        <h2 id="modalTitulo">Escríbenos y lo vemos</h2>
+        <p class="modal-intro" id="modalIntro">Los campos marcados son obligatorios. Contestamos en el mismo orden en que llegan.</p>
+      </div>
+      <button class="cerrar" type="button" id="cerrarModal" aria-label="Cerrar el formulario de contacto">
+        <span aria-hidden="true"></span>
+      </button>
+    </header>
+
+    <form class="modal-form" id="form" novalidate>
+      <div class="rejilla">
+        <div class="campo" data-estado="neutro">
+          <label for="nombre">Cómo te llamas</label>
+          <input id="nombre" name="nombre" type="text" autocomplete="name" placeholder="Ana Morales" aria-describedby="nombre-ayuda">
+          <p class="ayuda" id="nombre-ayuda">Con el nombre te saludamos por tu nombre al abrir el caso.</p>
+          <p class="error" id="nombre-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="correo">Correo de respuesta</label>
+          <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="ana.morales@correo.com" aria-describedby="correo-ayuda">
+          <p class="ayuda" id="correo-ayuda">A esa dirección va la respuesta y el número de caso.</p>
+          <p class="error" id="correo-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="rejilla">
+        <div class="campo" data-estado="neutro">
+          <label for="tema">Motivo de la consulta</label>
+          <select id="tema" name="tema" aria-describedby="tema-ayuda">
+            <option value="">Elige un motivo</option>
+            <option value="pedido">Un pedido o su entrega</option>
+            <option value="devolucion">Una devolución o un reembolso</option>
+            <option value="factura">Una factura o un dato fiscal</option>
+            <option value="producto">Dudas sobre un producto</option>
+            <option value="cuenta">Mi cuenta y el acceso</option>
+            <option value="otro">Algo que no está en la lista</option>
+          </select>
+          <p class="ayuda" id="tema-ayuda">Envia tu consulta al equipo adecuado sin pasar por el filtro.</p>
+          <p class="error" id="tema-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="referencia">Número de pedido <span class="opcional">opcional</span></label>
+          <input id="referencia" name="referencia" type="text" autocomplete="off" maxlength="14" placeholder="PX-4821973" aria-describedby="referencia-ayuda">
+          <p class="ayuda" id="referencia-ayuda">Si lo rellenas abrimos el caso con el pedido ya asociado.</p>
+          <p class="error" id="referencia-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="mensaje">Cuéntanos con detalle</label>
+        <textarea id="mensaje" name="mensaje" rows="6" placeholder="El paquete llegó con la caja abierta y una de las jarras se había roto dentro. Adjunto una foto en el mensaje original." aria-describedby="mensaje-ayuda"></textarea>
+        <p class="ayuda" id="mensaje-ayuda">Entre 20 y 1.200 caracteres. Cuanto más concreto, menos preguntas te hacemos.</p>
+        <p class="error" id="mensaje-error" role="alert"></p>
+      </div>
+
+      <div class="campo campo-check" data-estado="neutro">
+        <input id="aviso" name="aviso" type="checkbox" aria-describedby="aviso-ayuda">
+        <label for="aviso">He leído y acepto que se guarden mis datos para gestionar esta consulta</label>
+        <p class="ayuda" id="aviso-ayuda">No usamos tus datos para newsletters ni los cedemos a terceros.</p>
+        <p class="error" id="aviso-error" role="alert"></p>
+      </div>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">Faltan datos por rellenar</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <footer class="modal-acciones">
+        <button class="boton-tenue" type="button" id="cancelar">Mejor no, cerrar</button>
+        <span class="hueco"></span>
+        <button class="boton-fuerte" type="submit">
+          Enviar la consulta
+          <span class="flecha-der" aria-hidden="true"></span>
+        </button>
+      </footer>
+    </form>
+
+    <section class="enviado" id="enviado" hidden tabindex="-1" aria-live="polite">
+      <span class="enviado-sello" aria-hidden="true"><span class="enviado-tic" aria-hidden="true"></span></span>
+      <p class="antetitulo">Consulta enviada</p>
+      <h2 id="enviadoTitulo">Gracias, ya la tienes en la cola</h2>
+      <p class="enviado-texto" id="enviadoTexto">Te respondemos a la dirección que has indicado.</p>
+      <dl class="enviado-datos">
+        <div><dt>Caso</dt><dd id="enviadoRef">CA-000000</dd></div>
+        <div><dt>Motivo</dt><dd id="enviadoTema">sin elegir</dd></div>
+        <div><dt>Respuesta prevista</dt><dd id="enviadoPlazo">3 h 40 min</dd></div>
+      </dl>
+      <p class="enviado-nota">Si no tienes respuesta en 48 horas, vuelve a escribir citing el número de caso y lo pasamos al turno de noche.</p>
+      <button class="boton-fuerte enviado-boton" type="button" id="cerrarEnviado">Cerrar y seguir leyendo</button>
+    </section>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

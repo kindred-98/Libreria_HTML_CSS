@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shipping Address Ledger</title>
+<meta name="description" content="Two column shipping address ledger with keyboard shortcuts, postcode province checks, live postal label preview and delivery cost summary.">
+<meta name="description-es" content="Libro mayor de dirección de envío en dos columnas con atajos de teclado, comprobación de provincia por código postal, etiqueta postal en vivo y resumen del coste de envío.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="luz" aria-hidden="true"></div>
+<div class="grano" aria-hidden="true"></div>
+<div class="banda" aria-hidden="true"><span class="banda-barrido"></span></div>
+
+<main class="libro">
+  <header class="libro-cab">
+    <div class="libro-marca">
+      <span class="libro-sello" aria-hidden="true"></span>
+      <div>
+        <p class="antetitulo">Libro de direcciones</p>
+        <h1>Domicilio de entrega y envío</h1>
+      </div>
+    </div>
+    <p class="libro-ref">Ref. <b id="refCabecera">NX-4720</b></p>
+  </header>
+
+  <form class="libro-cuerpo" id="form" novalidate>
+    <div class="hoja">
+      <p class="seccion">Datos del destino <span>1 de 3</span></p>
+
+      <div class="campo par" data-estado="neutro" data-alt="1">
+        <div class="etq">
+          <label for="via">Tipo de vía</label>
+          <button class="atajo" type="button" data-ir="via">Alt + 1</button>
+          <p class="nota">Elige la categoría para que el cartero no se pierda.</p>
+        </div>
+        <div class="ctl">
+          <select id="via" name="via" aria-describedby="via-ayuda">
+            <option value="">Elige una opción</option>
+            <option value="calle">Calle</option>
+            <option value="avenida">Avenida</option>
+            <option value="plaza">Plaza</option>
+            <option value="ronda">Ronda</option>
+            <option value="carretera">Carretera</option>
+            <option value="paseo">Paseo</option>
+            <option value="travesia">Travesía</option>
+          </select>
+          <p class="ayuda" id="via-ayuda">Se imprime delante del nombre de la calle en la etiqueta.</p>
+          <p class="error" id="via-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo par" data-estado="neutro">
+        <div class="etq">
+          <label for="calle">Calle</label>
+          <p class="nota">Nombre completo, sin número. Por ejemplo:arrer de Sorní.</p>
+        </div>
+        <div class="ctl">
+          <input id="calle" name="calle" type="text" autocomplete="address-line1" placeholder="Carrer de Sorní" aria-describedby="calle-ayuda">
+          <p class="ayuda" id="calle-ayuda">Entre 3 y 60 caracteres. Los nombres pilones se admiten.</p>
+          <p class="error" id="calle-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="fila-doble">
+        <div class="campo par" data-estado="neutro" data-alt="2">
+          <div class="etq">
+            <label for="numero">Número</label>
+            <button class="atajo" type="button" data-ir="numero">Alt + 2</button>
+            <p class="nota">Solo el número, con letra si la hay: 24 o 24 B.</p>
+          </div>
+          <div class="ctl">
+            <input id="numero" name="numero" type="text" inputmode="numeric" placeholder="24" aria-describedby="numero-ayuda">
+            <p class="ayuda" id="numero-ayuda">Entre 1 y 999, con letra opcional.</p>
+            <p class="error" id="numero-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo par" data-estado="neutro">
+          <div class="etq">
+            <label for="piso">Piso, puerta y escalera</label>
+            <p class="nota">Opcional, pero ahorra muchísimos telefonazos.</p>
+          </div>
+          <div class="ctl">
+            <input id="piso" name="piso" type="text" placeholder="3.º B, escalera A" aria-describedby="piso-ayuda">
+            <p class="ayuda" id="piso-ayuda">Máximo 30 caracteres.</p>
+            <p class="error" id="piso-error" role="alert"></p>
+        </div>
+        </div>
+      </div>
+
+      <p class="seccion">Localidad y provincia <span>2 de 3</span></p>
+
+      <div class="campo par" data-estado="neutro" data-alt="3">
+        <div class="etq">
+          <label for="ciudad">Ciudad o localidad</label>
+          <button class="atajo" type="button" data-ir="ciudad">Alt + 3</button>
+          <p class="nota">El municipio real, no el nombre de la calle.</p>
+        </div>
+        <div class="ctl">
+          <input id="ciudad" name="ciudad" type="text" autocomplete="address-level2" placeholder="Valencia" aria-describedby="ciudad-ayuda">
+          <p class="ayuda" id="ciudad-ayuda">El código postal tiene que coincidir con la provincia.</p>
+          <p class="error" id="ciudad-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="fila-doble">
+        <div class="campo par" data-estado="neutro" data-alt="4">
+          <div class="etq">
+            <label for="cp">Código postal</label>
+            <button class="atajo" type="button" data-ir="cp">Alt + 4</button>
+            <p class="nota">Cinco cifras. Los dos primeros dígitos son la provincia.</p>
+          </div>
+          <div class="ctl">
+            <input id="cp" name="cp" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="46004" aria-describedby="cp-ayuda">
+            <p class="ayuda" id="cp-ayuda">Compruebamos que el prefijo pertenezca a una provincia real.</p>
+            <p class="error" id="cp-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo par" data-estado="neutro">
+          <div class="etq">
+            <label for="provincia">Provincia</label>
+            <p class="nota">Se deduce del código postal, pero puedes corregirla.</p>
+          </div>
+          <div class="ctl">
+            <select id="provincia" name="provincia" aria-describedby="provincia-ayuda">
+              <option value="">Elige una provincia</option>
+              <option value="al">Albacete</option>
+              <option value="a">Alicante</option>
+              <option value="as">Asturias</option>
+              <option value="av">Ávila</option>
+              <option value="b">Barcelona</option>
+              <option value="bi">Bizkaia</option>
+              <option value="c">A Coruña</option>
+              <option value="ca">Cádiz</option>
+              <option value="co">Córdoba</option>
+              <option value="cr">Ciudad Real</option>
+              <option value="cs">Castellón</option>
+              <option value="cu">Cuenca</option>
+              <option value="gc">Las Palmas</option>
+              <option value="gi">Girona</option>
+              <option value="gr">Granada</option>
+              <option value="gu">Guadalajara</option>
+              <option value="h">Huelva</option>
+              <option value="hu">Huesca</option>
+              <option value="ja">Jaén</option>
+              <option value="l">Lleida</option>
+              <option value="le">León</option>
+              <option value="lo">La Rioja</option>
+              <option value="lu">Lugo</option>
+              <option value="m">Madrid</option>
+              <option value="ma">Málaga</option>
+              <option value="mu">Murcia</option>
+              <option value="na">Navarra</option>
+              <option value="or">Ourense</option>
+              <option value="p">Palencia</option>
+              <option value="pm">Baleares</option>
+              <option value="po">Pontevedra</option>
+              <option value="s">Cantabria</option>
+              <option value="sa">Salamanca</option>
+              <option value="se">Sevilla</option>
+              <option value="sg">Segovia</option>
+              <option value="so">Soria</option>
+              <option value="ss">Guipúzcoa</option>
+              <option value="t">Tarragona</option>
+              <option value="te">Teruel</option>
+              <option value="tf">Santa Cruz de Tenerife</option>
+              <option value="to">Toledo</option>
+              <option value="v">Valencia</option>
+              <option value="va">Valladolid</option>
+              <option value="vi">Álava</option>
+              <option value="z">Zaragoza</option>
+              <option value="za">Zamora</option>
+            </select>
+            <p class="ayuda" id="provincia-ayuda">Con ella calculamos el coste y el plazo de entrega.</p>
+            <p class="error" id="provincia-error" role="alert"></p>
+          </div>
+        </div>
+      </div>
+
+      <p class="seccion">Entrega <span>3 de 3</span></p>
+
+      <div class="campo par" data-estado="neutro">
+        <div class="etq">
+          <span class="etiqueta" id="modo-etiqueta">Tipo de entrega</span>
+          <p class="nota">Elige cómo quieres recibir el paquete.</p>
+        </div>
+        <div class="ctl">
+          <div class="radios" role="radiogroup" aria-labelledby="modo-etiqueta" aria-describedby="modo-ayuda">
+            <div class="opcion">
+              <input type="radio" id="modo_estandar" name="modo" value="Estandard, 3 a 5 días laborables">
+              <label for="modo_estandar"><span class="marca" aria-hidden="true"></span>Estandard <small>3 a 5 días · 3,90 €</small></label>
+            </div>
+            <div class="opcion">
+              <input type="radio" id="modo_expres" name="modo" value="Exprés, siguiente día laborable">
+              <label for="modo_expres"><span class="marca" aria-hidden="true"></span>Exprés <small>24 horas · 11,50 €</small></label>
+            </div>
+            <div class="opcion">
+              <input type="radio" id="modo_punto" name="modo" value="Punto de recogida, 2 a 3 días laborables">
+              <label for="modo_punto"><span class="marca" aria-hidden="true"></span>Punto de recogida <small>2 a 3 días · gratis</small></label>
+            </div>
+          </div>
+          <p class="ayuda" id="modo-ayuda">El punto de recogida añade un euro si el pedido pesa más de 10 kg.</p>
+          <p class="error" id="modo-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo par" data-estado="neutro">
+        <div class="etq">
+          <label for="notas">Notas para el repartidor</label>
+          <p class="nota">Máximo 200 caracteres. Se leen en voz alta al entregar.</p>
+        </div>
+        <div class="ctl">
+          <textarea id="notas" name="notas" rows="3" maxlength="200" placeholder="Timbre en la puerta de la escalera, no tocar el timbre del 2.º." aria-describedby="notas-ayuda"></textarea>
+          <p class="ayuda" id="notas-ayuda">Nada de datos personales: aquí solo escribe instrucciones de entrega.</p>
+          <p class="error" id="notas-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">Faltan datos en el libro</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <p class="atajos-pie">Atajos: <kbd>Alt</kbd> + <kbd>1</kbd> vía &middot; <kbd>Alt</kbd> + <kbd>2</kbd> número &middot; <kbd>Alt</kbd> + <kbd>3</kbd> ciudad &middot; <kbd>Alt</kbd> + <kbd>4</kbd> código postal</p>
+        <button class="guardar" type="submit" id="guardar">Guardar domicilio <span class="flecha" aria-hidden="true"></span></button>
+      </div>
+    </div>
+
+    <aside class="comprobante">
+      <p class="comp-titulo">Etiqueta de envío</p>
+      <div class="etiqueta-envio" id="etiquetaEnvio">
+        <span class="etiqueta-barra" aria-hidden="true"></span>
+        <p class="etiqueta-remitente">Nexo Envíos &middot; C/ del Mar 12, 46003 Valencia</p>
+        <p class="etiqueta-destino">Ana Morales Prats</p>
+        <p class="etiqueta-linea" id="etLinea1">Calle sin definir</p>
+        <p class="etiqueta-linea" id="etLinea2">00000 Ciudad</p>
+        <p class="etiqueta-piso" id="etPiso"></p>
+        <span class="codigo-barras" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <p class="etiqueta-pie" id="etPie">NX-4720 &middot; sin tipo de entrega</p>
+      </div>
+
+      <dl class="comp-datos">
+        <div><dt>Coste estimado</dt><dd id="compCoste">3,90 €</dd></div>
+        <div><dt>Plazo</dt><dd id="compPlazo">3 a 5 días laborables</dd></div>
+        <div><dt>Peso del envío</dt><dd id="compPeso">2,4 kg</dd></div>
+        <div><dt>Total con portes</dt><dd id="compTotal" class="total">68,20 €</dd></div>
+      </dl>
+    </aside>
+  </form>
+
+  <section class="registro" id="registro" hidden tabindex="-1" aria-live="polite">
+    <span class="registro-sello" aria-hidden="true"><span class="registro-tic"></span></span>
+    <h2>Domicilio registrado</h2>
+    <p id="registroTexto">Ya podemos enviar a esta dirección.</p>
+    <dl class="registro-datos">
+      <div><dt>Referencia</dt><dd id="rRef">NX-4720</dd></div>
+      <div><dt>Dirección</dt><dd id="rDireccion">sin definir</dd></div>
+      <div><dt>Localidad</dt><dd id="rLocalidad">sin definir</dd></div>
+      <div><dt>Entrega</dt><dd id="rEntrega">sin definir</dd></div>
+    </dl>
+    <button class="guardar" type="button" id="otro">Registrar otro domicilio</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

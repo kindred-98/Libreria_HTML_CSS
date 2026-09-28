@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Member Login Terminal</title>
+<meta name="description" content="Terminal styled member sign in console with command history, inline autocompletion, live validation and a green access seal.">
+<meta name="description-es" content="Consola de acceso tipo terminal con historial de comandos, autocompletado en línea, validación en vivo y sello verde de acceso concedido.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="barrido" aria-hidden="true"></div>
+<div class="halo halo-a" aria-hidden="true"></div>
+<div class="halo halo-b" aria-hidden="true"></div>
+<div class="tramado" aria-hidden="true"></div>
+
+<main class="mesa">
+  <div class="terminal">
+    <div class="terminal-barra">
+      <span class="terminal-puntos" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="terminal-ruta">/var/seguridad/acceso<span class="cursor-bloque" aria-hidden="true"></span></span>
+      <span class="terminal-sesion" id="reloj">sesión 00:00:00</span>
+    </div>
+
+    <div class="terminal-cuerpo">
+      <div class="cinta" aria-hidden="true">
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda"></span>
+        <span class="cinta-onda cinta-onda-b"></span>
+        <span class="cinta-linea"></span>
+      </div>
+
+      <div class="historial" id="historial" role="log" aria-live="polite" aria-label="Historial de la consola">
+        <p class="fila fila-sistema"><span class="fila-marca">::</span> Consola de acceso segura. Sesión iniciada por <b>ana.morales</b> desde Barcelona.</p>
+        <p class="fila fila-info"><span class="fila-marca">01</span> Introduce tu correo y tu contraseña. Ambos se comprueban al salir del campo.</p>
+        <p class="fila fila-ok"><span class="fila-marca">ok</span> Canal cifrado AES-256 activo. Sesión máxima de 30 minutos.</p>
+      </div>
+
+      <form class="consola" id="form" novalidate>
+        <p class="prompt-vivo"><span aria-hidden="true">&gt;</span> nebula acceso --sesion</p>
+
+        <div class="campo" data-estado="neutro">
+          <div class="linea">
+            <label for="usuario"><span class="orden">--usuario</span> Correo de la cuenta</label>
+            <span class="prompt" aria-hidden="true">&gt;</span>
+            <input id="usuario" name="usuario" type="text" autocomplete="username" spellcheck="false" placeholder="ana.morales@correo.com" aria-describedby="usuario-ayuda" aria-autocomplete="list" aria-controls="sugerencias" aria-expanded="false" role="combobox">
+            <span class="glifo" aria-hidden="true"></span>
+          </div>
+          <div class="sugerencias" id="sugerencias" role="listbox" aria-label="Cuentas usadas en este equipo" hidden></div>
+          <p class="ayuda" id="usuario-ayuda">Es el correo con el que te diste de alta. También sirve tu alias de socio.</p>
+          <p class="error" id="usuario-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <div class="linea">
+            <label for="clave"><span class="orden">--clave</span> Contraseña</label>
+            <span class="prompt" aria-hidden="true">&gt;</span>
+            <input id="clave" name="clave" type="password" autocomplete="current-password" placeholder="••••••••••••" aria-describedby="clave-ayuda">
+            <button class="alternar" type="button" id="verClave" aria-pressed="false" aria-label="Mostrar la contraseña">ver</button>
+            <span class="glifo" aria-hidden="true"></span>
+          </div>
+          <div class="eco" id="eco" aria-hidden="true"></div>
+          <p class="ayuda" id="clave-ayuda">Entre 10 y 64 caracteres. No se guarda nada en este dispositivo.</p>
+          <p class="error" id="clave-error" role="alert"></p>
+        </div>
+
+        <div class="campo campo-flag" data-estado="neutro">
+          <div class="linea">
+            <input id="recordar" name="recordar" type="checkbox" aria-describedby="recordar-ayuda">
+            <label for="recordar"><span class="orden">--recordar</span> Mantener la sesión abierta en este equipo</label>
+            <span class="glifo" aria-hidden="true"></span>
+          </div>
+          <p class="ayuda" id="recordar-ayuda">Guarda un testigo de sesión durante treinta días. Se revoca desde tu perfil.</p>
+          <p class="error" id="recordar-error" role="alert"></p>
+        </div>
+
+        <div class="resumen-error" id="resumenError" role="alert" hidden>
+          <span class="resumen-error-icono" aria-hidden="true"></span>
+          <div>
+            <b id="resumenErrorTitulo">Acceso denegado</b>
+            <ul id="resumenErrorLista"></ul>
+          </div>
+        </div>
+
+        <div class="pie-consola">
+          <p class="teclas" aria-hidden="true">Tab cambia de campo &middot; Enter ejecuta &middot; Esc limpia</p>
+          <button class="boton" type="submit" id="entrar">ejecutar acceso <span class="flecha" aria-hidden="true"></span></button>
+        </div>
+      </form>
+    </div>
+
+    <div class="terminal-pie">
+      <span class="latido" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>Espera bloqueada: 0 intentos consumidos de 3</span>
+      <span class="terminal-pie-sep" aria-hidden="true"></span>
+      <span>build 4.19.2 &middot; nodo BCN-02</span>
+    </div>
+  </div>
+
+  <section class="sello" id="sello" hidden tabindex="-1" aria-live="polite">
+    <span class="sello-aro" aria-hidden="true"></span>
+    <span class="sello-circulo" aria-hidden="true"><span class="sello-tic"></span></span>
+    <h1>Acceso concedido</h1>
+    <p id="selloTexto">Sesión abierta correctamente.</p>
+    <dl class="registro">
+      <div><dt>Cuenta</dt><dd id="selloCuenta">sin definir</dd></div>
+      <div><dt>Credencial</dt><dd id="selloClave">sin definir</dd></div>
+      <div><dt>Testigo</dt><dd id="selloToken">sin definir</dd></div>
+      <div><dt>Sesión hasta</dt><dd id="selloHasta">sin definir</dd></div>
+    </dl>
+    <button class="boton boton-tenue" type="button" id="cerrarSesion">Cerrar esta sesión</button>
+  </section>
+
+  <p class="pie-pagina">Nexo Seguro &middot; acceso por terminal &middot; nunca guardamos tu contraseña</p>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

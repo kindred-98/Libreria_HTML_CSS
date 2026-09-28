@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Restaurant Table Reservation</title>
+<meta name="description" content="Restaurant table booking with a real month calendar of free and taken days, party size, occasion and a summary panel that grows live as you choose.">
+<meta name="description-es" content="Reserva de mesa con calendario mensual real de días libres y completos, número de comensales, ocasión y un resumen lateral que crece en vivo según eliges.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="sala" aria-hidden="true">
+  <span class="fuego fuego-a"></span>
+  <span class="fuego fuego-b"></span>
+  <span class="hollin"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#reserva">
+    <span class="marca-llama" aria-hidden="true"><span class="marca-nucleo"></span></span>
+    <span class="marca-texto">Taberna<em>del Conde</em></span>
+  </a>
+  <p class="encabezado-nota">Cerrado los lunes · reserva hasta 30 días antes</p>
+</header>
+
+<main class="escena" id="reserva">
+  <div class="columnas">
+    <section class="hoja" aria-labelledby="titulo">
+      <p class="antetitulo">Reserva de mesa</p>
+      <h1 id="titulo">Guarda la mesa antes de que se llene</h1>
+      <p class="intro">El calendario marca en gris los días ya cerrados y en ámbar los que quedan con menos de cuatro huecos.</p>
+
+      <form id="form" novalidate>
+        <div class="bloque-calendario campo" data-estado="neutro">
+          <div class="calendario-cabecera">
+            <span class="mes-titulo" id="mesTitulo">Mes</span>
+            <span class="mes-leyenda" aria-hidden="true">
+              <i class="leyenda-punto libre"></i> libre
+              <i class="leyenda-punto justa"></i> últimos huecos
+              <i class="leyenda-punto llena"></i> completo
+            </span>
+          </div>
+          <div class="calendario-dias" id="diasSemana" aria-hidden="true">
+            <span>lu</span><span>ma</span><span>mi</span><span>ju</span><span>vi</span><span>sá</span><span>do</span>
+          </div>
+          <div class="calendario-celdas" id="celdas" role="radiogroup" aria-labelledby="fecha-etiqueta"></div>
+          <span class="etiqueta-invisible" id="fecha-etiqueta">Día de la reserva</span>
+          <p class="ayuda" id="fecha-ayuda">Solo se pueden elegir días abiertos. Los domingos no reservan.</p>
+          <p class="error" id="fecha-error" role="alert"></p>
+        </div>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="hora">Hora de llegada</label>
+            <select id="hora" name="hora" aria-describedby="hora-ayuda"></select>
+            <p class="ayuda" id="hora-ayuda">El turno de cocina cierra a las 23:00. La mesa se mantiene quince minutos.</p>
+            <p class="error" id="hora-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="comensales">Comensales</label>
+            <input id="comensales" name="comensales" type="number" inputmode="numeric" min="1" max="10" step="1" value="2" aria-describedby="comensales-ayuda">
+            <p class="ayuda" id="comensales-ayuda">Entre 1 y 10 personas. A partir de siete reservamos el salón de atrás.</p>
+            <p class="error" id="comensales-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="zona">Zona preferida</label>
+            <select id="zona" name="zona" aria-describedby="zona-ayuda">
+              <option value="">Sin preferencia</option>
+              <option value="terraza">Terraza, sobre la calle</option>
+              <option value="salon">Salón principal</option>
+              <option value="barra">Barra de la entrada</option>
+              <option value="atras">Salón de atrás, el tranquilo</option>
+            </select>
+            <p class="ayuda" id="zona-ayuda">La terraza solo abre de abril a octubre y depende del tiempo.</p>
+            <p class="error" id="zona-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="ocasion">Ocasión</label>
+            <select id="ocasion" name="ocasion" aria-describedby="ocasion-ayuda">
+              <option value="">Elige una</option>
+              <option value="cumple">Cumpleaños</option>
+              <option value="negocios">Cena de negocios</option>
+              <option value="aniversario">Aniversario</option>
+              <option value="despedida">Despedida de soltero</option>
+              <option value="sin">Sin motivo especial</option>
+            </select>
+            <p class="ayuda" id="ocasion-ayuda">Sirve para poner la tarta o preparar la factura. Nada más.</p>
+            <p class="error" id="ocasion-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="nombre">Nombre de la reserva</label>
+            <input id="nombre" name="nombre" type="text" autocomplete="name" placeholder="Ana Morales" aria-describedby="nombre-ayuda">
+            <p class="ayuda" id="nombre-ayuda">Con este nombre te llamamos si se retrasa la mesa.</p>
+            <p class="error" id="nombre-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="telefono">Teléfono</label>
+            <input id="telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="600 123 456" aria-describedby="telefono-ayuda">
+            <p class="ayuda" id="telefono-ayuda">Nueve cifras. Lo usamos para el recordatorio del día anterior.</p>
+            <p class="error" id="telefono-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="correo">Correo para la confirmación</label>
+          <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="ana.morales@correo.com" aria-describedby="correo-ayuda">
+          <p class="ayuda" id="correo-ayuda">Enviamos el detalle de la mesa y un recordatorio 24 horas antes.</p>
+          <p class="error" id="correo-error" role="alert"></p>
+        </div>
+
+        <div class="campo campo-check" data-estado="neutro">
+          <input id="aviso" name="aviso" type="checkbox" aria-describedby="aviso-ayuda">
+          <label for="aviso">Quiero recibir el recordatorio por SMS el día anterior</label>
+          <p class="ayuda" id="aviso-ayuda">Si no lo marques te avisamos solo por correo.</p>
+          <p class="error" id="aviso-error" role="alert"></p>
+        </div>
+
+        <div class="resumen-error" id="resumenError" role="alert" hidden>
+          <span class="resumen-error-icono" aria-hidden="true"></span>
+          <div>
+            <b id="resumenErrorTitulo">Faltan detalles de la reserva</b>
+            <ul id="resumenErrorLista"></ul>
+          </div>
+        </div>
+
+        <footer class="acciones">
+          <button class="boton boton-tenue" type="button" id="limpiar">Empezar de nuevo</button>
+          <span class="hueco"></span>
+          <button class="boton boton-fuerte" type="submit">
+            Confirmar la mesa
+            <span class="flecha-der" aria-hidden="true"></span>
+          </button>
+        </footer>
+      </form>
+    </section>
+
+    <aside class="resumen" aria-label="Resumen de la reserva en vivo" aria-live="polite">
+      <div class="resumen-cabecera">
+        <h2 class="resumen-titulo">Tu reserva</h2>
+        <span class="resumen-sello" aria-hidden="true"><span class="resumen-nucleo"></span></span>
+      </div>
+
+      <p class="resumen-vacio" id="resumenVacio">Elige un día y el resumen se irá llenando solo.</p>
+
+      <ul class="resumen-filas" id="resumenFilas"></ul>
+
+      <dl class="resumen-mesa">
+        <div><dt>Mesa que te asignamos</dt><dd id="mesaAsignada">sin elegir</dd></div>
+        <div><dt>Huecos libres ese día</dt><dd id="huecosDia">—</dd></div>
+      </dl>
+
+      <p class="resumen-pie" id="resumenPie">Sin coste de reserva. La mesa se guarda quince minutos de cortesía.</p>
+
+      <div class="normas">
+        <h3 class="normas-titulo">Normas de la casa</h3>
+        <ul class="normas-lista">
+          <li>Los grupos de siete o más pasan al salón de atrás.</li>
+          <li>No se admiten mascotas en el salón principal.</li>
+          <li>La cocina cierra a las 23:00 y la barra a las 01:00.</li>
+          <li>Las mesas no acumulan más de dos comandas seguidas.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <section class="confirmada" id="confirmada" hidden tabindex="-1" aria-live="polite">
+    <span class="confirmada-sello" aria-hidden="true"><span class="confirmada-tic" aria-hidden="true"></span></span>
+    <p class="antetitulo">Mesa reservada</p>
+    <h2 id="confirmadaTitulo">Te guardamos la mesa</h2>
+    <p class="confirmada-texto" id="confirmadaTexto">Recibirás la confirmación por correo en unos segundos.</p>
+    <dl class="confirmada-datos">
+      <div><dt>Código</dt><dd id="confirmadaRef">TD-000000</dd></div>
+      <div><dt>Día</dt><dd id="confirmadaDia">sin elegir</dd></div>
+      <div><dt>Hora</dt><dd id="confirmadaHora">sin elegir</dd></div>
+      <div><dt>Comensales</dt><dd id="confirmadaComensales">0</dd></div>
+      <div><dt>Mesa</dt><dd id="confirmadaMesa">sin elegir</dd></div>
+      <div><dt>Zona</dt><dd id="confirmadaZona">sin elegir</dd></div>
+    </dl>
+    <p class="confirmada-nota">Si no puedes venir, avisa con dos horas de margen y liberamos la mesa para otro cliente.</p>
+    <button class="boton boton-fuerte confirmada-boton" type="button" id="otra">Reservar otra mesa</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nebula Signup Wizard</title>
+<meta name="description" content="Three step account creation wizard with live password strength, per step validation and a six digit email code.">
+<meta name="description-es" content="Asistente de alta de cuenta en tres pasos con medidor de contraseña en vivo, validación por paso y código de correo de seis cifras.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="cielo" aria-hidden="true">
+  <span class="aurora aurora-a"></span>
+  <span class="aurora aurora-b"></span>
+  <span class="aurora aurora-c"></span>
+  <span class="malla"></span>
+</div>
+
+<header class="barra">
+  <a class="marca" href="#inicio">
+    <span class="marca-glifo" aria-hidden="true"></span>
+    <span class="marca-texto">Nebula<em>works</em></span>
+  </a>
+  <ol class="pasos" id="pasos">
+    <li class="paso is-activo" data-paso="1">
+      <span class="paso-num">1</span>
+      <span class="paso-txt"><b>Cuenta</b><small>Quién eres</small></span>
+    </li>
+    <li class="paso" data-paso="2">
+      <span class="paso-num">2</span>
+      <span class="paso-txt"><b>Seguridad</b><small>Cómo entras</small></span>
+    </li>
+    <li class="paso" data-paso="3">
+      <span class="paso-num">3</span>
+      <span class="paso-txt"><b>Verificación</b><small>Confirmar correo</small></span>
+    </li>
+  </ol>
+  <div class="avance" role="img" aria-label="Progreso del alta" id="avance">
+    <span class="avance-hueco"></span>
+    <span class="avance-relleno" id="avanceRelleno"></span>
+  </div>
+</header>
+
+<main class="escena" id="inicio">
+  <form class="hoja" id="form" novalidate>
+
+    <section class="panel is-visible" data-panel="1" aria-label="Paso 1, datos de cuenta">
+      <p class="antetitulo">Paso 1 de 3</p>
+      <h1>Empieza por lo básico</h1>
+      <p class="intro">Solo pedimos lo necesario para crear tu cuenta. Puedes cambiarlo despues desde tu perfil.</p>
+
+      <div class="rejilla">
+        <div class="campo" data-estado="neutro">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" name="nombre" type="text" autocomplete="given-name" aria-describedby="nombre-ayuda">
+          <p class="ayuda" id="nombre-ayuda">Como te llamaremos en la interfaz.</p>
+          <p class="error" id="nombre-error" role="alert"></p>
+        </div>
+        <div class="campo" data-estado="neutro">
+          <label for="apellidos">Apellidos</label>
+          <input id="apellidos" name="apellidos" type="text" autocomplete="family-name" aria-describedby="apellidos-ayuda">
+          <p class="ayuda" id="apellidos-ayuda">Dos apellidos si tienes, o solo uno.</p>
+          <p class="error" id="apellidos-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="correo">Correo electrónico</label>
+        <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="nombre@dominio.com" aria-describedby="correo-ayuda">
+          <p class="ayuda" id="correo-ayuda">Ahí llegará el código de seis cifras del paso 3.</p>
+        <p class="error" id="correo-error" role="alert"></p>
+      </div>
+
+      <div class="rejilla">
+        <div class="campo" data-estado="neutro">
+          <label for="pais">País de residencia</label>
+          <select id="pais" name="pais" aria-describedby="pais-ayuda">
+            <option value="">Elige un país</option>
+            <option value="es">Espana</option>
+            <option value="pt">Portugal</option>
+            <option value="mx">Mexico</option>
+            <option value="ar">Argentina</option>
+            <option value="cl">Chile</option>
+            <option value="co">Colombia</option>
+          </select>
+          <p class="ayuda" id="pais-ayuda">Determina la moneda y el idioma inicial.</p>
+          <p class="error" id="pais-error" role="alert"></p>
+        </div>
+        <div class="campo" data-estado="neutro">
+          <label for="ocupacion">Ocupación</label>
+          <select id="ocupacion" name="ocupacion" aria-describedby="ocupacion-ayuda">
+            <option value="">Elige una opción</option>
+            <option value="diseno">Diseno</option>
+            <option value="desarrollo">Desarrollo</option>
+            <option value="producto">Producto</option>
+            <option value="marketing">Marketing</option>
+            <option value="operaciones">Operaciones</option>
+            <option value="otra">Otra</option>
+          </select>
+          <p class="ayuda" id="ocupacion-ayuda">Nos sirve para mostrarte ejemplos utiles.</p>
+          <p class="error" id="ocupacion-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo campo-check" data-estado="neutro">
+        <input id="terminos" name="terminos" type="checkbox" aria-describedby="terminos-ayuda">
+        <label for="terminos">Acepto las condiciones y la politica de privacidad</label>
+        <p class="ayuda" id="terminos-ayuda">Puedes retirarte cuando quieras desde los ajustes.</p>
+        <p class="error" id="terminos-error" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="2" aria-label="Paso 2, seguridad" hidden>
+      <p class="antetitulo">Paso 2 de 3</p>
+      <h1>Cierra la puerta por detras</h1>
+      <p class="intro">Una contrasena larga vale mas que una corta con simbolos raros. Te decimos en vivo que tal vas.</p>
+
+      <div class="campo" data-estado="neutro">
+        <label for="clave">Contraseña</label>
+        <div class="envoltorio">
+          <input id="clave" name="clave" type="password" autocomplete="new-password" aria-describedby="clave-ayuda clave-medidor">
+          <button class="ojo" type="button" id="verClave" aria-pressed="false" aria-label="Mostrar contrasena">
+            <span class="ojo-lente" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="medidor" id="clave-medidor" data-nivel="0">
+          <div class="medidor-barras">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <p class="medidor-texto" id="claveTexto">Sin contrasena todavia</p>
+        </div>
+        <ul class="reglas" id="reglas">
+          <li data-regla="larga">Al menos 10 caracteres</li>
+          <li data-regla="mayus">Una letra mayuscula</li>
+          <li data-regla="minus">Una letra minuscula</li>
+          <li data-regla="digito">Un digito</li>
+        </ul>
+        <p class="ayuda" id="clave-ayuda">No reutilices contraseñas de otros sitios.</p>
+        <p class="error" id="clave-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="repetir">Repite la contraseña</label>
+        <input id="repetir" name="repetir" type="password" autocomplete="new-password" aria-describedby="repetir-ayuda">
+        <p class="ayuda" id="repetir-ayuda">Las dos tienen que coincidir letra por letra.</p>
+        <p class="error" id="repetir-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="pregunta">Pregunta de recuperación</label>
+          <select id="pregunta" name="pregunta" aria-describedby="pregunta-ayuda">
+            <option value="">Elige una pregunta</option>
+            <option value="ciudad">¿En qué ciudad naciste?</option>
+            <option value="colegio">¿Cómo se llamaba tu colegio?</option>
+            <option value="primer-bici">¿Cuál fue tu primer vehículo?</option>
+            <option value="libro">¿Qué libro leías de pequeño?</option>
+          </select>
+        <p class="ayuda" id="pregunta-ayuda">La respuesta no se muestra nunca a nadie.</p>
+        <p class="error" id="pregunta-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="respuesta">Respuesta</label>
+        <input id="respuesta" name="respuesta" type="text" aria-describedby="respuesta-ayuda">
+          <p class="ayuda" id="respuesta-ayuda">Mínimo 4 caracteres, sin signos de interrogación.</p>
+        <p class="error" id="respuesta-error" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="3" aria-label="Paso 3, verificacion por correo" hidden>
+      <p class="antetitulo">Paso 3 de 3</p>
+      <h1>Confirma que el correo es tuyo</h1>
+      <p class="intro">Hemos enviado un codigo de seis cifras a <b id="destino">tu direccion</b>. Caduca en diez minutos.</p>
+
+      <div class="campo campo-otp" data-estado="neutro">
+        <span class="etiqueta" id="otp-etiqueta">Código de verificación</span>
+        <div class="casillas" id="casillas" role="group" aria-labelledby="otp-etiqueta">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 1">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 2">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 3">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 4">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 5">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 6">
+        </div>
+        <p class="ayuda" id="otp-ayuda">Puedes pegar las seis cifras seguidas y se reparten solas.</p>
+        <p class="error" id="otp-error" role="alert"></p>
+      </div>
+
+      <div class="reenvio">
+        <button class="fantasma" type="button" id="reenviar">Reenviar codigo</button>
+        <span class="cuenta" id="cuenta" aria-live="polite"></span>
+      </div>
+
+      <fieldset class="marco">
+        <legend>Resumen de tu alta</legend>
+        <dl class="resumen">
+          <div><dt>Cuenta</dt><dd id="ver-correo">sin definir</dd></div>
+          <div><dt>Contrasena</dt><dd id="ver-clave">sin definir</dd></div>
+          <div><dt>Recuperación</dt><dd id="ver-pregunta">sin definir</dd></div>
+        </dl>
+      </fieldset>
+    </section>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-error-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">Revisa estos campos</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <footer class="acciones">
+      <button class="boton boton-tenue" type="button" id="atras" hidden>
+        <span class="flecha-izq" aria-hidden="true"></span>
+        Volver
+      </button>
+      <span class="relleno"></span>
+      <button class="boton boton-fuerte" type="submit" id="continuar">
+        <span id="continuarTexto">Continuar</span>
+        <span class="flecha-der" aria-hidden="true"></span>
+      </button>
+    </footer>
+  </form>
+
+  <section class="listo" id="listo" hidden tabindex="-1" aria-live="polite">
+    <span class="listo-sello" aria-hidden="true"><span class="listo-tic" aria-hidden="true"></span></span>
+    <h1>Cuenta creada</h1>
+    <p id="listoTexto">Ya puedes entrar con tu correo.</p>
+    <dl class="resumen resumen-listo">
+      <div><dt>Identificador</dt><dd id="listoId">NB-000000</dd></div>
+      <div><dt>Alta</dt><dd id="listoFecha">sin definir</dd></div>
+    </dl>
+    <button class="boton boton-fuerte" type="button" id="otra">Crear otra cuenta</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

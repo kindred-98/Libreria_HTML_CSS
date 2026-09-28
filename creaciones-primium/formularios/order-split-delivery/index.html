@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Split Delivery Sheet</title>
+<meta name="description" content="Split bill sheet that distributes a table total across five dishes with live quantities, an animated split bar, remaining amount and a closed final total.">
+<meta name="description-es" content="Hoja de reparto que distribuye el total de una mesa entre cinco platos con cantidades en vivo, barra animada del reparto, importe sobrante y total final cerrado.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="barra-fondo" aria-hidden="true">
+  <span class="ember ember-a"></span>
+  <span class="ember ember-b"></span>
+  <span class="tablas"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#reparto">
+    <span class="marca-olla" aria-hidden="true"><span class="marca-vapor"></span></span>
+    <span class="marca-texto">Casa<em>Brava</em></span>
+  </a>
+  <p class="encabezado-nota">Mesa 7 · cuatro comensales · cuenta abierta desde las 21:14</p>
+</header>
+
+<main class="escena" id="reparto">
+  <div class="columnas">
+    <section class="hoja" aria-labelledby="titulo-reparto">
+      <p class="antetitulo">Fórmula de reparto</p>
+      <h1 id="titulo-reparto">Reparte la cuenta sin discussions</h1>
+      <p class="intro">Escribe lo que va a cada plato. La barra y el sobrante se recalculan mientras escribes, y no dejamos ni un céntimo suelto.</p>
+
+      <form id="form" novalidate>
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="total">Total de la mesa</label>
+            <div class="caja-dinero">
+              <span class="simbolo" aria-hidden="true"></span>
+              <input id="total" name="total" type="text" inputmode="decimal" autocomplete="off" value="86,40" aria-describedby="total-ayuda">
+              <span class="sufijo">EUR</span>
+            </div>
+            <p class="ayuda" id="total-ayuda">Con la propina y el servicio ya incluidos. Entre 5,00 € y 500,00 €.</p>
+            <p class="error" id="total-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="grupo">Nombre del grupo</label>
+            <input id="grupo" name="grupo" type="text" autocomplete="off" placeholder="Los de la mesa 7" aria-describedby="grupo-ayuda">
+            <p class="ayuda" id="grupo-ayuda">Lo verás impreso en la hoja de reparto que se lleva el camarero.</p>
+            <p class="error" id="grupo-error" role="alert"></p>
+          </div>
+        </div>
+
+        <fieldset class="platos" id="platos">
+          <legend>Cuánto va a cada plato</legend>
+          <p class="leyenda-ayuda">Puedes dejar un plato a cero si nadie lo pidió. Los importes admiten dos decimales.</p>
+
+          <div class="plato" data-ref="1">
+            <span class="plato-marca marca-patron" aria-hidden="true"></span>
+            <span class="plato-datos"><b>Patatas bravas</b><small>media ración por cabeza</small></span>
+            <span class="plato-campo campo" data-estado="neutro">
+              <label class="visualmente-oculto" for="p1">Importe de las patatas bravas</label>
+              <input id="p1" class="plato-input" name="p1" type="text" inputmode="decimal" autocomplete="off" value="18,60" aria-describedby="p1-ayuda">
+              <span class="plato-marca-euro" aria-hidden="true"></span>
+              <span class="plato-ayuda" id="p1-ayuda">Porción completa de la casa</span>
+              <p class="error" id="p1-error" role="alert"></p>
+            </span>
+          </div>
+
+          <div class="plato" data-ref="2">
+            <span class="plato-marca marca-picante" aria-hidden="true"></span>
+            <span class="plato-datos"><b>Croquetas de jamón</b><small>seis unidades, con alioli</small></span>
+            <span class="plato-campo campo" data-estado="neutro">
+              <label class="visualmente-oculto" for="p2">Importe de las croquetas</label>
+              <input id="p2" class="plato-input" name="p2" type="text" inputmode="decimal" autocomplete="off" value="14,40" aria-describedby="p2-ayuda">
+              <span class="plato-marca-euro" aria-hidden="true"></span>
+              <span class="plato-ayuda" id="p2-ayuda">Plato más pedido de la carta</span>
+              <p class="error" id="p2-error" role="alert"></p>
+            </span>
+          </div>
+
+          <div class="plato" data-ref="3">
+            <span class="plato-marca marca-mar" aria-hidden="true"></span>
+            <span class="plato-datos"><b>Pulpo a la gallega</b><small>con patatas y pimentón</small></span>
+            <span class="plato-campo campo" data-estado="neutro">
+              <label class="visualmente-oculto" for="p3">Importe del pulpo</label>
+              <input id="p3" class="plato-input" name="p3" type="text" inputmode="decimal" autocomplete="off" value="26,00" aria-describedby="p3-ayuda">
+              <span class="plato-marca-euro" aria-hidden="true"></span>
+              <span class="plato-ayuda" id="p3-ayuda">Para compartir entre dos</span>
+              <p class="error" id="p3-error" role="alert"></p>
+            </span>
+          </div>
+
+          <div class="plato" data-ref="4">
+            <span class="plato-marca marca-dulce" aria-hidden="true"></span>
+            <span class="plato-datos"><b>Tarta de queso</b><small>con helado de vainilla</small></span>
+            <span class="plato-campo campo" data-estado="neutro">
+              <label class="visualmente-oculto" for="p4">Importe de la tarta</label>
+              <input id="p4" class="plato-input" name="p4" type="text" inputmode="decimal" autocomplete="off" value="7,40" aria-describedby="p4-ayuda">
+              <span class="plato-marca-euro" aria-hidden="true"></span>
+              <span class="plato-ayuda" id="p4-ayuda">De la carta de postres</span>
+              <p class="error" id="p4-error" role="alert"></p>
+            </span>
+          </div>
+
+          <div class="plato" data-ref="5">
+            <span class="plato-marca marca-vino" aria-hidden="true"></span>
+            <span class="plato-datos"><b>Tinto de la casa</b><small>copas de 125 ml</small></span>
+            <span class="plato-campo campo" data-estado="neutro">
+              <label class="visualmente-oculto" for="p5">Importe del vino</label>
+              <input id="p5" class="plato-input" name="p5" type="text" inputmode="decimal" autocomplete="off" value="20,00" aria-describedby="p5-ayuda">
+              <span class="plato-marca-euro" aria-hidden="true"></span>
+              <span class="plato-ayuda" id="p5-ayuda">Una botella, unas siete copas</span>
+              <p class="error" id="p5-error" role="alert"></p>
+            </span>
+          </div>
+        </fieldset>
+
+        <button class="repartir-igual" type="button" id="igualar">
+          <span class="igualar-icono" aria-hidden="true"></span>
+          Repartir el sobrante a partes iguales entre los platos marcados
+        </button>
+
+        <div class="resumen-error" id="resumenError" role="alert" hidden>
+          <span class="resumen-error-icono" aria-hidden="true"></span>
+          <div>
+            <b id="resumenErrorTitulo">El reparto no cuadra</b>
+            <ul id="resumenErrorLista"></ul>
+          </div>
+        </div>
+
+        <footer class="acciones">
+          <button class="boton boton-tenue" type="button" id="vaciar">Vaciar la hoja</button>
+          <span class="hueco"></span>
+          <button class="boton boton-fuerte" type="submit">
+            Cerrar el reparto
+            <span class="flecha-der" aria-hidden="true"></span>
+          </button>
+        </footer>
+      </form>
+    </section>
+
+    <aside class="medidor" aria-label="Estado del reparto">
+      <h2 class="medidor-titulo">Cómo va el reparto</h2>
+
+      <div class="barra-split" id="barraSplit" aria-live="off">
+        <div class="fila-barra" data-ref="1">
+          <span class="fila-nombre">Patatas bravas</span>
+          <span class="fila-pista"><span class="fila-relleno" id="r1"></span></span>
+          <span class="fila-cifra" id="c1">0,00 €</span>
+        </div>
+        <div class="fila-barra" data-ref="2">
+          <span class="fila-nombre">Croquetas de jamón</span>
+          <span class="fila-pista"><span class="fila-relleno" id="r2"></span></span>
+          <span class="fila-cifra" id="c2">0,00 €</span>
+        </div>
+        <div class="fila-barra" data-ref="3">
+          <span class="fila-nombre">Pulpo a la gallega</span>
+          <span class="fila-pista"><span class="fila-relleno" id="r3"></span></span>
+          <span class="fila-cifra" id="c3">0,00 €</span>
+        </div>
+        <div class="fila-barra" data-ref="4">
+          <span class="fila-nombre">Tarta de queso</span>
+          <span class="fila-pista"><span class="fila-relleno" id="r4"></span></span>
+          <span class="fila-cifra" id="c4">0,00 €</span>
+        </div>
+        <div class="fila-barra" data-ref="5">
+          <span class="fila-nombre">Tinto de la casa</span>
+          <span class="fila-pista"><span class="fila-relleno" id="r5"></span></span>
+          <span class="fila-cifra" id="c5">0,00 €</span>
+        </div>
+        <div class="fila-barra fila-sobra" data-ref="0">
+          <span class="fila-nombre">Sin repartir</span>
+          <span class="fila-pista"><span class="fila-relleno" id="r0"></span></span>
+          <span class="fila-cifra" id="c0">0,00 €</span>
+        </div>
+      </div>
+
+      <dl class="cuentas">
+        <div><dt>Total de la mesa</dt><dd id="mTotal">86,40 €</dd></div>
+        <div><dt>Repartido</dt><dd id="mRepartido">86,40 €</dd></div>
+        <div class="cuentas-sobra" id="filaSobra"><dt>Sobrante</dt><dd id="mSobra">0,00 €</dd></div>
+        <div class="cuentas-total"><dt>Total final</dt><dd id="mFinal">86,40 €</dd></div>
+      </dl>
+
+      <p class="medidor-pie" id="medidorPie">Los cinco platos suman exactamente el total de la mesa.</p>
+    </aside>
+  </div>
+
+  <section class="cerrado" id="cerrado" hidden tabindex="-1" aria-live="polite">
+    <span class="cerrado-sello" aria-hidden="true"><span class="cerrado-tic" aria-hidden="true"></span></span>
+    <p class="antetitulo">Reparto cerrado</p>
+    <h2 id="cerradoTitulo">Cuenta liquidada sin una pelea</h2>
+    <p class="cerrado-texto" id="cerradoTexto">El camarero ya tiene la hoja con el desglose.</p>
+    <dl class="cerrado-datos">
+      <div><dt>Hoja</dt><dd id="cerradoRef">RP-000000</dd></div>
+      <div><dt>Mesa</dt><dd id="cerradoMesa">7</dd></div>
+      <div><dt>Conceptos</dt><dd id="cerradoPlatos">5</dd></div>
+      <div><dt>Total repartido</dt><dd id="cerradoTotal">86,40 €</dd></div>
+    </dl>
+    <ul class="cerrado-lista" id="cerradoLista"></ul>
+    <p class="cerrado-nota">El pago se hace en mesa con tarjeta o efectivo. Guardad este número por si luego hay que rectificar.</p>
+    <button class="boton boton-fuerte cerrado-boton" type="button" id="otra">Abrir una hoja nueva</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

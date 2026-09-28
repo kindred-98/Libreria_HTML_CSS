@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event Registration Agenda Desk</title>
+<meta name="description" content="Event registration with a real agenda clock of free and taken time slots, three ticket types with live price, attendee data and an attendance summary.">
+<meta name="description-es" content="Inscripción a un evento con reloj de agenda real de huecos libres y ocupados, tres tipos de entrada con precio en vivo, datos del asistente y resumen de asistencia.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="sala" aria-hidden="true">
+  <span class="vela vela-a"></span>
+  <span class="vela vela-b"></span>
+  <span class="rayos-luz"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#agenda">
+    <span class="marca-dia" aria-hidden="true"><span class="marca-dia-num">12</span></span>
+    <span class="marca-texto">Foro<em>Costa Este</em></span>
+  </a>
+  <p class="encabezado-nota">12 y 13 de noviembre · Palacio de Congresos de Cabaña · 480 plazas</p>
+</header>
+
+<main class="escena" id="agenda">
+  <div class="disposicion">
+    <form class="mesa" id="form" novalidate>
+      <p class="antetitulo">Inscripción al foro</p>
+      <h1>Elige tu hueco, tu entrada y vente con nombre</h1>
+      <p class="intro">La agenda está en bloques de una hora. En verde los que quedan libres, en ámbar los últimos y en gris los que ya no hay.</p>
+
+      <section class="bloque" aria-labelledby="tit-agenda">
+        <h2 class="bloque-titulo" id="tit-agenda">Agenda del día 12 de noviembre</h2>
+        <p class="bloque-intro">Cada bloque es una sesión. Puedes apuntarte a las que quieras, sin límite.</p>
+
+        <fieldset class="agenda" id="agendaBloques" data-estado="neutro">
+          <legend>Huecos de la sesión</legend>
+          <div class="reloj" id="reloj"></div>
+          <p class="ayuda" id="agenda-ayuda">Marca todas las sesiones que te interesen. Al final te mostramos el precio según tu entrada.</p>
+          <p class="error" id="agenda-error" role="alert"></p>
+        </fieldset>
+      </section>
+
+      <section class="bloque" aria-labelledby="tit-entrada">
+        <h2 class="bloque-titulo" id="tit-entrada">Tipo de entrada</h2>
+        <p class="bloque-intro">Los talleres tienen aforo propio y hay que pagar el Taller por separado del día.</p>
+
+        <fieldset class="entradas" data-estado="neutro">
+          <legend>Modalidad de la entrada</legend>
+          <label class="entrada">
+            <input type="radio" name="entrada" value="general" checked>
+            <span class="entrada-caja">
+              <span class="entrada-precio">180,00 €</span>
+              <b>Entrada general</b>
+              <small>Las dos jornadas, café y materiales. Sin talleres.</small>
+            </span>
+          </label>
+          <label class="entrada">
+            <input type="radio" name="entrada" value="taller">
+            <span class="entrada-caja">
+              <span class="entrada-precio">295,00 €</span>
+              <b>General con Taller</b>
+              <small>Incluye un taller de los dos del programa. Aforo de 40 personas.</small>
+            </span>
+          </label>
+          <label class="entrada">
+            <input type="radio" name="entrada" value="vip">
+            <span class="entrada-caja">
+              <span class="entrada-precio">420,00 €</span>
+              <b>Zona vip</b>
+              <small>Asiento numerado, cena de cierre y visita guiada al anfiteatro.</small>
+            </span>
+          </label>
+          <p class="ayuda" id="entrada-ayuda">Se ha elegido la entrada general. Puedes cambiarla arriba.</p>
+          <p class="error" id="entrada-error" role="alert"></p>
+        </fieldset>
+
+        <div class="campo" data-estado="neutro">
+          <label for="taller">Taller opcional</label>
+          <select id="taller" name="taller" aria-describedby="taller-ayuda">
+            <option value="">No quiero taller</option>
+            <option value="accesibilidad">Taller de accesibilidad web, 24 plazas</option>
+            <option value="metricas">Taller de métricas sin cookies, 18 plazas</option>
+            <option value="agil">Taller de trabajo ágil, 12 plazas</option>
+          </select>
+          <p class="ayuda" id="taller-ayuda">Solo disponible con la entrada General con Taller. Coste 60 € por persona.</p>
+          <p class="error" id="taller-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="bloque" aria-labelledby="tit-asistente">
+        <h2 class="bloque-titulo" id="tit-asistente">Datos del asistente</h2>
+        <p class="bloque-intro">Van tal cual a la acreditación, así que escribe tu nombre como aparece en el documento.</p>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="nombre">Nombre y apellidos</label>
+            <input id="nombre" name="nombre" type="text" autocomplete="name" placeholder="Ana Morales Ibáñez" aria-describedby="nombre-ayuda">
+            <p class="ayuda" id="nombre-ayuda">Tal como figura en tu documento de identidad.</p>
+            <p class="error" id="nombre-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="correo">Correo</label>
+            <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="ana.morales@correo.com" aria-describedby="correo-ayuda">
+            <p class="ayuda" id="correo-ayuda">Ahí va la entrada en PDF y el aviso el día antes.</p>
+            <p class="error" id="correo-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="rejilla">
+          <div class="campo" data-estado="neutro">
+            <label for="empresa">Empresa o colectivo</label>
+            <input id="empresa" name="empresa" type="text" autocomplete="organization" placeholder="Estudio Terracota" aria-describedby="empresa-ayuda">
+            <p class="ayuda" id="empresa-ayuda">Aparece en la lista de asistentes que se reparte en el mostrador de acreditación.</p>
+            <p class="error" id="empresa-error" role="alert"></p>
+          </div>
+
+          <div class="campo" data-estado="neutro">
+            <label for="dietas">Dieta en el almuerzo</label>
+            <select id="dietas" name="dietas" aria-describedby="dietas-ayuda">
+              <option value="normal">Sin Adaptaciones, menú del día</option>
+              <option value="vegetariana">Vegetariana</option>
+              <option value="sin-gluten">Sin gluten</option>
+              <option value="vegana">Vegana</option>
+              <option value="alergia">Tengo alergias, lo indico en notas</option>
+            </select>
+            <p class="ayuda" id="dietas-ayuda">El almuerzo del día 12 está incluido en todas las entradas.</p>
+            <p class="error" id="dietas-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="notas">Necesidades de accesibilidad o notas <span class="opcional">opcional</span></label>
+          <textarea id="notas" name="notas" rows="4" placeholder="Necesito un intérprete de lengua de signos y una fila en la primera zona del anfiteatro." aria-describedby="notas-ayuda"></textarea>
+          <p class="ayuda" id="notas-ayuda">Máximo 400 caracteres. Lo revisamos una semana antes del evento.</p>
+          <p class="error" id="notas-error" role="alert"></p>
+        </div>
+
+        <div class="campo campo-check" data-estado="neutro">
+          <input id="codigo" name="codigo" type="checkbox" aria-describedby="codigo-ayuda">
+          <label for="codigo">Tengo un código de descuento de socio</label>
+          <p class="ayuda" id="codigo-ayuda">Los códigos de socio quitan un 20 por ciento y solo se aplican a la entrada general.</p>
+          <p class="error" id="codigo-error" role="alert"></p>
+        </div>
+      </section>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">La inscripción todavía no se cierra</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <footer class="acciones">
+        <span class="acciones-pie">El pago se hace al final, con tarjeta o transferencia. Guardamos la plaza 20 minutos.</span>
+        <span class="hueco"></span>
+        <button class="inscribirse" type="submit">
+          Cerrar la inscripción
+          <span class="flecha-der" aria-hidden="true"></span>
+        </button>
+      </footer>
+    </form>
+
+    <aside class="resumen" aria-label="Resumen de la inscripción en vivo" aria-live="polite">
+      <div class="resumen-cabecera">
+        <h2 class="resumen-titulo">Tu inscripción</h2>
+        <span class="resumen-sello" aria-hidden="true"><span class="resumen-nucleo"></span></span>
+      </div>
+
+      <p class="resumen-vacio" id="resumenVacio">Marca al menos una sesión para empezar el resumen.</p>
+
+      <ul class="resumen-sesiones" id="resumenSesiones"></ul>
+
+      <dl class="resumen-cuentas">
+        <div><dt>Entrada</dt><dd id="cEntrada">General, 180,00 €</dd></div>
+        <div><dt>Taller</dt><dd id="cTaller">sin taller</dd></div>
+        <div><dt>Descuento</dt><dd id="cDescuento">0,00 €</dd></div>
+        <div class="cuentas-total"><dt>Total</dt><dd id="cTotal">180,00 €</dd></div>
+      </dl>
+
+      <div class="aforo">
+        <div class="aforo-cabecera">
+          <span class="aforo-etiqueta">Plazas libres del foro</span>
+          <span class="aforo-cifra" id="aforoCifra">480 de 480</span>
+        </div>
+        <div class="aforo-pista">
+          <span class="aforo-relleno" id="aforoRelleno"></span>
+        </div>
+        <p class="aforo-pie" id="aforoPie">Aún no has ocupado ninguna plaza.</p>
+      </div>
+
+      <ul class="resumen-lista" id="resumenLista"></ul>
+    </aside>
+  </div>
+
+  <section class="confirmada" id="confirmada" hidden tabindex="-1" aria-live="polite">
+    <span class="confirmada-sello" aria-hidden="true"><span class="confirmada-tic" aria-hidden="true"></span></span>
+    <p class="antetitulo">Inscripción confirmada</p>
+    <h2 id="confirmadaTitulo">Tu Plaza está guardada</h2>
+    <p class="confirmada-texto" id="confirmadaTexto">Te hemos mandado la entrada a tu correo.</p>
+    <dl class="confirmada-datos">
+      <div><dt>Localizador</dt><dd id="confirmadaRef">FC-000000</dd></div>
+      <div><dt>Asistente</dt><dd id="confirmadaNombre">sin definir</dd></div>
+      <div><dt>Modalidad</dt><dd id="confirmadaEntrada">General</dd></div>
+      <div><dt>Sesiones</dt><dd id="confirmadaSesiones">0</dd></div>
+      <div><dt>Taller</dt><dd id="confirmadaTaller">sin taller</dd></div>
+      <div><dt>Total</dt><dd id="confirmadaTotal">0,00 €</dd></div>
+    </dl>
+    <p class="confirmada-nota">La acreditación se recoge en la mesa de registro a partir de las 8:00, con el documento que usaste al inscribirte.</p>
+    <button class="inscribirse confirmada-boton" type="button" id="otra">Inscribir a otra persona</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

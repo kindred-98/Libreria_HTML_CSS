@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ship HUD Multifunction Combo</title>
+<meta name="description" content="A multifunction command control on a ship instrument panel: turn the dial to step through eight commands, press to select, or hold the arm key until the reticle locks and the telemetry stream goes hot.">
+<meta name="description-es" content="Un mando multifunción en el panel de instrumentos de una nave: gira la perilla para recorrer ocho comandos, pulsa para seleccionar o mantén pulsada la tecla de armado hasta que el retículo se fije y la telemetría se ponga caliente.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="page">
+  <header class="head">
+    <p class="head__kicker">Flight deck / nav console 04</p>
+    <h1>Multifunction Combo</h1>
+    <p class="head__lead">Rotate the dial to walk the command list, press the key to execute, or hold it down until the ring closes and the console arms.</p>
+  </header>
+
+  <section class="hud" id="hud">
+    <span class="hud__glint" aria-hidden="true"></span>
+    <span class="hud__vignette" aria-hidden="true"></span>
+    <span class="bolt bolt--tl" aria-hidden="true"></span>
+    <span class="bolt bolt--tr" aria-hidden="true"></span>
+    <span class="bolt bolt--bl" aria-hidden="true"></span>
+    <span class="bolt bolt--br" aria-hidden="true"></span>
+
+    <div class="hud__bar">
+      <span class="hud__id">nav · c4-118</span>
+      <div class="tape" aria-hidden="true">
+        <div class="tape__track">
+          <div class="tape__set"><i>340</i><i>345</i><i>350</i><i>355</i><i>360</i><i>005</i><i>010</i><i>015</i><i>020</i><i>025</i></div>
+          <div class="tape__set"><i>340</i><i>345</i><i>350</i><i>355</i><i>360</i><i>005</i><i>010</i><i>015</i><i>020</i><i>025</i></div>
+        </div>
+        <span class="tape__caret"></span>
+      </div>
+      <span class="hud__clk" id="clock">T+00:00:00</span>
+    </div>
+
+    <div class="hud__body">
+      <div class="rail" aria-hidden="true">
+        <span class="rail__cap">telemetry</span>
+        <div class="rail__win">
+          <div class="rail__track rail__track--a">
+            <div class="rail__set">
+              <p><b>ALT</b>0412.6<i></i></p><p><b>VEL</b>07.42<i></i></p>
+              <p><b>PRS</b>101.3<i></i></p><p><b>O2</b>98.2<i></i></p>
+              <p><b>FUEL</b>64.1<i></i></p><p><b>G</b>0.08<i></i></p>
+              <p><b>HDG</b>357.9<i></i></p><p><b>PIT</b>-2.4<i></i></p>
+            </div>
+            <div class="rail__set">
+              <p><b>ALT</b>0412.6<i></i></p><p><b>VEL</b>07.42<i></i></p>
+              <p><b>PRS</b>101.3<i></i></p><p><b>O2</b>98.2<i></i></p>
+              <p><b>FUEL</b>64.1<i></i></p><p><b>G</b>0.08<i></i></p>
+              <p><b>HDG</b>357.9<i></i></p><p><b>PIT</b>-2.4<i></i></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="core">
+        <div class="stack" id="stack">
+          <span class="stack__scan" aria-hidden="true"></span>
+          <ol class="cmds" id="cmds">
+            <li class="cmd"><b>01</b><span>DOCK ALIGN</span><i class="cmd__pip"></i></li>
+            <li class="cmd"><b>02</b><span>SHIELD PURGE</span><i class="cmd__pip"></i></li>
+            <li class="cmd"><b>03</b><span>THRUST BURN</span><i class="cmd__pip"></i></li>
+            <li class="cmd"><b>04</b><span>SCAN PULSE</span><i class="cmd__pip"></i></li>
+            <li class="cmd"><b>05</b><span>CARGO VENT</span><i class="cmd__pip"></i></li>
+            <li class="cmd"><b>06</b><span>BEACON FLARE</span><i class="cmd__pip"></i></li>
+            <li class="cmd"><b>07</b><span>HOLD PATTERN</span><i class="cmd__pip"></i></li>
+            <li class="cmd"><b>08</b><span>JUMP READY</span><i class="cmd__pip"></i></li>
+          </ol>
+          <span class="reticle" id="reticle" aria-hidden="true">
+            <i></i><i></i><i></i><i></i>
+          </span>
+        </div>
+
+        <div class="deck">
+          <div class="knob" id="knobBox">
+            <span class="knob__ticks" aria-hidden="true">
+              <i style="--a:-140deg"></i><i style="--a:-100deg"></i><i style="--a:-60deg"></i>
+              <i style="--a:-20deg"></i><i style="--a:20deg"></i><i style="--a:60deg"></i>
+              <i style="--a:100deg"></i><i style="--a:140deg"></i>
+            </span>
+            <span class="knob__rotor" id="rotor" aria-hidden="true"><i></i></span>
+            <input class="knob__input" id="combo" type="range" min="0" max="7" step="1" value="0"
+              aria-label="Command dial" aria-valuetext="01 Dock align">
+            <span class="knob__grad" aria-hidden="true"></span>
+          </div>
+
+          <div class="armzone">
+            <p class="armzone__now"><span>selected</span><b id="nowName">DOCK ALIGN</b></p>
+            <button class="arm" id="arm" type="button" aria-pressed="false">
+              <span class="arm__ring" aria-hidden="true"></span>
+              <span class="arm__key"><b>ARM</b><s>hold</s></span>
+            </button>
+            <p class="armzone__hint" id="armHint">press to select · hold to arm</p>
+          </div>
+        </div>
+
+        <div class="log">
+          <span class="log__k">event log</span>
+          <ul class="log__list" id="logList" aria-live="polite">
+            <li>console · ready</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rail rail--right" aria-hidden="true">
+        <span class="rail__cap">systems</span>
+        <div class="rail__win">
+          <div class="rail__track rail__track--b">
+            <div class="rail__set">
+              <p><b>LIFE</b>nom<i></i></p><p><b>COOL</b>ok<i></i></p>
+              <p><b>NAV</b>lock<i></i></p><p><b>COM</b>open<i></i></p>
+              <p><b>SHLD</b>82<i></i></p><p><b>WPN</b>safe<i></i></p>
+              <p><b>DOCK</b>cls<i></i></p><p><b>LEAK</b>nil<i></i></p>
+            </div>
+            <div class="rail__set">
+              <p><b>LIFE</b>nom<i></i></p><p><b>COOL</b>ok<i></i></p>
+              <p><b>NAV</b>lock<i></i></p><p><b>COM</b>open<i></i></p>
+              <p><b>SHLD</b>82<i></i></p><p><b>WPN</b>safe<i></i></p>
+              <p><b>DOCK</b>cls<i></i></p><p><b>LEAK</b>nil<i></i></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud__foot">
+      <span class="lamp" id="lamp" aria-hidden="true"></span>
+      <span class="state" id="stateOut">state · standby</span>
+      <span class="hud__unit">combo c-8</span>
+    </div>
+  </section>
+
+  <p class="foot">Arrow keys turn the dial, Home and End run to the stops, Space executes. Hold Space or the arm key to charge the lock.</p>
+</main>
+</body>
+</html>

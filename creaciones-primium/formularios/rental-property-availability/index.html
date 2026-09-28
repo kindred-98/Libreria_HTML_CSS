@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rental Property Availability Map</title>
+<meta name="description" content="Rental search floating over a CSS drawn street map with zone, maximum price, bedrooms and dates, showing a live property sheet for the best match.">
+<meta name="description-es" content="Buscador de alquiler flotando sobre un plano de calles dibujado con CSS, con zona, precio máximo, habitaciones y fechas, y ficha del inmueble que se actualiza en vivo.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="entorno" aria-hidden="true">
+  <span class="bruma bruma-a"></span>
+  <span class="bruma bruma-b"></span>
+  <span class="trama"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#buscador">
+    <span class="marca-casa" aria-hidden="true"><span class="marca-tejado"></span><span class="marca-puerta"></span></span>
+    <span class="marca-texto">Portal<em>de alquiler</em></span>
+  </a>
+  <p class="encabezado-nota">Viviendas en Valdearenas · 7 fichas activas</p>
+</header>
+
+<main class="escena" id="buscador">
+  <div class="mapa-panelo">
+    <div class="mapa" role="img" aria-label="Plano esquemático de las calles de Valdearenas con siete viviendas marcadas">
+      <span class="rio" aria-hidden="true"></span>
+      <span class="parque" aria-hidden="true"><span class="parque-texto">Parque de la Alameda</span></span>
+      <span class="plaza" aria-hidden="true"></span>
+      <span class="calle calle-a" aria-hidden="true">Calle Robledal</span>
+      <span class="calle calle-b" aria-hidden="true">Avenida del Pino</span>
+      <span class="calle calle-c" aria-hidden="true">Rambla Vieja</span>
+      <span class="calle calle-d" aria-hidden="true">Camino de la Fuente</span>
+      <span class="manzana manzana-norte" aria-hidden="true"></span>
+      <span class="manzana manzana-oeste" aria-hidden="true"></span>
+      <span class="manzana manzana-este" aria-hidden="true"></span>
+    </div>
+
+    <div class="ficha" id="ficha">
+      <div class="ficha-cabecera">
+        <span class="ficha-etiqueta" id="fichaEtiqueta">Coincidencia 1 de 7</span>
+        <span class="ficha-ref" id="fichaRef">VA-001</span>
+      </div>
+      <div class="ficha-fotos" id="fichaFotos" aria-hidden="true">
+        <span class="foto foto-1"></span>
+        <span class="foto foto-2"></span>
+        <span class="foto foto-3"></span>
+        <span class="foto foto-4"></span>
+      </div>
+      <h2 class="ficha-titulo" id="fichaTitulo">Calle Robledal 14, 3 dormitorios</h2>
+      <p class="ficha-calle" id="fichaCalle">Barrio Centro · quinto sin ascensor</p>
+      <ul class="ficha-datos" id="fichaDatos"></ul>
+      <p class="ficha-precio" id="fichaPrecio">1.450 € al mes</p>
+    </div>
+
+    <div class="marcadores" id="marcadores" aria-hidden="true"></div>
+  </div>
+
+  <form class="flotante" id="form" novalidate>
+    <div class="flotante-borde" aria-hidden="true"></div>
+    <p class="antetitulo">Buscador de alquiler</p>
+    <h1>Dime qué buscas y te lo marco en el plano</h1>
+
+    <div class="campo" data-estado="neutro">
+      <label for="zona">Zona del plano</label>
+      <select id="zona" name="zona" aria-describedby="zona-ayuda">
+        <option value="">Cualquier zona</option>
+        <option value="centro">Casco antiguo, centro</option>
+        <option value="norte">Barrio Norte, junto al parque</option>
+        <option value="sur">Sur, camino viejo</option>
+        <option value="este">Ribera este, junto al río</option>
+      </select>
+      <p class="ayuda" id="zona-ayuda">Si lo dejas vacío buscamos en todo el término municipal.</p>
+      <p class="error" id="zona-error" role="alert"></p>
+    </div>
+
+    <div class="campo campo-precio" data-estado="neutro">
+      <label for="precio">Precio máximo al mes</label>
+      <div class="precio-fila">
+        <input id="precioRango" type="range" min="700" max="2500" step="50" value="2500" aria-label="Deslizador del precio máximo">
+        <span class="precio-caja">
+          <input id="precio" name="precio" type="number" inputmode="numeric" min="700" max="2500" step="10" value="2500" aria-describedby="precio-ayuda">
+          <span class="precio-sufijo">€</span>
+        </span>
+      </div>
+      <div class="precio-escala" aria-hidden="true"><span>700 €</span><span>2.500 €</span></div>
+      <p class="ayuda" id="precio-ayuda">Los gastos de comunidad van aparte, entre 35 € y 90 € al mes.</p>
+      <p class="error" id="precio-error" role="alert"></p>
+    </div>
+
+    <div class="campo" data-estado="neutro">
+      <label for="habitaciones">Dormitorios mínimos</label>
+      <div class="pills" role="radiogroup" aria-labelledby="hab-etiqueta">
+        <span class="etiqueta-invisible" id="hab-etiqueta">Dormitorios mínimos</span>
+        <label class="pill"><input type="radio" name="hab" value="0" checked><span>Indiferente</span></label>
+        <label class="pill"><input type="radio" name="hab" value="1"><span>1</span></label>
+        <label class="pill"><input type="radio" name="hab" value="2"><span>2</span></label>
+        <label class="pill"><input type="radio" name="hab" value="3"><span>3</span></label>
+        <label class="pill"><input type="radio" name="hab" value="4"><span>4 o más</span></label>
+      </div>
+      <p class="ayuda" id="habitaciones-ayuda">Con cuatro o más solo hay dos viviendas en el municipio.</p>
+      <p class="error" id="habitaciones-error" role="alert"></p>
+    </div>
+
+    <div class="rejilla">
+      <div class="campo" data-estado="neutro">
+        <label for="entrada">Fecha de entrada</label>
+        <input id="entrada" name="entrada" type="date" aria-describedby="entrada-ayuda">
+        <p class="ayuda" id="entrada-ayuda">No puede ser una fecha ya pasada.</p>
+        <p class="error" id="entrada-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="salida">Fecha de salida</label>
+        <input id="salida" name="salida" type="date" aria-describedby="salida-ayuda">
+        <p class="ayuda" id="salida-ayuda">Tiene que ser posterior a la entrada.</p>
+        <p class="error" id="salida-error" role="alert"></p>
+      </div>
+    </div>
+
+    <div class="rejilla">
+      <div class="campo" data-estado="neutro">
+        <label for="nombre">Quién va a firmar</label>
+        <input id="nombre" name="nombre" type="text" autocomplete="name" placeholder="Ana Morales" aria-describedby="nombre-ayuda">
+        <p class="ayuda" id="nombre-ayuda">Necesitamos un DNI o NIE para el 신고 de alquiler.</p>
+        <p class="error" id="nombre-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="telefono">Teléfono de contacto</label>
+        <input id="telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="600 123 456" aria-describedby="telefono-ayuda">
+        <p class="ayuda" id="telefono-ayuda">Nueve cifras. La inmobiliaria llama en horario de oficina.</p>
+        <p class="error" id="telefono-error" role="alert"></p>
+      </div>
+    </div>
+
+    <div class="campo campo-check" data-estado="neutro">
+      <input id="fianza" name="fianza" type="checkbox" aria-describedby="fianza-ayuda">
+      <label for="fianza">Acepto pagar una fianza de un mes, en el momento de firmar</label>
+      <p class="ayuda" id="fianza-ayuda">La devuelve la inmobiliaria al devolver las llaves, menos los deterioros habituales.</p>
+      <p class="error" id="fianza-error" role="alert"></p>
+    </div>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-error-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">La búsqueda no está lista</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <button class="enviar" type="submit">
+      <span class="enviar-texto" id="enviarTexto">Pedir visita a 7 viviendas</span>
+      <span class="flecha-der" aria-hidden="true"></span>
+    </button>
+    <p class="nota">Sin compromiso y sin intermediarios. Contestamos en menos de 24 horas laborables.</p>
+  </form>
+
+  <section class="enviado" id="enviado" hidden tabindex="-1" aria-live="polite">
+    <span class="enviado-sello" aria-hidden="true"><span class="enviado-tic" aria-hidden="true"></span></span>
+    <p class="antetitulo">Solicitud registrada</p>
+    <h2 id="enviadoTitulo">Pedido de visita enviado</h2>
+    <p class="enviado-texto" id="enviadoTexto">La inmobiliaria te llamará para concertar la visita.</p>
+    <dl class="enviado-datos">
+      <div><dt>Referencia</dt><dd id="enviadoRef">VA-000000</dd></div>
+      <div><dt>Vivienda</dt><dd id="enviadoVivienda">sin elegir</dd></div>
+      <div><dt>Estancia</dt><dd id="enviadoFechas">sin elegir</dd></div>
+      <div><dt>Presupuesto</dt><dd id="enviadoPrecio">0 €</dd></div>
+    </dl>
+    <p class="enviado-nota">La visita es gratuita y sin compromiso. Puedes cancelarla cuando quieras con un aviso por correo.</p>
+    <button class="enviar enviado-boton" type="button" id="otra">Hacer otra búsqueda</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

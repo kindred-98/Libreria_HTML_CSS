@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bug Report Attachment Dropzone</title>
+<meta name="description" content="Bug report with a real drag and drop file zone, generated colour thumbnails, per file progress bars, retry of failed uploads and a submit blocked until every file is uploaded.">
+<meta name="description-es" content="Informe de error con zona de arrastre real, miniaturas de color generadas, barra de progreso por archivo, reintento de los que fallan y envío bloqueado hasta que todo esté subido.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="espacio" aria-hidden="true">
+  <span class="nube nube-a"></span>
+  <span class="nube nube-b"></span>
+  <span class="orbita"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#formulario">
+    <span class="marca-cubo" aria-hidden="true"><span class="marca-cara"></span></span>
+    <span class="marca-texto">Caja de<em>errores</em></span>
+  </a>
+  <p class="encabezado-nota">Adjuntos hasta 25 MB por archivo · se borran a los 30 días</p>
+</header>
+
+<main class="escena" id="formulario">
+  <form class="caja" id="form" novalidate>
+    <p class="antetitulo">Informe de error</p>
+    <h1>Cuéntanos qué falló y enséñanos cómo</h1>
+    <p class="intro">Unas pocas líneas de contexto y dos o tres adjuntos valen más que una descripción de dos páginas.</p>
+
+    <div class="campo" data-estado="neutro">
+      <label for="titulo">Título corto del error</label>
+      <input id="titulo" name="titulo" type="text" maxlength="90" placeholder="El carrito se vacía al cambiar la divisa" aria-describedby="titulo-ayuda">
+      <p class="ayuda" id="titulo-ayuda">Entre 8 y 90 caracteres, sin el nombre de tu cuenta ni correos.</p>
+      <p class="error" id="titulo-error" role="alert"></p>
+    </div>
+
+    <div class="rejilla">
+      <div class="campo" data-estado="neutro">
+        <label for="categoria">Tipo de fallo</label>
+        <select id="categoria" name="categoria" aria-describedby="categoria-ayuda">
+          <option value="">Elige un tipo</option>
+          <option value="bloqueo">Bloquea, no puedo seguir</option>
+          <option value="datos">Los datos no cuadran</option>
+          <option value="rendimiento">Va muy lento</option>
+          <option value="visual">Algo se ve roto</option>
+          <option value="accesibilidad">No lo puedo usar con lector de pantalla</option>
+          <option value="otro">Otro, lo explico abajo</option>
+        </select>
+        <p class="ayuda" id="categoria-ayuda">El tipo decide a qué equipo del producto lo mandamos.</p>
+        <p class="error" id="categoria-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="pantalla">Dónde lo viste</label>
+        <select id="pantalla" name="pantalla" aria-describedby="pantalla-ayuda">
+          <option value="">Elige un sitio</option>
+          <option value="carrito">Carrito de la compra</option>
+          <option value="cuenta">Área de cuenta</option>
+          <option value="movil">Aplicación móvil</option>
+          <option value="correo">Correo de aviso</option>
+          <option value="otro">Otro sitio</option>
+        </select>
+        <p class="ayuda" id="pantalla-ayuda">Ayuda a reproducirlo en el entorno correcto.</p>
+        <p class="error" id="pantalla-error" role="alert"></p>
+      </div>
+    </div>
+
+    <fieldset class="impacto" data-estado="neutro">
+      <legend>Cuánto te ha molestado</legend>
+      <label class="opt">
+        <input type="radio" name="impacto" value="bloquea" checked>
+        <span class="opt-caja"><b>Me bloquea</b><small>No puedo completar la operación.</small></span>
+      </label>
+      <label class="opt">
+        <input type="radio" name="impacto" value="molesta">
+        <span class="opt-caja"><b>Me molesta</b><small>Puedo seguir, pero con rodeos.</small></span>
+      </label>
+      <label class="opt">
+        <input type="radio" name="impacto" value="estetico">
+        <span class="opt-caja"><b>Es estético</b><small>Se ve raro, pero funciona.</small></span>
+      </label>
+      <p class="ayuda" id="impacto-ayuda">Se ha marcado que te bloquea. Cámbialo si hay forma de salir.</p>
+      <p class="error" id="impacto-error" role="alert"></p>
+    </fieldset>
+
+    <div class="campo" data-estado="neutro">
+      <label for="comentario">Qué esperabas y qué pasó</label>
+      <textarea id="comentario" name="comentario" rows="5" placeholder="Al cambiar de euros a libras el carrito se vacía y vuelve a la lista. Si entro otra vez se queda vacío del todo." aria-describedby="comentario-ayuda"></textarea>
+      <p class="ayuda" id="comentario-ayuda">Entre 20 y 800 caracteres. Describe el resultado esperado y el que obtuviste.</p>
+      <p class="error" id="comentario-error" role="alert"></p>
+    </div>
+
+    <div class="zona-bloque campo" data-estado="neutro">
+      <div class="zona-cabecera">
+        <span class="etiqueta-zona">Adjuntos</span>
+        <span class="zona-cuenta" id="zonaCuenta">0 de 6 archivos</span>
+      </div>
+
+      <div class="zona" id="zona" tabindex="0" role="button" aria-describedby="archivos-ayuda">
+        <input id="archivos" name="archivos" type="file" multiple accept="image/png,image/jpeg,image/webp,text/plain,application/pdf" class="entrada-oculta">
+        <span class="zona-icono" aria-hidden="true"><span class="zona-flecha"></span></span>
+        <p class="zona-titulo">Arrastra las capturas aquí</p>
+        <p class="zona-pista">o pulsa para elegirlas en el disco · PNG, JPG, WEBP, PDF o TXT</p>
+        <span class="zona-boton">Elegir archivos</span>
+      </div>
+
+      <ul class="lista-archivos" id="listaArchivos" aria-live="polite"></ul>
+
+      <p class="ayuda" id="archivos-ayuda">Seis archivos como mucho y 25 MB cada uno. Los adjuntos se borran a los 30 días.</p>
+      <p class="error" id="archivos-error" role="alert"></p>
+    </div>
+
+    <div class="campo campo-check" data-estado="neutro">
+      <input id="reproducir" name="reproducir" type="checkbox" aria-describedby="reproducir-ayuda">
+      <label for="reproducir">Autorizo a guardar estos archivos para reproducir el fallo</label>
+      <p class="ayuda" id="reproducir-ayuda">Sin este permiso solo recibes el texto del informe y ninguna imagen.</p>
+      <p class="error" id="reproducir-error" role="alert"></p>
+    </div>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-error-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">El informe todavía no se envía</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <footer class="acciones">
+      <span class="acciones-pie" id="accionesPie">Ningún archivo subido todavía.</span>
+      <span class="hueco"></span>
+      <button class="enviar" type="submit">
+        Enviar el informe
+        <span class="flecha-der" aria-hidden="true"></span>
+      </button>
+    </footer>
+  </form>
+
+  <section class="recibido" id="recibido" hidden tabindex="-1" aria-live="polite">
+    <span class="recibido-sello" aria-hidden="true"><span class="recibido-tic" aria-hidden="true"></span></span>
+    <p class="antetitulo">Informe recibido</p>
+    <h2 id="recibidoTitulo">Gracias, ya lo estamos mirando</h2>
+    <p class="recibido-texto" id="recibidoTexto">Te avisamos en cuanto sepamos algo.</p>
+    <dl class="recibido-datos">
+      <div><dt>Referencia</dt><dd id="recibidoRef">CE-000000</dd></div>
+      <div><dt>Tipo</dt><dd id="recibidoCategoria">sin elegir</dd></div>
+      <div><dt>Archivos</dt><dd id="recibidoArchivos">0</dd></div>
+      <div><dt>Peso total</dt><dd id="recibidoPeso">0 KB</dd></div>
+    </dl>
+    <p class="recibido-nota">Si en quince días no hemos contestado, vuelve a escribirnos: a veces los informes se caen del filtro.</p>
+    <button class="enviar recibido-boton" type="button" id="otra">Enviar otro error</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

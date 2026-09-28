@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEPA Debit Mandate Sheet</title>
+<meta name="description" content="Spreadsheet style SEPA debit mandate with a country aware IBAN breakdown, mod 97 check, keyboard grid navigation and a computed footer total.">
+<meta name="description-es" content="Mandato de adeudo SEPA en forma de hoja de cálculo con IBAN desglosado por país, comprobación módulo 97, navegación por teclado y total calculado al pie.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="niebla niebla-a" aria-hidden="true"></div>
+<div class="niebla niebla-b" aria-hidden="true"></div>
+
+<main class="libro">
+  <div class="barra-latex">
+    <span class="pestana">Hoja 1 &middot; Mandato</span>
+    <span class="barra-titulo">Adeudo domiciliado SEPA</span>
+    <span class="barra-ref">Ref. <b id="refHoja">SEPA-2024-0917</b></span>
+    <span class="barra-cursor" aria-hidden="true"></span>
+  </div>
+
+  <form class="hoja" id="form" novalidate>
+    <table class="tabla" aria-describedby="pistaTeclado">
+      <caption class="sr">Formulario de mandato de adeudo SEPA. Usa las flechas del teclado para moverte entre celdas.</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="col-a">Campo</th>
+          <th scope="col">B</th>
+          <th scope="col">C</th>
+          <th scope="col">D</th>
+          <th scope="col">E</th>
+          <th scope="col">F</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row" class="col-a">
+            <span class="fila-num">2</span>
+            <b>Titular de la cuenta</b>
+            <small>Persona física o jurídica titular</small>
+          </th>
+          <td colspan="5" class="celda campo" data-estado="neutro">
+            <label class="sr" for="titular">Titular de la cuenta</label>
+            <input id="titular" name="titular" type="text" autocomplete="name" placeholder="Ana Morales Prats" aria-describedby="titular-ayuda">
+            <p class="ayuda" id="titular-ayuda">Tal como figura en su banco. Los caracteres especiales se permiten, pero no los símbolos.</p>
+            <p class="error" id="titular-error" role="alert"></p>
+          </td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="col-a">
+            <span class="fila-num">3</span>
+            <b>IBAN desglosado</b>
+            <small>Elige el país y rellena las cuatro partes</small>
+          </th>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="pais">País</label>
+            <select id="pais" name="pais" aria-describedby="pais-ayuda">
+              <option value="">--</option>
+              <option value="ES">ES</option>
+              <option value="DE">DE</option>
+              <option value="FR">FR</option>
+              <option value="PT">PT</option>
+              <option value="IT">IT</option>
+              <option value="NL">NL</option>
+              <option value="BE">BE</option>
+              <option value="GB">GB</option>
+              <option value="IE">IE</option>
+              <option value="PL">PL</option>
+            </select>
+            <p class="ayuda" id="pais-ayuda">Cambia la longitud que debe tener el IBAN.</p>
+            <p class="error" id="pais-error" role="alert"></p>
+          </td>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="control">Control</label>
+            <input id="control" name="control" type="text" inputmode="numeric" maxlength="2" placeholder="91" aria-describedby="control-ayuda">
+            <p class="ayuda" id="control-ayuda">Dos cifras de control.</p>
+            <p class="error" id="control-error" role="alert"></p>
+          </td>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="entidad">Entidad</label>
+            <input id="entidad" name="entidad" type="text" inputmode="numeric" maxlength="4" placeholder="2100" aria-describedby="entidad-ayuda">
+            <p class="ayuda" id="entidad-ayuda">Cuatro cifras del banco.</p>
+            <p class="error" id="entidad-error" role="alert"></p>
+          </td>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="oficina">Oficina</label>
+            <input id="oficina" name="oficina" type="text" inputmode="numeric" maxlength="4" placeholder="0412" aria-describedby="oficina-ayuda">
+            <p class="ayuda" id="oficina-ayuda">Cuatro cifras de la sucursal.</p>
+            <p class="error" id="oficina-error" role="alert"></p>
+          </td>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="dc">DC cuenta</label>
+            <input id="dc" name="dc" type="text" inputmode="numeric" maxlength="2" placeholder="18" aria-describedby="dc-ayuda">
+            <p class="ayuda" id="dc-ayuda">Dos dígitos de control de la cuenta.</p>
+            <p class="error" id="dc-error" role="alert"></p>
+          </td>
+        </tr>
+
+        <tr class="fila-iban">
+          <th scope="row" class="col-a">
+            <span class="fila-num">4</span>
+            <b>IBAN completo</b>
+            <small>Se arma solo, no se edita</small>
+          </th>
+          <td colspan="5" class="celda celda-lectura campo" data-estado="neutro">
+            <output class="iban" id="ibanCompleto" for="pais control entidad oficina dc cuenta">ES00 0000 0000 0000 0000 0000 00</output>
+            <p class="ayuda" id="ibanCompleto-ayuda">Comprobamos la longitud del país y el dígito de control módulo 97 en cuanto están las cinco partes.</p>
+            <p class="error" id="ibanCompleto-error" role="alert"></p>
+          </td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="col-a">
+            <span class="fila-num">5</span>
+            <b>Resto de la cuenta</b>
+            <small>Los dígitos que faltan</small>
+          </th>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="cuenta">Cuenta</label>
+            <input id="cuenta" name="cuenta" type="text" inputmode="numeric" placeholder="0000000000" aria-describedby="cuenta-ayuda">
+            <p class="ayuda" id="cuenta-ayuda">El resto de dígitos, hasta completar el IBAN.</p>
+            <p class="error" id="cuenta-error" role="alert"></p>
+          </td>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="periodicidad">Periodicidad</label>
+            <select id="periodicidad" name="periodicidad" aria-describedby="periodicidad-ayuda">
+              <option value="">--</option>
+              <option value="unica">Pago único</option>
+              <option value="mensual">Mensual</option>
+              <option value="trimestral">Trimestral</option>
+              <option value="semestral">Semestral</option>
+              <option value="anual">Anual</option>
+            </select>
+            <p class="ayuda" id="periodicidad-ayuda">Define cuántas cuotas se generan al año.</p>
+            <p class="error" id="periodicidad-error" role="alert"></p>
+          </td>
+          <td colspan="3" class="celda celda-vacia"></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="col-a">
+            <span class="fila-num">6</span>
+            <b>Fechas del mandato</b>
+            <small>Firma y primer adeudo</small>
+          </th>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="firma">Fecha de firma</label>
+            <input id="firma" name="firma" type="date" aria-describedby="firma-ayuda">
+            <p class="ayuda" id="firma-ayuda">No puede estar en el futuro.</p>
+            <p class="error" id="firma-error" role="alert"></p>
+          </td>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="primer">Primer adeudo</label>
+            <input id="primer" name="primer" type="date" aria-describedby="primer-ayuda">
+            <p class="ayuda" id="primer-ayuda">Tiene que ser posterior a la firma.</p>
+            <p class="error" id="primer-error" role="alert"></p>
+          </td>
+          <td colspan="3" class="celda celda-vacia"></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="col-a">
+            <span class="fila-num">7</span>
+            <b>Importe y número de cuotas</b>
+            <small>Una cantidad y un número por celda</small>
+          </th>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="cuota">Cuota (EUR)</label>
+            <input id="cuota" name="cuota" type="text" inputmode="decimal" placeholder="48,50" aria-describedby="cuota-ayuda">
+            <p class="ayuda" id="cuota-ayuda">Entre 0,01 y 500000,00 euros.</p>
+            <p class="error" id="cuota-error" role="alert"></p>
+          </td>
+          <td class="celda campo" data-estado="neutro">
+            <label class="sub" for="cuotas">Número de cuotas</label>
+            <input id="cuotas" name="cuotas" type="text" inputmode="numeric" maxlength="3" placeholder="12" aria-describedby="cuotas-ayuda">
+            <p class="ayuda" id="cuotas-ayuda">De 1 a 360. Con pago único tiene que ser 1.</p>
+            <p class="error" id="cuotas-error" role="alert"></p>
+          </td>
+          <td colspan="3" class="celda celda-vacia"></td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="col-a">
+            <span class="fila-num">8</span>
+            <b>Referencia del acreedor</b>
+            <small>Identificador de mandato SEPA</small>
+          </th>
+          <td colspan="5" class="celda campo" data-estado="neutro">
+            <label class="sr" for="acreedor">Referencia del acreedor</label>
+            <input id="acreedor" name="acreedor" type="text" placeholder="ES12ZZZ4712345678901234" aria-describedby="acreedor-ayuda">
+            <p class="ayuda" id="acreedor-ayuda">Formato ES seguido de 22 caracteres alfanuméricos en mayúsculas. Es el identificador que verás en el extracto de tu cuenta.</p>
+            <p class="error" id="acreedor-error" role="alert"></p>
+          </td>
+        </tr>
+
+        <tr>
+          <th scope="row" class="col-a">
+            <span class="fila-num">9</span>
+            <b>Concepto del adeudo</b>
+            <small>Lo que verá el titular en su extracto</small>
+          </th>
+          <td colspan="5" class="celda campo" data-estado="neutro">
+            <label class="sr" for="concepto">Concepto del adeudo</label>
+            <textarea id="concepto" name="concepto" rows="2" maxlength="140" placeholder="Cuota de la academia de verano, julio de 2026" aria-describedby="concepto-ayuda"></textarea>
+            <p class="ayuda" id="concepto-ayuda">Entre 5 y 140 caracteres. Sin datos bancarios ni números de cuenta.</p>
+            <p class="error" id="concepto-error" role="alert"></p>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th scope="row" class="col-a">
+            <span class="fila-num">10</span>
+            <b>Total del mandato</b>
+            <small>Cuota multiplicada por el número de cuotas</small>
+          </th>
+          <td colspan="3" class="celda celda-formula">
+            <span class="formula" id="formulaTotal">= C7 &times; C8</span>
+          </td>
+          <td colspan="2" class="celda celda-total campo" data-estado="neutro">
+            <output class="total" id="totalMandato">0,00 €</output>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <p class="pista" id="pistaTeclado">Flechas para moverte entre celdas, Intro para bajar una fila, Tab para avanzar. Escape abandona la tabla.</p>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-error-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">El mandato no está listo</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <div class="acciones">
+      <p class="legal">Al firmar autorizas a tu banco a cobrar cada cuota hasta un máximo de 14 días antes de su vencimiento. Puedes cancelar el mandato cuando quieras desde tu banca.</p>
+      <button class="firmar" type="submit" id="firmar">Firmar mandato <span class="flecha" aria-hidden="true"></span></button>
+    </div>
+  </form>
+
+  <section class="mandato" id="mandato" hidden tabindex="-1" aria-live="polite">
+    <span class="mandato-sello" aria-hidden="true"><span class="mandato-tic"></span></span>
+    <h2>Mandato registrado</h2>
+    <p id="mandatoTexto">Tu banco ha recibido la orden de adeudo. Recibirás una copia en tu correo.</p>
+    <dl class="mandato-datos">
+      <div><dt>Mandato</dt><dd id="mId">SEPA-2024-0917</dd></div>
+      <div><dt>Titular</dt><dd id="mTitular">sin definir</dd></div>
+      <div><dt>IBAN</dt><dd id="mIban">sin definir</dd></div>
+      <div><dt>Cuota y periodicidad</dt><dd id="mCuota">sin definir</dd></div>
+      <div><dt>Total comprometido</dt><dd id="mTotal">sin definir</dd></div>
+      <div><dt>Primer adeudo</dt><dd id="mPrimer">sin definir</dd></div>
+    </dl>
+    <button class="firmar mandato-btn" type="button" id="otro">Preparar otro mandato</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

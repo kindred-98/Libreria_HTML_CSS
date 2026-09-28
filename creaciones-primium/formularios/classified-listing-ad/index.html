@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classified Listing Ad Ledger</title>
+<meta name="description" content="Two column classified ad ledger with labels on the left, fields on the right, simulated photo swatches by colour, live price check and a published reference number.">
+<meta name="description-es" content="Ficha de anuncio de clasificados en dos columnas, con etiquetas a la izquierda y campos a la derecha, fotos simuladas con color, comprobación del precio en vivo y número de referencia al publicar.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="fondo" aria-hidden="true">
+  <span class="faro faro-a"></span>
+  <span class="faro faro-b"></span>
+  <span class="rayos"></span>
+</div>
+
+<header class="encabezado">
+  <a class="marca" href="#ficha">
+    <span class="marca-ancla" aria-hidden="true"><span class="marca-arco"></span><span class="marca-aro"></span></span>
+    <span class="marca-texto">Anuncios<em>delPuerto</em></span>
+  </a>
+  <p class="encabezado-nota">Publicación gratuita hasta el 30 de noviembre</p>
+</header>
+
+<main class="escena" id="ficha">
+  <section class="ficha" aria-labelledby="titulo">
+    <div class="ficha-cabecera">
+      <div>
+        <p class="antetitulo">Alta de anuncio</p>
+        <h1 id="titulo">Publica en el tablón del barrio</h1>
+      </div>
+      <span class="ficha-sello" id="selloPasos">0 de 9 campos listos</span>
+    </div>
+
+    <form id="form" novalidate>
+      <div class="libro" role="presentation">
+
+        <div class="fila" data-n="1">
+          <div class="col-izq">
+            <label for="tituloAnuncio">Título del anuncio</label>
+            <p class="col-nota">Lo que la gente ve primero en el listado. Sin emojis ni mayúsculas sostenidas.</p>
+          </div>
+          <div class="col-der campo" data-estado="neutro">
+            <input id="tituloAnuncio" name="tituloAnuncio" type="text" maxlength="90" placeholder="Bicicleta de montaña, talla M, poco uso" aria-describedby="tituloAnuncio-ayuda">
+            <p class="ayuda" id="tituloAnuncio-ayuda">Entre 10 y 70 caracteres. Empieza por el objeto, no por el precio.</p>
+            <p class="contador" id="tituloAnuncio-contador">0 de 70</p>
+            <p class="error" id="tituloAnuncio-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="fila" data-n="2">
+          <div class="col-izq">
+            <label for="categoria">Categoría del tablón</label>
+            <p class="col-nota">Decide en qué lista de búsqueda aparece tu anuncio.</p>
+          </div>
+          <div class="col-der campo" data-estado="neutro">
+            <select id="categoria" name="categoria" aria-describedby="categoria-ayuda">
+              <option value="">Elige una categoría</option>
+              <option value="bicis">Bicicletas y Motorsport</option>
+              <option value="informatica">Informática y consolas</option>
+              <option value="muebles">Muebles y decoración</option>
+              <option value="electro">Electrodomésticos</option>
+              <option value="libros">Libros y música</option>
+              <option value="jardin">Jardín y herramientas</option>
+            </select>
+            <p class="ayuda" id="categoria-ayuda">La categoría no se puede cambiar una vez publicado el anuncio.</p>
+            <p class="error" id="categoria-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="fila" data-n="3">
+          <div class="col-izq">
+            <label for="descripcion">Descripción</label>
+            <p class="col-nota">Cuenta el estado real, los accesorios y por qué te desprendes de ello.</p>
+          </div>
+          <div class="col-der campo" data-estado="neutro">
+            <textarea id="descripcion" name="descripcion" rows="7" placeholder="Comprada en abril de 2024, tiene la batería nueva y dos cubiertas sin dibujo. Los frenos se cambiaron en junio. Se entrega con el candado y la bomba de inflar." aria-describedby="descripcion-ayuda"></textarea>
+            <div class="barra-largo" aria-hidden="true"><span class="barra-largo-relleno" id="largoRelleno"></span></div>
+            <p class="ayuda" id="descripcion-ayuda">Mínimo 40 caracteres. Un anuncio honesto vende más que uno florido.</p>
+            <p class="contador" id="descripcion-contador">0 caracteres</p>
+            <p class="error" id="descripcion-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="fila" data-n="4">
+          <div class="col-izq">
+            <label for="precio">Precio de venta</label>
+            <p class="col-nota">Un precio redondo y con sentido vende hasta un 30 por ciento más rápido.</p>
+          </div>
+          <div class="col-der campo" data-estado="neutro">
+            <div class="precio-caja">
+              <span class="precio-antes" id="precioAntes">Sin precio</span>
+              <span class="precio-actual">
+                <input id="precio" name="precio" type="text" inputmode="decimal" autocomplete="off" placeholder="240,00" aria-describedby="precio-ayuda">
+                <span class="precio-moneda">EUR</span>
+              </span>
+            </div>
+            <p class="ayuda" id="precio-ayuda">Entre 1 € y 99.999 €, con coma para los decimales. No se admite el precio de 0 €.</p>
+            <p class="error" id="precio-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="fila" data-n="5">
+          <div class="col-izq">
+            <label for="provincia">Provincia y municipio</label>
+            <p class="col-nota">Solo se muestra la provincia exacta a quien confirme el pedido.</p>
+          </div>
+          <div class="col-der campo" data-estado="neutro">
+            <div class="doble">
+              <div>
+                <label class="secundario" for="provincia">Provincia</label>
+                <select id="provincia" name="provincia" aria-describedby="provincia-ayuda">
+                  <option value="">Elige una</option>
+                  <option value="bizkaia">Bizkaia</option>
+                  <option value="gipuzkoa">Gipuzkoa</option>
+                  <option value="araba">Álava</option>
+                  <option value="navarra">Navarra</option>
+                  <option value="cantabria">Cantabria</option>
+                </select>
+                <p class="ayuda" id="provincia-ayuda">Las cinco provincias con más compradores activos.</p>
+                <p class="error" id="provincia-error" role="alert"></p>
+              </div>
+              <div>
+                <label class="secundario" for="municipio">Municipio</label>
+                <input id="municipio" name="municipio" type="text" autocomplete="address-level2" placeholder="Portugalete" aria-describedby="municipio-ayuda">
+                <p class="ayuda" id="municipio-ayuda">La población exacta donde puedes entregar en mano.</p>
+                <p class="error" id="municipio-error" role="alert"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fila" data-n="6">
+          <div class="col-izq">
+            <span class="etiqueta-estatica">Estado del artículo</span>
+            <p class="col-nota">El comprador filtra por este campo antes de escribirte.</p>
+          </div>
+          <div class="col-der campo" data-estado="neutro">
+            <div class="estados">
+              <label class="estado"><input type="radio" name="estadoArticulo" value="nuevo"><span class="estado-caja"><b>Como nuevo</b><small>Sin uso, con su caja o su etiqueta original.</small></span></label>
+              <label class="estado"><input type="radio" name="estadoArticulo" value="poco" checked><span class="estado-caja"><b>Poco uso</b><small>Marcas de uso normales y alguna arañazo sin importancia.</small></span></label>
+              <label class="estado"><input type="radio" name="estadoArticulo" value="piezas"><span class="estado-caja"><b>Para piezas</b><small>Funciona a medias o le falta un componente.</small></span></label>
+            </div>
+            <p class="ayuda" id="estadoArticulo-ayuda">Se ha elegido poco uso. Cámbialo si no corresponde.</p>
+            <p class="error" id="estadoArticulo-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="fila" data-n="7">
+          <div class="col-izq">
+            <span class="etiqueta-estatica">Fotos del anuncio</span>
+            <p class="col-nota">Este tablón pinta cada foto con un color de muestra: seis huecos, tú eliges la paleta.</p>
+          </div>
+          <div class="col-der campo" data-estado="neutro">
+            <div class="fotos" id="fotos" role="img" tabindex="-1" aria-label="Seis muestras de color que representan las fotos del anuncio"></div>
+            <div class="fotos-acciones">
+              <button class="mini" type="button" id="repaltear">Repartir otra paleta</button>
+              <span class="fotos-nota" id="fotosNota">3 de 6 huecos con foto</span>
+            </div>
+            <p class="ayuda" id="fotos-ayuda">El primer hueco es la portada y sale en el listado del barrio.</p>
+            <p class="error" id="fotos-error" role="alert"></p>
+          </div>
+        </div>
+
+        <div class="fila" data-n="8">
+          <div class="col-izq">
+            <span class="etiqueta-estatica">Normas del tablón</span>
+            <p class="col-nota">Sin armas, sin fauna protegida y sin falsificaciones. Solo objetos de segunda mano de verdad.</p>
+          </div>
+          <div class="col-der campo campo-check" data-estado="neutro">
+            <input id="normas" name="normas" type="checkbox" aria-describedby="normas-ayuda">
+            <label for="normas">He leído y acepto las normas de publicación del tablón</label>
+            <p class="ayuda" id="normas-ayuda">Publicar es gratis durante el primer mes y después cuesta 3,50 € al mes.</p>
+            <p class="error" id="normas-error" role="alert"></p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">El anuncio todavía no puede salir</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <footer class="acciones">
+        <span class="acciones-pie">Al publicar aceptas que el tablón puede retirar anuncios denunciados.</span>
+        <span class="hueco"></span>
+        <button class="publicar" type="submit">
+          Publicar el anuncio
+          <span class="flecha-der" aria-hidden="true"></span>
+        </button>
+      </footer>
+    </form>
+  </section>
+
+  <section class="publicado" id="publicado" hidden tabindex="-1" aria-live="polite">
+    <div class="publicado-izq">
+      <p class="antetitulo">Anuncio publicado</p>
+      <h2 id="publicadoTitulo">Ya está en el tablón del barrio</h2>
+      <p class="publicado-texto" id="publicadoTexto">Los compradores de la zona ya pueden verlo.</p>
+      <dl class="publicado-datos">
+        <div><dt>Referencia</dt><dd id="publicadoRef">AP-000000</dd></div>
+        <div><dt>Categoría</dt><dd id="publicadoCategoria">sin elegir</dd></div>
+        <div><dt>Precio</dt><dd id="publicadoPrecio">0,00 €</dd></div>
+        <div><dt>Ubicación</dt><dd id="publicadoLugar">sin elegir</dd></div>
+      </dl>
+      <p class="publicado-nota">El anuncio caduca a los 60 días. Puedes editarlo o bajarlo cuando quieras desde tu perfil.</p>
+      <button class="publicar publicado-boton" type="button" id="otra">Publicar otro objeto</button>
+    </div>
+    <div class="publicado-der">
+      <div class="miniatura" id="miniatura" aria-hidden="true">
+        <span class="miniatura-portada" id="miniaturaPortada"></span>
+        <div class="miniatura-datos">
+          <p class="miniatura-precio" id="miniaturaPrecio">0,00 €</p>
+          <p class="miniatura-titulo" id="miniaturaTitulo">Sin título</p>
+          <p class="miniatura-lugar" id="miniaturaLugar">sin municipio</p>
+        </div>
+      </div>
+      <p class="miniatura-pie">Así se verá tu anuncio en el listado, con la portada en primer plano.</p>
+    </div>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

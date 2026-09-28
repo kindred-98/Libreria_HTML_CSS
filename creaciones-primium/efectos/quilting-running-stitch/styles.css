@@ -1,0 +1,325 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --rose:#d59a9a;
+  --sage:#8ba383;
+  --cream:#efe3c8;
+  --indigo:#3a4a6b;
+  --ease:cubic-bezier(.4,.14,.3,1);
+  --ease-loose:cubic-bezier(.62,.02,.3,1);
+}
+
+html,body{height:100%}
+
+body{
+  background:#141210;
+  color:var(--cream);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+
+.quilt{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  isolation:isolate;
+  padding:clamp(14px,2.6vw,40px);
+  display:flex;
+  flex-direction:column;
+  gap:clamp(10px,1.6vw,20px);
+  background:linear-gradient(180deg,#1b1714 0%,#121010 60%,#0a0908 100%);
+}
+
+.wall{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(70% 50% at 50% 0%,hsla(30,40%,70%,.1) 0%,transparent 60%),
+    repeating-linear-gradient(90deg,hsla(30,20%,70%,.035) 0 2px,transparent 2px 90px);
+}
+
+.head{
+  position:relative;
+  z-index:3;
+}
+
+.kicker{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(9px,.74vw,11px);
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  color:hsla(8,40%,78%,.84);
+}
+
+.head h1{
+  margin-top:.5em;
+  font-size:clamp(19px,2.6vw,42px);
+  line-height:1;
+  font-weight:750;
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+}
+
+.lede{
+  margin-top:.6em;
+  max-width:56ch;
+  font-size:clamp(11px,.9vw,14px);
+  line-height:1.5;
+  font-weight:300;
+  color:hsla(36,20%,84%,.44);
+}
+
+.row{
+  position:relative;
+  z-index:2;
+  flex:1 1 auto;
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:clamp(10px,1.8vw,32px);
+  align-items:center;
+}
+
+.patch{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:clamp(8px,1.2vw,16px);
+  min-width:0;
+  height:100%;
+  justify-content:center;
+}
+
+.shape{
+  position:relative;
+  width:100%;
+  max-width:clamp(120px,17vw,240px);
+  aspect-ratio:1;
+  border-radius:4px;
+  box-shadow:
+    inset 0 1px 0 hsla(40,40%,100%,.5),
+    inset 0 -10px 22px hsla(30,30%,30%,.24),
+    0 22px 36px -22px hsla(0,0%,0%,.9);
+  overflow:hidden;
+}
+
+.wool .shape{
+  background:
+    radial-gradient(120% 100% at 30% 14%,hsla(8,44%,78%,1) 0%,hsla(6,42%,66%,1) 60%,hsla(4,40%,54%,1) 100%);
+}
+
+.linen .shape{
+  background:
+    repeating-linear-gradient(2deg,hsla(44,24%,84%,.5) 0 2px,transparent 2px 5px),
+    linear-gradient(150deg,#e8ddc2 0%,#d6c8a6 100%);
+}
+
+.satin .shape{
+  background:
+    linear-gradient(128deg,#fdf6e6 0%,#e2d3b0 34%,#f3e7cd 56%,#cfbf9a 100%);
+}
+
+.denim .shape{
+  background:
+    repeating-linear-gradient(58deg,hsla(214,30%,70%,.3) 0 1px,transparent 1px 4px),
+    linear-gradient(150deg,#4a5c80 0%,#2f3d58 100%);
+}
+
+.pad{
+  position:absolute;
+  inset:16%;
+  border-radius:50%;
+  background:radial-gradient(circle at 40% 34%,hsla(40,40%,100%,.24) 0%,transparent 66%);
+  box-shadow:0 0 24px hsla(30,30%,20%,.2);
+  animation:padRise 6.4s var(--ease-loose) infinite;
+  animation-delay:var(--d);
+}
+
+.seam{
+  position:absolute;
+  inset:0;
+}
+
+.seam i{
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:6%;
+  height:2.5%;
+  min-height:2px;
+  border-radius:2px;
+  background:linear-gradient(90deg,transparent,currentColor 30%,currentColor 70%,transparent);
+  transform-origin:0 50%;
+  transform:scaleX(0);
+  animation:stitch 6.4s var(--ease-loose) infinite;
+  animation-delay:calc(var(--d) + var(--n) * .12s);
+}
+
+.wool .seam i{color:hsla(350,50%,92%,.95)}
+.linen .seam i{color:hsla(40,30%,44%,.8)}
+.satin .seam i{color:hsla(38,30%,70%,.9)}
+.denim .seam i{color:hsla(46,86%,74%,.95)}
+
+.seam i:nth-child(1){--n:0}
+.seam i:nth-child(2){--n:1}
+.seam i:nth-child(3){--n:2}
+.seam i:nth-child(4){--n:3}
+.seam i:nth-child(5){--n:4}
+.seam i:nth-child(6){--n:5}
+.seam i:nth-child(7){--n:6}
+.seam i:nth-child(8){--n:7}
+.seam i:nth-child(9){--n:8}
+.seam i:nth-child(10){--n:9}
+.seam i:nth-child(11){--n:10}
+.seam i:nth-child(12){--n:11}
+.seam i:nth-child(13){--n:12}
+.seam i:nth-child(14){--n:13}
+
+.seam i:nth-child(6),.seam i:nth-child(7),.seam i:nth-child(8){
+  left:calc(80% - 3%);
+  transform-origin:50% 0;
+}
+
+.needle{
+  position:absolute;
+  left:8%;
+  top:12%;
+  width:2px;
+  height:12%;
+  background:linear-gradient(180deg,#eef2f4,#7a828a);
+  box-shadow:0 2px 5px hsla(0,0%,0%,.5);
+  animation:needleTravel 6.4s var(--ease-loose) infinite;
+  animation-delay:var(--d);
+  z-index:3;
+}
+
+.thread{
+  position:absolute;
+  left:0;
+  top:0;
+  right:0;
+  bottom:0;
+  z-index:2;
+  background:linear-gradient(90deg,transparent 8%,currentColor 8.6%,transparent 9.2%);
+  color:hsla(350,50%,92%,.9);
+  mask-image:linear-gradient(180deg,#000 0%,#000 100%);
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 100%);
+  opacity:.5;
+  animation:threadFade 6.4s var(--ease-loose) infinite;
+  animation-delay:var(--d);
+}
+
+.linen .thread{color:hsla(40,30%,44%,.8)}
+.satin .thread{color:hsla(38,30%,70%,.9)}
+.denim .thread{color:hsla(46,86%,74%,.9)}
+
+.tag{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(8px,.66vw,10px);
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:hsla(36,20%,84%,.5);
+  text-align:center;
+}
+
+.legend{
+  position:relative;
+  z-index:3;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:clamp(10px,1.8vw,28px);
+  padding-top:clamp(6px,1vw,12px);
+  border-top:1px solid hsla(36,20%,80%,.12);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(9px,.72vw,11px);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:hsla(36,20%,84%,.5);
+}
+
+.key{display:inline-flex;align-items:center;gap:.7em}
+.sw{width:clamp(16px,2vw,28px);height:3px;border-radius:3px}
+.sw-rose{background:linear-gradient(90deg,hsla(8,44%,60%,.2),#d59a9a)}
+.sw-sage{background:linear-gradient(90deg,hsla(96,20%,50%,.2),#8ba383)}
+.sw-cream{background:linear-gradient(90deg,hsla(40,34%,70%,.2),#efe3c8)}
+.sw-indigo{background:linear-gradient(90deg,hsla(214,30%,30%,.2),#3a4a6b)}
+
+.readout{margin-left:auto;color:hsla(8,40%,78%,.82)}
+
+.grain{
+  position:absolute;
+  inset:-3%;
+  width:106%;
+  height:106%;
+  opacity:.08;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+  z-index:6;
+  background-image:repeating-linear-gradient(0deg,hsla(0,0%,100%,.5) 0 1px,transparent 1px 3px);
+  animation:grainShift 2.6s steps(4,end) infinite;
+}
+
+@keyframes stitch{
+  0%,6%{transform:scaleX(0)}
+  18%{transform:scaleX(1)}
+  82%{transform:scaleX(1)}
+  100%{transform:scaleX(0)}
+}
+
+.seam i:nth-child(6),.seam i:nth-child(7),.seam i:nth-child(8){
+  animation-name:stitchV;
+}
+@keyframes stitchV{
+  0%,6%{transform:scaleY(0)}
+  18%{transform:scaleY(1)}
+  82%{transform:scaleY(1)}
+  100%{transform:scaleY(0)}
+}
+
+@keyframes needleTravel{
+  0%{transform:translate3d(0,0,0) rotate(-12deg)}
+  25%{transform:translate3d(72%,0,0) rotate(4deg)}
+  50%{transform:translate3d(72%,300%,0) rotate(90deg)}
+  75%{transform:translate3d(0,300%,0) rotate(168deg)}
+  100%{transform:translate3d(0,0,0) rotate(348deg)}
+}
+
+@keyframes padRise{
+  0%{transform:scale(.94);opacity:.7}
+  40%{transform:scale(1.04);opacity:1}
+  100%{transform:scale(.94);opacity:.7}
+}
+
+@keyframes threadFade{
+  0%{opacity:.2}
+  40%{opacity:.8}
+  100%{opacity:.2}
+}
+
+@keyframes grainShift{
+  0%{transform:translate3d(0,0,0)}
+  25%{transform:translate3d(-1%,1%,0)}
+  50%{transform:translate3d(1%,-1%,0)}
+  75%{transform:translate3d(1.2%,1.1%,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+
+@media (max-width:820px){
+  .row{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}
+  .lede{display:none}
+  .legend .key:nth-child(3),.legend .key:nth-child(4){display:none}
+  .readout{margin-left:0}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .pad,.seam i,.needle,.thread,.grain{
+    animation:none!important;
+  }
+  .seam i{transform:scaleX(1)}
+  .seam i:nth-child(6),.seam i:nth-child(7),.seam i:nth-child(8){transform:scaleY(1)}
+  .needle{transform:translate3d(36%,150%,0) rotate(45deg)}
+  .thread{opacity:.5}
+  .grain{opacity:.06}
+}

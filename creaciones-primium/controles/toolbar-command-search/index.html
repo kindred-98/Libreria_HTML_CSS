@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Toolbar Command Search</title>
+<meta name="description" content="A floating command menu with a live search field: type to filter the list, toggle the filter chips, watch the matches light up and the rows stagger back in.">
+<meta name="description-es" content="Un menú de comandos flotante con un campo de búsqueda en vivo: escribe para filtrar la lista, activa los filtros, mira cómo se iluminan las coincidencias y las filas vuelven a entrar escalonadas.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="page">
+  <header class="head">
+    <p class="head__kicker"><span class="scanline" aria-hidden="true"></span>Floating toolbar / command</p>
+    <h1>Toolbar Command Search</h1>
+    <p class="head__lead">Type and the list rewrites itself; the chips narrow the field; matches light up in electric blue. Arrow keys walk the results, Enter runs one, Escape empties the field.</p>
+  </header>
+
+  <section class="desk">
+    <div class="desk__code" aria-hidden="true">
+      <span class="desk__line"><i>01</i>const bench = await load("controles");</span>
+      <span class="desk__line"><i>02</i>bench.run({ motion: true, errors: true });</span>
+      <span class="desk__line desk__line--now"><i>03</i>report.append(bench.summary)<span class="desk__caret"></span></span>
+      <span class="desk__line"><i>04</i>export default report;</span>
+      <span class="desk__tag">editor · untitled</span>
+    </div>
+
+    <div class="menu" role="search">
+      <div class="menu__bar">
+        <span class="menu__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <b>Command</b>
+        <span class="menu__hint">esc clears the field</span>
+        <span class="menu__sweep" aria-hidden="true"></span>
+      </div>
+
+      <div class="search">
+        <span class="search__glass" aria-hidden="true"></span>
+        <input id="q" type="search" autocomplete="off" spellcheck="false"
+          placeholder="Search commands" aria-label="Search commands">
+        <span class="search__caret" aria-hidden="true"></span>
+        <kbd class="search__key">Ctrl K</kbd>
+      </div>
+
+      <div class="chips" role="group" aria-label="Command filters">
+        <button type="button" class="chip" data-chip="all" aria-pressed="true">All</button>
+        <button type="button" class="chip" data-chip="recent" aria-pressed="false">Recent</button>
+        <button type="button" class="chip" data-chip="file" aria-pressed="false">File</button>
+        <button type="button" class="chip" data-chip="edit" aria-pressed="false">Edit</button>
+        <button type="button" class="chip" data-chip="run" aria-pressed="false">Run</button>
+        <button type="button" class="chip" data-chip="shared" aria-pressed="false">Shared</button>
+      </div>
+
+      <ul class="results" id="results">
+        <li class="res" data-key="open project" data-cat="recent file">
+          <span class="res__mark" aria-hidden="true"></span>
+          <span class="res__text"><b>Open project</b><s>workspace / libreria-html-css</s></span>
+          <kbd class="res__key">Ctrl O</kbd>
+        </li>
+        <li class="res" data-key="new component" data-cat="file">
+          <span class="res__mark" aria-hidden="true"></span>
+          <span class="res__text"><b>New component</b><s>creaciones-primium / controles</s></span>
+          <kbd class="res__key">Ctrl N</kbd>
+        </li>
+        <li class="res" data-key="export palette" data-cat="file shared">
+          <span class="res__mark" aria-hidden="true"></span>
+          <span class="res__text"><b>Export palette</b><s>theme / tokens.css</s></span>
+          <kbd class="res__key">Ctrl E</kbd>
+        </li>
+        <li class="res" data-key="find in files" data-cat="edit">
+          <span class="res__mark" aria-hidden="true"></span>
+          <span class="res__text"><b>Find in files</b><s>whole repository</s></span>
+          <kbd class="res__key">Ctrl Shift F</kbd>
+        </li>
+        <li class="res" data-key="rename symbol" data-cat="edit recent">
+          <span class="res__mark" aria-hidden="true"></span>
+          <span class="res__text"><b>Rename symbol</b><s>refactor across files</s></span>
+          <kbd class="res__key">F2</kbd>
+        </li>
+        <li class="res" data-key="run bench test" data-cat="run recent">
+          <span class="res__mark" aria-hidden="true"></span>
+          <span class="res__text"><b>Run bench test</b><s>motion, errors, report</s></span>
+          <kbd class="res__key">Ctrl B</kbd>
+        </li>
+        <li class="res" data-key="clear console" data-cat="run">
+          <span class="res__mark" aria-hidden="true"></span>
+          <span class="res__text"><b>Clear console</b><s>drop every log line</s></span>
+          <kbd class="res__key">Ctrl L</kbd>
+        </li>
+        <li class="res" data-key="sync library" data-cat="shared">
+          <span class="res__mark" aria-hidden="true"></span>
+          <span class="res__text"><b>Sync library</b><s>pull the latest controls</s></span>
+          <kbd class="res__key">Ctrl S</kbd>
+        </li>
+      </ul>
+
+      <p class="sr-only" id="count" aria-live="polite">8 commands</p>
+
+      <div class="menu__foot">
+        <span class="hint"><kbd>↑</kbd><kbd>↓</kbd> move</span>
+        <span class="hint"><kbd>↵</kbd> run</span>
+        <span class="hint"><kbd>PgUp</kbd><kbd>PgDn</kbd> ends</span>
+        <span class="progress" aria-hidden="true"><i></i></span>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot"><span class="foot__dot" aria-hidden="true"></span>Live filter · filter chips · staggered results</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Wallet Checkout</title>
+<meta name="description" content="Crypto checkout under a sticky status bar showing network, fee and slippage, with a copyable wallet address, live fiat conversion and a confirm state.">
+<meta name="description-es" content="Pago cripto bajo una barra fija de estado con red, comisión y deslizamiento, dirección de cartera copiable, conversión en euros en vivo y estado de confirmación.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="fondo" aria-hidden="true">
+  <span class="nebulosa nebulosa-a"></span>
+  <span class="nebulosa nebulosa-b"></span>
+  <span class="cadena"></span>
+</div>
+
+<div class="barra-estado" role="region" aria-label="Estado de la red y de la transacción">
+  <div class="barra-interior">
+    <span class="red">
+      <span class="red-punto" aria-hidden="true"></span>
+      <b>Ethereum</b>
+      <small>bloque 19 284 551</small>
+    </span>
+    <span class="barra-item"><small>Comisión</small><b id="comision">0,42 €</b></span>
+    <span class="barra-item"><small>Deslizamiento</small><b id="deslizamiento">0,15 %</b></span>
+    <span class="barra-item"><small>Precio ETH</small><b id="precioEth">2 486,10 €</b></span>
+    <span class="barra-relleno"></span>
+    <span class="barra-item barra-der"><small>La sesión expira en</small><b id="cuentaAtras" role="timer">09:41</b></span>
+  </div>
+  <span class="barra-borde" aria-hidden="true"></span>
+</div>
+
+<main class="envoltorio">
+  <form class="caja" id="form" novalidate>
+    <header class="caja-cab">
+      <p class="antetitulo">Cajero 03</p>
+      <h1>Pagar con tu cartera</h1>
+      <p class="intro">Envía ETH a la dirección de abajo o conecta tu cartera. Comprobamos la transacción en la red antes de liberar el pedido.</p>
+    </header>
+
+    <div class="rejilla-campos">
+      <div class="campo campo-direccion" data-estado="neutro">
+        <label for="direccion">Dirección de destino</label>
+        <div class="fila-direccion">
+          <input id="direccion" name="direccion" type="text" spellcheck="false" placeholder="0x4C3aD9F71b2E5aC8b0F1d6E7A9c3B5D8E2f4A17" aria-describedby="direccion-ayuda">
+          <button class="copiar" type="button" id="copiar" aria-label="Copiar la dirección al portapapeles">
+            <span class="copiar-icono" aria-hidden="true"></span>
+            <span class="copiar-txt">Copiar</span>
+          </button>
+        </div>
+        <p class="ayuda" id="direccion-ayuda">Cuarenta y dos caracteres que empiezan por 0x. Es la dirección que generamos para este pedido.</p>
+        <p class="error" id="direccion-error" role="alert"></p>
+      </div>
+
+      <div class="dos">
+        <div class="campo" data-estado="neutro">
+          <label for="cantidad">Cantidad a enviar</label>
+          <div class="fila-cantidad">
+            <input id="cantidad" name="cantidad" type="text" inputmode="decimal" placeholder="0,0482" aria-describedby="cantidad-ayuda">
+            <span class="unidad" aria-hidden="true">ETH</span>
+          </div>
+          <p class="ayuda" id="cantidad-ayuda">Equivale a <b id="equivaleEur">119,83 €</b> con el precio de ahora.</p>
+          <p class="error" id="cantidad-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="red">Red de envío</label>
+          <select id="red" name="red" aria-describedby="red-ayuda">
+            <option value="">Elige la red</option>
+            <option value="ethereum">Ethereum · comisión 0,42 €</option>
+            <option value="poligon">Polygon · comisión 0,02 €</option>
+            <option value="arbitrum">Arbitrum One · comisión 0,09 €</option>
+          </select>
+          <p class="ayuda" id="red-ayuda">No cambies de red con el pedido ya firmado: el saldo se quedaría retenido.</p>
+          <p class="error" id="red-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <label for="referencia">Referencia del pedido</label>
+        <input id="referencia" name="referencia" type="text" placeholder="NX-2024-88214" aria-describedby="referencia-ayuda">
+        <p class="ayuda" id="referencia-ayuda">La usamos para reconciliar el pago. Aparece también en tu historial.</p>
+        <p class="error" id="referencia-error" role="alert"></p>
+      </div>
+
+      <div class="campo" data-estado="neutro">
+        <span class="etiqueta" id="origen-etiqueta">Origen de los fondos</span>
+        <div class="opciones" role="radiogroup" aria-labelledby="origen-etiqueta" aria-describedby="origen-ayuda">
+          <div class="opcion">
+            <input type="radio" id="origen_exchange" name="origen" value="Exchange">
+            <label for="origen_exchange"><span class="marca" aria-hidden="true"></span>Vengo de un exchange</label>
+          </div>
+          <div class="opcion">
+            <input type="radio" id="origen_cartera" name="origen" value="Cartera personal">
+            <label for="origen_cartera"><span class="marca" aria-hidden="true"></span>Salgo de mi cartera</label>
+          </div>
+        </div>
+        <p class="ayuda" id="origen-ayuda">Nos ayuda a aplicar el control preventivo del producto.</p>
+        <p class="error" id="origen-error" role="alert"></p>
+      </div>
+    </div>
+
+    <div class="ticket">
+      <div class="ticket-linea"><span>Importe del pedido</span><b>112,00 €</b></div>
+      <div class="ticket-linea"><span>Gas estimado</span><b id="ticketGas">0,42 €</b></div>
+      <div class="ticket-linea"><span>Deslizamiento máximo</span><b id="ticketSlide">0,15 %</b></div>
+      <div class="ticket-linea ticket-total"><span>Total a enviar</span><b id="ticketTotal">112,57 €</b></div>
+    </div>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-error-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">Faltan datos del pago</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <div class="acciones">
+      <button class="confirmar" type="submit" id="confirmar">
+        <span id="confirmarTexto">Confirmar y firmar</span>
+        <span class="confirmar-carga" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <p class="pie-legal">Confirmas que la dirección es correcta. Enviar a una red equivocada o a una cartera equivocada no se puede deshacer.</p>
+  </form>
+
+  <section class="confirmado" id="confirmado" hidden tabindex="-1" aria-live="polite">
+    <span class="confirmado-aro" aria-hidden="true"></span>
+    <span class="confirmado-sello" aria-hidden="true"><span class="confirmado-tic"></span></span>
+    <h2>Pago firmado y en la red</h2>
+    <p id="confirmadoTexto">Estamos esperando la confirmación del bloque. Puede tardar un par de minutos.</p>
+    <dl class="confirmado-datos">
+      <div><dt>Hash de la transacción</dt><dd id="cfHash">0x000000</dd></div>
+      <div><dt>Enviado</dt><dd id="cfCantidad">sin definir</dd></div>
+      <div><dt>Red</dt><dd id="cfRed">sin definir</dd></div>
+      <div><dt>Coste total</dt><dd id="cfTotal">sin definir</dd></div>
+    </dl>
+    <p class="confirmado-nota">Guardamos el hash por si más adelante hay que reclamar algo. Se puede comprobar en cualquier explorador de bloques.</p>
+    <button class="confirmar confirmado-btn" type="button" id="volver">Hacer otro pago</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

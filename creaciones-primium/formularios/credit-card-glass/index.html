@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credit Card Glass Checkout</title>
+<meta name="description" content="Card payment checkout with a three dimensional bank card, group of four masking, Luhn validation, expiry check and a processing button state.">
+<meta name="description-es" content="Pago con tarjeta con tarjeta de banco tridimensional, enmascarado en grupos de cuatro, validación Luhn, comprobación de caducidad y estado de procesamiento del botón.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="fondo-azul" aria-hidden="true">
+  <span class="esfera esfera-a"></span>
+  <span class="esfera esfera-b"></span>
+  <span class="esfera esfera-c"></span>
+  <span class="malla"></span>
+</div>
+
+<main class="caja">
+  <header class="caja-cab">
+    <p class="antetitulo">Paso 3 de 4 &middot; Pago</p>
+    <h1>Confirma el pago con tu tarjeta</h1>
+    <p class="intro">Es una tarjeta de pago de prueba. Ningún dato sale de este dispositivo y no se guarda nada.</p>
+  </header>
+
+  <form class="caja-cuerpo" id="form" novalidate>
+    <div class="columna-tarjeta">
+      <div class="escena" id="escena">
+        <div class="tarjeta3d" id="tarjeta3d">
+          <span class="tarjeta-luz" aria-hidden="true"></span>
+          <span class="tarjeta-cinta" aria-hidden="true"></span>
+          <div class="tarjeta-cab">
+            <span class="chip" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="contacto" aria-hidden="true"></span>
+          </div>
+          <p class="tarjeta-num" id="verNumero">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;</p>
+          <div class="tarjeta-pie">
+            <span class="tarjeta-dato"><small>Titular</small><b id="verTitular">NOMBRE DEL TITULAR</b></span>
+            <span class="tarjeta-dato"><small>Caduca</small><b id="verCaduca">MM/AA</b></span>
+            <span class="marca-red" id="verMarca" aria-label="Tipo de tarjeta">VISA</span>
+          </div>
+        </div>
+        <p class="pista" id="pista">Mueve el cursor sobre la tarjeta para verla en relieve.</p>
+      </div>
+
+      <dl class="resumen-compra">
+        <div><dt>Camiseta de algodón ORGANIC</dt><dd>89,00 €</dd></div>
+        <div><dt>Pack de tres calcetines</dt><dd>19,90 €</dd></div>
+        <div><dt>Envío exprés</dt><dd>11,50 €</dd></div>
+        <div class="subtotal"><dt>Base imponible</dt><dd>101,44 €</dd></div>
+        <div class="total"><dt>Total con IVA</dt><dd>120,40 €</dd></div>
+      </dl>
+    </div>
+
+    <div class="columna-datos">
+      <div class="campo" data-estado="neutro">
+        <label for="numero">Número de tarjeta</label>
+        <input id="numero" name="numero" type="text" inputmode="numeric" autocomplete="cc-number" maxlength="19" placeholder="4242 4242 4242 4242" aria-describedby="numero-ayuda">
+        <p class="ayuda" id="numero-ayuda">16 cifras, agrupadas de cuatro en cuatro. Aceptamos Visa, Mastercard y American Express.</p>
+        <p class="error" id="numero-error" role="alert"></p>
+      </div>
+
+      <div class="doble">
+        <div class="campo" data-estado="neutro">
+          <label for="titular">Titular de la tarjeta</label>
+          <input id="titular" name="titular" type="text" autocomplete="cc-name" placeholder="ANA MORALES PRATS" aria-describedby="titular-ayuda">
+          <p class="ayuda" id="titular-ayuda">Tal y como aparece impreso en la tarjeta, en mayúsculas.</p>
+          <p class="error" id="titular-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <label for="caducidad">Caducidad</label>
+          <input id="caducidad" name="caducidad" type="text" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="09/28" aria-describedby="caducidad-ayuda">
+          <p class="ayuda" id="caducidad-ayuda">Formato mes y año: 09/28.</p>
+          <p class="error" id="caducidad-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="doble">
+        <div class="campo" data-estado="neutro">
+          <label for="cvv">Código de seguridad</label>
+          <input id="cvv" name="cvv" type="text" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" aria-describedby="cvv-ayuda">
+          <p class="ayuda" id="cvv-ayuda">Tres o cuatro cifras al reverso. No lo guardamos ni lo mostramos en la tarjeta.</p>
+          <p class="error" id="cvv-error" role="alert"></p>
+        </div>
+
+        <div class="campo" data-estado="neutro">
+          <span class="etiqueta" id="tipo-etiqueta">Tipo de tarjeta</span>
+          <div class="radios" role="radiogroup" aria-labelledby="tipo-etiqueta" aria-describedby="tipo-ayuda">
+            <div class="opcion">
+              <input type="radio" id="tipo_debito" name="tipo" value="Débito">
+              <label for="tipo_debito"><span class="marca" aria-hidden="true"></span>Débito</label>
+            </div>
+            <div class="opcion">
+              <input type="radio" id="tipo_credito" name="tipo" value="Crédito">
+              <label for="tipo_credito"><span class="marca" aria-hidden="true"></span>Crédito</label>
+            </div>
+          </div>
+          <p class="ayuda" id="tipo-ayuda">Con tarjeta de débito no acumulamos puntos ni aplazar el pago.</p>
+          <p class="error" id="tipo-error" role="alert"></p>
+        </div>
+      </div>
+
+      <div class="seguridad">
+        <span class="seguridad-escudo" aria-hidden="true"></span>
+        <p><b>Pago protegido con 3D Secure.</b> Comprobamos el dígito de control de la tarjeta y el titular con el banco antes de cobrar. No podemos ver ni almacenar el código de seguridad.</p>
+      </div>
+
+      <div class="resumen-error" id="resumenError" role="alert" hidden>
+        <span class="resumen-error-icono" aria-hidden="true"></span>
+        <div>
+          <b id="resumenErrorTitulo">No podemos cobrar todavía</b>
+          <ul id="resumenErrorLista"></ul>
+        </div>
+      </div>
+
+      <button class="pagar" type="submit" id="pagar">
+        <span class="pagar-texto" id="pagarTexto">Pagar 120,40 €</span>
+        <span class="pagar-cargador" aria-hidden="true"></span>
+      </button>
+
+      <p class="pie-legal">Al pulsar pagar aceptas las condiciones de la tienda y autorizas el cargo de 120,40 € en la tarjeta indicada.</p>
+    </div>
+  </form>
+
+  <section class="recibo" id="recibo" hidden tabindex="-1" aria-live="polite">
+    <span class="recibo-aro" aria-hidden="true"></span>
+    <span class="recibo-sello" aria-hidden="true"><span class="recibo-tic"></span></span>
+    <h2>Pago realizado</h2>
+    <p id="reciboTexto">Tu pedido está confirmado y se ha enviado al transportista.</p>
+    <dl class="recibo-datos">
+      <div><dt>Operación</dt><dd id="rOp">PC-000000</dd></div>
+      <div><dt>Tarjeta</dt><dd id="rTarjeta">sin definir</dd></div>
+      <div><dt>Importe cobrado</dt><dd id="rImporte">120,40 €</dd></div>
+      <div><dt>Fecha</dt><dd id="rFecha">sin definir</dd></div>
+    </dl>
+    <p class="recibo-nota">Recibirás el resguardo por correo y el albarán de entrega en cuanto salga del almacén de Zaragoza.</p>
+    <button class="pagar recibo-btn" type="button" id="otra">Pagar con otra tarjeta</button>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

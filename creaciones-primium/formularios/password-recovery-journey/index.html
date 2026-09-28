@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Password Recovery Conversation</title>
+<meta name="description" content="Conversational password recovery flow in chat bubbles with one question per screen, a live strength ring and a confirmed reset receipt.">
+<meta name="description-es" content="Recuperación de contraseña conversacional en burbujas de chat, una pregunta por pantalla, anillo de fuerza en vivo y comprobante de restablecimiento confirmado.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bruma bruma-a" aria-hidden="true"></div>
+<div class="bruma bruma-b" aria-hidden="true"></div>
+<div class="costuras" aria-hidden="true"></div>
+
+<main class="app" id="inicio">
+  <header class="app-cab">
+    <span class="agente-avatar" aria-hidden="true"><span class="agente-rostro"></span></span>
+    <span class="agente-datos">
+      <b>Asistente de seguridad</b>
+      <small><span class="pulso" aria-hidden="true"></span> En línea, responde en segundos</small>
+    </span>
+    <span class="marcas" id="marcas" role="img" aria-label="Paso 1 de 4">
+      <i class="marca is-activa"></i>
+      <i class="marca"></i>
+      <i class="marca"></i>
+      <i class="marca"></i>
+    </span>
+  </header>
+
+  <div class="hilo" id="hilo" role="log" aria-live="polite" aria-label="Conversación de recuperación">
+    <p class="dia">Hoy</p>
+
+    <div class="msg">
+      <span class="avatar-mini" aria-hidden="true"></span>
+      <div class="burbuja">
+        <p>Hola, soy el asistente de seguridad de Nexo. Te ayudo a dejar tu cuenta como estaba.</p>
+        <p>Antes de nada necesito saber a qué correo pertenece la cuenta. Lo usaremos solo para enviarte el enlace y no lo guardamos en este dispositivo.</p>
+      </div>
+    </div>
+
+    <div class="msg">
+      <span class="avatar-mini" aria-hidden="true"></span>
+      <div class="burbuja">
+        <p>Escribe tu correo y te paso el enlace. Empieza con el paso 1 de 4.</p>
+        <span class="escribiendo" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </div>
+  </div>
+
+  <form class="compositor" id="form" novalidate>
+    <div class="paso" data-paso="1">
+      <div class="campo" data-estado="neutro">
+        <label for="correo">Correo de la cuenta</label>
+        <input id="correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="ana.morales@correo.com" aria-describedby="correo-ayuda">
+        <p class="ayuda" id="correo-ayuda">Si no recuerdas cuál usaste, prueba con el correo con el que te diste de alta.</p>
+        <p class="error" id="correo-error" role="alert"></p>
+      </div>
+      <button class="enviar" type="submit" id="enviarEnlace">Enviar enlace de recuperación</button>
+    </div>
+
+    <div class="paso" data-paso="2" hidden>
+      <p class="paso-aviso" id="paso2Aviso" role="status">Comprueba también la carpeta de correo no deseado. El enlace caduca en 20 minutos.</p>
+    </div>
+
+    <div class="paso" data-paso="3" hidden>
+      <div class="medidor-circuito" id="circuito" data-nivel="0">
+        <span class="aro" aria-hidden="true"></span>
+        <span class="aro-int" aria-hidden="true"></span>
+        <span class="medidor-valor" id="medidorTexto">0</span>
+      </div>
+      <div class="medidor-pie">
+        <b id="medidorTitulo">Sin contraseña todavía</b>
+        <small id="medidorDetalle">Mínimo 10 caracteres con mayúscula, minúscula y dígito.</small>
+      </div>
+      <div class="campo" data-estado="neutro">
+        <label for="nueva">Nueva contraseña</label>
+        <input id="nueva" name="nueva" type="password" autocomplete="new-password" aria-describedby="nueva-ayuda">
+        <p class="ayuda" id="nueva-ayuda">No reutilices ninguna anterior. Al menos 10 caracteres y una letra mayúscula.</p>
+        <p class="error" id="nueva-error" role="alert"></p>
+      </div>
+      <div class="campo" data-estado="neutro">
+        <label for="repetir">Repite la nueva contraseña</label>
+        <input id="repetir" name="repetir" type="password" autocomplete="new-password" aria-describedby="repetir-ayuda">
+        <p class="ayuda" id="repetir-ayuda">Las dos tienen que coincidir exactamente, incluidas mayúsculas y símbolos.</p>
+        <p class="error" id="repetir-error" role="alert"></p>
+      </div>
+      <div class="acciones-paso">
+        <button class="suave" type="button" id="atras">Volver al paso anterior</button>
+        <button class="enviar" type="submit" id="guardarClave">Guardar la nueva contraseña</button>
+      </div>
+    </div>
+
+    <div class="resumen-error" id="resumenError" role="alert" hidden>
+      <span class="resumen-error-icono" aria-hidden="true"></span>
+      <div>
+        <b id="resumenErrorTitulo">Falta un dato</b>
+        <ul id="resumenErrorLista"></ul>
+      </div>
+    </div>
+
+    <p class="pie-compositor">
+      <a class="volver" href="#inicio">Volver al inicio de sesión</a>
+      <span>Nexo Seguro &middot; recuperación guiada</span>
+    </p>
+  </form>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

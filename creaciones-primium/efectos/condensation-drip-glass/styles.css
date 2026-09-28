@@ -1,0 +1,327 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bottle:#1d4a3a;
+  --ice:#bfe0ea;
+  --cream:#f2e3c8;
+  --ease:cubic-bezier(.4,.14,.3,1);
+  --ease-loose:cubic-bezier(.62,.02,.3,1);
+}
+
+html,body{height:100%}
+
+body{
+  background:#1a1410;
+  color:#f2e6cf;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+
+.photo{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  isolation:isolate;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:clamp(16px,3vw,44px);
+  background:linear-gradient(180deg,#2a2018 0%,#1b1410 100%);
+}
+
+.scene{
+  position:absolute;
+  inset:0;
+  filter:blur(7px);
+  transform:scale(1.08);
+}
+
+.warm{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(70% 60% at 26% 14%,hsla(40,88%,74%,.9) 0%,transparent 62%),
+    linear-gradient(180deg,#5b4227 0%,#3c2b1a 52%,#241a11 100%);
+}
+
+.cloth{
+  position:absolute;
+  left:-6%;
+  right:-6%;
+  top:56%;
+  height:50%;
+  background:
+    repeating-linear-gradient(78deg,hsla(20,40%,60%,.2) 0 8px,transparent 8px 22px),
+    linear-gradient(180deg,#b4763f 0%,#8a5327 60%,#5c3316 100%);
+}
+
+.fruit{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(2px);
+}
+
+.fruit.f1{left:12%;top:44%;width:18%;aspect-ratio:1;background:radial-gradient(circle at 34% 30%,#e08a3a,#8a4413 70%)}
+.fruit.f2{left:30%;top:52%;width:14%;aspect-ratio:1;background:radial-gradient(circle at 34% 30%,#c94f38,#6f2013 70%)}
+.fruit.f3{left:72%;top:48%;width:16%;aspect-ratio:1;background:radial-gradient(circle at 34% 30%,#e6c25a,#8a6a15 70%)}
+
+.bokeh{
+  position:absolute;
+  border-radius:50%;
+  background:radial-gradient(circle,hsla(44,90%,84%,.7) 0%,transparent 70%);
+}
+
+.bokeh.b1{left:6%;top:10%;width:12%}
+.bokeh.b2{left:46%;top:6%;width:9%}
+.bokeh.b3{right:8%;top:14%;width:14%}
+.bokeh.b4{left:58%;top:24%;width:8%}
+.bokeh.b5{right:22%;top:34%;width:11%}
+.bokeh.b6{left:24%;top:22%;width:7%}
+
+.glass{
+  position:absolute;
+  left:50%;
+  top:52%;
+  width:clamp(180px,24vw,340px);
+  height:clamp(240px,32vw,450px);
+  margin-left:calc(clamp(180px,24vw,340px) / -2);
+  margin-top:calc(clamp(240px,32vw,450px) / -2);
+  z-index:3;
+  animation:bob 7s var(--ease-loose) infinite alternate;
+}
+
+.body{
+  position:absolute;
+  inset:0;
+  border-radius:16% 16% 22% 22% / 10% 10% 8% 8%;
+  background:
+    linear-gradient(100deg,hsla(190,40%,92%,.34) 0%,hsla(190,30%,70%,.14) 34%,hsla(190,50%,96%,.4) 62%,hsla(190,30%,70%,.16) 100%),
+    linear-gradient(180deg,hsla(160,40%,22%,.5) 0%,hsla(168,44%,16%,.72) 100%);
+  box-shadow:
+    inset 0 0 30px hsla(170,40%,80%,.3),
+    inset 0 -18px 30px hsla(170,50%,10%,.6),
+    0 30px 50px -26px hsla(20,50%,10%,.8);
+  overflow:hidden;
+}
+
+.water{
+  position:absolute;
+  left:4%;
+  right:4%;
+  top:34%;
+  height:62%;
+  background:linear-gradient(180deg,hsla(170,50%,44%,.6) 0%,hsla(174,54%,26%,.9) 100%);
+  box-shadow:inset 0 2px 0 hsla(190,60%,90%,.4);
+  animation:waterRock 7s var(--ease-loose) infinite alternate;
+}
+
+.fog{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(120% 90% at 30% 20%,hsla(190,40%,96%,.5) 0%,transparent 62%),
+    radial-gradient(90% 80% at 76% 78%,hsla(190,36%,90%,.36) 0%,transparent 60%);
+  animation:fogPulse 7s var(--ease-loose) infinite alternate;
+}
+
+.beads i{
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:var(--s);
+  height:var(--s);
+  margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 34% 28%,hsla(0,0%,100%,.96) 0%,hsla(190,40%,80%,.6) 44%,hsla(190,50%,60%,.2) 74%,transparent 86%);
+  box-shadow:0 1px 2px hsla(190,40%,40%,.4);
+  animation:bead 5.6s var(--ease-loose) infinite;
+}
+
+.beads i:nth-child(3n){animation-duration:6.4s;animation-delay:-1.2s}
+.beads i:nth-child(3n+1){animation-duration:4.8s;animation-delay:-2.6s}
+.beads i:nth-child(4n){animation-delay:-.6s}
+
+.runs i{
+  position:absolute;
+  left:var(--x);
+  top:16%;
+  width:6px;
+  height:22%;
+  margin-left:-3px;
+  border-radius:0 0 6px 6px;
+  background:linear-gradient(180deg,hsla(190,40%,92%,.6),hsla(190,50%,70%,.2));
+  transform-origin:50% 0;
+  animation:run var(--d) var(--ease-loose) infinite;
+  animation-delay:var(--dl);
+}
+
+.trails{
+  position:absolute;
+  inset:0;
+}
+
+.trails i{
+  position:absolute;
+  left:var(--x);
+  top:30%;
+  width:7px;
+  height:44%;
+  margin-left:-3.5px;
+  border-radius:6px;
+  background:linear-gradient(180deg,hsla(190,40%,96%,.22),transparent 70%);
+  animation:trailFade 7s var(--ease-loose) infinite;
+}
+
+.shine{
+  position:absolute;
+  left:10%;
+  top:8%;
+  width:16%;
+  height:52%;
+  border-radius:50%;
+  background:linear-gradient(160deg,hsla(0,0%,100%,.8),transparent 74%);
+  filter:blur(2px);
+  animation:shineRun 7s var(--ease-loose) infinite alternate;
+}
+
+.lip{
+  position:absolute;
+  left:4%;
+  right:4%;
+  top:-1%;
+  height:7%;
+  border-radius:50%;
+  background:linear-gradient(180deg,hsla(190,50%,96%,.7),hsla(190,40%,70%,.2));
+  box-shadow:0 2px 8px hsla(190,40%,50%,.4);
+}
+
+.head{
+  position:relative;
+  z-index:5;
+}
+
+.kicker{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:clamp(9px,.74vw,11px);
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  color:hsla(36,52%,84%,.7);
+}
+
+.head h1{
+  margin-top:.5em;
+  font-size:clamp(20px,2.8vw,44px);
+  line-height:1;
+  font-weight:750;
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+  color:hsla(40,50%,94%,.95);
+  text-shadow:0 2px 20px hsla(20,50%,10%,.6);
+}
+
+.plate{
+  position:relative;
+  z-index:5;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:clamp(8px,1.6vw,20px);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  text-transform:uppercase;
+}
+
+.cap{
+  font-size:clamp(11px,1.1vw,16px);
+  letter-spacing:.28em;
+  color:hsla(40,46%,92%,.9);
+}
+
+.meta{
+  margin-left:auto;
+  font-size:clamp(8px,.7vw,10px);
+  letter-spacing:.22em;
+  color:hsla(36,26%,84%,.42);
+}
+
+.grain{
+  position:absolute;
+  inset:0;
+  opacity:.12;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+  z-index:6;
+  background-image:repeating-linear-gradient(0deg,hsla(0,0%,100%,.5) 0 1px,transparent 1px 3px);
+  animation:grainShift 2.6s steps(4,end) infinite;
+}
+
+.vign{
+  position:absolute;
+  inset:0;
+  z-index:7;
+  background:radial-gradient(124% 100% at 50% 46%,transparent 44%,hsla(24,50%,10%,.4) 84%,hsla(22,54%,6%,.7) 100%);
+  pointer-events:none;
+}
+
+@keyframes bead{
+  0%{transform:scale(.3);opacity:.2}
+  30%{transform:scale(1);opacity:1}
+  62%{transform:scale(1.12);opacity:1}
+  78%,100%{transform:scale(.4) translateY(10px);opacity:0}
+}
+
+@keyframes run{
+  0%{transform:scaleY(.2) translateY(0);opacity:0}
+  14%{opacity:.9}
+  62%{transform:scaleY(1) translateY(120%);opacity:.8}
+  100%{transform:scaleY(.4) translateY(160%);opacity:0}
+}
+
+@keyframes trailFade{
+  0%,100%{opacity:.2}
+  50%{opacity:.6}
+}
+
+@keyframes bob{
+  from{transform:translate3d(0,0,0) rotate(-.4deg)}
+  to{transform:translate3d(0,-1.4%,0) rotate(.5deg)}
+}
+
+@keyframes waterRock{
+  from{transform:rotate(-.6deg) skewX(-.4deg)}
+  to{transform:rotate(.6deg) skewX(.4deg)}
+}
+
+@keyframes fogPulse{
+  from{opacity:.8}
+  to{opacity:1}
+}
+
+@keyframes shineRun{
+  from{transform:translate3d(0,0,0) rotate(0)}
+  to{transform:translate3d(24%,6%,0) rotate(4deg)}
+}
+
+@keyframes grainShift{
+  0%{transform:translate3d(0,0,0)}
+  25%{transform:translate3d(-1%,1%,0)}
+  50%{transform:translate3d(1%,-1%,0)}
+  75%{transform:translate3d(1.2%,1.1%,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+
+@media (max-width:760px){
+  .meta{display:none}
+  .glass{width:clamp(150px,42vw,220px);height:clamp(200px,56vw,300px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .glass,.water,.fog,.beads i,.runs i,.trails i,.shine,.grain{
+    animation:none!important;
+  }
+  .beads i{transform:scale(1);opacity:1}
+  .beads i:nth-child(4n){transform:scale(.8)}
+  .runs i{opacity:.6;transform:scaleY(1) translateY(40%)}
+  .grain{opacity:.1}
+}
