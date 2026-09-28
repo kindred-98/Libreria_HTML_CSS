@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bloom Cell, Six Faces and Two Reference Plates</title>
+<meta name="description" content="A dense charcoal and cyan technical cube of six flower plates with two reference plates pinned to either side of it on a ruled grid: the block folds and unfolds on command, spins by drag or arrow keys, and all eight plates carry their own dimension line and code.">
+<meta name="description-es" content="Un cubo técnico denso en carbón y cian con seis láminas de flor y dos placas de referencia fijadas a sus lados sobre una retícula: el bloque se pliega y despliega a la orden, gira con arrastre o flechas y las ocho láminas llevan su línea de cota y su código.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="grid" aria-hidden="true"><i class="gr gr-a"></i><i class="gr gr-b"></i><i class="gr gr-c"></i></div>
+
+<header class="plate">
+  <p class="plate__eyebrow">Cell 07 <span class="sep">/</span> six faces <span class="sep">/</span> two plates <span class="sep">/</span> 120 mm cube</p>
+  <h1 class="plate__title">Bloom Cell</h1>
+  <p class="plate__note">Six flower plates, one per face, and two reference plates pinned to the sides of
+    the block on the same ruled grid, the dimension lines left in. Fold the block back together or blow
+    it apart into its six panels, turn it by hand, then open any plate full size.</p>
+</header>
+
+<div class="console">
+  <div class="console__g" role="group" aria-label="Cube views">
+    <button type="button" class="console__btn is-on" data-rx="-18" data-ry="-26">Isometric</button>
+    <button type="button" class="console__btn" data-rx="0" data-ry="0">Elevation</button>
+    <button type="button" class="console__btn" data-rx="-64" data-ry="-10">From above</button>
+    <button type="button" class="console__btn" data-rx="-8" data-ry="-88">Side</button>
+  </div>
+  <div class="console__g" role="group" aria-label="Fold amount">
+    <button type="button" class="console__btn" id="fold" aria-pressed="false">Unfold faces</button>
+    <button type="button" class="console__btn console__btn--nudge" id="out" aria-label="Spread the faces further">+</button>
+    <button type="button" class="console__btn console__btn--nudge" id="in" aria-label="Close the faces">-</button>
+  </div>
+  <div class="console__g" role="group" aria-label="Block movement">
+    <button type="button" class="console__btn console__btn--go is-on" id="turn" aria-pressed="true">Slow turn</button>
+  </div>
+  <p class="console__read">
+    <span><b>Yaw</b><span id="ro-yaw">-26</span></span>
+    <span><b>Pitch</b><span id="ro-pitch">-18</span></span>
+    <span><b>Face</b><span id="ro-face">F1</span></span>
+    <span><b>Spread</b><span id="ro-spread">0%</span></span>
+  </p>
+</div>
+
+<div class="stage" id="stage" tabindex="0" role="application" aria-label="Technical cube of six flower plates with two reference plates at its sides. Arrow keys turn the block, plus and minus fold the faces, brackets jump to a plate, Enter opens the plate in front.">
+  <div class="scene" id="scene">
+    <div class="face face--front" data-f="0" style="--tx:0px;--ty:0px;--tz:120px;--rx:0deg;--ry:0deg">
+      <button type="button" class="sk sk--f1"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg/960px-Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg" alt="Cream and rose tulips of the Lady Jane variety flowering in a rock ledge garden" loading="lazy" decoding="async"></button>
+      <span class="dim">F1 <i>front</i></span>
+    </div>
+    <div class="face face--right" data-f="1" style="--tx:120px;--ty:0px;--tz:0px;--rx:0deg;--ry:90deg">
+      <button type="button" class="sk sk--f2"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Stargazer_Lillies_Lillium_orientale_%27Stargazer%27_Flower_2000px.jpg/960px-Stargazer_Lillies_Lillium_orientale_%27Stargazer%27_Flower_2000px.jpg" alt="Stargazer lilies with upward facing pink and white blooms streaked with colour" loading="lazy" decoding="async"></button>
+      <span class="dim">F2 <i>right</i></span>
+    </div>
+    <div class="face face--back" data-f="2" style="--tx:0px;--ty:0px;--tz:-120px;--rx:0deg;--ry:180deg">
+      <button type="button" class="sk sk--f3"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Lily_Lilium_%27Citronella%27_Flower.jpg/960px-Lily_Lilium_%27Citronella%27_Flower.jpg" alt="A citronella lily photographed from above with petals radiating from the centre" loading="lazy" decoding="async"></button>
+      <span class="dim">F3 <i>back</i></span>
+    </div>
+    <div class="face face--left" data-f="3" style="--tx:-120px;--ty:0px;--tz:0px;--rx:0deg;--ry:-90deg">
+      <button type="button" class="sk sk--f4"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Leucanthemum_vulgare_%27Filigran%27_Flower_2200px.jpg/960px-Leucanthemum_vulgare_%27Filigran%27_Flower_2200px.jpg" alt="A white daisy with a yellow centre seen in close detail" loading="lazy" decoding="async"></button>
+      <span class="dim">F4 <i>left</i></span>
+    </div>
+    <div class="face face--top" data-f="4" style="--tx:0px;--ty:-120px;--tz:0px;--rx:-90deg;--ry:0deg">
+      <button type="button" class="sk sk--f5"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Osteospermum_Flower_Power_Spider_Purple_2134px.jpg/960px-Osteospermum_Flower_Power_Spider_Purple_2134px.jpg" alt="A purple osteospermum with narrow spider petals radiating from a dark centre" loading="lazy" decoding="async"></button>
+      <span class="dim">F5 <i>top</i></span>
+    </div>
+    <div class="face face--bottom" data-f="5" style="--tx:0px;--ty:120px;--tz:0px;--rx:90deg;--ry:0deg">
+      <button type="button" class="sk sk--f6"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Sunflower_macro_wide.jpg/960px-Sunflower_macro_wide.jpg" alt="A wide sunflower head filling the frame with its seed pattern in focus" loading="lazy" decoding="async"></button>
+      <span class="dim">F6 <i>bottom</i></span>
+    </div>
+    <div class="ref ref--a" data-f="6">
+      <button type="button" class="sk sk--f7"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Bee-Purple-Flower-Macro_ForestWander.jpg/960px-Bee-Purple-Flower-Macro_ForestWander.jpg" alt="A honeybee with its wings spread feeding on a cluster of pale lilac flowers" loading="lazy" decoding="async"></button>
+      <span class="dim">F7 <i>reference</i></span>
+    </div>
+    <div class="ref ref--b" data-f="7">
+      <button type="button" class="sk sk--f8"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Flower_macro_hd.jpg/960px-Flower_macro_hd.jpg" alt="A backlit white daisy with a dense golden centre on a dark stem" loading="lazy" decoding="async"></button>
+      <span class="dim">F8 <i>reference</i></span>
+    </div>
+  </div>
+  <p class="stage__callout" id="callout">F1 &middot; front</p>
+</div>
+
+<table class="ledger">
+  <caption>Plate register</caption>
+  <thead><tr><th>No</th><th>Plate</th><th>Author</th><th>Licence</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">F1</th><td>Tulipa clusiana, Lady Jane</td><td>Derek Ramsey</td><td>CC BY-SA 3.0</td></tr>
+    <tr><th scope="row">F2</th><td>Stargazer lilies</td><td>Derek Ramsey</td><td>GFDL 1.2</td></tr>
+    <tr><th scope="row">F3</th><td>Lilium, Citronella</td><td>Derek Ramsey</td><td>CC BY-SA 3.0</td></tr>
+    <tr><th scope="row">F4</th><td>Leucanthemum, Filigran</td><td>Derek Ramsey</td><td>CC BY-SA 3.0</td></tr>
+    <tr><th scope="row">F5</th><td>Osteospermum, Flower Power</td><td>Derek Ramsey</td><td>CC BY-SA 3.0</td></tr>
+    <tr><th scope="row">F6</th><td>Sunflower, wide macro</td><td>Muhammad Mahdi Karim</td><td>GFDL 1.2</td></tr>
+    <tr><th scope="row">F7</th><td>Bee on a purple flower, macro</td><td>ForestWander</td><td>CC BY-SA 3.0 US</td></tr>
+    <tr><th scope="row">F8</th><td>Flower macro, studio light</td><td>Marius Iordache</td><td>Public domain</td></tr>
+  </tbody>
+</table>
+
+<footer class="colophon">
+  <p><span class="lab">Theme</span> Flower <span class="sep">/</span> Wikimedia Commons</p>
+  <p class="who">Derek Ramsey (Ram-Man) (CC BY-SA 3.0) <span class="sep">&middot;</span> Muhammad Mahdi Karim (GFDL 1.2) <span class="sep">&middot;</span>
+    ForestWander (CC BY-SA 3.0 US) <span class="sep">&middot;</span> Marius Iordache (Public domain)</p>
+  <p class="keys">Tab reaches the block <span class="sep">&middot;</span> arrow keys turn it
+    <span class="sep">&middot;</span> plus and minus fold and unfold the faces <span class="sep">&middot;</span>
+    the brackets jump to a plate <span class="sep">&middot;</span> Enter opens it <span class="sep">&middot;</span> Escape closes it</p>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Plate viewer" hidden>
+  <div class="lb__veil" data-close></div>
+  <figure class="lb__card">
+    <span class="lb__frame"><img class="lb__img" id="lbImg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg/960px-Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg" alt="Cream and rose tulips of the Lady Jane variety flowering in a rock ledge garden" loading="lazy" decoding="async"></span>
+    <figcaption>
+      <span class="lb__no" id="lbNo">F1 / 08</span>
+      <span class="lb__t" id="lbT"></span>
+      <span class="lb__a" id="lbA"></span>
+      <a class="lb__p" id="lbP" href="https://commons.wikimedia.org/wiki/File:Tulip_Tulipa_clusiana_%27Lady_Jane%27_Rock_Ledge_Flower_Edit_2000px.jpg" target="_blank" rel="noopener">Commons file page</a>
+    </figcaption>
+  </figure>
+  <button type="button" class="lb__nav lb__nav--prev" id="lbPrev" aria-label="Previous face">Prev</button>
+  <button type="button" class="lb__nav lb__nav--next" id="lbNext" aria-label="Next face">Next</button>
+  <button type="button" class="lb__x" id="lbX" aria-label="Close the face viewer">Close</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

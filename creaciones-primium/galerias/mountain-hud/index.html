@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mountain HUD</title>
+<meta name="description" content="A cream instrument head for nine mountain photographs: an altitude ladder on the left, one framed sight in the centre and three dials on the right, all reading out the target you pick with the arrow keys.">
+<meta name="description-es" content="Un instrumento color crema para nueve fotografías de montaña: una escalera de altitud a la izquierda, una mira encuadrada en el centro y tres esferas a la derecha, todas leyendo el objetivo que elijas con las flechas.">
+<link rel="stylesheet" href="styles.css">
+<script src="script.js"></script>
+</head>
+<body>
+<div class="rays" aria-hidden="true"><span></span></div>
+
+<main class="hud">
+  <header class="topbar">
+    <p class="ident">Ridge optics · head unit nine</p>
+    <ul class="readout">
+      <li><span>Bearing</span><b id="rBear">091°</b></li>
+      <li><span>Altitude</span><b id="rAlt">396 m</b></li>
+      <li><span>Local</span><b id="rClock">05:48</b></li>
+      <li><span>Target</span><b id="rIdx">01 / 09</b></li>
+    </ul>
+  </header>
+
+  <ol class="ladder" id="ladder" aria-label="Altitude ladder of nine mountain targets">
+    <li><button class="rung" type="button" data-i="0" aria-pressed="false"><span class="tick"></span><span class="chip"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Sugarloaf_Sunrise_2.jpg/960px-Sugarloaf_Sunrise_2.jpg" alt="A bay and a city skyline under a low sun with a rounded peak rising behind them" loading="lazy" decoding="async"></span><span class="alt">396 m</span></button></li>
+    <li><button class="rung" type="button" data-i="1" aria-pressed="false"><span class="tick"></span><span class="chip"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Flatirons_Sunrise.jpg/960px-Flatirons_Sunrise.jpg" alt="A row of tilted rock slabs taking pink light at sunrise above a plain" loading="lazy" decoding="async"></span><span class="alt">1984 m</span></button></li>
+    <li><button class="rung" type="button" data-i="2" aria-pressed="false"><span class="tick"></span><span class="chip"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Sunrise_at_Maligne_lake_2.jpg/960px-Sunrise_at_Maligne_lake_2.jpg" alt="Low mist lying on a mountain lake with forested shores at sunrise" loading="lazy" decoding="async"></span><span class="alt">1676 m</span></button></li>
+    <li><button class="rung" type="button" data-i="3" aria-pressed="false"><span class="tick"></span><span class="chip"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Sunrise_at_Maligne_lake.jpg/960px-Sunrise_at_Maligne_lake.jpg" alt="Orange light running along a snowy ridge above a dark valley before sunrise" loading="lazy" decoding="async"></span><span class="alt">1676 m</span></button></li>
+    <li><button class="rung" type="button" data-i="4" aria-pressed="false"><span class="tick"></span><span class="chip"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Sunrise_in_Pieniny%2C_Poland_02.jpg/960px-Sunrise_in_Pieniny%2C_Poland_02.jpg" alt="Mist filling a river valley at sunrise with wooded ridges standing clear above it" loading="lazy" decoding="async"></span><span class="alt">480 m</span></button></li>
+    <li><button class="rung" type="button" data-i="5" aria-pressed="false"><span class="tick"></span><span class="chip"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Bieszczady_-_sunrise_from_Chatka_Puchatka_%282%29.jpg/960px-Bieszczady_-_sunrise_from_Chatka_Puchatka_%282%29.jpg" alt="The sun clearing a rounded ridge seen from a mountain shelter at first light" loading="lazy" decoding="async"></span><span class="alt">1308 m</span></button></li>
+    <li><button class="rung" type="button" data-i="6" aria-pressed="false"><span class="tick"></span><span class="chip"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Mountain-clouds-sky-sunrise-valley_-_West_Virginia_-_ForestWander.jpg/960px-Mountain-clouds-sky-sunrise-valley_-_West_Virginia_-_ForestWander.jpg" alt="A sea of cloud lying in a valley below a long wooded ridge" loading="lazy" decoding="async"></span><span class="alt">1200 m</span></button></li>
+    <li><button class="rung" type="button" data-i="7" aria-pressed="false"><span class="tick"></span><span class="chip"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Autumn-mountain-sky-sunrise-colors_-_West_Virginia_-_ForestWander.jpg/960px-Autumn-mountain-sky-sunrise-colors_-_West_Virginia_-_ForestWander.jpg" alt="A ridge of autumn trees under a wide sky of warm sunrise colours" loading="lazy" decoding="async"></span><span class="alt">1100 m</span></button></li>
+    <li><button class="rung" type="button" data-i="8" aria-pressed="false"><span class="tick"></span><span class="chip"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/%C5%A0marjetna_gora_03.jpg/960px-%C5%A0marjetna_gora_03.jpg" alt="A forested summit with morning light on the crest and shadow on the slope" loading="lazy" decoding="async"></span><span class="alt">947 m</span></button></li>
+  </ol>
+
+  <section class="sight">
+    <span class="sun" aria-hidden="true"></span>
+    <span class="bracket" aria-hidden="true"></span>
+    <span class="cross" aria-hidden="true"></span>
+    <span class="scan" aria-hidden="true"></span>
+    <img id="sightImg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Sugarloaf_Sunrise_2.jpg/960px-Sugarloaf_Sunrise_2.jpg" alt="A bay and a city skyline under a low sun with a rounded peak rising behind them" loading="lazy" decoding="async">
+    <p class="sight-code" id="sightCode">TGT 01</p>
+    <p class="sight-name" id="sightName">Bay under the Sugarloaf</p>
+  </section>
+
+  <aside class="dials">
+    <div class="rose">
+      <span class="rose-ticks" aria-hidden="true"></span>
+      <span class="needle" id="cNeedle"></span>
+      <span class="rose-hub" aria-hidden="true"></span>
+    </div>
+    <p class="cap"><b id="cBear">091°</b><em>Bearing</em></p>
+    <div class="bar"><span class="fill" id="aFill"></span><p class="cap over"><b id="aAlt">396 m</b><em>Altitude</em></p></div>
+    <div class="bar warm"><span class="fill" id="tFill"></span><p class="cap over"><b id="tTemp">+24 °C</b><em>Air temp</em></p></div>
+  </aside>
+
+  <footer class="telem">
+    <p id="tNote">The bay and the city under a low sun, with the Sugarloaf peak holding the last of the light for about six minutes.</p>
+    <button class="open" id="open" type="button">Open the sight <span>Enter</span></button>
+  </footer>
+
+  <footer class="credits">
+    <p>Photographs from Wikimedia Commons by Donatas Dabravolskas, Tyler Cipriani, Sergey Pesterev, Pudelek, ForestWander and Mihael Grmek, released under CC BY-SA 3.0 US, CC BY-SA 3.0 and CC BY-SA 4.0 terms. Collection: <a href="https://commons.wikimedia.org/wiki/Category:Mountains">Mountains on Commons</a>.</p>
+  </footer>
+</main>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="vName" hidden>
+  <div class="vw">
+    <div class="vw-shot">
+      <span class="cross" aria-hidden="true"></span>
+      <img id="vImg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Sugarloaf_Sunrise_2.jpg/960px-Sugarloaf_Sunrise_2.jpg" alt="A bay and a city skyline under a low sun with a rounded peak rising behind them" loading="lazy" decoding="async">
+    </div>
+    <div class="vw-side">
+      <p class="vw-code" id="vCode">Target 01</p>
+      <h3 class="vw-name" id="vName">Bay under the Sugarloaf</h3>
+      <p class="vw-place" id="vPlace">Rio de Janeiro, Brazil</p>
+      <p class="vw-note" id="vNote">The bay and the city under a low sun, with the Sugarloaf peak holding the last of the light for about six minutes.</p>
+      <dl class="vw-data">
+        <div><dt>Bearing</dt><dd id="vBear">091°</dd></div>
+        <div><dt>Altitude</dt><dd id="vAlt">396 m</dd></div>
+        <div><dt>Local</dt><dd id="vClock">05:48</dd></div>
+      </dl>
+      <p class="vw-credit" id="vCredit">Donatas Dabravolskas · CC BY-SA 4.0</p>
+    </div>
+  </div>
+  <button class="vw-arrow left" id="vPrev" type="button">Prev</button>
+  <button class="vw-arrow right" id="vNext" type="button">Next</button>
+  <button class="vw-close" id="vClose" type="button">Back to the head <span>Esc</span></button>
+</div>
+</body>
+</html>

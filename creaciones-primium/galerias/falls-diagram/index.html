@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fall Line - A Watershed Circuit</title>
+<meta name="description" content="Nine waterfall photographs wired into a branching watershed circuit: two headwaters converge, split over ledges and rejoin at the sea. Arrow keys walk the nine stations, four water regimes change how hard each line is running, and Enter opens the station you are on.">
+<meta name="description-es" content="Nueve fotografías de cascadas conectadas en un circuito de cuenca: dos nacientes convergen, se separan sobre repisas y vuelven a unirse en el mar. Las flechas recorren las nueve estaciones, cuatro regímenes de agua cambian el caudal de cada línea y la tecla Intro abre la estación en la que estás.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="vig" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<p class="slate"><span>Sheet 11 &middot; watershed circuit</span><span>Drawings 09 &middot; revised 04</span></p>
+
+<main class="spread">
+  <section class="col">
+    <p class="col__kicker">Watershed 11 &middot; nine stations</p>
+    <h1 class="col__title">Fall<br>Line</h1>
+    <p class="col__stand">A schematic of one river, drawn the way a hydrologist would sketch it: two springs at the top, a pair of ledges where the channel forks, a single gorge that swallows both branches, and then the sea. Every node on the drawing is a photograph of the place it stands for.</p>
+
+    <div class="regime" role="group" aria-label="Water regime">
+      <p class="regime__kick">Regime</p>
+      <button class="reg is-on" type="button" data-r="0"><b>A</b><span>Perennial</span></button>
+      <button class="reg" type="button" data-r="1"><b>B</b><span>Snowmelt</span></button>
+      <button class="reg" type="button" data-r="2"><b>C</b><span>After rain</span></button>
+      <button class="reg" type="button" data-r="3"><b>D</b><span>Freeze and thaw</span></button>
+      <p class="regime__out"><b id="qVal">1.00</b> m&sup3;/s at the gauge</p>
+    </div>
+
+    <nav class="index" aria-label="Station index">
+      <a href="#nd-1"><b>01</b> Headwater</a>
+      <a href="#nd-2"><b>02</b> Cascade</a>
+      <a href="#nd-3"><b>03</b> Rime</a>
+      <a href="#nd-4"><b>04</b> Single step</a>
+      <a href="#nd-5"><b>05</b> Gorge</a>
+      <a href="#nd-6"><b>06</b> Two tier</a>
+      <a href="#nd-7"><b>07</b> Twin prong</a>
+      <a href="#nd-8"><b>08</b> Basalt steps</a>
+      <a href="#nd-9"><b>09</b> Sea cliff</a>
+    </nav>
+  </section>
+
+  <section class="board">
+    <div class="flow" id="flow" tabindex="0" role="application" aria-label="Watershed circuit, nine stations. Left and right arrows or up and down arrows move one station, Home and End go to the first and last, Enter opens the station you are standing on, keys one to four change the water regime.">
+      <svg class="flow__wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path id="wires" fill="none" stroke="#3fd8e8" stroke-width="1.2" vector-effect="non-scaling-stroke" stroke-linecap="round" d="M26 2 L28 18 M28 18 L12 33 M28 18 L50 33 M12 33 L25 48 M50 33 L25 48 M25 48 L11 63 M25 48 L49 63 M11 63 L30 78 M49 63 L30 78 M30 78 L36 91"/>
+        <circle class="flow__pulse" cx="28" cy="18" r="1.1" fill="#7ff0ff"/>
+      </svg>
+
+      <button class="nd nd--a is-on" id="nd-1" type="button" style="--x:26%;--y:2%">
+        <span class="nd__plate"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Jonathan%27s_Run_Falls.jpg/960px-Jonathan%27s_Run_Falls.jpg" alt="A wide curtain of white water sliding off a dark sandstone ledge into a still pool in green forest" loading="lazy" decoding="async"></span>
+        <span class="nd__lab"><b>01</b> Headwater</span>
+      </button>
+
+      <button class="nd nd--b" id="nd-2" type="button" style="--x:28%;--y:18%">
+        <span class="nd__plate"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Russell_Falls_Mt_Field_National_Park.jpg/960px-Russell_Falls_Mt_Field_National_Park.jpg" alt="A tall narrow multi-tiered waterfall dropping into a shaded rock amphitheatre with mossy boulders" loading="lazy" decoding="async"></span>
+        <span class="nd__lab"><b>02</b> Cascade</span>
+      </button>
+
+      <button class="nd nd--c" id="nd-3" type="button" style="--x:12%;--y:33%">
+        <span class="nd__plate"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Partnachklamm_rb.jpg/960px-Partnachklamm_rb.jpg" alt="Thick blue-grey ice sheets and icicles hanging frozen over a dark rock lip" loading="lazy" decoding="async"></span>
+        <span class="nd__lab"><b>03</b> Rime</span>
+      </button>
+
+      <button class="nd nd--d" id="nd-4" type="button" style="--x:50%;--y:33%">
+        <span class="nd__plate"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Snug_Falls_2.jpg/960px-Snug_Falls_2.jpg" alt="A single narrow white fall dropping over a red-brown rock step into dark water" loading="lazy" decoding="async"></span>
+        <span class="nd__lab"><b>04</b> Single step</span>
+      </button>
+
+      <button class="nd nd--e" id="nd-5" type="button" style="--x:25%;--y:48%">
+        <span class="nd__plate"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Wasserfall_Rosenlaui-Schlucht.JPG/960px-Wasserfall_Rosenlaui-Schlucht.JPG" alt="A dark canyon gorge with a white plume of water falling into a misty turquoise pool" loading="lazy" decoding="async"></span>
+        <span class="nd__lab"><b>05</b> Gorge</span>
+      </button>
+
+      <button class="nd nd--c" id="nd-6" type="button" style="--x:11%;--y:63%">
+        <span class="nd__plate"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Yosemite_Falls_from_trail%2C_Yosemite_NP%2C_CA%2C_US_-_Diliff.jpg/960px-Yosemite_Falls_from_trail%2C_Yosemite_NP%2C_CA%2C_US_-_Diliff.jpg" alt="A two-tier cascade falling below a sheer granite cliff under a sky of big cumulus cloud" loading="lazy" decoding="async"></span>
+        <span class="nd__lab"><b>06</b> Two tier</span>
+      </button>
+
+      <button class="nd nd--d" id="nd-7" type="button" style="--x:49%;--y:63%">
+        <span class="nd__plate"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Cascade_de_A%C3%AFn_Legradj_%C3%A0_Bordj_Bou_Arreredj.jpg/960px-Cascade_de_A%C3%AFn_Legradj_%C3%A0_Bordj_Bou_Arreredj.jpg" alt="A two-pronged fall dropping through a green gorge past mossy ochre ledges" loading="lazy" decoding="async"></span>
+        <span class="nd__lab"><b>07</b> Twin prong</span>
+      </button>
+
+      <button class="nd nd--e" id="nd-8" type="button" style="--x:30%;--y:78%">
+        <span class="nd__plate"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Selfoss_July_2014.JPG/960px-Selfoss_July_2014.JPG" alt="A broad low waterfall spilling over dark basalt steps in a wide grey river under heavy cloud" loading="lazy" decoding="async"></span>
+        <span class="nd__lab"><b>08</b> Basalt steps</span>
+      </button>
+
+      <button class="nd nd--f" id="nd-9" type="button" style="--x:36%;--y:91%">
+        <span class="nd__plate"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Mealt_Waterfall_with_Kilt_Rock%2C_Isle_of_Skye.jpg/960px-Mealt_Waterfall_with_Kilt_Rock%2C_Isle_of_Skye.jpg" alt="A tall thin fall running down a dark basalt sea cliff above the open ocean" loading="lazy" decoding="async"></span>
+        <span class="nd__lab"><b>09</b> Sea cliff</span>
+      </button>
+
+      <span class="flow__spring" aria-hidden="true"></span>
+      <span class="flow__sea" aria-hidden="true"></span>
+    </div>
+  </section>
+</main>
+
+<section class="read" aria-live="polite">
+  <p class="read__no" id="rNo">01</p>
+  <div class="read__body">
+    <h2 class="read__name" id="rName">Headwater, Jonathan's Run</h2>
+    <p class="read__note" id="rNote">The circuit starts where the water is still a thread. A whole sheet of it goes over one sandstone ledge in a single move, and the pool below is the first place on the river that is still enough to reflect anything.</p>
+    <p class="read__credit" id="rCredit">Hubert Stoffels, CC BY 2.0</p>
+  </div>
+  <dl class="read__data">
+    <dt>Order</dt><dd id="rOrder">source</dd>
+    <dt>Reach</dt><dd id="rReach">0.4 km above the fork</dd>
+    <dt>Discharge</dt><dd id="rQ">1.00 m&sup3;/s</dd>
+    <dt>Station</dt><dd id="rPos">1 of 9</dd>
+  </dl>
+</section>
+
+<div class="rack">
+  <button class="btn" id="back" type="button">Upstream</button>
+  <button class="btn" id="fwd" type="button">Downstream</button>
+  <button class="btn btn--hot" id="open" type="button">Open the photograph</button>
+  <p class="rack__hint">Arrow keys walk the circuit, 1 to 4 change the regime, Enter opens the station.</p>
+</div>
+
+<footer class="credits">
+  <p>Nine photographs from Wikimedia Commons by Hubert Stoffels, JJ Harrison, Richard Bartz, McIntosh Natura, Diliff, Chettouh Nabil, Martin Falbisoner and Colin, released under CC BY 2.0, CC BY-SA 2.5, 3.0 and 4.0 terms. Source collection: <a href="https://commons.wikimedia.org/wiki/Special:MediaSearch?search=waterfall&amp;type=image" target="_blank" rel="noopener">waterfall on Wikimedia Commons</a>.</p>
+</footer>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="vName" hidden>
+  <div class="viewer__scrim" data-close></div>
+  <div class="viewer__wrap">
+    <div class="viewer__frame"><img class="viewer__img" id="vImg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Jonathan%27s_Run_Falls.jpg/960px-Jonathan%27s_Run_Falls.jpg" alt="A wide curtain of white water sliding off a dark sandstone ledge into a still pool in green forest" loading="lazy" decoding="async"></div>
+    <div class="viewer__side">
+      <p class="viewer__no" id="vNo">STATION 01 &middot; HEADWATER</p>
+      <h3 class="viewer__name" id="vName">Headwater, Jonathan's Run</h3>
+      <p class="viewer__note" id="vNote">The circuit starts where the water is still a thread. A whole sheet of it goes over one sandstone ledge in a single move, and the pool below is the first place on the river that is still enough to reflect anything.</p>
+      <p class="viewer__credit" id="vCredit">Hubert Stoffels, CC BY 2.0</p>
+    </div>
+  </div>
+  <div class="viewer__bar">
+    <button class="btn" id="vPrev" type="button">Upstream station</button>
+    <span class="viewer__count" id="vCount">01 / 09</span>
+    <button class="btn" id="vNext" type="button">Downstream station</button>
+    <button class="btn btn--out" id="vClose" type="button" data-close>Close</button>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plate Book 07 - a dense star field catalogue with a live preview and reticle</title>
+<meta name="description" content="A dense observatory plate book: ten night sky exposures listed in a tight technical table on the left, a large preview with a moving red reticle on the right, a gain control and a keyboard driven full plate viewer.">
+<meta name="description-es" content="Un libro de placas de observatorio denso: diez exposiciones del cielo nocturno listadas en una tabla técnica compacta a la izquierda, una vista previa grande con retículo rojo móvil a la derecha, un control de ganancia y un visor de placa completa navegable con el teclado.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="sweep" aria-hidden="true"><span class="sweep__arm" id="arm"></span></div>
+
+<header class="head">
+  <div class="head__row">
+    <p class="head__id">Plate book 07 &middot; wide field array &middot; 10 exposures</p>
+    <p class="head__stamp">NIGHT<br>SIDE</p>
+  </div>
+  <h1 class="head__title">Plate Book Seven</h1>
+  <p class="head__lede">Ten exposures of the same sky, filed in a table you can read at a glance.
+    Pick a row and the preview re-centres on it under a reticle that keeps sweeping; the gain control
+    lifts the print the way a darkroom enlarger would.</p>
+</header>
+
+<div class="console">
+  <div class="console__side">
+    <div class="console__head">
+      <span class="console__col console__col--n">No</span>
+      <span class="console__col console__col--c">Thumb</span>
+      <span class="console__col console__col--f">Field</span>
+      <span class="console__col console__col--e">Exposure</span>
+      <span class="console__col console__col--s">Sky</span>
+    </div>
+    <ul class="rows" id="rows" aria-label="Night sky plate list"></ul>
+  </div>
+
+  <div class="console__main">
+    <div class="stage" id="stage">
+      <img class="stage__img" id="stageImg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Night-sky-milky-way-stars-hills_-_West_Virginia_-_ForestWander.jpg/960px-Night-sky-milky-way-stars-hills_-_West_Virginia_-_ForestWander.jpg" alt="Milky Way rising over dark hills in West Virginia under a sky full of stars" loading="lazy" decoding="async">
+      <span class="stage__cross stage__cross--h" aria-hidden="true"></span>
+      <span class="stage__cross stage__cross--v" aria-hidden="true"></span>
+      <span class="stage__ring" aria-hidden="true"></span>
+      <span class="stage__tick stage__tick--tl" aria-hidden="true"></span>
+      <span class="stage__tick stage__tick--tr" aria-hidden="true"></span>
+      <span class="stage__tick stage__tick--bl" aria-hidden="true"></span>
+      <span class="stage__tick stage__tick--br" aria-hidden="true"></span>
+      <p class="stage__read" id="stageRead">FIELD 01 &middot; RA 00h00m &middot; ALT +38&deg;</p>
+    </div>
+
+    <div class="readout">
+      <div class="readout__block">
+        <p class="readout__lab">Selected plate</p>
+        <p class="readout__name" id="outName">Night sky over West Virginia</p>
+        <p class="readout__meta" id="outMeta">ForestWander &middot; CC BY-SA 3.0 US &middot; 960 px</p>
+      </div>
+      <div class="readout__block readout__block--gain">
+        <label class="readout__lab" for="gain">Print gain</label>
+        <input class="readout__gain" id="gain" type="range" min="60" max="170" value="100" step="5">
+        <output class="readout__out" id="gainOut" for="gain">100%</output>
+      </div>
+      <button class="readout__open" type="button" id="openBtn">Open full plate</button>
+    </div>
+  </div>
+</div>
+
+<footer class="foot">
+  <p class="foot__row"><span class="foot__lab">Source</span> Wikimedia Commons, theme <b>starry sky and Milky Way</b>. Attribution required by the CC BY and CC BY-SA terms; the CC0 exposures need none.</p>
+  <p class="foot__row foot__row--who">ForestWander (CC BY-SA 3.0 US) &middot; steve lyon (CC BY-SA 2.0) &middot; epSos.de (CC BY 2.0) &middot; ESO and J. Colosimo (CC BY 4.0) &middot; PiConsti (CC BY-SA 2.0) &middot; Guillaume (CC0) &middot; ESO and Yuri Beletsky (CC BY 4.0) &middot; W.carter (CC0)</p>
+  <p class="foot__row foot__row--keys">Up and down arrows walk the table &middot; Home and End jump to the ends &middot; Enter opens the full plate &middot; Escape closes it</p>
+</footer>
+
+<div class="plate" id="plate" role="dialog" aria-modal="true" aria-labelledby="plateTitle" hidden>
+  <div class="plate__scrim" data-close></div>
+  <figure class="plate__card">
+    <img class="plate__img" id="plateImg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Night-sky-milky-way-stars-hills_-_West_Virginia_-_ForestWander.jpg/960px-Night-sky-milky-way-stars-hills_-_West_Virginia_-_ForestWander.jpg" alt="Milky Way rising over dark hills in West Virginia under a sky full of stars" loading="lazy" decoding="async">
+    <figcaption class="plate__cap">
+      <span class="plate__no" id="plateNo">01 / 10</span>
+      <span class="plate__t" id="plateTitle">Night sky over West Virginia</span>
+      <span class="plate__a" id="plateA">ForestWander &middot; CC BY-SA 3.0 US</span>
+      <a class="plate__link" id="plateLink" href="https://commons.wikimedia.org/wiki/File:Night-sky-milky-way-stars-hills_-_West_Virginia_-_ForestWander.jpg" target="_blank" rel="noopener">Commons file page</a>
+    </figcaption>
+  </figure>
+  <button class="plate__nav" type="button" id="platePrev">Previous plate</button>
+  <button class="plate__nav" type="button" id="plateNext">Next plate</button>
+  <button class="plate__x" type="button" id="plateClose" data-close>Close</button>
+</div>
+</body>
+</html>

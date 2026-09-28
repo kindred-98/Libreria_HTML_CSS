@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shinjuku Signal Belt</title>
+<meta name="description" content="An endless violet and lime conveyor of Tokyo after-dark frames, with a return rail of running labels, live belt telemetry and a keyboard driven full frame viewer.">
+<meta name="description-es" content="Una cinta sinfín en violeta profundo y lima con ocho fotogramas de Tokio de noche, un riel de retorno con las etiquetas, telemetría en vivo y un visor de imagen completa navegable con el teclado.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="reticle" aria-hidden="true">
+  <span class="reticle__mark reticle__mark--tl"></span>
+  <span class="reticle__mark reticle__mark--tr"></span>
+  <span class="reticle__mark reticle__mark--bl"></span>
+  <span class="reticle__mark reticle__mark--br"></span>
+</div>
+
+<header class="plate">
+  <p class="plate__eyebrow">Conveyor 01 &middot; Shinjuku &middot; 35.6852&deg;N 139.7100&deg;E</p>
+  <h1 class="plate__title">Signal Belt</h1>
+  <p class="plate__sub">Eight frames ride the belt and never stop. Bring the cursor over the belt, or tab into a frame, and the line holds its position.</p>
+</header>
+
+<div class="console">
+  <button class="console__btn" id="run" type="button" aria-pressed="false">Hold belt</button>
+  <div class="console__rates" role="group" aria-label="Belt speed">
+    <button class="console__rate" type="button" data-rate="0.45">0.5&times;</button>
+    <button class="console__rate is-on" type="button" data-rate="1" aria-pressed="true">1&times;</button>
+    <button class="console__rate" type="button" data-rate="2.1">2&times;</button>
+  </div>
+  <p class="console__telem">
+    <span class="telem"><span class="telem__k">Loop</span><span class="telem__v" id="telem-loop">01</span></span>
+    <span class="telem"><span class="telem__k">Offset</span><span class="telem__v" id="telem-offset">0000</span></span>
+    <span class="telem"><span class="telem__k">State</span><span class="telem__v" id="telem-state">RUN</span></span>
+  </p>
+</div>
+
+<main>
+  <section class="deck" id="deck" aria-label="Tokyo night frames on an endless belt">
+    <div class="belt" id="belt">
+      <div class="belt__track" id="track"></div>
+    </div>
+    <p class="deck__hint" id="hint">Arrow keys walk the frames &middot; Enter opens the full plate &middot; Escape closes it</p>
+  </section>
+
+  <section class="return" aria-label="Return rail of frame labels">
+    <div class="return__belt" id="rail">
+      <div class="return__track" id="railtrack"></div>
+    </div>
+  </section>
+</main>
+
+<details class="ledger">
+  <summary class="ledger__summary">Frame register &amp; image credits</summary>
+  <ol class="ledger__list">
+    <li><a href="https://commons.wikimedia.org/wiki/File:Tokyo_Big_Sight_at_Night.jpg" target="_blank" rel="noopener">Tokyo Big Sight at Night</a> &mdash; Masato Ohta, CC BY 2.0</li>
+    <li><a href="https://commons.wikimedia.org/wiki/File:Tokyo_Skytree_at_night_(White).jpg" target="_blank" rel="noopener">Tokyo Skytree at night (White)</a> &mdash; &#29293;&#33540;, CC BY-SA 3.0</li>
+    <li><a href="https://commons.wikimedia.org/wiki/File:Night_in_Shinjuku_3.JPG" target="_blank" rel="noopener">Night in Shinjuku 3</a> &mdash; Martin Falbisoner, CC BY-SA 3.0</li>
+    <li><a href="https://commons.wikimedia.org/wiki/File:TOKYO_BIG_STREET_BY_NIGHT_2017.jpg" target="_blank" rel="noopener">Tokyo Big Street by Night 2017</a> &mdash; &Oslash;yvind Holmstad, CC BY-SA 4.0</li>
+    <li><a href="https://commons.wikimedia.org/wiki/File:Tokyo_Shibuya_Scramble_Crossing_2018-10-09.jpg" target="_blank" rel="noopener">Shibuya Scramble Crossing</a> &mdash; Benh LIEU SONG, CC BY-SA 2.0</li>
+    <li><a href="https://commons.wikimedia.org/wiki/File:Tokyo_Night_(14519874626).jpg" target="_blank" rel="noopener">Tokyo Night</a> &mdash; Ka Hei Mak, CC BY-SA 2.0</li>
+    <li><a href="https://commons.wikimedia.org/wiki/File:Colorful_neon_street_signs_in_Kabukich%C5%8D,_Shinjuku,_Tokyo.jpg" target="_blank" rel="noopener">Neon signs in Kabukicho</a> &mdash; Basile Morin, CC BY-SA 4.0</li>
+    <li><a href="https://commons.wikimedia.org/wiki/File:Green_and_yellow_taxi_at_night_in_Yasukuni-dori_Avenue,_Shinjuku,_Tokyo.jpg" target="_blank" rel="noopener">Yasukuni-dori taxi at night</a> &mdash; Basile Morin, CC BY-SA 4.0</li>
+  </ol>
+  <p class="ledger__note">Frames served from Wikimedia Commons, theme japanese city at night. Attribution required by the CC BY and CC BY-SA licences.</p>
+</details>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewer-cap" hidden>
+  <div class="viewer__scrim" data-close></div>
+  <figure class="viewer__stage">
+    <div class="viewer__frame" id="viewer-frame">
+      <img class="viewer__img" id="viewer-img" src="" alt="Tokyo frame" loading="lazy" decoding="async">
+    </div>
+    <figcaption class="viewer__cap" id="viewer-cap">Frame</figcaption>
+  </figure>
+  <div class="viewer__bar">
+    <button class="viewer__step" id="viewer-prev" type="button">Previous frame</button>
+    <span class="viewer__count" id="viewer-count">01 / 08</span>
+    <button class="viewer__step" id="viewer-next" type="button">Next frame</button>
+    <button class="viewer__close" id="viewer-close" type="button" data-close>Close plate</button>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Copper Crate, a Fruit Cube</title>
+<meta name="description" content="A fruit crate built as a cube on a turntable: six faces carry the fruit, a copper light bar sweeps across the boards, arrow keys turn the crate, the door drops open on three more plates hidden inside and any plate opens full size.">
+<meta name="description-es" content="Una jaula de fruta montada como cubo sobre un torno: seis caras llevan la fruta, una barra de luz de cobre barre las tablas, las flechas giran la jaula, la puerta cae y deja ver tres placas más escondidas dentro, y cualquier placa se abre a pantalla completa.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bar" aria-hidden="true"></div>
+<div class="sweep" aria-hidden="true"></div>
+
+<header class="stencil">
+  <p class="stencil__row"><b>CRATE 6F</b><i>fruit</i><i>midnight and copper</i><i>nine plates</i></p>
+  <h1 class="stencil__title">Copper<br>Crate</h1>
+  <p class="stencil__note">Six boards on the outside, three plates on the floor inside.
+    Turn it by hand or with the arrow keys, drop the door when you want the inside,
+    then open any plate full size.</p>
+</header>
+
+<div class="hud" role="group" aria-label="Crate readings">
+  <p class="hud__r"><b>Yaw</b><span id="rYaw">-24</span></p>
+  <p class="hud__r"><b>Door</b><span id="rDoor">Shut</span></p>
+  <p class="hud__r"><b>Face</b><span id="rFace">F1</span></p>
+  <p class="hud__r"><b>Inside</b><span id="rInside">3 hidden</span></p>
+  <p class="hud__r"><b>Turn</b><span id="rTurn">Slow</span></p>
+</div>
+
+<main class="yard">
+  <div class="yard__floor" aria-hidden="true"></div>
+
+  <section class="yard__stage" id="stage" tabindex="0" role="application" aria-label="Fruit crate cube. Left and right arrows turn the crate, up and down arrows tip it, O drops the door, Space starts and stops the turn, Enter opens the plate in front.">
+    <div class="crate" id="crate">
+      <div class="face face--front" data-f="0">
+        <div class="door">
+          <button class="panel panel--f1" type="button" data-shot="0">
+            <img data-frame="0" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Rowntrees-Fruit-Gums.jpg/960px-Rowntrees-Fruit-Gums.jpg" alt="Fruit pastilles in orange, red, deep purple and green scattered across a white ground" loading="lazy" decoding="async">
+            <span class="panel__tag">F1 &middot; front</span>
+          </button>
+        </div>
+      </div>
+      <div class="face face--right" data-f="1">
+        <button class="panel panel--f2" type="button" data-shot="1">
+          <img data-frame="1" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Fruit_trees_%D7%A2%D7%A6%D7%99_%D7%A4%D7%A8%D7%99_%2820%29.JPG/960px-Fruit_trees_%D7%A2%D7%A6%D7%99_%D7%A4%D7%A8%D7%99_%2820%29.JPG" alt="A dark red round fruit on a branch among long pointed green leaves" loading="lazy" decoding="async">
+          <span class="panel__tag">F2 &middot; right</span>
+        </button>
+      </div>
+      <div class="face face--back" data-f="2">
+        <button class="panel panel--f3" type="button" data-shot="2">
+          <img data-frame="2" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Market%2C_fruit%2C_grape%2C_colorful%2C_scale%2C_crate%2C_apple_Fortepan_27274.jpg/960px-Market%2C_fruit%2C_grape%2C_colorful%2C_scale%2C_crate%2C_apple_Fortepan_27274.jpg" alt="Wooden market crates heaped with red and green apples and dark grapes" loading="lazy" decoding="async">
+          <span class="panel__tag">F3 &middot; back</span>
+        </button>
+      </div>
+      <div class="face face--left" data-f="3">
+        <button class="panel panel--f4" type="button" data-shot="3">
+          <img data-frame="3" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Colorful_bird_eating_seeds_1200227.jpg/960px-Colorful_bird_eating_seeds_1200227.jpg" alt="Clusters of small round yellow berries on a branch with green leaves and white blossom" loading="lazy" decoding="async">
+          <span class="panel__tag">F4 &middot; left</span>
+        </button>
+      </div>
+      <div class="face face--top" data-f="4">
+        <button class="panel panel--f5" type="button" data-shot="4">
+          <img data-frame="4" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Colorful_Fruit_Jelly_with_whipped_cream_%28KETO%2C_LCHF%2C_Low_Carb%2C_Gluten_free%2C_FIT%29_-_52775010313.jpg/960px-Colorful_Fruit_Jelly_with_whipped_cream_%28KETO%2C_LCHF%2C_Low_Carb%2C_Gluten_free%2C_FIT%29_-_52775010313.jpg" alt="Two dessert glasses of layered pink and amber jelly heaped with whipped cream" loading="lazy" decoding="async">
+          <span class="panel__tag">F5 &middot; top</span>
+        </button>
+      </div>
+      <div class="face face--bottom" data-f="5">
+        <button class="panel panel--f6" type="button" data-shot="5">
+          <img data-frame="5" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Colorful_fresh_fruits_closeup.jpg/960px-Colorful_fresh_fruits_closeup.jpg" alt="A close-up of oranges, a green apple and loose citrus peel filling the whole frame" loading="lazy" decoding="async">
+          <span class="panel__tag">F6 &middot; bottom</span>
+        </button>
+      </div>
+
+      <div class="inside" id="inside" aria-label="Three plates on the crate floor">
+        <button class="chip chip--a" type="button" data-shot="6">
+          <img data-frame="6" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Indian_Fruit_Chaat.jpg/960px-Indian_Fruit_Chaat.jpg" alt="Chopped fruit pieces dusted with spice in a green bowl with a fork standing in it" loading="lazy" decoding="async">
+          <span>I1</span>
+        </button>
+        <button class="chip chip--b" type="button" data-shot="7">
+          <img data-frame="7" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Market%2C_fruit%2C_grape%2C_colorful%2C_apple%2C_basket%2C_crate%2C_scale%2C_gurkin%2C_leavened_gherkin_Fortepan_27081.jpg/960px-Market%2C_fruit%2C_grape%2C_colorful%2C_apple%2C_basket%2C_crate%2C_scale%2C_gurkin%2C_leavened_gherkin_Fortepan_27081.jpg" alt="A dim market stall with a jar of dark fruit, a mound of berries and apples heaped in a basket" loading="lazy" decoding="async">
+          <span>I2</span>
+        </button>
+        <button class="chip chip--c" type="button" data-shot="8">
+          <img data-frame="8" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Colorful%2C_fruit%2C_market%2C_awning%2C_banana%2C_turban_Fortepan_93673.jpg/960px-Colorful%2C_fruit%2C_market%2C_awning%2C_banana%2C_turban_Fortepan_93673.jpg" alt="A stallholder under a tarpaulin awning behind a table piled with bananas and produce" loading="lazy" decoding="async">
+          <span>I3</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="yard__callout" id="callout">F1 &middot; pastilles</p>
+    <p class="yard__hand" aria-hidden="true">drag the crate to turn it</p>
+  </section>
+
+  <aside class="book" aria-live="polite">
+    <p class="book__no" id="bNo">Plate 01</p>
+    <h2 class="book__name" id="bName">Pastilles</h2>
+    <p class="book__note" id="bNote">Hard fruit boiled down with sugar and cut into shapes: orange, red, deep purple and a green that has no business being there.</p>
+    <p class="book__credit" id="bCredit">Evan-Amos &middot; CC0</p>
+  </aside>
+</main>
+
+<nav class="hooks" aria-label="Crate controls">
+  <div class="hooks__g">
+    <button class="hook" type="button" id="left">Turn left</button>
+    <button class="hook" type="button" id="right">Turn right</button>
+    <button class="hook" type="button" id="tip">Tip the crate</button>
+  </div>
+  <div class="hooks__g">
+    <button class="hook hook--hot" type="button" id="door" aria-pressed="false"><b id="doorLabel">Drop the door</b> <span>O</span></button>
+    <button class="hook hook--hot is-on" type="button" id="spin" aria-pressed="true"><b id="spinLabel">Stop the turn</b> <span>Space</span></button>
+  </div>
+  <button class="hook" type="button" id="open">Open the plate in front <span>Enter</span></button>
+</nav>
+
+<section class="manifest" aria-labelledby="man-h">
+  <h2 class="manifest__h" id="man-h">Manifest &middot; six boards outside, three plates inside</h2>
+  <ul class="manifest__list">
+    <li><a id="plate-1" href="#plate-1" data-shot="0"><span class="manifest__i"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Rowntrees-Fruit-Gums.jpg/960px-Rowntrees-Fruit-Gums.jpg" alt="Fruit pastilles in orange, red, deep purple and green on a white ground" loading="lazy" decoding="async"></span><b>01</b></a></li>
+    <li><a id="plate-2" href="#plate-2" data-shot="1"><span class="manifest__i"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Fruit_trees_%D7%A2%D7%A6%D7%99_%D7%A4%D7%A8%D7%99_%2820%29.JPG/960px-Fruit_trees_%D7%A2%D7%A6%D7%99_%D7%A4%D7%A8%D7%99_%2820%29.JPG" alt="A dark red round fruit on a branch among long pointed green leaves" loading="lazy" decoding="async"></span><b>02</b></a></li>
+    <li><a id="plate-3" href="#plate-3" data-shot="2"><span class="manifest__i"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Market%2C_fruit%2C_grape%2C_colorful%2C_scale%2C_crate%2C_apple_Fortepan_27274.jpg/960px-Market%2C_fruit%2C_grape%2C_colorful%2C_scale%2C_crate%2C_apple_Fortepan_27274.jpg" alt="Wooden market crates heaped with red and green apples and dark grapes" loading="lazy" decoding="async"></span><b>03</b></a></li>
+    <li><a id="plate-4" href="#plate-4" data-shot="3"><span class="manifest__i"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Colorful_bird_eating_seeds_1200227.jpg/960px-Colorful_bird_eating_seeds_1200227.jpg" alt="Clusters of small round yellow berries on a branch with green leaves and white blossom" loading="lazy" decoding="async"></span><b>04</b></a></li>
+    <li><a id="plate-5" href="#plate-5" data-shot="4"><span class="manifest__i"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Colorful_Fruit_Jelly_with_whipped_cream_%28KETO%2C_LCHF%2C_Low_Carb%2C_Gluten_free%2C_FIT%29_-_52775010313.jpg/960px-Colorful_Fruit_Jelly_with_whipped_cream_%28KETO%2C_LCHF%2C_Low_Carb%2C_Gluten_free%2C_FIT%29_-_52775010313.jpg" alt="Two dessert glasses of layered pink and amber jelly heaped with whipped cream" loading="lazy" decoding="async"></span><b>05</b></a></li>
+    <li><a id="plate-6" href="#plate-6" data-shot="5"><span class="manifest__i"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Colorful_fresh_fruits_closeup.jpg/960px-Colorful_fresh_fruits_closeup.jpg" alt="A close-up of oranges, a green apple and loose citrus peel filling the frame" loading="lazy" decoding="async"></span><b>06</b></a></li>
+    <li><a id="plate-7" href="#plate-7" data-shot="6"><span class="manifest__i"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Indian_Fruit_Chaat.jpg/960px-Indian_Fruit_Chaat.jpg" alt="Chopped fruit pieces dusted with spice in a green bowl with a fork in it" loading="lazy" decoding="async"></span><b>07</b></a></li>
+    <li><a id="plate-8" href="#plate-8" data-shot="7"><span class="manifest__i"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Market%2C_fruit%2C_grape%2C_colorful%2C_apple%2C_basket%2C_crate%2C_scale%2C_gurkin%2C_leavened_gherkin_Fortepan_27081.jpg/960px-Market%2C_fruit%2C_grape%2C_colorful%2C_apple%2C_basket%2C_crate%2C_scale%2C_gurkin%2C_leavened_gherkin_Fortepan_27081.jpg" alt="A dim market stall with a jar of dark fruit, a mound of berries and apples in a basket" loading="lazy" decoding="async"></span><b>08</b></a></li>
+    <li><a id="plate-9" href="#plate-9" data-shot="8"><span class="manifest__i"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Colorful%2C_fruit%2C_market%2C_awning%2C_banana%2C_turban_Fortepan_93673.jpg/960px-Colorful%2C_fruit%2C_market%2C_awning%2C_banana%2C_turban_Fortepan_93673.jpg" alt="A stallholder under a tarpaulin awning behind a table piled with bananas" loading="lazy" decoding="async"></span><b>09</b></a></li>
+  </ul>
+</section>
+
+<footer class="colophon">
+  <p><b>Theme</b> Fruit &middot; Wikimedia Commons. Photographs by Evan-Amos (CC0), Chenspec
+    (CC BY-SA 3.0), Fortepan contributors Konok Tamás and Lőw Miklós (CC BY-SA 3.0), joelfotos
+    (CC0), epodrez (CC BY 2.0), Nenad Stojkovic (CC BY 2.0), Nami Verma (CC BY-SA 4.0).
+    <a href="https://commons.wikimedia.org/wiki/Special:MediaSearch?search=fruit%20market&amp;type=image" target="_blank" rel="noopener">Source collection on Commons</a>.</p>
+  <p class="colophon__keys">Tab reaches the crate &middot; arrows turn and tip it &middot;
+    O drops the door &middot; Space starts and stops the turn &middot; Enter opens the plate in
+    front &middot; Escape closes it</p>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-labelledby="lbName" hidden>
+  <div class="lb__veil" data-close></div>
+  <figure class="lb__card">
+    <span class="lb__frame"><img class="lb__img" id="lbImg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Rowntrees-Fruit-Gums.jpg/960px-Rowntrees-Fruit-Gums.jpg" alt="Fruit pastilles in orange, red, deep purple and green scattered across a white ground" loading="lazy" decoding="async"></span>
+    <figcaption>
+      <span class="lb__no" id="lbNo">Plate 01 of 09</span>
+      <span class="lb__name" id="lbName">Pastilles</span>
+      <span class="lb__note" id="lbNote">Hard fruit boiled down with sugar and cut into shapes.</span>
+      <span class="lb__credit" id="lbCredit">Evan-Amos &middot; CC0</span>
+      <a class="lb__link" id="lbLink" href="https://commons.wikimedia.org/wiki/File:Rowntrees-Fruit-Gums.jpg" target="_blank" rel="noopener">Commons file page</a>
+    </figcaption>
+  </figure>
+  <button class="lb__nav lb__nav--prev" type="button" id="lbPrev">Previous plate</button>
+  <button class="lb__nav lb__nav--next" type="button" id="lbNext">Next plate</button>
+  <button class="lb__x" type="button" id="lbX">Close the plate</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

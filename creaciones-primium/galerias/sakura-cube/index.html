@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sakura Cube, Six Faces</title>
+<meta name="description" content="A cherry blossom cube in snow white and vermilion: six spring plates bound one per face, two more floating on the depth axis, free to spin by drag or arrow keys over a soft gradient mesh.">
+<meta name="description-es" content="Un cubo de cerezos en blanco nieve y bermellón: seis láminas de primavera, una por cara, y otras dos flotando en el eje de profundidad, listo para girar con el arrastre o con las flechas sobre una malla de degradados.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="mesh" aria-hidden="true">
+  <span class="mesh__a"></span>
+  <span class="mesh__b"></span>
+  <span class="mesh__c"></span>
+  <span class="mesh__d"></span>
+</div>
+<div class="petalfall" aria-hidden="true">
+  <span style="--x:6%;--d:0s;--s:19s"></span>
+  <span style="--x:19%;--d:-6s;--s:24s"></span>
+  <span style="--x:33%;--d:-12s;--s:21s"></span>
+  <span style="--x:47%;--d:-3s;--s:27s"></span>
+  <span style="--x:61%;--d:-15s;--s:20s"></span>
+  <span style="--x:74%;--d:-9s;--s:25s"></span>
+  <span style="--x:88%;--d:-17s;--s:22s"></span>
+</div>
+
+<header class="plate">
+  <p class="plate__eyebrow">Spring 03 &middot; blossom volume</p>
+  <h1 class="plate__title">Six Faces,<br>Two Strays</h1>
+  <p class="plate__note">Six plates are bound to the faces of the cube and two wander off along the depth axis. Drag the block or steer it with the arrow keys, then open any face full size.</p>
+</header>
+
+<div class="hud" aria-hidden="true">
+  <span><b>Yaw</b><span id="yaw">-24</span></span>
+  <span><b>Pitch</b><span id="pitch">-16</span></span>
+  <span><b>Face</b><span id="face">01</span></span>
+  <span><b>Mode</b><span id="mode">IDLE</span></span>
+</div>
+
+<div class="rig">
+  <div class="views" role="group" aria-label="Cube presets">
+    <button class="views__btn" type="button" data-rx="-16" data-ry="-24">Three quarter</button>
+    <button class="views__btn" type="button" data-rx="0" data-ry="0">Straight on</button>
+    <button class="views__btn" type="button" data-rx="-72" data-ry="-8">From above</button>
+    <button class="views__btn" type="button" data-rx="-8" data-ry="-96">Left side</button>
+    <button class="views__btn views__btn--spin is-on" type="button" id="spin" aria-pressed="true">Slow spin</button>
+  </div>
+
+  <div class="stage" id="stage" tabindex="0" role="application" aria-label="Rotating cube of cherry blossom plates. Arrow keys rotate, Enter opens the focused plate.">
+    <div class="scene" id="scene">
+      <div class="cube" id="cube">
+        <button class="face face--front" type="button" data-index="0">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Lake_Kawaguchiko_Sakura_Mount_Fuji_4.JPG/960px-Lake_Kawaguchiko_Sakura_Mount_Fuji_4.JPG" alt="Mount Fuji seen across Lake Kawaguchiko behind rows of cherry blossom" loading="lazy" decoding="async">
+          <span class="face__id">F1</span><span class="face__cap">Fuji from Kawaguchiko</span>
+        </button>
+        <button class="face face--right" type="button" data-index="1">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Yoshino-yama-cherry-blossom-2018-Luka-Peternel.jpg/960px-Yoshino-yama-cherry-blossom-2018-Luka-Peternel.jpg" alt="Cherry blossom covering the Yoshino hills in spring" loading="lazy" decoding="async">
+          <span class="face__id">F2</span><span class="face__cap">Yoshino slopes</span>
+        </button>
+        <button class="face face--back" type="button" data-index="2">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Yoshino-yama-hills-cherry-blossom-2018-Luka-Peternel.jpg/960px-Yoshino-yama-hills-cherry-blossom-2018-Luka-Peternel.jpg" alt="Hillsides near Yoshino blanketed in pale cherry blossom" loading="lazy" decoding="async">
+          <span class="face__id">F3</span><span class="face__cap">Hills in blossom</span>
+        </button>
+        <button class="face face--left" type="button" data-index="3">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Takada_Castle_Cherry_Blossom_Festival.jpg/960px-Takada_Castle_Cherry_Blossom_Festival.jpg" alt="Cherry blossom around Takada Castle during the spring festival" loading="lazy" decoding="async">
+          <span class="face__id">F4</span><span class="face__cap">Takada keep</span>
+        </button>
+        <button class="face face--top" type="button" data-index="4">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Cherry_Blossoms_in_Kathmandu.jpg/960px-Cherry_Blossoms_in_Kathmandu.jpg" alt="Cherry blossom branches in full flower in Kathmandu" loading="lazy" decoding="async">
+          <span class="face__id">F5</span><span class="face__cap">Kathmandu branches</span>
+        </button>
+        <button class="face face--bottom" type="button" data-index="5">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Cherry_Blossom_in_El_Retiro_Park%2C_Madrid%2C_Spain.jpg/960px-Cherry_Blossom_in_El_Retiro_Park%2C_Madrid%2C_Spain.jpg" alt="Cherry blossom in bloom in El Retiro Park, Madrid" loading="lazy" decoding="async">
+          <span class="face__id">F6</span><span class="face__cap">Retiro park, Madrid</span>
+        </button>
+      </div>
+      <button class="drift drift--left" type="button" data-index="6">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Cherry_blossom_P1000452.jpg/960px-Cherry_blossom_P1000452.jpg" alt="Close view of cherry blossom clusters on bare branches" loading="lazy" decoding="async">
+        <span class="drift__id">S1</span>
+      </button>
+      <button class="drift drift--right" type="button" data-index="7">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Cherry_blossom_in_Roppongi_Hills_2021.jpg/960px-Cherry_blossom_in_Roppongi_Hills_2021.jpg" alt="Cherry blossom growing between the towers of Roppongi Hills" loading="lazy" decoding="async">
+        <span class="drift__id">S2</span>
+      </button>
+    </div>
+    <p class="stage__read" id="stage-read">Front face F1 &middot; Fuji from Kawaguchiko</p>
+  </div>
+</div>
+
+<ol class="register" aria-label="Plate register">
+  <li><b>F1</b> Fuji from Kawaguchiko <i>Midori</i></li>
+  <li><b>F2</b> Yoshino slopes <i>Luka Peternel</i></li>
+  <li><b>F3</b> Hills in blossom <i>Luka Peternel</i></li>
+  <li><b>F4</b> Takada keep <i>Cp9asngf</i></li>
+  <li><b>F5</b> Kathmandu branches <i>Gaurav Dhwaj Khadka</i></li>
+  <li><b>F6</b> Retiro park, Madrid <i>Satdeep Gill</i></li>
+  <li><b>S1</b> Cluster on bare branch <i>RF Vila</i></li>
+  <li><b>S2</b> Roppongi Hills <i>Syced</i></li>
+</ol>
+
+<details class="credits">
+  <summary class="credits__summary">Licences &amp; source</summary>
+  <p class="credits__p">Plates served from Wikimedia Commons, theme cherry blossom. <a href="https://commons.wikimedia.org/wiki/File:Lake_Kawaguchiko_Sakura_Mount_Fuji_4.JPG" target="_blank" rel="noopener">F1</a> Midori, CC BY 3.0. <a href="https://commons.wikimedia.org/wiki/File:Yoshino-yama-cherry-blossom-2018-Luka-Peternel.jpg" target="_blank" rel="noopener">F2</a> and <a href="https://commons.wikimedia.org/wiki/File:Yoshino-yama-hills-cherry-blossom-2018-Luka-Peternel.jpg" target="_blank" rel="noopener">F3</a> Luka Peternel, CC BY-SA 4.0. <a href="https://commons.wikimedia.org/wiki/File:Takada_Castle_Cherry_Blossom_Festival.jpg" target="_blank" rel="noopener">F4</a> Cp9asngf, CC BY-SA 4.0. <a href="https://commons.wikimedia.org/wiki/File:Cherry_Blossoms_in_Kathmandu.jpg" target="_blank" rel="noopener">F5</a> Gaurav Dhwaj Khadka, CC BY-SA 4.0. <a href="https://commons.wikimedia.org/wiki/File:Cherry_Blossom_in_El_Retiro_Park,_Madrid,_Spain.jpg" target="_blank" rel="noopener">F6</a> Satdeep Gill, CC BY-SA 4.0. <a href="https://commons.wikimedia.org/wiki/File:Cherry_blossom_P1000452.jpg" target="_blank" rel="noopener">S1</a> RF Vila, CC BY-SA 4.0. <a href="https://commons.wikimedia.org/wiki/File:Cherry_blossom_in_Roppongi_Hills_2021.jpg" target="_blank" rel="noopener">S2</a> Syced, CC0.</p>
+</details>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="vcap" hidden>
+  <div class="viewer__scrim" data-close></div>
+  <figure class="viewer__stage">
+    <div class="viewer__frame"><img class="viewer__img" id="vimg" src="" alt="Cherry blossom plate" loading="lazy" decoding="async"></div>
+    <figcaption class="viewer__cap" id="vcap">Plate</figcaption>
+  </figure>
+  <div class="viewer__bar">
+    <button class="viewer__btn" id="vprev" type="button">Previous plate</button>
+    <span class="viewer__count" id="vcount">01 / 08</span>
+    <button class="viewer__btn" id="vnext" type="button">Next plate</button>
+    <button class="viewer__btn viewer__btn--out" id="vclose" type="button" data-close>Close plate</button>
+  </div>
+</div>
+</body>
+</html>

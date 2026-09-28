@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cascade Register - a waterfall register you set with a water level</title>
+<meta name="description" content="A waterfall register in ink blue and amber where the filter is a water level: raise or lower the column and ten falls cross the line, stacking into a head shelf and a pool shelf, with a type switch on top and a full plate viewer from the keyboard.">
+<meta name="description-es" content="Un registro de cascadas en azul tinta y ámbar donde el filtro es un nivel de agua: sube o baja la columna y diez saltos cruzan la línea, apilándose en una repisa de cima y otra de vaso, con un selector de tipo encima y un visor de lámina completa con teclado.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="blobs" aria-hidden="true">
+  <span class="blob blob--a"></span>
+  <span class="blob blob--b"></span>
+  <span class="blob blob--c"></span>
+  <span class="blob blob--d"></span>
+</div>
+
+<header class="head">
+  <p class="head__kicker">Cascade register &middot; ten falls &middot; the filter is a level</p>
+  <h1 class="head__title">Cascade Register</h1>
+  <p class="head__lede">One question decides the register: where does the water stand. Everything that
+    falls further than the level is a head, everything under it is pool, and the two shelves rebuild
+    themselves the moment the column moves.</p>
+  <nav class="kinds" aria-label="Filter the register by the kind of fall">
+    <button class="kind is-on" type="button" data-kind="all" aria-pressed="true">Every kind</button>
+    <button class="kind" type="button" data-kind="curtain" aria-pressed="false">Curtain</button>
+    <button class="kind" type="button" data-kind="thread" aria-pressed="false">Threads</button>
+    <button class="kind" type="button" data-kind="step" aria-pressed="false">Stepped</button>
+  </nav>
+</header>
+
+<main class="deck">
+  <section class="gauge" aria-label="Water level">
+    <p class="gauge__k">Level</p>
+    <div class="gauge__col">
+      <div class="tube" aria-hidden="true">
+        <span class="tube__water"><i class="tube__crest"></i></span>
+        <span class="tube__marks"><b>25</b><b>20</b><b>15</b><b>10</b><b>5</b><b>0</b></span>
+      </div>
+      <input class="gauge__range" id="level" type="range" min="0" max="25" step="1" value="8" aria-label="Water level in metres">
+    </div>
+    <p class="gauge__out" id="levelOut" for="level">8 m</p>
+    <p class="gauge__note">The heights are this register&rsquo;s own reading of each photograph, not a
+      figure for the real fall.</p>
+  </section>
+
+  <section class="shelves">
+    <div class="shelf" data-shelf="head">
+      <p class="shelf__t">Head <span>falls above the line</span> <b id="headCount">6</b></p>
+      <div class="shelf__row" id="headRow" role="group" tabindex="0" aria-label="Falls above the level. Arrow keys walk them, Enter opens the plate."></div>
+    </div>
+
+    <p class="line" aria-hidden="true"><span class="line__rule"></span><span class="line__t">water line</span><span class="line__rule"></span></p>
+
+    <div class="shelf shelf--low" data-shelf="pool">
+      <p class="shelf__t">Pool <span>falls at or under the line</span> <b id="poolCount">4</b></p>
+      <div class="shelf__row" id="poolRow" role="group" tabindex="0" aria-label="Falls at or under the level. Arrow keys walk them, Enter opens the plate."></div>
+    </div>
+
+    <p class="tally" id="tally" aria-live="polite">10 of 10 falls on the register</p>
+  </section>
+</main>
+
+<template id="stock">
+  <article class="card" tabindex="-1" data-h="6" data-kind="curtain">
+    <span class="card__img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Jonathan%27s_Run_Falls.jpg/960px-Jonathan%27s_Run_Falls.jpg" alt="A wide curtain of water falling over black layered rock in a green wooded ravine" loading="lazy" decoding="async"></span>
+    <span class="card__h">6 m</span>
+    <span class="card__k">Curtain</span>
+    <span class="card__n">Jonathan&rsquo;s Run Falls</span>
+    <span class="card__a">Hubert Stoffels &middot; CC BY 2.0</span>
+  </article>
+
+  <article class="card" tabindex="-1" data-h="9" data-kind="thread">
+    <span class="card__img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Russell_Falls_Mt_Field_National_Park.jpg/960px-Russell_Falls_Mt_Field_National_Park.jpg" alt="Several thin falls of water dropping in parallel over mossy tiers in a forest" loading="lazy" decoding="async"></span>
+    <span class="card__h">9 m</span>
+    <span class="card__k">Threads</span>
+    <span class="card__n">Russell Falls</span>
+    <span class="card__a">JJ Harrison &middot; CC BY-SA 3.0</span>
+  </article>
+
+  <article class="card" tabindex="-1" data-h="4" data-kind="step">
+    <span class="card__img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Snug_Falls_2.jpg/960px-Snug_Falls_2.jpg" alt="A white fall of water over a rock shelf in forest, with dark reddish water below" loading="lazy" decoding="async"></span>
+    <span class="card__h">4 m</span>
+    <span class="card__k">Stepped</span>
+    <span class="card__n">Snug Falls</span>
+    <span class="card__a">JJ Harrison &middot; CC BY-SA 3.0</span>
+  </article>
+
+  <article class="card" tabindex="-1" data-h="14" data-kind="curtain">
+    <span class="card__img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Wasserfall_Rosenlaui-Schlucht.JPG/960px-Wasserfall_Rosenlaui-Schlucht.JPG" alt="A fall of water pouring through a narrow dark rock gorge into milky white water" loading="lazy" decoding="async"></span>
+    <span class="card__h">14 m</span>
+    <span class="card__k">Curtain</span>
+    <span class="card__n">Rosenlaui-Schlucht</span>
+    <span class="card__a">McIntosh Natura &middot; CC BY-SA 3.0</span>
+  </article>
+
+  <article class="card" tabindex="-1" data-h="300" data-kind="thread">
+    <span class="card__img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Yosemite_Falls_from_trail%2C_Yosemite_NP%2C_CA%2C_US_-_Diliff.jpg/960px-Yosemite_Falls_from_trail%2C_Yosemite_NP%2C_CA%2C_US_-_Diliff.jpg" alt="A tall white fall down a grey granite cliff with a rainbow in the mist, above a forested valley" loading="lazy" decoding="async"></span>
+    <span class="card__h">300 m</span>
+    <span class="card__k">Threads</span>
+    <span class="card__n">Yosemite Falls from the trail</span>
+    <span class="card__a">Diliff &middot; CC BY-SA 3.0</span>
+  </article>
+
+  <article class="card" tabindex="-1" data-h="5" data-kind="step">
+    <span class="card__img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Cascade_de_A%C3%AFn_Legradj_%C3%A0_Bordj_Bou_Arreredj.jpg/960px-Cascade_de_A%C3%AFn_Legradj_%C3%A0_Bordj_Bou_Arreredj.jpg" alt="A stepped cascade running over mossy green ledges into a shallow amber pool" loading="lazy" decoding="async"></span>
+    <span class="card__h">5 m</span>
+    <span class="card__k">Stepped</span>
+    <span class="card__n">Cascade de A&iuml;n Legradj</span>
+    <span class="card__a">Chettouh Nabil &middot; CC BY-SA 3.0</span>
+  </article>
+
+  <article class="card" tabindex="-1" data-h="12" data-kind="curtain">
+    <span class="card__img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Selfoss_July_2014.JPG/960px-Selfoss_July_2014.JPG" alt="A wide waterfall dropping in a horseshoe on a bare river plateau under a heavy sky" loading="lazy" decoding="async"></span>
+    <span class="card__h">12 m</span>
+    <span class="card__k">Curtain</span>
+    <span class="card__n">Selfoss</span>
+    <span class="card__a">Martin Falbisoner &middot; CC BY-SA 4.0</span>
+  </article>
+
+  <article class="card" tabindex="-1" data-h="11" data-kind="step">
+    <span class="card__img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Gullfoss%2C_Su%C3%B0urland%2C_Islandia%2C_2014-08-16%2C_DD_119.JPG/960px-Gullfoss%2C_Su%C3%B0urland%2C_Islandia%2C_2014-08-16%2C_DD_119.JPG" alt="A two-tier waterfall falling into a canyon with a path and visitors along its rim" loading="lazy" decoding="async"></span>
+    <span class="card__h">11 m</span>
+    <span class="card__k">Stepped</span>
+    <span class="card__n">Gullfoss</span>
+    <span class="card__a">Diego Delso &middot; CC BY-SA 4.0</span>
+  </article>
+
+  <article class="card" tabindex="-1" data-h="3" data-kind="thread">
+    <span class="card__img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/%D0%9F%D0%BE%D1%80%D0%BE%D0%B3%D0%B8_%D0%A3%D0%BB%D1%83-%D0%A3%D0%B7%D0%B5%D0%BD%D1%8C.jpg/960px-%D0%9F%D0%BE%D1%80%D0%BE%D0%B3%D0%B8_%D0%A3%D0%BB%D1%83-%D0%A3%D0%B7%D0%B5%D0%BD%D1%8C.jpg" alt="A low wide curtain of many thin streams over a red rock ledge, with yellow flowers in front" loading="lazy" decoding="async"></span>
+    <span class="card__h">3 m</span>
+    <span class="card__k">Threads</span>
+    <span class="card__n">Porogi Ulu-Uzen</span>
+    <span class="card__a">A4ernyh &middot; CC BY-SA 4.0</span>
+  </article>
+
+  <article class="card" tabindex="-1" data-h="20" data-kind="curtain">
+    <span class="card__img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Phu_Sang_Waterfall_01.jpg/960px-Phu_Sang_Waterfall_01.jpg" alt="A tall white fall inside a rocky gorge, with a man standing on a wet boulder for scale" loading="lazy" decoding="async"></span>
+    <span class="card__h">20 m</span>
+    <span class="card__k">Curtain</span>
+    <span class="card__n">Phu Sang Waterfall</span>
+    <span class="card__a">Khunkay &middot; CC BY-SA 3.0</span>
+  </article>
+</template>
+
+<footer class="foot">
+  <p class="foot__line">Plates served from Wikimedia Commons, theme <b>waterfalls</b>. Every one of the ten is CC BY or CC BY-SA, so each card carries its author and licence.</p>
+  <ol class="foot__list">
+    <li><b>01</b> Hubert Stoffels, CC BY 2.0</li>
+    <li><b>02</b> JJ Harrison, CC BY-SA 3.0</li>
+    <li><b>03</b> JJ Harrison, CC BY-SA 3.0</li>
+    <li><b>04</b> McIntosh Natura, CC BY-SA 3.0</li>
+    <li><b>05</b> Diliff, CC BY-SA 3.0</li>
+    <li><b>06</b> Chettouh Nabil, CC BY-SA 3.0</li>
+    <li><b>07</b> Martin Falbisoner, CC BY-SA 4.0</li>
+    <li><b>08</b> Diego Delso, CC BY-SA 4.0</li>
+    <li><b>09</b> A4ernyh, CC BY-SA 4.0</li>
+    <li><b>10</b> Khunkay, CC BY-SA 3.0</li>
+  </ol>
+</footer>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="vcap" hidden>
+  <div class="viewer__scrim" data-close></div>
+  <figure class="viewer__stage">
+    <div class="viewer__frame"><img class="viewer__img" id="vimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Jonathan%27s_Run_Falls.jpg/960px-Jonathan%27s_Run_Falls.jpg" alt="A wide curtain of water falling over black layered rock in a green wooded ravine" loading="lazy" decoding="async"></div>
+    <figcaption class="viewer__cap" id="vcap">Plate</figcaption>
+  </figure>
+  <div class="viewer__bar">
+    <button class="viewer__btn" id="vprev" type="button">Previous fall</button>
+    <span class="viewer__count" id="vcount">01 / 10</span>
+    <button class="viewer__btn" id="vnext" type="button">Next fall</button>
+    <button class="viewer__btn viewer__btn--out" id="vclose" type="button" data-close>Back to the register</button>
+  </div>
+</div>
+</body>
+</html>

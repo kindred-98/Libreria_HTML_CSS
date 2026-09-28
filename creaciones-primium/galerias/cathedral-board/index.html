@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Consistory - A Cathedral Plate Board</title>
+<meta name="description" content="Eight cathedral plates wired into a patch board: a cyan read head sweeps the left edge, each cell carries an armed, live or archived state you can switch, and a full plate viewer opens from the keyboard.">
+<meta name="description-es" content="Ocho placas de catedral cableadas en un panel de conexiones: una cabeza de lectura cian recorre el borde izquierdo, cada celda lleva su código de estado, armado, en vivo o archivado, y un visor de imagen completa se abre con el teclado.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="rack" aria-hidden="true"></div>
+
+<header class="tag">
+  <p class="tag__id">Consistory board &middot; bay 3 &middot; 8 channels</p>
+  <h1 class="tag__title">Consistory</h1>
+  <p class="tag__note">Arrow keys walk the read head across the board, Space switches the state of the cell under the head, Enter lifts that plate to full size and Escape drops it back.</p>
+</header>
+
+<main class="board">
+  <div class="readhead" aria-hidden="true"><span class="readhead__lamp"></span></div>
+
+  <div class="cells" id="cells" role="group" aria-label="Cathedral plate cells, eight channels"></div>
+
+  <div class="meter" aria-hidden="true">
+    <span class="meter__title">Bay occupancy</span>
+    <span class="meter__body" id="meter"></span>
+    <span class="meter__foot"><b id="armed-count">0</b> armed &middot; <b id="live-count">0</b> live &middot; <b id="arch-count">0</b> archived</span>
+  </div>
+</main>
+
+<div class="console">
+  <div class="console__group" role="group" aria-label="Board actions">
+    <button class="console__btn" id="arm-all" type="button">Arm all</button>
+    <button class="console__btn" id="arch-all" type="button">Archive all</button>
+    <button class="console__btn" id="open-cell" type="button">Open cell</button>
+  </div>
+  <p class="console__telem">
+    <span><em>Head</em><b id="t-head">R1C1</b></span>
+    <span><em>State</em><b id="t-state">ARMED</b></span>
+    <span><em>Channel</em><b id="t-chan">01</b></span>
+    <span><em>Sweep</em><b id="t-sweep">0000</b></span>
+  </p>
+</div>
+
+<footer class="ledger">
+  <p class="ledger__line">Plates served from Wikimedia Commons, theme <b>cathedrals</b>. Attribution required by the CC BY-SA terms.</p>
+  <ol class="ledger__list" id="credits"></ol>
+</footer>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewer-cap" hidden>
+  <div class="viewer__scrim" data-close></div>
+  <figure class="viewer__stage">
+    <div class="viewer__plate"><img class="viewer__img" id="viewer-img" alt="Channel 01, Winchester cathedral flags, banners of coloured flags hanging in the nave" loading="lazy" decoding="async"></div>
+    <figcaption class="viewer__cap" id="viewer-cap">Channel</figcaption>
+  </figure>
+  <div class="viewer__bar">
+    <button class="viewer__step" id="viewer-prev" type="button">Previous channel</button>
+    <span class="viewer__count" id="viewer-count">01 / 08</span>
+    <button class="viewer__step" id="viewer-next" type="button">Next channel</button>
+    <button class="viewer__close" id="viewer-close" type="button" data-close>Close plate</button>
+  </div>
+</div>
+</body>
+</html>
