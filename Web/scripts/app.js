@@ -8,7 +8,15 @@ const appVersion = new URL(
   document.baseURI,
 ).searchParams.get("v") ?? "dev";
 const previewRevision = appVersion;
-const pageSize = 12;
+// Tres filas de tres tarjetas. La rejilla de .component-grid ya es de tres
+// columnas, asi que nueve cartas cierran filas completas sin huecos.
+const pageSize = 9;
+// Los destacados van a cuatro columnas, asi que la pagina se mide en multiplos
+// de cuatro para no dejar una fila a medias cuando haya mas de una pagina.
+const featuredPageSize = 8;
+// Cuantas páginas numeradas se dibujan a cada lado de la actual antes de
+// colapsar el resto en puntos suspensivos.
+const pageWindow = 1;
 const translations = {
   en: {
     categories: {
@@ -93,7 +101,10 @@ const translations = {
     filterByCategory: "Filter by category",
     noComponents: "No components found",
     noComponentsHint: "Try another search or choose a different category.",
-    loadMore: "Load more",
+    previousPage: "Previous page",
+    nextPage: "Next page",
+    goToPage: "Go to page {page}",
+    pageOf: "Page {current} of {total} · {size} per page",
     findStartingPoint: "FIND A STARTING POINT",
     categoriesNote: "Grouped from the component names and folders.",
     footerDonate: "Donate USDT through BNB Smart Chain (BEP20)",
@@ -229,7 +240,10 @@ const translations = {
     filterByCategory: "Filtrar por categoría",
     noComponents: "No se encontraron componentes",
     noComponentsHint: "Prueba otra búsqueda o elige una categoría diferente.",
-    loadMore: "Cargar más",
+    previousPage: "Página anterior",
+    nextPage: "Página siguiente",
+    goToPage: "Ir a la página {page}",
+    pageOf: "Página {current} de {total} · {size} por página",
     findStartingPoint: "ENCUENTRA UN PUNTO DE PARTIDA",
     categoriesNote: "Agrupados según los nombres de los componentes y sus carpetas.",
     footerDonate: "Puedes donar USDT a través de BNB Smart Chain (BEP20)",
@@ -290,7 +304,8 @@ const state = {
   language: "en",
   category: "All",
   query: "",
-  visibleCount: pageSize,
+  currentPage: 1,
+  featuredPage: 1,
   toastTimer: null,
 };
 
@@ -303,7 +318,16 @@ const elements = {
   grid: document.querySelector("#component-grid"),
   resultsCount: document.querySelector("#results-count"),
   emptyState: document.querySelector("#empty-state"),
-  loadMore: document.querySelector("#load-more"),
+  pagination: document.querySelector("#pagination"),
+  pagePrev: document.querySelector("#page-prev"),
+  pageNext: document.querySelector("#page-next"),
+  paginationPages: document.querySelector("#pagination-pages"),
+  paginationStatus: document.querySelector("#pagination-status"),
+  featuredPagination: document.querySelector("#featured-pagination"),
+  featuredPagePrev: document.querySelector("#featured-page-prev"),
+  featuredPageNext: document.querySelector("#featured-page-next"),
+  featuredPaginationPages: document.querySelector("#featured-pagination-pages"),
+  featuredPaginationStatus: document.querySelector("#featured-pagination-status"),
   toast: document.querySelector("#toast"),
   themeToggle: document.querySelector("#theme-toggle"),
   languageButtons: [...document.querySelectorAll(".language-button")],
@@ -505,6 +529,9 @@ function applyStaticTranslations() {
   for (const element of document.querySelectorAll("[data-i18n-aria-label]")) {
     element.setAttribute("aria-label", t(element.dataset.i18nAriaLabel));
   }
+  for (const element of document.querySelectorAll("[data-i18n-title]")) {
+    element.title = t(element.dataset.i18nTitle);
+  }
   document.documentElement.lang = state.language;
   if (elements.detailView?.hidden) updateLocalizedMetadata();
   for (const button of elements.languageButtons) {
@@ -555,7 +582,7 @@ function renderFilters() {
     button.setAttribute("aria-pressed", String(state.category === category));
     button.addEventListener("click", () => {
       state.category = category;
-      state.visibleCount = pageSize;
+      state.currentPage = 1;
       renderFilters();
       renderComponents();
     });
@@ -643,6 +670,18 @@ function createComponentCard(component, index) {
   const description = createElement("p", "", getComponentDescription(component));
   const link = createElement("a", "card-link", t("viewComponent"));
   link.href = componentDetailUrl(component.id);
+  // Sin esto el enlace recarga la pagina y al volver se pierde la pagina del
+  // paginador en la que estabas. Con pushState el detalle se abre en el sitio y
+  // el estado se conserva. Se deja el href para que el clic con el boton
+  // central y "abrir en pestana nueva" sigan funcionando.
+  link.addEventListener("click", (event) => {
+    if (event.defaultPrevented || event.button !== 0) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    window.history.pushState({}, "", componentDetailUrl(component.id));
+    renderRoute();
+    window.scrollTo({ top: 0, behavior: "auto" });
+  });
   const arrow = createElement("span", "", "→");
   arrow.setAttribute("aria-hidden", "true");
   link.append(arrow);
@@ -651,15 +690,105 @@ function createComponentCard(component, index) {
   return article;
 }
 
+// Que numeros de pagina se dibujan. Con muchas paginas no caben todos los
+// numeros en una linea, asi que se dejan los extremos, una ventana a cada lado
+// de la actual y puntos suspensivos en los saltos.
+const pageGap = "gap";
+const pageGapLabel = "\u2026";
+
+function getPageItems(totalPages, currentPage) {
+  if (totalPages <= 1) return [1];
+  const pages = new Set([1, totalPages, currentPage]);
+  for (let offset = 1; offset <= pageWindow; offset += 1) {
+    if (currentPage - offset > 1) pages.add(currentPage - offset);
+    if (currentPage + offset < totalPages) pages.add(currentPage + offset);
+  }
+  const sorted = [...pages].sort((first, second) => first - second);
+  const items = [];
+  let previous = 0;
+  for (const page of sorted) {
+    if (previous && page - previous > 1) items.push(pageGap);
+    items.push(page);
+    previous = page;
+  }
+  return items;
+}
+
+function createPaginationButton(label, { isCurrent = false, isGap = false } = {}) {
+  const item = createElement("li", "pagination-item");
+  if (isGap) {
+    const gap = createElement("span", "pagination-gap", label);
+    gap.setAttribute("aria-hidden", "true");
+    item.append(gap);
+    return item;
+  }
+  const button = createElement("button", "pagination-page", label);
+  button.type = "button";
+  if (isCurrent) {
+    button.setAttribute("aria-current", "page");
+    button.classList.add("is-current");
+  } else {
+    button.setAttribute("aria-label", t("goToPage", { page: label }));
+  }
+  button.dataset.page = label;
+  item.append(button);
+  return item;
+}
+
+function renderPagination({ container, pagesList, status, previous, next, totalPages, currentPage, size }) {
+  if (!container || !pagesList || !status) return;
+  // Con una sola pagina no hay nada que recorrer: el paginador se oculta entero.
+  if (totalPages <= 1) {
+    container.hidden = true;
+    pagesList.replaceChildren();
+    status.textContent = "";
+    return;
+  }
+  container.hidden = false;
+  const items = getPageItems(totalPages, currentPage);
+  pagesList.replaceChildren(
+    ...items.map((item) => createPaginationButton(item === pageGap ? pageGapLabel : String(item), {
+      isCurrent: item === currentPage,
+      isGap: item === pageGap,
+    })),
+  );
+  if (previous) previous.disabled = currentPage <= 1;
+  if (next) next.disabled = currentPage >= totalPages;
+  status.textContent = t("pageOf", { current: currentPage, total: totalPages, size });
+}
+
+// Al cambiar de pagina la rejilla se repinta entera, asi que el scroll se
+// devuelve a su principio: si no, al pulsar siguiente la vista se queda a media
+// altura de la pagina anterior y no se ve que ha cambiado nada.
+function scrollToGrid(grid) {
+  if (!grid) return;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  grid.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+}
+
 function renderComponents() {
   if (!elements.grid) return;
   const filteredComponents = getFilteredComponents();
-  const visibleComponents = filteredComponents.slice(0, state.visibleCount);
-  elements.grid.replaceChildren(...visibleComponents.map((component, index) => createComponentCard(component, index)));
+  const totalPages = Math.max(1, Math.ceil(filteredComponents.length / pageSize));
+  // Si el filtro deja menos paginas que la actual, se recorta en vez de dejar
+  // la rejilla vacia.
+  if (state.currentPage > totalPages) state.currentPage = totalPages;
+  const start = (state.currentPage - 1) * pageSize;
+  const visibleComponents = filteredComponents.slice(start, start + pageSize);
+  elements.grid.replaceChildren(...visibleComponents.map((component, index) => createComponentCard(component, start + index)));
   const countLabel = filteredComponents.length === 1 ? t("component") : t("components");
   elements.resultsCount.textContent = `${filteredComponents.length} ${countLabel}`;
   elements.emptyState.hidden = filteredComponents.length > 0;
-  elements.loadMore.hidden = visibleComponents.length >= filteredComponents.length;
+  renderPagination({
+    container: elements.pagination,
+    pagesList: elements.paginationPages,
+    status: elements.paginationStatus,
+    previous: elements.pagePrev,
+    next: elements.pageNext,
+    totalPages,
+    currentPage: state.currentPage,
+    size: pageSize,
+  });
   refreshQueuedPreviews();
 }
 
@@ -671,8 +800,22 @@ function renderFeaturedComponents() {
   const featuredComponents = state.components
     .filter((component) => component.featured)
     .sort((first, second) => first.name.localeCompare(second.name));
-  elements.featuredGrid.replaceChildren(...featuredComponents.map((component, index) => createComponentCard(component, index)));
+  const totalPages = Math.max(1, Math.ceil(featuredComponents.length / featuredPageSize));
+  if (state.featuredPage > totalPages) state.featuredPage = totalPages;
+  const start = (state.featuredPage - 1) * featuredPageSize;
+  const visible = featuredComponents.slice(start, start + featuredPageSize);
+  elements.featuredGrid.replaceChildren(...visible.map((component, index) => createComponentCard(component, start + index)));
   elements.featuredGrid.closest(".featured-section").hidden = featuredComponents.length === 0;
+  renderPagination({
+    container: elements.featuredPagination,
+    pagesList: elements.featuredPaginationPages,
+    status: elements.featuredPaginationStatus,
+    previous: elements.featuredPagePrev,
+    next: elements.featuredPageNext,
+    totalPages,
+    currentPage: state.featuredPage,
+    size: featuredPageSize,
+  });
   refreshQueuedPreviews();
 }
 
@@ -1113,27 +1256,72 @@ function initializeNavigation() {
   });
 }
 
+// El scroll se hace al cambiar de pagina, no al pinchar el numero: asi el
+// contacto con la flecha del teclado no mueve la pagina debajo del dedo.
+function goToPage(page, grid) {
+  const totalPages = Math.max(1, Math.ceil(getFilteredComponents().length / pageSize));
+  const target = Math.min(Math.max(page, 1), totalPages);
+  if (target === state.currentPage) return;
+  state.currentPage = target;
+  renderComponents();
+  scrollToGrid(grid);
+}
+
+function goToFeaturedPage(page) {
+  const featured = state.components.filter((component) => component.featured);
+  const totalPages = Math.max(1, Math.ceil(featured.length / featuredPageSize));
+  const target = Math.min(Math.max(page, 1), totalPages);
+  if (target === state.featuredPage) return;
+  state.featuredPage = target;
+  renderFeaturedComponents();
+  scrollToGrid(elements.featuredGrid);
+}
+
+function initializePagination() {
+  elements.pagePrev?.addEventListener("click", () => goToPage(state.currentPage - 1, elements.grid));
+  elements.pageNext?.addEventListener("click", () => goToPage(state.currentPage + 1, elements.grid));
+  elements.paginationPages?.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-page]");
+    if (button) goToPage(Number(button.dataset.page), elements.grid);
+  });
+  elements.featuredPagePrev?.addEventListener("click", () => goToFeaturedPage(state.featuredPage - 1));
+  elements.featuredPageNext?.addEventListener("click", () => goToFeaturedPage(state.featuredPage + 1));
+  elements.featuredPaginationPages?.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-page]");
+    if (button) goToFeaturedPage(Number(button.dataset.page));
+  });
+}
+
 function initializeSearch() {
   if (!elements.search) return;
   elements.search.addEventListener("input", () => {
     state.query = elements.search.value;
-    state.visibleCount = pageSize;
-    renderComponents();
-  });
-  elements.loadMore.addEventListener("click", () => {
-    state.visibleCount += pageSize;
+    state.currentPage = 1;
     renderComponents();
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "/" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+    const activeTag = document.activeElement?.tagName;
+    const typing = ["INPUT", "TEXTAREA", "SELECT"].includes(activeTag);
+    if (event.key === "/" && !typing) {
       event.preventDefault();
       elements.search.focus();
     }
     if (event.key === "Escape" && document.activeElement === elements.search) {
       elements.search.value = "";
       state.query = "";
-      state.visibleCount = pageSize;
+      state.currentPage = 1;
       renderComponents();
+    }
+    // Las flechas cambian de pagina solo si no se esta escribiendo y la rejilla
+    // tiene mas de una. Con el foco dentro del paginador las flechas las
+    // gestiona el propio navegador sobre los botones.
+    if (typing) return;
+    if (elements.pagination?.hidden) return;
+    if (event.key === "ArrowLeft" && document.activeElement !== elements.search) {
+      goToPage(state.currentPage - 1, elements.grid);
+    }
+    if (event.key === "ArrowRight" && document.activeElement !== elements.search) {
+      goToPage(state.currentPage + 1, elements.grid);
     }
   });
 }
@@ -1143,6 +1331,7 @@ async function initializeApp() {
   initializeTheme();
   initializeNavigation();
   initializeSearch();
+  initializePagination();
   initializeMarquee();
     initializeCopyAddress();
     initializeDonationLink();

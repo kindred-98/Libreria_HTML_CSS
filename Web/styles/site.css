@@ -1485,10 +1485,123 @@ input:focus-visible {
   font-size: 12px;
 }
 
-.load-more-wrap {
+/* Paginador. Sustituye al boton de cargar mas: la rejilla muestra una pagina
+   fija de tarjetas y aqui se recorre el resto. Las flechas y los numeros
+   comparten la misma caja que los botones del sitio, y el numero activo se
+   invierte con el acento para que se lea de un vistazo donde estas. */
+.pagination {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
+  gap: 8px;
   padding-top: 30px;
+}
+
+.pagination-pages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pagination-arrow,
+.pagination-page {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+.pagination-arrow span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.pagination-arrow:hover:not(:disabled),
+.pagination-page:hover:not(.is-current) {
+  border-color: var(--muted);
+  background: var(--surface);
+  transform: translateY(-2px);
+}
+
+.pagination-page.is-current {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: default;
+}
+
+.pagination-arrow:disabled {
+  border-color: var(--line);
+  color: var(--quiet);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+.pagination-item {
+  display: flex;
+}
+
+.pagination-gap {
+  display: inline-flex;
+  min-width: 22px;
+  align-items: center;
+  justify-content: center;
+  color: var(--quiet);
+  font-size: 12px;
+  user-select: none;
+}
+
+.pagination-status {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.pagination-arrow:focus-visible,
+.pagination-page:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 620px) {
+  .pagination {
+    gap: 6px;
+    padding-top: 22px;
+  }
+
+  .pagination-pages {
+    gap: 4px;
+  }
+
+  .pagination-arrow,
+  .pagination-page {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0 9px;
+    font-size: 11px;
+  }
+
+  .pagination-gap {
+    min-width: 14px;
+  }
 }
 
 .category-section {
