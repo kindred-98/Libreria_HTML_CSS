@@ -57,6 +57,12 @@ const libraryRoots = [
     name: "creaciones-primium",
     directory: path.join(repositoryDirectory, "creaciones-primium"),
     author: "kindred-98",
+    // Toda la coleccion va con MIT y ZIP: el LICENSE de la raiz (cubre las dos
+    // autoras de la carpeta) se anade a cada ZIP, igual que en las demas raices.
+    license: "MIT",
+    licenseFile: "LICENSE",
+    source: "https://github.com/kindred-98/Libreria_HTML_CSS",
+    redistributable: true,
     // La carpeta superior ya declara la categoría, en castellano.
     categories: {
       animaciones: "Animations",
@@ -76,9 +82,9 @@ const libraryRoots = [
       "indicadores-de-carga": "fatmaerm",
       navegacion: "fatmaerm",
     },
-    // Y solo esas dos carpetas llevan licencia: el MIT de fatmaerm, declarado en
-    // el LICENSE de la raiz de la coleccion. Las carpetas de kindred-98 de esta
-    // misma raiz siguen sin licencia y sin ZIP, como hasta ahora.
+    // El MIT de fatmaerm, declarado por carpeta ademas de en la raiz: su
+    // LICENSE la nombra a ella y a kindred-98, y este mapa deja constancia de
+    // que estas dos carpetas son suyas.
     licenses: {
       "indicadores-de-carga": { license: "MIT", licenseFile: "LICENSE", source: "https://github.com/kindred-98/Libreria_HTML_CSS", redistributable: true },
       navegacion: { license: "MIT", licenseFile: "LICENSE", source: "https://github.com/kindred-98/Libreria_HTML_CSS", redistributable: true },

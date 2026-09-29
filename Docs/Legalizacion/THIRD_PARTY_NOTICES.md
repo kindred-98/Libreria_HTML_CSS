@@ -2,7 +2,7 @@
 
 ## Estado de distribución
 
-La `LICENSE` de la raíz se aplica al código original de la aplicación y a la documentación creados para este repositorio por `kindred-98`, **y también a los demos originales de `CreacionesNuevas/`**, cada uno de los cuales incluye además su propio archivo `LICENSE`. No concede derechos sobre los demos de `GevendraAutorExterno/` ni sobre los de `fatmaerm` en `creaciones-primium/`: esos dos grupos llevan su **propio archivo `LICENSE` (MIT)** en la carpeta, que es el que se inyecta en cada ZIP. Tampoco concede derechos sobre recursos de terceros.
+La `LICENSE` de la raíz se aplica al código original de la aplicación y a la documentación creados para este repositorio por `kindred-98`, **y también a los demos originales de `CreacionesNuevas/`**, cada uno de los cuales incluye además su propio archivo `LICENSE`. No concede derechos sobre los demos de `GevendraAutorExterno/` ni sobre los de `creaciones-primium/`: esos dos grupos llevan su **propio archivo `LICENSE` (MIT)** en la carpeta de la colección, que es el que se inyecta en cada ZIP. Tampoco concede derechos sobre recursos de terceros.
 
 ## Las colecciones
 
@@ -11,9 +11,8 @@ La `LICENSE` de la raíz se aplica al código original de la aplicación y a la 
 | `CreacionesNuevas/` | **248** | `kindred-98`, creations originales | MIT (archivo `LICENSE` en cada carpeta) | **Habilitado** |
 | `DavokerDiseñador/` | **119** | `davoker`, efectos de texto CSS | MIT (archivo `DavokerDiseñador/LICENSE`, de su repositorio) | **Habilitado** |
 | `GevendraAutorExterno/` | **116** | Gevendra Sahu (`gevendra2004`) | MIT (archivo `GevendraAutorExterno/LICENSE`) | **Habilitado** |
-| `creaciones-primium/` · carpetas de `fatmaerm` | **160** | `fatmaerm`, indicadores de carga y navegación | MIT (archivo `creaciones-primium/LICENSE`) | **Habilitado** |
-| `creaciones-primium/` · resto | **358** | `kindred-98` | Ninguna declarada | Deshabilitado |
-| **Total** | **1001** | | | 643 de 1001 |
+| `creaciones-primium/` | **518** | `kindred-98` y `fatmaerm` (`indicadores-de-carga/`, `navegacion/`) | MIT (archivo `creaciones-primium/LICENSE`) | **Habilitado** |
+| **Total** | **1001** | | | 1001 de 1001 |
 
 ## Estado de distribución
 
@@ -21,7 +20,7 @@ Los 248 componentes de `CreacionesNuevas/` están autorizados: el catálogo los 
 
 Los 119 efectos de `DavokerDiseñador/` proceden de `https://github.com/davoker/efectos_css_para_html`, de un miembro del equipo y con licencia **MIT** declarada en su `LICENSE`. Ese archivo vive en la raíz de la carpeta y el generador lo añade a cada ZIP, así que `license: "MIT"`, `licenseFile: "LICENSE"` y `source` salen verificados y la descarga está habilitada. `transicion.html`, `transicion.css` y la portada `davoker.html` (renombrada para no chocar con el `index.html` de la web) son piezas del mismo repositorio: la portada no es un componente del catálogo, se abre dentro de la rejilla al elegir a **davoker** en el filtro de autores.
 
-Los 160 componentes de `fatmaerm` (las carpetas `indicadores-de-carga/` y `navegacion/` de `creaciones-primium/`) se crearon para este repositorio y llevan su **MIT** en el `LICENSE` de la raíz de la colección. El generador sólo inyecta ese archivo en los ZIP de esas dos carpetas, así que los 358 componentes de `kindred-98` de la misma raíz siguen sin licencia declarada y con el botón ZIP deshabilitado.
+Los 518 componentes de `creaciones-primium/` se crearon para este repositorio: 160 de `fatmaerm` (las carpetas `indicadores-de-carga/` y `navegacion/`) y 358 de `kindred-98`. Todos comparten el **MIT** del `LICENSE` de la raíz de la colección, que nombra a las dos autoras, y el generador lo inyecta en cada ZIP, así que `license: "MIT"`, `licenseFile: "LICENSE"`, `source` y `redistributable: true` salen verificados en los 518.
 
 Sobre los 116 componentes de `GevendraAutorExterno/`, ver la investigación completa que sigue: su repositorio de origen sigue sin declarar licencia, y desde 2026-09-29 la distribución se ampara en el `LICENSE` MIT que lleva la propia carpeta.
 
@@ -47,9 +46,9 @@ Se investigó el origen de las **116 páginas de demo** (114 carpetas; `cursors/
   `webgl-liquid-masking` ← `webgel-liquid-masking`,
   `facebook-emoji-reactions` ← `Facebook-emoji-reactor`.
 
-El campo `source` de las 116 entradas de `Web/data/component-overrides.json` apunta ahora a ese repositorio. `license` sigue como `Unverified` en las 116, y **ningún** demo tiene `redistributable: true`.
+El campo `source` de las 116 entradas de `Web/data/component-overrides.json` apunta ahora a ese repositorio. La licencia (`license: "MIT"`) y `redistributable: true` no vienen de la fuente, sino del `LICENSE` que lleva la propia carpeta desde el 29-09-2026.
 
-### Por qué no se puede redistribuir
+### Por qué el repositorio de origen no autoriza nada
 
 Comprobado el 26-09-2026 sobre `https://github.com/gevendra2004/gevstack`:
 
@@ -62,6 +61,8 @@ Un repositorio público no equivale a código con licencia. Sin declaración exp
 
 El ejemplo de reacciones de Facebook contiene además código y recursos que coinciden con el proyecto público [facebook-reactions-css](https://github.com/deividmarques/facebook-reactions-css), de Deivid Marques, que tampoco mostraba archivo de licencia en la página revisada el 26-09-2026.
 
+**Estado actual**: desde el 29-09-2026 la distribución de estos 116 demos en este repositorio se ampara en el `LICENSE` MIT que lleva `GevendraAutorExterno/`, con `license: "MIT"`, `licenseFile: "LICENSE"` y `redistributable: true` en el catálogo. La investigación de arriba sigue en pie porque es la fuente la que no declara nada; ver *Autorizar un componente*.
+
 ### Lo que sí se permite
 
 Ver un demo en el navegador, navegar por el sitio y copiar el código para **estudio personal** no exigen licencia. Lo que no está autorizado es la redistribución: republicar el ZIP, formar parte de un artefacto público o de otro producto, o cambiar la autoría.
@@ -70,7 +71,7 @@ Los archivos locales, como `Movie-Card-UI/pngwing.png`, y las imágenes, fuentes
 
 ## Consecuencias asumidas en el proyecto
 
-- El botón **ZIP está habilitado en 643 componentes**: los 248 de `CreacionesNuevas/`, los 119 de `DavokerDiseñador/`, los 116 de `GevendraAutorExterno/` y los 160 de `fatmaerm`. Los 358 de `creaciones-primium/` de `kindred-98` siguen deshabilitados hasta que lleven su propia licencia.
+- El botón **ZIP está habilitado en los 1001 componentes**: los 248 de `CreacionesNuevas/`, los 119 de `DavokerDiseñador/`, los 116 de `GevendraAutorExterno/` y los 518 de `creaciones-primium/`. Ninguno queda sin redistribución.
 - El sitio se despliega en **Vercel sirviendo la raíz del repositorio**, que muestra los 396 componentes y evita que las previews de `GevendraAutorExterno/` den 404. No existe un artefacto de publicación alternativo: el constructor que filtraba por licencias se eliminó junto con el despliegue en GitHub Pages, para que solo haya una copia del sitio y no se puedan publicar por error los componentes sin permiso de redistribución.
 - La atribución de origen se muestra en el detalle de cada componente («Source: …»), tanto si está verificado como si no.
 

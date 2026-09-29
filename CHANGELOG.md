@@ -7,6 +7,18 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [MIT y ZIP para toda creaciones-primium] — 2026-09-29
+
+- La raíz `creaciones-primium` pasa a `license: "MIT"`, `licenseFile: "LICENSE"`,
+  `source` apuntando a este repositorio y `redistributable: true`.
+- Su `LICENSE` cubre ya las 518 demos de la colección y nombra a las dos
+  autoras: `fatmaerm` (las 160 de `indicadores-de-carga/` y `navegacion/`) y
+  `kindred-98` (las 358 restantes).
+- Descargables: **643 → 1001 de 1001** componentes; ya no queda ninguno sin
+  redistribución.
+- Docs: `THIRD_PARTY_NOTICES.md` (tabla, párrafos y estado), `LICENSE` de raíz,
+  README, Web/README.
+
 ## [ZIP MIT para los demos de gevendra y fatmaerm] — 2026-09-29
 
 - Dos `LICENSE` MIT nuevos: `GevendraAutorExterno/LICENSE` (los 116 demos de
