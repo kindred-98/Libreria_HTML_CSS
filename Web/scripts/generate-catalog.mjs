@@ -64,6 +64,12 @@ const libraryRoots = [
       tarjetas: "Cards",
       otros: "Other",
     },
+    // Estas dos carpetas son de fatmaerm: sus 80 indicadores de carga y sus 80
+    // navegaciones. El resto de la carpeta sigue siendo de kindred-98.
+    authors: {
+      "indicadores-de-carga": "fatmaerm",
+      navegacion: "fatmaerm",
+    },
   },
 ];
 const catalogFile = path.join(repositoryDirectory, "Web", "data", "catalog.json");
@@ -266,6 +272,8 @@ async function createComponent(root, pagePath) {
   const name = override.name ?? (title || directoryName.replace(/[-_]+/g, " "));
   const folderCategory = root.categories?.[folderPath.split("/")[0]];
   const category = override.category ?? folderCategory ?? getCategory(`${directoryName} ${name}`);
+  // Algunas carpetas cambian de autor sin cambiar de raiz (las de fatmaerm).
+  const folderAuthor = root.authors?.[folderPath.split("/")[0]];
   const descriptionMatch = html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description["'])[^>]*>/i);
   const descriptionType = category === "Other" ? "HTML and CSS" : category.toLowerCase();
   const description = override.description ?? (descriptionMatch
@@ -313,7 +321,7 @@ async function createComponent(root, pagePath) {
     id,
     name,
     category,
-    author: override.author ?? root.author ?? "kindred-98",
+    author: override.author ?? folderAuthor ?? root.author ?? "kindred-98",
     featured: override.featured === true,
     description,
     ...(descriptionEs ? { descriptionEs } : {}),

@@ -111,8 +111,9 @@ const translations = {
     footerBuilt: "Open source code library, open to contributions.\nGot a creative idea? OPEN A PR.",
     component: "component",
     components: "components",
-    authorGevendra: "Componente de gevendras - {count}",
-    authorDavoker: "Diseños de davoker - {count}",
+    authorGevendra: "Gevendra component - {count}",
+    authorDavoker: "Davoker design - {count}",
+    authorFatmaerm: "Fatmaerm component - {count}",
     browseCategory: "Browse {category} components",
     viewComponent: "View component",
     liveDemo: "Live demo",
@@ -249,8 +250,9 @@ const translations = {
     footerBuilt: "Librería de código abierto, abierta a contribuciones.\nSi tiene una idea creativa de nuevo componente, HAS UNA PR.",
     component: "componente",
     components: "componentes",
-    authorGevendra: "Componente de gevendras - {count}",
+    authorGevendra: "Componente de gevendra - {count}",
     authorDavoker: "Diseños de davoker - {count}",
+    authorFatmaerm: "Componente de fatmaerm - {count}",
     browseCategory: "Explorar componentes de {category}",
     viewComponent: "Ver componente",
     liveDemo: "Demo en vivo",
@@ -583,6 +585,7 @@ const authorButtonFx = {
 const authorSummaryKey = {
   Gevendra: "authorGevendra",
   Davoker: "authorDavoker",
+  fatmaerm: "authorFatmaerm",
 };
 
 function getAuthors() {
