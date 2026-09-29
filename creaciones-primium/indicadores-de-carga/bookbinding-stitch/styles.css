@@ -1,0 +1,109 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+
+.stage{position:relative;width:100%;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden;
+  background:
+    radial-gradient(50% 36% at 50% 42%,rgba(214,178,132,.12),rgba(214,178,132,0) 74%),
+    radial-gradient(140% 90% at 50% 122%,rgba(20,14,9,.9),rgba(20,14,9,0) 60%),
+    linear-gradient(176deg,#4a3b2c 0%,#332a1f 32%,#201a12 66%,#0e0a07 100%)}
+
+.frame{position:relative;width:min(74vh,92vw);height:min(84vh,156vw);
+  animation:sway 4s ease-in-out infinite}
+
+.bar{position:absolute;left:0;right:0;height:6.6%;border-radius:3px;
+  background:linear-gradient(180deg,#7a5f3c 0%,#4c3a24 46%,#251b10 100%);
+  box-shadow:inset 0 1px 0 rgba(255,226,180,.3),0 12px 24px -14px rgba(0,0,0,.9)}
+.bar.top{top:0}
+.bar.bot{bottom:0}
+
+.sections{position:absolute;left:20%;right:20%;top:8%;bottom:8%;
+  display:flex;flex-direction:column;justify-content:space-between}
+.sections i{position:relative;display:block;height:16%;width:100%;border-radius:2px 2px 1px 1px;
+  transform:scaleX(1);transform-origin:50% 50%;
+  background:
+    linear-gradient(90deg,rgba(48,32,18,.4) 0 6%,rgba(0,0,0,0) 6% 94%,rgba(48,32,18,.4) 94% 100%),
+    repeating-linear-gradient(180deg,rgba(96,66,36,.3) 0 2px,rgba(0,0,0,0) 2px 5px),
+    linear-gradient(180deg,#e8dcc2 0%,#cdbc9a 50%,#a8977a 100%);
+  box-shadow:0 5px 10px -6px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,250,232,.6);
+  animation:gather 4s cubic-bezier(.3,.8,.3,1) infinite;
+  animation-delay:calc(var(--i)*-.1s)}
+.sections i::after{content:"";position:absolute;left:44%;right:44%;top:0;bottom:0;border-radius:1px;
+  background:linear-gradient(180deg,rgba(60,40,22,.35),rgba(60,40,22,.12));
+  transform:scaleX(1);
+  animation:fold 4s cubic-bezier(.3,.8,.3,1) infinite;
+  animation-delay:calc(var(--i)*-.1s)}
+
+.links{position:absolute;left:8%;right:8%;top:10%;bottom:10%;pointer-events:none}
+.links i{position:absolute;left:46%;width:8%;height:14%;border-radius:99px;
+  top:calc(var(--i)*19% + 3%);
+  transform:scale(0);transform-origin:50% 50%;
+  background:linear-gradient(180deg,#f2e2be 0%,#c9a86e 52%,#8a6c40 100%);
+  box-shadow:0 2px 5px -3px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,246,220,.7);
+  animation:link 4s cubic-bezier(.3,.9,.3,1) infinite;
+  animation-delay:calc(var(--i)*-.16s)}
+
+.thread{position:absolute;left:46%;top:6%;width:3%;height:12%;border-radius:99px;
+  transform:scaleY(0);transform-origin:50% 0;
+  background:linear-gradient(180deg,#f4e6c4,#c2a067 60%,#8a6c40);
+  box-shadow:0 0 5px rgba(0,0,0,.4);
+  animation:thread 4s cubic-bezier(.4,.05,.2,1) infinite}
+
+.needle{position:absolute;left:44%;top:6%;width:6%;height:16%;border-radius:60% 40% 60% 40%;
+  transform:translateY(0) rotate(0);opacity:0;
+  background:linear-gradient(140deg,#f2f4f6 0%,#a9b0b6 46%,#5e656c 100%);
+  box-shadow:0 4px 8px -5px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.8);
+  animation:stitch 4s cubic-bezier(.4,.05,.2,1) infinite}
+
+.knot{position:absolute;left:43%;top:2%;width:10%;height:6%;border-radius:50%;
+  transform:scale(0);opacity:0;
+  background:radial-gradient(closest-side,#f6ead0,#c2a067 70%,rgba(138,108,64,0) 92%);
+  box-shadow:0 0 8px rgba(210,180,120,.6);
+  animation:knot 4s cubic-bezier(.3,.9,.3,1) infinite}
+
+@keyframes sway{
+  0%,100%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(1.1%) rotate(.3deg)}}
+@keyframes gather{
+  0%{transform:scaleX(1.04)}
+  34%{transform:scaleX(.97)}
+  56%,100%{transform:scaleX(.98)}}
+@keyframes fold{
+  0%{transform:scaleX(1.2)}
+  34%{transform:scaleX(1)}
+  56%,100%{transform:scaleX(1)}}
+@keyframes link{
+  0%{transform:scale(0)}
+  6%{transform:scale(1.2)}
+  30%{transform:scale(1)}
+  88%{transform:scale(1)}
+  96%,100%{transform:scale(1)}}
+@keyframes thread{
+  0%{transform:scaleY(0)}
+  40%{transform:scaleY(1)}
+  60%{transform:scaleY(1)}
+  88%,100%{transform:scaleY(0)}}
+@keyframes stitch{
+  0%{transform:translateY(0) rotate(-6deg);opacity:0}
+  4%{opacity:1}
+  38%{transform:translateY(0) rotate(0);opacity:1}
+  46%{transform:translateY(56%) rotate(0);opacity:1}
+  52%{transform:translateY(56%) rotate(0);opacity:0}
+  100%{transform:translateY(56%) rotate(0);opacity:0}}
+@keyframes knot{
+  0%,54%{transform:scale(0);opacity:0}
+  60%{transform:scale(1.3);opacity:1}
+  70%{transform:scale(1);opacity:1}
+  88%,100%{transform:scale(1);opacity:1}}
+
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+
+@media (prefers-reduced-motion:reduce){
+  .frame{animation:none;transform:none}
+  .sections i{animation:none;transform:scaleX(.98)}
+  .sections i::after{animation:none;transform:scaleX(1)}
+  .links i{animation:none;transform:scale(1)}
+  .thread{animation:none;transform:scaleY(0)}
+  .needle{animation:none;opacity:0;transform:translateY(56%)}
+  .knot{animation:none;transform:scale(1);opacity:1}
+}

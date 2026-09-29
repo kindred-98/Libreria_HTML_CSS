@@ -1,0 +1,118 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+
+.stage{position:relative;width:100%;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden;
+  background:
+    radial-gradient(50% 36% at 50% 42%,rgba(180,180,190,.1),rgba(180,180,190,0) 74%),
+    radial-gradient(140% 90% at 50% 122%,rgba(6,6,8,.9),rgba(6,6,8,0) 60%),
+    linear-gradient(176deg,#3a3a3e 0%,#28282c 32%,#1a1a1d 66%,#0a0a0c 100%)}
+
+.mill{position:relative;width:min(78vh,92vw);height:min(80vh,148vw);
+  animation:press 4s ease-in-out infinite}
+
+.table{position:absolute;left:2%;right:2%;height:9%;border-radius:3px;
+  background:linear-gradient(180deg,#4e4e54 0%,#2e2e33 50%,#1a1a1e 100%);
+  box-shadow:inset 0 1px 0 rgba(236,240,246,.22),0 12px 24px -14px rgba(0,0,0,.9)}
+.table.top{top:0}
+.table.bot{bottom:0}
+
+.roller{position:absolute;left:12%;right:12%;height:30%}
+.roller.top{top:14%}
+.roller.bot{bottom:14%}
+.roller.top .stone{animation:cw 1s linear infinite}
+.roller.bot .stone{animation:ccw 1s linear infinite}
+
+.stone{position:absolute;inset:0;border-radius:8px;
+  background:
+    repeating-linear-gradient(88deg,rgba(12,12,14,.5) 0 2px,rgba(0,0,0,0) 2px 9px),
+    radial-gradient(120% 80% at 50% 30%,#8b8b93 0%,#5c5c64 44%,#333338 78%,#1c1c20 100%);
+  box-shadow:inset 0 0 0 1px rgba(8,8,10,.9),inset 0 4px 10px -4px rgba(0,0,0,.8),0 14px 26px -16px rgba(0,0,0,.95)}
+.roller.top .stone::after{content:"";position:absolute;inset:0;border-radius:8px;
+  background:linear-gradient(180deg,rgba(16,16,20,.6),rgba(16,16,20,0) 40%,rgba(16,16,20,.7));
+  opacity:0;animation:soak 4s ease-in-out infinite}
+.roller.bot .stone::after{content:"";position:absolute;inset:0;border-radius:8px;
+  background:linear-gradient(0deg,rgba(16,16,20,.6),rgba(16,16,20,0) 40%,rgba(16,16,20,.7));
+  opacity:0;animation:soak 4s ease-in-out infinite}
+
+.shaft{position:absolute;left:50%;top:50%;width:14%;height:14%;transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle at 40% 36%,#b6b6bd,#4e4e55 58%,#1e1e22 100%);
+  box-shadow:inset 0 0 0 1px rgba(8,8,10,.9),0 3px 8px -4px rgba(0,0,0,.9)}
+
+.gap{position:absolute;left:14%;right:14%;top:calc(50% - 3%);height:6%;border-radius:2px;
+  background:linear-gradient(180deg,rgba(6,6,8,0),rgba(6,6,8,.8) 30%,rgba(6,6,8,.9) 70%,rgba(6,6,8,0));
+  transform:scaleY(1);
+  animation:narrow 4s cubic-bezier(.3,.1,.2,1) infinite}
+.gap::after{content:"";position:absolute;inset:0;border-radius:2px;
+  background:linear-gradient(180deg,rgba(18,18,22,0),rgba(14,14,18,.9) 50%,rgba(18,18,22,0));
+  animation:darken 4s ease-in-out infinite}
+
+.feed{position:absolute;left:24%;top:8%;width:52%;height:7%;border-radius:99px;
+  transform:scaleX(0);transform-origin:0 50%;
+  background:linear-gradient(90deg,rgba(20,20,24,.6),rgba(30,30,36,.9));
+  box-shadow:inset 0 1px 0 rgba(200,200,210,.14);
+  animation:feed 4s cubic-bezier(.3,.9,.3,1) infinite}
+
+.bead{position:absolute;left:50%;top:47%;width:16%;height:7%;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  transform:translate(-50%,0) scale(0);transform-origin:50% 0;
+  background:radial-gradient(closest-side,rgba(28,26,32,.96),rgba(18,18,22,.9) 70%,rgba(18,18,22,0) 92%);
+  box-shadow:0 4px 10px -5px rgba(0,0,0,.9);
+  animation:bead 4s cubic-bezier(.3,.9,.3,1) infinite}
+
+.scraper{position:absolute;right:6%;top:40%;width:6%;height:24%;border-radius:2px;
+  background:linear-gradient(96deg,#9aa0a8 0%,#5a5f66 50%,#2c2f34 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 16px -10px rgba(0,0,0,.9);
+  transform:translateX(0);
+  animation:scrape 4s cubic-bezier(.3,.9,.3,1) infinite}
+
+@keyframes press{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(1%)}}
+@keyframes cw{
+  0%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(-.6%) rotate(180deg)}
+  100%{transform:translateY(0) rotate(360deg)}}
+@keyframes ccw{
+  0%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(.6%) rotate(-180deg)}
+  100%{transform:translateY(0) rotate(-360deg)}}
+@keyframes soak{
+  0%,16%{opacity:0}
+  40%{opacity:.8}
+  86%,100%{opacity:.8}}
+@keyframes narrow{
+  0%,16%{transform:scaleY(1.5)}
+  40%{transform:scaleY(.55)}
+  86%,100%{transform:scaleY(.55)}}
+@keyframes darken{
+  0%,16%{opacity:.2}
+  44%{opacity:1}
+  86%,100%{opacity:1}}
+@keyframes feed{
+  0%{transform:scaleX(0)}
+  20%{transform:scaleX(1)}
+  84%,100%{transform:scaleX(1)}}
+@keyframes bead{
+  0%,40%{transform:translate(-50%,0) scale(0)}
+  56%{transform:translate(-50%,0) scale(1.1)}
+  70%{transform:translate(-50%,0) scale(1)}
+  86%,100%{transform:translate(-50%,0) scale(1)}}
+@keyframes scrape{
+  0%,44%{transform:translateX(0)}
+  56%{transform:translateX(-9%)}
+  70%{transform:translateX(0)}
+  86%,100%{transform:translateX(0)}}
+
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+
+@media (prefers-reduced-motion:reduce){
+  .mill{animation:none;transform:none}
+  .stone{animation:none!important}
+  .roller.top .stone::after,.roller.bot .stone::after{animation:none;opacity:.8}
+  .gap{animation:none;transform:scaleY(.55)}
+  .gap::after{animation:none;opacity:1}
+  .feed{animation:none;transform:scaleX(1)}
+  .bead{animation:none;transform:translate(-50%,0) scale(1)}
+  .scraper{animation:none;transform:translateX(0)}
+}

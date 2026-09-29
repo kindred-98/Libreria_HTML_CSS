@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Star Links</title>
+<meta name="description" content="A night navigation panel where six destinations hang along a faint stellar track, and the gold line toward the star you are reading draws itself down the track from the origin while the reached stars keep burning and the unreached ones stay grey.">
+<meta name="description-es" content="Un panel de navegación nocturna donde seis destinos cuelgan de un tenue rastro estelar, y la línea dorada hacia la estrella que estás leyendo se dibuja sola por el rastro desde el origen mientras las ya alcanzadas siguen ardiendo y las demás siguen grises.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+
+<header class="sky-panel" data-nav data-at="0">
+  <div class="sky" aria-hidden="true"></div>
+  <div class="sky-field" aria-hidden="true"></div>
+
+  <div class="panel-top">
+    <p class="plate">Stellar Waypoints<span>Route sheet, cycle 41</span></p>
+    <div class="panel-tools">
+      <p class="readout" data-readout>Lantern Point, 6 light years, first of six</p>
+      <button class="star-btn" type="button" data-panel-toggle aria-expanded="false" aria-controls="notes">
+        <span class="star-btn-dot" aria-hidden="true"></span>Log notes
+      </button>
+    </div>
+  </div>
+
+  <div class="panel-body">
+  <ol class="chain">
+    <span class="track" aria-hidden="true"></span>
+    <span class="draw" aria-hidden="true"><i class="photon"></i></span>
+
+    <li>
+      <a class="node" data-stop data-say="Lantern Point, 6 light years, first of six" href="#lantern-point">
+        <span class="pip" aria-hidden="true"></span>
+        <span class="lbl">
+          <span class="sr">Waypoint 1, Lantern Point, 6 light years, first of six</span>
+          <span class="nm" aria-hidden="true">Lantern Point</span>
+          <span class="d" aria-hidden="true">6 ly</span>
+        </span>
+        <span class="burn" aria-hidden="true">lobby</span>
+      </a>
+    </li>
+    <li>
+      <a class="node" data-stop data-say="The Cold Crown, 13 light years, 7 to go this leg" href="#cold-crown">
+        <span class="pip" aria-hidden="true"></span>
+        <span class="lbl">
+          <span class="sr">Waypoint 2, The Cold Crown, 13 light years</span>
+          <span class="nm" aria-hidden="true">The Cold Crown</span>
+          <span class="d" aria-hidden="true">13 ly</span>
+        </span>
+        <span class="burn" aria-hidden="true">visible</span>
+      </a>
+    </li>
+    <li>
+      <a class="node" data-stop data-say="Owl's Elbow, 21 light years, the turn of the route" href="#owls-elbow">
+        <span class="pip" aria-hidden="true"></span>
+        <span class="lbl">
+          <span class="sr">Waypoint 3, Owl's Elbow, 21 light years, the turn of the route</span>
+          <span class="nm" aria-hidden="true">Owl's Elbow</span>
+          <span class="d" aria-hidden="true">21 ly</span>
+        </span>
+        <span class="burn" aria-hidden="true">variable</span>
+      </a>
+    </li>
+    <li>
+      <a class="node" data-stop data-say="The Kiln, 29 light years, dead ahead on the plate" href="#the-kiln">
+        <span class="pip" aria-hidden="true"></span>
+        <span class="lbl">
+          <span class="sr">Waypoint 4, The Kiln, 29 light years, dead ahead on the plate</span>
+          <span class="nm" aria-hidden="true">The Kiln</span>
+          <span class="d" aria-hidden="true">29 ly</span>
+        </span>
+        <span class="burn" aria-hidden="true">variable</span>
+      </a>
+    </li>
+    <li>
+      <a class="node" data-stop data-say="Stork's Rest, 38 light years, the crossing point" href="#storks-rest">
+        <span class="pip" aria-hidden="true"></span>
+        <span class="lbl">
+          <span class="sr">Waypoint 5, Stork's Rest, 38 light years, the crossing point</span>
+          <span class="nm" aria-hidden="true">Stork's Rest</span>
+          <span class="d" aria-hidden="true">38 ly</span>
+        </span>
+        <span class="burn" aria-hidden="true">hidden</span>
+      </a>
+    </li>
+    <li>
+      <a class="node" data-stop data-say="Last Light, 52 light years, the end of the sheet" href="#last-light">
+        <span class="pip" aria-hidden="true"></span>
+        <span class="lbl">
+          <span class="sr">Waypoint 6, Last Light, 52 light years, the end of the sheet</span>
+          <span class="nm" aria-hidden="true">Last Light</span>
+          <span class="d" aria-hidden="true">52 ly</span>
+        </span>
+        <span class="burn" aria-hidden="true">hidden</span>
+      </a>
+    </li>
+  </ol>
+
+  <div class="watch" aria-hidden="true">
+    <span class="watch-glyph" aria-hidden="true"></span>
+    <p class="watch-line" data-line="0">Origin of the sheet. Hold the bearing and do not trust the first hour.</p>
+    <p class="watch-line" data-line="1">Crown up at last light. Two hours of clean air and a steady wake.</p>
+    <p class="watch-line" data-line="2">The turn. Course swings west and the whole crossing changes shape.</p>
+    <p class="watch-line" data-line="3">Kiln low in the south. Take it early; it sinks before the watch ends.</p>
+    <p class="watch-line" data-line="4">Picked in the gap before dawn, given up the moment there is other light.</p>
+    <p class="watch-line" data-line="5">Bearing held one full watch. The next sheet does not exist.</p>
+  </div>
+  </div>
+
+  <div class="notes" id="notes" data-panel hidden>
+    <h2 class="notes-title">How the sheet is read</h2>
+    <p class="notes-row"><span class="tag tag-cold" aria-hidden="true"></span>Cold means the waypoint is always above the horizon from here. Safe, and dull.</p>
+    <p class="notes-row"><span class="tag tag-var" aria-hidden="true"></span>Variable means it rises and sets. You plan two of them per crossing and hope.</p>
+    <p class="notes-row"><span class="tag tag-hid" aria-hidden="true"></span>Hidden means it never rises. The line toward it is drawn anyway, which is the point of a route sheet.</p>
+    <p class="notes-row"><span class="tag tag-line" aria-hidden="true"></span>Gold is the line already laid. It is drawn from the origin toward the waypoint under the reader, and it stops there.</p>
+  </div>
+</header>
+
+<main class="log">
+  <section class="entry" id="lantern-point">
+    <p class="kicker">Waypoint 01 &middot; 6 ly &middot; cold</p>
+    <h2>Lantern Point</h2>
+    <p>Where every route sheet in this trade begins, and for one specific reason: Lantern Point does not set. It is a small red star, a fifth of the brightness of anything else on the plate, and it hangs about eleven degrees above the southern horizon in every month of the year.</p>
+    <p>Coming out from a long crossing you find it before you find anything else, because your eyes find the low red thing first and the rest of the sky second. Skippers are fond of it for the same reason sailors are fond of a fixed light: it is the one thing on the sheet that has never moved, and on a long route that is worth more than a bright star.</p>
+  </section>
+
+  <section class="entry" id="cold-crown">
+    <p class="kicker">Waypoint 02 &middot; 13 ly &middot; cold</p>
+    <h2>The Cold Crown</h2>
+    <p>A ring of seven stars, close enough together to be worth the name, sitting forty degrees off Lantern Point. It is the first real navigation of the crossing: once you have the Crown up, you know the night is going the way you planned it, and if the Crown is there but Lantern is not, something is wrong with your figures.</p>
+    <p>The brightest of the seven is a hard blue-white and does not twinkle, which is the only reliable thing anybody can say about it. The other six are a kind of orange that gets worse in bad air, so a hazy Crown is a measure of the atmosphere as much as of the stars. Navigators used to log the visibility alongside the bearing and it is a habit worth keeping.</p>
+  </section>
+
+  <section class="entry" id="owls-elbow">
+    <p class="kicker">Waypoint 03 &middot; 21 ly &middot; variable</p>
+    <h2>Owl's Elbow</h2>
+    <p>Here the route turns. Everything before it runs roughly north, and after the Elbow it runs west for three weeks of nights, and the whole shape of the crossing changes to suit whatever the Elbow is doing that season. This is the waypoint people plan around rather than navigate to.</p>
+    <p>There is a companion star about six degrees away, dimmer and closer, and the pair together make a shallow bend that is unmistakable once seen. The bend is why the name. In twenty years of plates the angle has not changed by a degree, which is exactly what you would expect and exactly what people are surprised by.</p>
+  </section>
+
+  <section class="entry" id="the-kiln">
+    <p class="kicker">Waypoint 04 &middot; 29 ly &middot; variable</p>
+    <h2>The Kiln</h2>
+    <p>Dead ahead on the plate for one week of nights and then under your feet, because it is low in the south and takes an hour to climb. It is a red giant, huge and soft-edged, and it is the only object on this sheet that visibly changes colour with the naked eye, going from orange to something close to a coal.</p>
+    <p>New plates carry a note under it. The star is in fact cooling and has dimmed by a tenth in the working lifetime of the oldest charts in the fleet, which is why the older plates mark it a half degree higher than the new ones and are quietly considered more correct. Navigation is mostly this: a list of errors that have not been removed yet.</p>
+  </section>
+
+  <section class="entry" id="storks-rest">
+    <p class="kicker">Waypoint 05 &middot; 38 ly &middot; hidden</p>
+    <h2>Stork's Rest</h2>
+    <p>The crossing point of the sheet, and the awkward one. Stork's Rest never rises above the horizon from the southern side, so on a real crossing it is used in the last two hours before dawn, picked up in the gap between cloud and the brightening eastern edge, and given up as soon as there is any other light at all.</p>
+    <p>There is a long streak of unresolved stars running away from it that looks like nothing at all on the plate and like a rope, hung in the dark, on the night itself. The name is not old. It came from a crossing in the sixties and it stuck, because names that nobody thinks about do.</p>
+  </section>
+
+  <section class="entry" id="last-light">
+    <p class="kicker">Waypoint 06 &middot; 52 ly &middot; hidden</p>
+    <h2>Last Light</h2>
+    <p>The sheet ends here, and the convention is that the final waypoint of a route is the last one anybody can name before the plate runs out, not the last one you actually want. Nobody in the trade claims to have been past it. The practice is to plot it, hold the bearing for a full watch, and then plot the next sheet, which does not exist.</p>
+    <p>There is a faint companion, half a degree away, and the pair take an enormous amount of light to arrive and give almost nothing back. Draw the line toward it anyway. A route sheet is a statement about where you intend to go, and the point of drawing the last leg is that you will never be allowed to finish the drawing.</p>
+  </section>
+</main>
+
+</body>
+</html>

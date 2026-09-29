@@ -1,0 +1,276 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --steel:#98a5b1;
+  --blue:#2f74d6;
+  --red:#d13a3c;
+  --loop:4s;
+  --spin:2s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:#080c11;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(46% 42% at 50% 52%,rgba(47,116,214,.16) 0%,rgba(47,116,214,0) 72%),
+    radial-gradient(60% 34% at 50% 96%,rgba(209,58,60,.1) 0%,rgba(209,58,60,0) 74%),
+    linear-gradient(178deg,#111a25 0%,#0a1017 52%,#060a0e 100%);
+}
+
+.obj{
+  --ar:1;
+  position:relative;
+  height:min(80vh,calc(94vw / var(--ar)));
+  aspect-ratio:var(--ar);
+}
+
+.halo{
+  position:absolute;
+  inset:9%;
+  border-radius:50%;
+  background:repeating-conic-gradient(rgba(196,220,244,.04) 0 3deg,rgba(196,220,244,0) 3deg 34deg);
+  animation:rot var(--spin) linear infinite;
+}
+
+.body{
+  position:absolute;
+  inset:7%;
+  border-radius:50%;
+  overflow:hidden;
+  background:
+    radial-gradient(62% 62% at 38% 26%,rgba(214,228,242,.3),rgba(214,228,242,0) 70%),
+    linear-gradient(152deg,#5d6975 0%,#3a434e 34%,#1d242c 68%,#101519 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(214,230,246,.2),
+    inset 0 -20px 34px -20px rgba(0,0,0,.9),
+    0 28px 48px -26px rgba(0,0,0,.9);
+}
+
+.brushed{
+  position:absolute;
+  inset:0;
+  background:
+    repeating-conic-gradient(from 0deg,rgba(226,238,250,.028) 0 1deg,rgba(0,0,0,.04) 1deg 7deg),
+    radial-gradient(74% 74% at 50% 50%,rgba(0,0,0,0) 38%,rgba(0,0,0,.45) 100%);
+}
+
+.orbit{
+  position:absolute;
+  left:11%;
+  top:11%;
+  width:78%;
+  height:78%;
+  border-radius:50%;
+  border:1px dashed rgba(198,220,244,.14);
+}
+
+.mount{
+  position:absolute;
+  inset:0;
+}
+
+.m1{transform:rotate(120deg)}
+.m2{transform:rotate(240deg)}
+
+.seat{
+  position:absolute;
+  left:44.6%;
+  top:12.5%;
+  width:10.8%;
+  height:12%;
+  border:2px solid rgba(154,170,186,.36);
+  border-top-color:rgba(154,170,186,0);
+  border-radius:0 0 44% 44%/0 0 32% 32%;
+}
+
+.arm{
+  position:absolute;
+  inset:0;
+  animation:rot var(--spin) linear infinite;
+}
+
+.spoke{
+  position:absolute;
+  left:48.2%;
+  top:32%;
+  width:3.6%;
+  height:20%;
+  border-radius:3px;
+  background:linear-gradient(90deg,#6d7a87 0%,#c6d2de 40%,#5a6672 68%,#232a31 100%);
+  box-shadow:0 2px 5px rgba(0,0,0,.6);
+}
+
+.rig{
+  position:absolute;
+  inset:0;
+  transform:rotate(16deg);
+  transform-origin:50% 50%;
+}
+
+.bucket{
+  position:absolute;
+  left:40.6%;
+  top:17%;
+  width:18.8%;
+  height:17%;
+  border:3px solid #7c8995;
+  border-top-color:rgba(124,137,149,0);
+  border-radius:0 0 46% 46%/0 0 32% 32%;
+  box-shadow:0 4px 10px rgba(0,0,0,.6);
+}
+
+.tube{
+  position:absolute;
+  left:45.6%;
+  top:11%;
+  width:8.8%;
+  height:25%;
+  overflow:hidden;
+  border-radius:13% 13% 48% 48%/4% 4% 22% 22%;
+  background:linear-gradient(90deg,rgba(226,240,252,.4) 0 9%,rgba(16,34,52,.66) 32%,rgba(9,22,36,.76) 64%,rgba(216,234,250,.36) 93% 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(206,226,246,.38),
+    0 2px 8px rgba(0,0,0,.5);
+}
+
+.sup{
+  position:absolute;
+  left:0;right:0;
+  top:0;
+  height:74%;
+  background:linear-gradient(180deg,rgba(88,150,226,.68) 0%,rgba(36,94,176,.84) 46%,rgba(16,54,118,.92) 100%);
+  animation:supHold var(--loop) ease-in-out infinite;
+}
+
+.band{
+  position:absolute;
+  left:0;right:0;
+  bottom:0;
+  height:44%;
+  transform-origin:50% 100%;
+  background:linear-gradient(180deg,rgba(232,110,98,.94) 0%,rgba(198,42,44,.96) 44%,rgba(104,16,22,.98) 100%);
+  box-shadow:inset 0 4px 8px -4px rgba(255,196,186,.7);
+  animation:migrate var(--loop) cubic-bezier(.4,.02,.3,1) infinite;
+}
+
+.iface{
+  position:absolute;
+  left:-8%;right:-8%;
+  top:0;
+  height:2%;
+  background:linear-gradient(180deg,rgba(255,224,200,.55),rgba(255,146,116,.12));
+  animation:iface var(--loop) ease-in-out infinite;
+}
+
+.men{
+  position:absolute;
+  left:3%;
+  right:3%;
+  top:-2.2%;
+  height:8.4%;
+  overflow:hidden;
+  border:1.3px solid rgba(216,238,252,.85);
+  border-radius:50%;
+  box-shadow:0 0 8px rgba(178,216,255,.65);
+}
+
+.glint{
+  position:absolute;
+  left:-100%;
+  top:-100%;
+  width:300%;
+  height:300%;
+  border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(255,255,255,.04) 0deg 30deg,rgba(255,255,255,.95) 44deg,rgba(255,255,255,.04) 60deg 180deg,rgba(255,255,255,.72) 194deg,rgba(255,255,255,.04) 210deg 360deg);
+  animation:rot 1s linear infinite;
+}
+
+.glassline{
+  position:absolute;
+  left:15%;
+  top:5%;
+  width:17%;
+  height:78%;
+  border-radius:40%;
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.05));
+  filter:blur(1px);
+  opacity:.5;
+}
+
+.hub{
+  position:absolute;
+  left:38.5%;
+  top:38.5%;
+  width:23%;
+  height:23%;
+  border-radius:50%;
+  background:
+    radial-gradient(60% 60% at 36% 28%,rgba(232,242,252,.82),rgba(232,242,252,0) 64%),
+    linear-gradient(150deg,#79858f,#3b434c 46%,#191e24 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(220,234,248,.3),
+    0 5px 12px rgba(0,0,0,.7);
+}
+
+.cap{
+  position:absolute;
+  left:44.4%;
+  top:44.4%;
+  width:11.2%;
+  height:11.2%;
+  border-radius:50%;
+  background:radial-gradient(64% 64% at 40% 32%,#e2ebf5,#7d8a97 52%,#2a313a 100%);
+  box-shadow:inset 0 0 0 1px rgba(240,248,255,.3);
+}
+
+@keyframes rot{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+@keyframes migrate{
+  0%,8%{transform:scaleY(.4)}
+  40%{transform:scaleY(.8)}
+  78%{transform:scaleY(1)}
+  100%{transform:scaleY(.4)}
+}
+
+@keyframes supHold{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(2%)}
+}
+
+@keyframes iface{
+  0%,100%{opacity:.6}
+  50%{opacity:1}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .halo,.arm,.glint,.sup,.band,.iface{animation:none}
+  .band{transform:scaleY(.96)}
+  .sup{transform:translateY(1%)}
+  .iface{opacity:.9}
+  .glint{transform:rotate(38deg)}
+  .halo{transform:rotate(11deg)}
+  .arm{transform:rotate(16deg)}
+}

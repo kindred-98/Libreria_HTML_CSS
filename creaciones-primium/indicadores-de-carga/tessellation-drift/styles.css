@@ -1,0 +1,132 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bone:#f6f3ec;
+  --bone-2:#dcd8ce;
+  --grey:#9a958b;
+  --grey-deep:#6d6860;
+  --ochre:#c08a2e;
+  --ochre-hi:#e8b458;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:var(--bone);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(74% 60% at 50% 46%,rgba(255,255,255,.85),rgba(255,255,255,0) 70%),
+    radial-gradient(120% 86% at 50% 116%,rgba(109,104,96,.34),rgba(109,104,96,0) 66%),
+    linear-gradient(168deg,#f7f4ee 0%,#e6e2d8 54%,#cfcabf 100%);
+}
+
+.fig{
+  position:relative;
+  aspect-ratio:1;
+  width:min(93vw,80vh);
+}
+
+.shade{
+  position:absolute;
+  inset:-6%;
+  border-radius:6px;
+  background:radial-gradient(46% 46% at 50% 52%,rgba(109,104,96,.36),rgba(109,104,96,.1) 58%,rgba(109,104,96,0) 96%);
+  filter:blur(12px);
+  transform:translateY(3%);
+  animation:shade var(--loop) ease-in-out infinite;
+}
+
+.layer{position:absolute;inset:0;overflow:hidden}
+.layer i{
+  position:absolute;
+  width:20%;
+  height:20%;
+  border-radius:2px;
+  transform-origin:50% 50%;
+  animation:joint var(--loop) ease-in-out infinite;
+}
+
+.layer--under{
+  animation:drift-under var(--loop) ease-in-out infinite;
+}
+.layer--under i{
+  background:linear-gradient(152deg,#fdfbf6 0%,#f1ede2 46%,#dcd7ca 78%,#c9c3b6 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(109,104,96,.4),
+    inset 0 3px 0 rgba(255,255,255,.95),
+    inset 0 -5px 9px rgba(109,104,96,.22);
+}
+
+.layer--over{
+  animation:drift-over var(--loop) ease-in-out infinite;
+}
+.layer--over i{
+  background:transparent;
+  border:clamp(3px,.55vw,6px) solid var(--ochre);
+  box-shadow:
+    inset 0 0 0 1px rgba(109,104,96,.5),
+    0 0 0 1px rgba(255,255,255,.5),
+    0 0 12px -2px rgba(232,180,88,.8);
+}
+
+.glaze{
+  position:absolute;
+  inset:-6%;
+  pointer-events:none;
+  background:radial-gradient(38% 34% at 32% 26%,rgba(255,255,255,.42),rgba(255,255,255,0) 92%);
+  animation:glaze var(--loop) ease-in-out infinite;
+}
+
+@keyframes joint{
+  0%,6%{transform:scale(1.06)}
+  30%{transform:scale(.9)}
+  52%{transform:scale(1.05)}
+  74%{transform:scale(.94)}
+  100%{transform:scale(1.06)}
+}
+
+@keyframes drift-under{
+  0%,100%{transform:translate(1.2%,1%)}
+  50%{transform:translate(-1.2%,-1%)}
+}
+
+@keyframes drift-over{
+  0%,100%{transform:rotate(1.15deg) translate(-3.6%,-3.1%)}
+  50%{transform:rotate(-1.15deg) translate(3.6%,3.1%)}
+}
+
+@keyframes shade{
+  0%,100%{opacity:.85;transform:translateY(3%) scale(1)}
+  50%{opacity:1;transform:translateY(3.6%) scale(1.03)}
+}
+
+@keyframes glaze{
+  0%,100%{opacity:.8;transform:translate(0,0)}
+  50%{opacity:1;transform:translate(1.2%,-1.2%)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .shade,.layer,.layer i,.glaze{animation:none}
+  .shade{opacity:.9;transform:translateY(3%) scale(1)}
+  .layer{transform:none}
+  .layer i{transform:scale(1)}
+  .glaze{opacity:.85;transform:none}
+}

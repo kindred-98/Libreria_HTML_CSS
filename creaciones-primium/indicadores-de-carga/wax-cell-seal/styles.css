@@ -1,0 +1,137 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+
+.stage{position:relative;width:100%;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden;
+  background:
+    radial-gradient(48% 40% at 50% 30%,rgba(226,154,46,.28),rgba(226,154,46,0) 72%),
+    radial-gradient(130% 86% at 50% 124%,rgba(16,8,2,.94),rgba(16,8,2,0) 66%),
+    linear-gradient(180deg,#160c04 0%,#2a1a0b 26%,#38230e 50%,#1c1007 76%,#0a0502 100%)}
+
+.comb{position:relative;width:min(88vh,98vw);height:min(88vh,98vw);overflow:hidden;
+  background:
+    radial-gradient(58% 42% at 42% 20%,#d9a052 0%,#b07a30 44%,#7a4c17 78%,#4a2c0c 100%);
+  -webkit-mask-image:radial-gradient(closest-side,#000 78%,rgba(0,0,0,0) 100%);
+  mask-image:radial-gradient(closest-side,#000 78%,rgba(0,0,0,0) 100%);
+  filter:drop-shadow(0 22px 46px rgba(0,0,0,.55));
+  animation:comb 4s ease-in-out infinite}
+
+.cell{position:absolute;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background:linear-gradient(160deg,#2a1a0b 0%,#170d05 54%,#0a0502 100%)}
+.cell::before{content:"";position:absolute;inset:0;
+  clip-path:polygon(50% 3%,96.5% 26%,96.5% 74%,50% 97%,3.5% 74%,3.5% 26%);
+  background:linear-gradient(160deg,rgba(196,140,68,.34),rgba(24,14,5,.2) 66%);
+  box-shadow:inset 0 6px 12px rgba(0,0,0,.5)}
+
+.wax{position:absolute;inset:0;display:block;opacity:0;transform:scale(.12);
+  clip-path:polygon(50% 1%,99% 25.5%,99% 74.5%,50% 99%,1% 74.5%,1% 25.5%)}
+.cell--a .wax{background:radial-gradient(58% 48% at 34% 26%,rgba(255,247,216,.8) 0%,rgba(255,236,170,0) 58%),
+    radial-gradient(70% 62% at 50% 44%,#ffe28d 0%,#f7bf45 38%,#d4911f 72%,#9c5f11 100%);
+  animation:waxA 4s cubic-bezier(.35,0,.3,1) infinite}
+.cell--b .wax{background:radial-gradient(58% 48% at 34% 26%,rgba(255,247,216,.8) 0%,rgba(255,236,170,0) 58%),
+    radial-gradient(70% 62% at 50% 44%,#ffe28d 0%,#f7bf45 38%,#d4911f 72%,#9c5f11 100%);
+  animation:waxB 4s cubic-bezier(.35,0,.3,1) infinite}
+.cell--c .wax{background:radial-gradient(58% 48% at 34% 26%,rgba(255,247,216,.8) 0%,rgba(255,236,170,0) 58%),
+    radial-gradient(70% 62% at 50% 44%,#ffe28d 0%,#f7bf45 38%,#d4911f 72%,#9c5f11 100%);
+  animation:waxC 4s cubic-bezier(.35,0,.3,1) infinite}
+.wax::after{content:"";position:absolute;inset:0;
+  clip-path:polygon(50% 1%,99% 25.5%,99% 74.5%,50% 99%,1% 74.5%,1% 25.5%);
+  background:radial-gradient(34% 22% at 32% 24%,rgba(255,255,246,.95) 0%,rgba(255,255,246,0) 70%),
+    linear-gradient(190deg,rgba(255,255,255,.4) 0%,rgba(255,255,255,0) 38%)}
+.cell--a .wax::after{animation:glossA 4s ease-out infinite}
+.cell--b .wax::after{animation:glossB 4s ease-out infinite}
+.cell--c .wax::after{animation:glossC 4s ease-out infinite}
+
+.pellet{position:absolute;width:6.4%;aspect-ratio:1;margin-left:-3.2%;transform:scale(0);opacity:0;
+  border-radius:50%;background:radial-gradient(circle at 36% 30%,#fff5d6,#f0be4d 46%,#a86a15 100%);
+  box-shadow:0 4px 10px rgba(0,0,0,.6),0 0 14px rgba(255,196,88,.4)}
+.pellet--a{animation:pelletA 4s cubic-bezier(.4,0,.4,1) infinite}
+.pellet--b{animation:pelletB 4s cubic-bezier(.4,0,.4,1) infinite}
+.pellet--c{animation:pelletC 4s cubic-bezier(.4,0,.4,1) infinite}
+
+.wing{position:absolute;top:28%;width:13%;height:2.4%;border-radius:99px;opacity:0;
+  background:linear-gradient(96deg,rgba(255,248,228,0),rgba(255,248,228,.55) 46%,rgba(255,248,228,0));
+  filter:blur(.8px)}
+.wing--l{left:22%;transform-origin:94% 50%;animation:fan 1s ease-in-out infinite;animation-delay:-.5s}
+.wing--r{right:22%;transform-origin:6% 50%;animation:fanR 1s ease-in-out infinite}
+
+.sheen{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(38% 30% at 44% 20%,rgba(255,214,132,.18),rgba(255,214,132,0) 70%)}
+
+@keyframes comb{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.012)}}
+@keyframes waxA{
+  0%,6%{opacity:0;transform:scale(.12)}
+  14%{opacity:1;transform:scale(1.05)}
+  24%{opacity:1;transform:scale(1)}
+  70%{opacity:1;transform:scale(1)}
+  84%,100%{opacity:0;transform:scale(.12)}}
+@keyframes waxB{
+  0%,24%{opacity:0;transform:scale(.12)}
+  32%{opacity:1;transform:scale(1.05)}
+  42%{opacity:1;transform:scale(1)}
+  70%{opacity:1;transform:scale(1)}
+  88%,100%{opacity:0;transform:scale(.12)}}
+@keyframes waxC{
+  0%,42%{opacity:0;transform:scale(.12)}
+  50%{opacity:1;transform:scale(1.05)}
+  60%{opacity:1;transform:scale(1)}
+  74%{opacity:1;transform:scale(1)}
+  92%,100%{opacity:0;transform:scale(.12)}}
+@keyframes glossA{
+  0%,8%{opacity:0}
+  15%{opacity:1}
+  26%{opacity:.6}
+  52%{opacity:.28}
+  70%{opacity:.14}
+  84%,100%{opacity:0}}
+@keyframes glossB{
+  0%,26%{opacity:0}
+  33%{opacity:1}
+  44%{opacity:.6}
+  60%{opacity:.26}
+  74%{opacity:.14}
+  88%,100%{opacity:0}}
+@keyframes glossC{
+  0%,44%{opacity:0}
+  51%{opacity:1}
+  62%{opacity:.6}
+  70%{opacity:.24}
+  78%{opacity:.14}
+  92%,100%{opacity:0}}
+@keyframes pelletA{
+  0%,2%{transform:translateY(0) scale(0);opacity:0}
+  5%{transform:translateY(0) scale(1);opacity:1}
+  11%{transform:translateY(230%) scale(1.15);opacity:1}
+  15%,100%{transform:translateY(230%) scale(0);opacity:0}}
+@keyframes pelletB{
+  0%,21%{transform:translateY(0) scale(0);opacity:0}
+  24%{transform:translateY(0) scale(1);opacity:1}
+  30%{transform:translateY(230%) scale(1.15);opacity:1}
+  34%,100%{transform:translateY(230%) scale(0);opacity:0}}
+@keyframes pelletC{
+  0%,39%{transform:translateY(0) scale(0);opacity:0}
+  42%{transform:translateY(0) scale(1);opacity:1}
+  48%{transform:translateY(230%) scale(1.15);opacity:1}
+  52%,100%{transform:translateY(230%) scale(0);opacity:0}}
+@keyframes fan{
+  0%,100%{transform:scaleX(1) rotate(-6deg);opacity:.2}
+  50%{transform:scaleX(1.3) rotate(7deg);opacity:.6}}
+@keyframes fanR{
+  0%,100%{transform:scaleX(-1) rotate(-6deg);opacity:.2}
+  50%{transform:scaleX(-1.3) rotate(7deg);opacity:.6}}
+
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+
+@media (prefers-reduced-motion:reduce){
+  .comb{animation:none;transform:scale(1)}
+  .wing,.pellet{animation:none;opacity:0}
+  .cell--a .wax{animation:none;opacity:1;transform:scale(1)}
+  .cell--b .wax{animation:none;opacity:1;transform:scale(1)}
+  .cell--c .wax{animation:none;opacity:1;transform:scale(1)}
+  .cell--a .wax::after{animation:none;opacity:.3}
+  .cell--b .wax::after{animation:none;opacity:.3}
+  .cell--c .wax::after{animation:none;opacity:.3}
+}

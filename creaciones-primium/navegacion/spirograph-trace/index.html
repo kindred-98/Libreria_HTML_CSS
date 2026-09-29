@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spirograph Trace - A Wheel of Six Holes That Keeps Drawing Until the Curve Closes</title>
+<meta name="description" content="Spirograph trace navigation: the six sections are holes in the rim of a drawing wheel, the pen is set in the hole for the section you are reading, and the wheel turns without stopping, closing each curve and starting the next one.">
+<meta name="description-es" content="Navegación de espirografo: las seis secciones son agujeros en el borde de una rueda de dibujo, la punta se coloca en el agujero de la sección que estás leyendo y la rueda no para, cerrando cada curva y empezando la siguiente.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<a class="salto" href="#hoja">Skip to the notes</a>
+
+<div class="papel" aria-hidden="true"><span class="papel__grano"></span><span class="papel__luz"></span></div>
+
+<header class="cab">
+  <p class="cab__kick">Spirograph Trace &middot; six holes &middot; one pen</p>
+  <h1 class="cab__title">Spirograph Trace</h1>
+  <p class="cab__stand">The header of this page is a spirograph: a large wheel with six holes in its rim, a smaller gear running inside it, and a pen in one hole of the small gear. The wheel never stops. The pen draws a curve, and because the ratios of the two wheels are whole numbers the curve always comes back and closes, and then the pen starts the next one without anyone touching it. The hole the pen is standing in is the section you are reading, and the curve under the wheel is the record of how long it has been standing there.</p>
+</header>
+
+<div class="mesa">
+
+  <div class="mesa__barra">
+    <span class="placa-oro">
+      <span class="placa-oro__etq">Hole</span>
+      <span class="placa-oro__ventana" aria-hidden="true"><span class="ventana-lineal" id="ventana"><b>I</b><b>II</b><b>III</b><b>IV</b><b>V</b><b>VI</b></span></span>
+      <span class="placa-oro__de">of&nbsp;vi</span>
+    </span>
+    <p class="mesa__vivo" id="vivo">The pen is in hole I, The Ring. Curve 1 is being drawn.</p>
+    <span class="contador" aria-hidden="true"><span class="contador__etq">Curves</span><b id="curvas">1</b></span>
+    <button class="llave" id="llave" type="button" aria-expanded="false" aria-controls="ficha">
+      <span class="llave__aro" aria-hidden="true"></span>
+      <span class="llave__texto">Ratios card</span>
+    </button>
+  </div>
+
+  <div class="trazador" id="trazador" data-cierra="0">
+
+    <span class="aguja" id="aguja" aria-hidden="true"></span>
+
+    <div class="rueda" aria-hidden="true">
+      <span class="rueda__aro"></span>
+      <span class="rueda__curva rueda__curva--1"></span>
+      <span class="rueda__curva rueda__curva--2"></span>
+      <span class="rueda__curva rueda__curva--3"></span>
+      <span class="rueda__rayos"></span>
+      <span class="rueda__perno"></span>
+      <span class="tinta" id="tinta"></span>
+    </div>
+
+    <nav class="perforaciones" aria-label="Holes in the rim">
+      <a class="perforacion" href="#anillo" style="--i:0;--a:0deg" aria-current="true"><span class="perforacion__aro"></span><span class="perforacion__n">I</span><span class="perforacion__t">The Ring</span></a>
+      <a class="perforacion" href="#rueda" style="--i:1;--a:60deg"><span class="perforacion__aro"></span><span class="perforacion__n">II</span><span class="perforacion__t">The Wheel</span></a>
+      <a class="perforacion" href="#traccion" style="--i:2;--a:120deg"><span class="perforacion__aro"></span><span class="perforacion__n">III</span><span class="perforacion__t">The Drive</span></a>
+      <a class="perforacion" href="#lapiz" style="--i:3;--a:180deg"><span class="perforacion__aro"></span><span class="perforacion__n">IV</span><span class="perforacion__t">The Pencil</span></a>
+      <a class="perforacion" href="#papel" style="--i:4;--a:240deg"><span class="perforacion__aro"></span><span class="perforacion__n">V</span><span class="perforacion__t">The Paper</span></a>
+      <a class="perforacion" href="#cierre" style="--i:5;--a:300deg"><span class="perforacion__aro"></span><span class="perforacion__n">VI</span><span class="perforacion__t">The Close</span></a>
+    </nav>
+
+  </div>
+
+  <div class="ficha" id="ficha" hidden>
+    <p class="ficha__t">The ratios that close the curve</p>
+    <dl class="ficha__l">
+      <div><dt>Outer wheel</dt><dd>72 teeth, turning once every six seconds</dd></div>
+      <div><dt>Inner gear</dt><dd>37 teeth, the other way, three times faster</dd></div>
+      <div><dt>Period</dt><dd>37 turns of the outer wheel, then it repeats</dd></div>
+      <div><dt>Curve</dt><dd>216 petals before the pen returns to the start</dd></div>
+    </dl>
+  </div>
+
+</div>
+
+<main class="hoja" id="hoja">
+
+  <section id="anillo">
+    <p class="hoja__marca">Hole I &middot; the outer wheel</p>
+    <h2>The Ring</h2>
+    <p>The big wheel is the simplest part and the only one with holes in it. It is a ring of plastic or plywood with a flat plate across the middle to stop it bending, and the holes are drilled near the rim at whatever spacing the maker felt like. A real toy has twenty or thirty of them in a scatter, which is why a real spirograph drawing is rarely tidy and almost never the same twice.</p>
+    <p>This one has six, evenly spaced, because six is what a navigation needs. The wheel at the head of this page is the one that turns, and the six holes in its rim are the six sections below. The hole the pen is standing in is the section you are reading, and the wheel does not know or care which one that is: it goes round at the same speed whatever hole is chosen.</p>
+  </section>
+
+  <section id="rueda">
+    <p class="hoja__marca">Hole II &middot; the inner gear</p>
+    <h2>The Wheel</h2>
+    <p>The small wheel sits inside the big one and has teeth on its outside that mesh with teeth on the inside of the ring, which means it turns the opposite way and several times faster. The more teeth it has relative to the ring, the more times the pen goes round for every turn of the wheel, and the more petals the drawing has before it repeats.</p>
+    <p>Getting a gear to run inside a ring is a manufacturing problem before it is a mathematical one. The teeth have to be cut on a curve, so they are made on a machine that moves the blank around as it cuts, and the first few of any batch are scrap until somebody works out how much material the cutter is taking away. Almost nobody who owns one of these things knows the ratio, and almost everybody who builds one does.</p>
+  </section>
+
+  <section id="traccion">
+    <p class="hoja__marca">Hole III &middot; the drive</p>
+    <h2>The Drive</h2>
+    <p>Something has to turn the outer wheel, and in a toy it is a finger on a knurled plastic knob at the centre, turning at whatever speed a child's wrist decides. There is no clutch, no ratchet and no escapement, which means the whole arrangement is undamped: it does whatever it is told, and the drawing's character comes almost entirely from how steadily the finger turns.</p>
+    <p>Turn it too fast and the pen throws ink because the curve outruns the nib. Turn it too slowly and the curve dries in the nib and the drawing comes out as a line of separate dots. The band where the drawing is a line rather than a dotted line is quite narrow, and it moves with the paper, which is why the same machine on the same day can produce two drawings that look like different instruments.</p>
+  </section>
+
+  <section id="lapiz">
+    <p class="hoja__marca">Hole IV &middot; the nib</p>
+    <h2>The Pencil</h2>
+    <p>The pen is a pin with a lead in it, held in a hole in the small wheel so that it traces whatever path the wheel's rotation makes. The whole of the machine's output passes through that one point, which is why the drawing is a curve and not a shape: the pen is on the paper, and the paper is not. Everything interesting is a consequence of where the pen is not.</p>
+    <p>Change the hole and you change the drawing without changing anything else. The wheel turns, the gear turns, the ratio is untouched, and the curve is a different size and a different phase of the same size. Six holes in the rim means six drawings, and the spirograph will produce all six in turn, over and over, for as long as somebody keeps turning.</p>
+  </section>
+
+  <section id="papel">
+    <p class="hoja__marca">Hole V &middot; the sheet</p>
+    <h2>The Paper</h2>
+    <p>The paper is not part of the mechanism and it is the reason for all of it. A sheet under a turning wheel does not need to be fixed, because the pen is doing the moving and the friction is low, but it does need to be flat, and it does need to be big enough, and it needs to be a surface that ink will sit on without either soaking in or sliding off.</p>
+    <p>A sheet that is even slightly curled changes the drawing, because a curl is a third dimension and the machine is entirely two-dimensional. This is the most common reason a spirograph drawing looks wrong: the paper lifted at one corner, the curve spread out in that quarter, and a pattern that should be closed is left with a gap in it and no way to explain the gap.</p>
+  </section>
+
+  <section id="cierre">
+    <p class="hoja__marca">Hole VI &middot; the close</p>
+    <h2>The Close</h2>
+    <p>Here is the part that makes the whole thing worth building. If the ratio of teeth is a ratio of whole numbers, then after a certain number of turns the pen arrives back at the hole it started from, at the same angle, having drawn the same line over itself. The curve closes. It always closes, and it closes at a time you can calculate in advance, and every spirograph ever made is an argument about how to make that number large enough to be interesting.</p>
+    <p>Then it starts again without anything being reset, because there is nothing to reset. The wheel at the head of this page does the same thing: the curve is drawn, the curve closes, the pen lifts for the width of one nib, and the next curve begins from the same hole and the same angle. Nobody is winding anything. The count on the right of the machine is the only record of how many times it has happened.</p>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>The wheel is the navigation: every hole is a link into the notes below, and the hole the pen is in is the chapter you are reading.</p>
+</footer>
+</body>
+</html>

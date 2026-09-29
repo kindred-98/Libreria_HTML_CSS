@@ -1,0 +1,154 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --violet:#2a1442;
+  --violet-up:#150a24;
+  --violet-lit:#6a3aa8;
+  --grey:#8b8494;
+  --white:#f7f5ff;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:var(--violet-up);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(48% 44% at 50% 46%,rgba(106,58,168,.28),rgba(106,58,168,0) 74%),
+    radial-gradient(120% 84% at 50% 122%,rgba(10,4,18,.9),rgba(10,4,18,0) 64%),
+    linear-gradient(170deg,#1d0f31 0%,#120822 50%,#08030f 100%);
+}
+
+.fig{
+  position:relative;
+  aspect-ratio:1.1;
+  width:min(92vw,calc(80vh * 1.1));
+}
+
+.cast{
+  position:absolute;
+  inset:2% -4% -5% -4%;
+  border-radius:6px;
+  background:rgba(6,2,12,.72);
+  filter:blur(16px);
+  transform:translateY(5%);
+  animation:cast var(--loop) ease-in-out infinite;
+}
+
+.slab{
+  position:relative;
+  width:100%;
+  height:100%;
+  border-radius:4px;
+  overflow:hidden;
+  background:
+    linear-gradient(168deg,#3a2258 0%,#2a1642 46%,#1a0d2c 100%);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08),
+    inset 0 0 0 1px rgba(255,255,255,.12),
+    inset 0 0 70px -18px rgba(0,0,0,.9),
+    0 30px 60px -24px rgba(0,0,0,.85);
+  animation:slab var(--loop) ease-in-out infinite;
+}
+
+.grate{
+  position:absolute;
+  left:-24%;
+  right:-24%;
+  top:-14%;
+  bottom:-14%;
+  transform-origin:50% 50%;
+}
+
+.grate--a{
+  background:repeating-linear-gradient(90deg,rgba(247,245,255,.96) 0 4.2px,rgba(247,245,255,.06) 4.2px 21px);
+  transform:rotate(.5deg);
+}
+
+.grate--b{
+  background:repeating-linear-gradient(90deg,rgba(176,166,190,.94) 0 4.8px,rgba(176,166,190,.05) 4.8px 24px);
+  mix-blend-mode:screen;
+  transform:rotate(-.5deg);
+  animation:sweep var(--loop) ease-in-out infinite;
+}
+
+.beat{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:repeating-linear-gradient(90.5deg,rgba(247,245,255,0) 0 52px,rgba(247,245,255,.2) 84px,rgba(247,245,255,.06) 118px,rgba(247,245,255,0) 144px,rgba(247,245,255,0) 168px);
+  mix-blend-mode:overlay;
+  animation:beat 2s ease-in-out infinite;
+}
+
+.gloss{
+  position:absolute;
+  left:-60%;
+  right:-60%;
+  top:0;
+  bottom:0;
+  pointer-events:none;
+  background:linear-gradient(102deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.2) 50%,rgba(255,255,255,0) 60%);
+  animation:gloss var(--loop) linear infinite;
+}
+
+.lip{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,0) 6%,rgba(255,255,255,0) 94%,rgba(255,255,255,.1) 100%),
+    linear-gradient(90deg,rgba(255,255,255,.12) 0%,rgba(255,255,255,0) 5%,rgba(255,255,255,0) 95%,rgba(255,255,255,.12) 100%);
+}
+
+@keyframes sweep{
+  0%,100%{transform:rotate(-.5deg) translateX(-4.5%)}
+  50%{transform:rotate(-.5deg) translateX(4.5%)}
+}
+
+@keyframes beat{
+  0%,100%{background-position:0 0;opacity:.4}
+  50%{background-position:84px 0;opacity:1}
+}
+
+@keyframes gloss{
+  0%{transform:translateX(-16%)}
+  100%{transform:translateX(16%)}
+}
+
+@keyframes slab{
+  0%,100%{transform:scale(1.012)}
+  50%{transform:scale(.992)}
+}
+
+@keyframes cast{
+  0%,100%{opacity:.7;transform:translateY(5%) scale(.98)}
+  50%{opacity:1;transform:translateY(6.4%) scale(1.02)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .cast,.slab,.grate--b,.beat,.gloss{animation:none}
+  .cast{opacity:.9;transform:translateY(5%) scale(1)}
+  .slab{transform:scale(1)}
+  .grate--b{transform:rotate(-.5deg) translateX(0)}
+  .beat{background-position:42px 0;opacity:.9}
+  .gloss{transform:translateX(0)}
+}

@@ -1,0 +1,130 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#0b0710;
+  --ink-up:#1a1024;
+  --magenta:#ff2e93;
+  --magenta-hi:#ff8fc6;
+  --cream:#f6ead2;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(48% 44% at 50% 50%,rgba(255,46,147,.16),rgba(255,46,147,0) 72%),
+    radial-gradient(120% 86% at 50% 118%,rgba(26,16,36,.9),rgba(26,16,36,0) 64%),
+    linear-gradient(168deg,#170e22 0%,#0d0715 50%,#06040a 100%);
+}
+
+.fig{
+  position:relative;
+  aspect-ratio:1;
+  width:min(90vw,80vh);
+}
+
+.bloom{
+  position:absolute;
+  inset:-14%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,46,147,.24),rgba(255,143,198,.08) 48%,rgba(255,46,147,0) 76%);
+  filter:blur(15px);
+  animation:bloom var(--loop) ease-in-out infinite;
+}
+
+.plate{position:absolute;inset:0}
+
+.plate i{
+  position:absolute;
+  inset:0;
+  animation:morph var(--loop) cubic-bezier(.45,.02,.55,.98) infinite;
+}
+
+.plate i.rim{
+  background:linear-gradient(146deg,#ff6ab4 0%,var(--magenta) 26%,#a8075a 56%,#ff4fa8 78%,#7a0342 100%);
+  filter:drop-shadow(0 0 18px rgba(255,46,147,.5));
+}
+
+.plate i.core{
+  inset:9%;
+  background:linear-gradient(158deg,#fff8ec 0%,var(--cream) 34%,#e2cfae 66%,#c9b28c 100%);
+  box-shadow:inset 0 0 26px -8px rgba(124,72,20,.5);
+}
+
+.needles{position:absolute;inset:0}
+.needles b{
+  position:absolute;
+  left:50%;
+  bottom:50%;
+  width:4.4%;
+  height:49%;
+  transform-origin:50% 100%;
+  clip-path:polygon(50% 0,100% 100%,0 100%);
+  background:linear-gradient(180deg,rgba(255,253,246,.98) 0%,rgba(255,220,240,.72) 26%,rgba(246,234,210,.24) 62%,rgba(246,234,210,0) 100%);
+  animation:needle var(--loop) cubic-bezier(.4,.02,.4,1) infinite;
+}
+
+.dust{
+  position:absolute;
+  inset:-8%;
+  pointer-events:none;
+  background:
+    radial-gradient(28% 26% at 30% 30%,rgba(255,143,198,.16),rgba(255,143,198,0) 94%),
+    radial-gradient(26% 24% at 70% 70%,rgba(255,46,147,.14),rgba(255,46,147,0) 94%);
+  animation:dust var(--loop) ease-in-out infinite;
+}
+
+@keyframes morph{
+  0%{clip-path:var(--a)}
+  25%{clip-path:var(--b)}
+  50%{clip-path:var(--c)}
+  75%{clip-path:var(--b)}
+  100%{clip-path:var(--a)}
+}
+
+@keyframes needle{
+  0%,30%{transform:rotate(var(--a)) scaleY(.05);opacity:0}
+  45%{transform:rotate(var(--a)) scaleY(1.07);opacity:.92}
+  54%{transform:rotate(var(--a)) scaleY(1);opacity:1}
+  84%{transform:rotate(var(--a)) scaleY(1);opacity:1}
+  100%{transform:rotate(var(--a)) scaleY(.05);opacity:0}
+}
+
+@keyframes bloom{
+  0%,6%{opacity:.34;transform:scale(.92)}
+  50%{opacity:1;transform:scale(1.08)}
+  88%,100%{opacity:.34;transform:scale(.92)}
+}
+
+@keyframes dust{
+  0%,100%{opacity:.5;transform:translate(0,0) scale(1)}
+  50%{opacity:1;transform:translate(1.4%,-1.4%) scale(1.04)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .bloom,.plate i,.needles b,.dust{animation:none}
+  .bloom{opacity:.85;transform:scale(1)}
+  .plate i{clip-path:var(--c)}
+  .needles b{transform:rotate(var(--a)) scaleY(1);opacity:1}
+  .dust{opacity:.8;transform:none}
+}

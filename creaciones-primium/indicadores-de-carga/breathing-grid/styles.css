@@ -1,0 +1,137 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --coal:#131619;
+  --coal-2:#1d2226;
+  --grey:#4c545b;
+  --cold:#cfe4f2;
+  --cold-hi:#f2f9ff;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:#0a0c0e;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(50% 44% at 50% 48%,rgba(120,164,192,.13),rgba(120,164,192,0) 74%),
+    linear-gradient(178deg,#15181b 0%,#0c0e10 48%,#070809 100%);
+}
+
+.fig{
+  position:relative;
+  aspect-ratio:1;
+  width:min(92vw,80vh);
+}
+
+.core{
+  position:absolute;
+  inset:-18%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,rgba(160,200,226,.16),rgba(76,84,91,.08) 48%,rgba(76,84,91,0) 74%);
+  filter:blur(14px);
+  animation:core var(--loop) ease-in-out infinite;
+}
+
+.grid{
+  position:absolute;
+  inset:0;
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  grid-template-rows:repeat(8,1fr);
+  gap:1.15%;
+  animation:breathe 2s ease-in-out infinite;
+}
+
+.grid i{
+  position:relative;
+  border-radius:14%;
+  transform-origin:50% 50%;
+  background:
+    linear-gradient(154deg,rgba(207,228,242,calc(.03 + var(--r) * .004 + var(--c) * .002)) 0%,rgba(207,228,242,0) 58%),
+    linear-gradient(180deg,#333c44 0%,#252d34 52%,#181d22 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(207,228,242,.18),
+    inset 0 1px 0 rgba(207,228,242,.22),
+    0 2px 6px -2px rgba(0,0,0,.8);
+  animation:cell 2s ease-in-out infinite, lit var(--loop) linear infinite;
+}
+
+.grid i::after{
+  content:"";
+  position:absolute;
+  inset:18%;
+  border-radius:22%;
+  background:radial-gradient(closest-side,var(--cold-hi),rgba(207,228,242,.5) 48%,rgba(207,228,242,0) 78%);
+  opacity:0;
+  animation:lit var(--loop) linear infinite;
+}
+
+.scan{
+  position:absolute;
+  left:0;
+  right:0;
+  height:12.5%;
+  border-radius:2%;
+  pointer-events:none;
+  background:linear-gradient(180deg,rgba(242,249,255,0) 0%,rgba(242,249,255,.1) 42%,rgba(242,249,255,.2) 50%,rgba(242,249,255,.1) 58%,rgba(242,249,255,0) 100%);
+  animation:scan var(--loop) linear infinite;
+}
+
+@keyframes cell{
+  0%,100%{transform:scale(1.07)}
+  50%{transform:scale(.955)}
+}
+
+@keyframes lit{
+  0%{filter:brightness(1);opacity:.9}
+  15%{filter:brightness(1.5);opacity:.5}
+  34%{filter:brightness(1);opacity:.08}
+  52%{filter:brightness(1);opacity:.05}
+  100%{filter:brightness(1);opacity:.9}
+}
+
+@keyframes breathe{
+  0%,100%{transform:scale(1.035)}
+  50%{transform:scale(.985)}
+}
+
+@keyframes core{
+  0%,8%{opacity:.4;transform:scale(.92)}
+  52%{opacity:1;transform:scale(1.06)}
+  88%,100%{opacity:.4;transform:scale(.92)}
+}
+
+@keyframes scan{
+  0%{transform:translateY(700%);opacity:0}
+  6%{opacity:1}
+  94%{opacity:1}
+  100%{transform:translateY(0);opacity:0}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .core,.grid,.grid i,.grid i::after,.scan{animation:none}
+  .core{opacity:.8;transform:scale(1)}
+  .grid{transform:scale(1)}
+  .grid i{transform:scale(1);filter:brightness(1.24)}
+  .grid i::after{opacity:.3}
+  .scan{opacity:.7;transform:translateY(350%)}
+}

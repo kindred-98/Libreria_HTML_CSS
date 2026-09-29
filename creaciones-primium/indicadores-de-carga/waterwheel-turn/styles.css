@@ -1,0 +1,319 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  background:
+    radial-gradient(126% 86% at 50% 4%,hsla(36,38%,28%,.55) 0%,transparent 66%),
+    linear-gradient(180deg,#241c15 0%,#171310 58%,#0a0908 100%);
+}
+
+.rig{
+  position:relative;
+  width:min(95vw,54.6vh);
+  aspect-ratio:.72;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+  border:0;
+}
+
+.post{
+  position:absolute;
+  top:2%;
+  width:7%;
+  height:96%;
+  border-radius:2px;
+  background:
+    repeating-linear-gradient(90deg,hsla(28,30%,88%,.09) 0 1px,transparent 1px 20%),
+    linear-gradient(90deg,#8f5f36 0%,#6b4526 40%,#4a2f1b 78%,#7a5230 100%);
+  box-shadow:inset 0 0 0 1px hsla(26,30%,84%,.16),0 6px 12px hsla(24,40%,4%,.55);
+}
+
+.post-l{left:2%}
+.post-r{right:2%}
+
+.beam{
+  position:absolute;
+  left:2%;right:2%;
+  top:2%;
+  height:6.5%;
+  border-radius:2px;
+  background:
+    repeating-linear-gradient(90deg,hsla(28,30%,88%,.1) 0 1px,transparent 1px 12%),
+    linear-gradient(180deg,#9a6a3e 0%,#6d4726 46%,#412a19 100%);
+  box-shadow:inset 0 0 0 1px hsla(26,30%,84%,.18),0 5px 10px hsla(24,40%,4%,.55);
+}
+
+.bearing{
+  position:absolute;
+  left:38%;right:38%;
+  top:4%;
+  height:12%;
+  border-radius:3px;
+  background:
+    repeating-linear-gradient(90deg,hsla(28,30%,88%,.1) 0 1px,transparent 1px 18%),
+    linear-gradient(180deg,#8a5c35 0%,#5d3c21 58%,#3a2516 100%);
+  box-shadow:inset 0 0 0 1px hsla(26,30%,84%,.18),0 4px 8px hsla(24,40%,4%,.5);
+}
+
+.bearing::after{
+  content:"";
+  position:absolute;
+  left:44%;right:44%;
+  top:62%;
+  bottom:-158%;
+  border-radius:2px;
+  background:linear-gradient(90deg,#9aa3a9,#4c5459 46%,#2b3135);
+  box-shadow:0 1px 2px hsla(24,40%,4%,.6);
+}
+
+.wheel{
+  position:absolute;
+  left:50%;top:5%;
+  width:80.5%;
+  margin-left:-40.25%;
+  aspect-ratio:1;
+  animation:spin 4s linear infinite;
+}
+
+.ring{
+  position:absolute;
+  border-radius:50%;
+  border-style:solid;
+  border-color:transparent;
+}
+
+.ring-in{inset:19%;border-width:5px;border-color:#8a5a33 #6a4325 #4a2e17 #7c4f2c}
+.ring-out{inset:0;border-width:8px;border-color:#96633a #754a29 #4f3119 #8a5a33;box-shadow:0 3px 12px hsla(24,40%,4%,.6),inset 0 0 0 1px hsla(28,30%,86%,.14)}
+
+.spokes{position:absolute;inset:0}
+
+.sp{
+  position:absolute;
+  left:50%;top:9%;
+  width:2.6%;
+  height:41%;
+  margin-left:-1.3%;
+  transform-origin:50% 100%;
+  border-radius:2px;
+  background:linear-gradient(90deg,#8a5a33,#5b3a20 60%,#422916);
+  box-shadow:0 1px 2px hsla(24,40%,4%,.5);
+}
+
+.s1{transform:rotate(0deg)}
+.s2{transform:rotate(45deg)}
+.s3{transform:rotate(90deg)}
+.s4{transform:rotate(135deg)}
+.s5{transform:rotate(180deg)}
+.s6{transform:rotate(225deg)}
+.s7{transform:rotate(270deg)}
+.s8{transform:rotate(315deg)}
+
+.paddles{position:absolute;inset:0}
+
+.p{
+  position:absolute;
+  inset:0;
+  transform:rotate(var(--r));
+}
+
+.board{
+  position:absolute;
+  left:38%;top:1.5%;
+  width:24%;height:29%;
+  border-radius:2px;
+  background:
+    repeating-linear-gradient(90deg,hsla(28,32%,90%,.16) 0 1px,transparent 1px 16%),
+    linear-gradient(180deg,#b87b45 0%,#8a5a33 40%,#4f3119 100%);
+  box-shadow:inset 0 0 0 1px hsla(26,34%,86%,.24),0 3px 7px hsla(24,40%,4%,.5);
+}
+
+.wet{
+  position:absolute;
+  left:0;right:0;top:0;
+  height:64%;
+  border-radius:2px 2px 0 0;
+  background:linear-gradient(180deg,hsla(174,40%,74%,.5),hsla(186,52%,20%,.8));
+  box-shadow:inset 0 1px 0 hsla(160,50%,92%,.4);
+  opacity:0;
+  animation:soak .5s linear infinite;
+  animation-delay:var(--d);
+}
+
+.hub{
+  position:absolute;
+  left:41%;top:41%;
+  width:18%;aspect-ratio:1;
+  border-radius:50%;
+  background:
+    repeating-conic-gradient(from 0deg,#8a5a33 0 14deg,#5c3b21 14deg 28deg),
+    radial-gradient(circle,#7d4e29,#4a2e17);
+  box-shadow:0 2px 5px hsla(24,40%,4%,.6),inset 0 0 0 2px hsla(26,34%,86%,.2);
+}
+
+.axle{
+  position:absolute;
+  left:45.5%;top:45.5%;
+  width:9%;aspect-ratio:1;
+  border-radius:50%;
+  background:radial-gradient(circle at 36% 30%,#b7bfc4,#5a6367 62%,#333a3e);
+  box-shadow:0 1px 3px hsla(24,40%,4%,.7);
+}
+
+.trough{
+  position:absolute;
+  left:0;right:0;
+  top:50%;
+  height:50%;
+}
+
+.rimwood{
+  position:absolute;
+  left:3%;right:3%;
+  top:0;
+  height:5.4%;
+  border-radius:2px;
+  background:
+    repeating-linear-gradient(90deg,hsla(28,30%,88%,.12) 0 1px,transparent 1px 10%),
+    linear-gradient(180deg,#8f5f36 0%,#5e3d21 68%,#3d2716 100%);
+  box-shadow:inset 0 0 0 1px hsla(26,30%,84%,.18),0 4px 8px hsla(24,40%,4%,.5);
+}
+
+.water{
+  position:absolute;
+  left:7%;right:7%;
+  top:5.4%;
+  bottom:4%;
+  border-radius:2px 2px 6px 6px;
+  overflow:hidden;
+  background:linear-gradient(180deg,hsla(174,44%,42%,.52) 0%,hsla(180,48%,30%,.6) 40%,hsla(186,50%,16%,.78) 100%);
+  box-shadow:inset 0 3px 8px hsla(178,50%,70%,.24);
+}
+
+.water::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;
+  top:0;
+  height:6%;
+  background:linear-gradient(180deg,hsla(166,44%,94%,.7),transparent);
+}
+
+.caustic{
+  position:absolute;
+  left:0;right:0;
+  top:12%;bottom:14%;
+  background:
+    repeating-linear-gradient(96deg,hsla(168,50%,92%,.05) 0 3px,transparent 3px 22px),
+    radial-gradient(70% 50% at 50% 30%,hsla(170,50%,90%,.1),transparent 70%);
+  animation:causticDrift 2s linear infinite;
+}
+
+.sk{
+  position:absolute;
+  top:2%;
+  width:20%;
+  aspect-ratio:2.8;
+  border-radius:50%;
+  background:radial-gradient(closest-side,hsla(150,36%,98%,.44),transparent 74%);
+  animation:skid 2s linear infinite;
+}
+
+.sk1{left:10%}
+.sk2{left:42%;animation-delay:-.66s}
+.sk3{left:70%;animation-delay:-1.33s}
+
+.spray{
+  position:absolute;
+  left:22%;right:12%;
+  top:-4%;
+  height:20%;
+}
+
+.spray i{
+  position:absolute;
+  bottom:0;
+  width:24%;
+  aspect-ratio:1.4;
+  border-radius:50% 50% 42% 42%/80% 80% 24% 24%;
+  background:radial-gradient(closest-side at 50% 76%,hsla(150,36%,100%,.8),hsla(168,36%,84%,.16) 66%,transparent 84%);
+  transform:scale(.2);
+  animation:spatter .5s cubic-bezier(.3,.1,.3,1) infinite;
+}
+
+.spray i.q1{left:6%}
+.spray i.q2{left:38%;animation-delay:-.17s}
+.spray i.q3{left:70%;animation-delay:-.33s}
+
+.moss{
+  position:absolute;
+  background:
+    radial-gradient(56% 76% at 18% 66%,hsla(88,40%,36%,.9),transparent 72%),
+    radial-gradient(46% 62% at 52% 88%,hsla(94,42%,46%,.82),transparent 74%),
+    radial-gradient(52% 70% at 84% 58%,hsla(84,36%,30%,.9),transparent 72%);
+  filter:blur(1.1px);
+}
+
+.moss-a{left:0;top:10%;width:12%;height:26%}
+.moss-b{right:0;top:4%;width:11%;height:20%}
+.moss-c{left:2%;top:-1%;width:30%;height:9%}
+
+.moss-a,.moss-b,.moss-c{animation:mossBreathe 4s ease-in-out infinite}
+.moss-b{animation-delay:-1.3s}
+.moss-c{animation-delay:-2.6s}
+
+@keyframes spin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+@keyframes soak{
+  0%{opacity:0}
+  24%{opacity:1}
+  100%{opacity:.8}
+}
+
+@keyframes skid{
+  0%{transform:translateX(-24%) scale(.7);opacity:0}
+  28%{opacity:.6}
+  100%{transform:translateX(300%) scale(1.1);opacity:0}
+}
+
+@keyframes spatter{
+  0%{transform:scale(.2) translateY(10%);opacity:0}
+  22%{transform:scale(.66);opacity:.8}
+  100%{transform:scale(1.2) translateY(-80%);opacity:0}
+}
+
+@keyframes causticDrift{
+  0%{transform:translateX(-5%)}
+  100%{transform:translateX(5%)}
+}
+
+@keyframes mossBreathe{
+  0%,100%{transform:scale(1);opacity:.92}
+  50%{transform:scale(1.05);opacity:1}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .wheel,.wet,.sk,.spray i,.moss,.caustic{animation:none!important}
+  .wheel{transform:rotate(22deg)}
+  .wet{opacity:.5}
+  .p:nth-child(5) .wet,.p:nth-child(6) .wet{opacity:.9}
+  .sk{opacity:.4}
+  .spray i{transform:scale(.6);opacity:.6}
+  .spray i.q2{transform:scale(.45);opacity:.4}
+  .spray i.q3{transform:scale(.3);opacity:.25}
+}

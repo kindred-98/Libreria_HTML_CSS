@@ -1,0 +1,183 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --deep:#03151f;
+  --deep-up:#082c40;
+  --water:#1d6f9c;
+  --blue:#63c4ee;
+  --white:#f2fbff;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:var(--deep);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(58% 44% at 50% 46%,rgba(40,120,165,.28),rgba(40,120,165,0) 74%),
+    linear-gradient(178deg,#062434 0%,#041a27 44%,#020d15 100%);
+}
+
+.fig{
+  position:relative;
+  aspect-ratio:1.15;
+  width:min(93vw,calc(80vh * 1.15));
+}
+
+.tank{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(44% 40% at 50% 46%,rgba(120,200,238,.2) 0%,rgba(29,111,156,.3) 42%,rgba(8,44,64,.16) 70%,rgba(8,44,64,0) 96%);
+}
+
+.tide{
+  position:absolute;
+  left:-70%;
+  right:-70%;
+  top:0;
+  bottom:0;
+  background:radial-gradient(closest-side at 50% 50%,rgba(226,248,255,.28) 0%,rgba(226,248,255,.12) 54%,rgba(226,248,255,0) 100%);
+  animation:tide 2s linear infinite;
+}
+
+.ends{position:absolute;left:2%;right:2%;top:8%;height:70%}
+.clamp{
+  position:absolute;
+  top:50%;
+  width:5.4%;
+  height:34%;
+  transform:translateY(-50%);
+  border-radius:3px;
+  background:linear-gradient(96deg,#0d2f42 0%,#1f6c94 34%,#63c4ee 52%,#17546f 74%,#08202d 100%);
+  box-shadow:0 0 0 1px rgba(2,12,18,.8),inset 0 1px 0 rgba(226,248,255,.5),0 10px 22px -10px rgba(0,0,0,.8);
+}
+.clamp--l{left:0}
+.clamp--r{right:0}
+
+.strand{
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:33%;
+  height:32%;
+}
+
+.strand i{
+  position:absolute;
+  top:0;
+  width:2.3%;
+  height:100%;
+  margin-left:-1.15%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:swing 2s linear infinite;
+}
+
+.strand i::before{
+  content:"";
+  width:100%;
+  height:5.2%;
+  min-height:2px;
+  border-radius:99px;
+  background:linear-gradient(180deg,#9fdcf5 0%,#f7feff 46%,#cdeeff 62%,#4ea5cf 100%);
+  box-shadow:0 0 12px rgba(150,220,250,.8);
+}
+
+.nodes{position:absolute;left:8%;right:8%;top:33%;height:32%}
+.nodes b{
+  position:absolute;
+  top:50%;
+  width:2.8%;
+  aspect-ratio:1;
+  border-radius:50%;
+  border:1.4px solid rgba(242,251,255,.9);
+  box-shadow:0 0 14px rgba(198,236,255,.9),inset 0 0 6px rgba(255,255,255,.6);
+  transform:translate(-50%,-50%);
+  animation:node 2s ease-in-out infinite;
+}
+.nodes b:nth-child(1){animation-delay:-.1s}
+.nodes b:nth-child(2){animation-delay:-.5s}
+.nodes b:nth-child(3){animation-delay:-.9s}
+.nodes b:nth-child(4){animation-delay:-1.3s}
+.nodes b:nth-child(5){animation-delay:-1.7s}
+
+.bed{
+  position:absolute;
+  left:12%;
+  right:12%;
+  top:56%;
+  height:30%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,rgba(140,220,250,.26),rgba(99,196,238,.07) 48%,rgba(99,196,238,0) 76%);
+  filter:blur(10px);
+  animation:bed var(--loop) ease-in-out infinite;
+}
+
+.gloss{
+  position:absolute;
+  inset:-12% -4%;
+  pointer-events:none;
+  background:radial-gradient(40% 26% at 50% 46%,rgba(242,251,255,.12),rgba(242,251,255,0) 70%);
+  animation:gloss 2s ease-in-out infinite;
+}
+
+@keyframes swing{
+  0%{transform:translateY(calc(var(--a) * 28%))}
+  12.5%{transform:translateY(calc(var(--a) * 25.9%))}
+  25%{transform:translateY(calc(var(--a) * 19.8%))}
+  37.5%{transform:translateY(calc(var(--a) * 10.7%))}
+  50%{transform:translateY(0)}
+  62.5%{transform:translateY(calc(var(--a) * -10.7%))}
+  75%{transform:translateY(calc(var(--a) * -19.8%))}
+  87.5%{transform:translateY(calc(var(--a) * -25.9%))}
+  100%{transform:translateY(calc(var(--a) * -28%))}
+}
+
+@keyframes node{
+  0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.22)}
+}
+
+@keyframes tide{
+  0%{transform:translateX(-14%)}
+  100%{transform:translateX(14%)}
+}
+
+@keyframes bed{
+  0%,8%{opacity:.24;transform:scale(.9)}
+  50%{opacity:.9;transform:scale(1.08)}
+  88%,100%{opacity:.24;transform:scale(.9)}
+}
+
+@keyframes gloss{
+  0%,100%{opacity:.6;transform:translate(0,0)}
+  50%{opacity:1;transform:translate(1.4%,-1%)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .tide,.strand i,.nodes b,.bed,.gloss{animation:none}
+  .tide{transform:translateX(0)}
+  .strand i{transform:translateY(calc(var(--a) * 17%))}
+  .nodes b{opacity:.9;transform:translate(-50%,-50%) scale(1.08)}
+  .bed{opacity:.8;transform:scale(1)}
+  .gloss{opacity:.9;transform:none}
+}

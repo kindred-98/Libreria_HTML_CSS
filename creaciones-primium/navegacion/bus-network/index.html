@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bus Network</title>
+<meta name="description" content="A red cream and graphite bus network drawn as four routes with a stop at every corner, where the bus you are riding runs along its own line to the stop under the reader and the headway board on the right tells you when the next one is due.">
+<meta name="description-es" content="Una red de autobuses roja, crema y grafito dibujada como cuatro líneas con una parada en cada esquina, donde el autobús en el que viajas recorre su propia línea hasta la parada que estás leyendo y el tablón de frecuencias de la derecha te dice cuándo pasa el siguiente.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+
+<header class="depot" data-nav data-at="0">
+  <div class="depot-top">
+    <p class="title">Red Urbana<span>Cuatro líneas, veinte minutos de headway</span></p>
+    <div class="depot-tools">
+      <p class="readout" data-readout>Línea 1, Plaza Mayor, first stop of the day</p>
+      <button class="tt-btn" type="button" data-panel-toggle aria-expanded="false" aria-controls="timetable">
+        <span class="tt-btn-dot" aria-hidden="true"></span>Headways
+      </button>
+    </div>
+  </div>
+
+  <div class="net">
+    <div class="lines">
+      <span class="line l1" aria-hidden="true"></span>
+      <span class="line l2" aria-hidden="true"></span>
+      <span class="line l3" aria-hidden="true"></span>
+      <span class="line l4" aria-hidden="true"></span>
+      <span class="pulse p1" aria-hidden="true"></span>
+      <span class="pulse p2" aria-hidden="true"></span>
+      <span class="pulse p3" aria-hidden="true"></span>
+      <span class="pulse p4" aria-hidden="true"></span>
+      <span class="coach" aria-hidden="true"><i></i><i></i><i></i></span>
+
+      <a class="halt h1" data-stop data-say="Line 1, Plaza Mayor, first stop of the day" href="#plaza-mayor" style="--c:0;--r:0">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="tag">
+          <span class="sr">Line 1, Plaza Mayor, first stop of the day, every twenty minutes</span>
+          <span class="nm" aria-hidden="true">Plaza Mayor</span>
+          <span class="rt" aria-hidden="true">Line 1 &middot; 20 min</span>
+        </span>
+      </a>
+      <a class="halt h2" data-stop data-say="Line 1, Mercado del Puerto, every twenty minutes" href="#mercado-puerto" style="--c:1;--r:0">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="tag">
+          <span class="sr">Line 1, Mercado del Puerto, every twenty minutes</span>
+          <span class="nm" aria-hidden="true">Mercado del Puerto</span>
+          <span class="rt" aria-hidden="true">Line 1 &middot; 20 min</span>
+        </span>
+      </a>
+      <a class="halt h3" data-stop data-say="Line 2, Escuela Nueva, every fifteen minutes" href="#escuela-nueva" style="--c:2;--r:1">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="tag">
+          <span class="sr">Line 2, Escuela Nueva, every fifteen minutes</span>
+          <span class="nm" aria-hidden="true">Escuela Nueva</span>
+          <span class="rt" aria-hidden="true">Line 2 &middot; 15 min</span>
+        </span>
+      </a>
+      <a class="halt h4" data-stop data-say="Line 2, Cuartel de Carbón, every fifteen minutes" href="#cuartel-carbon" style="--c:3;--r:1">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="tag">
+          <span class="sr">Line 2, Cuartel de Carbón, every fifteen minutes</span>
+          <span class="nm" aria-hidden="true">Cuartel de Carbón</span>
+          <span class="rt" aria-hidden="true">Line 2 &middot; 15 min</span>
+        </span>
+      </a>
+      <a class="halt h5" data-stop data-say="Line 3, Vado de Abajo, every thirty minutes" href="#vado-abajo" style="--c:4;--r:2">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="tag">
+          <span class="sr">Line 3, Vado de Abajo, every thirty minutes</span>
+          <span class="nm" aria-hidden="true">Vado de Abajo</span>
+          <span class="rt" aria-hidden="true">Line 3 &middot; 30 min</span>
+        </span>
+      </a>
+      <a class="halt h6" data-stop data-say="Line 4, Alto del Gasómetro, every forty minutes" href="#alto-gasometro" style="--c:5;--r:3">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="tag">
+          <span class="sr">Line 4, Alto del Gasómetro, every forty minutes, the last one at night</span>
+          <span class="nm" aria-hidden="true">Alto del Gasómetro</span>
+          <span class="rt" aria-hidden="true">Line 4 &middot; 40 min</span>
+        </span>
+      </a>
+    </div>
+
+    <div class="board">
+      <p class="board-cap">Próximo</p>
+      <p class="board-line" data-board="0"><span class="num">1</span> Plaza Mayor <span class="min">en 4 min</span></p>
+      <p class="board-line" data-board="1"><span class="num">1</span> Mercado del Puerto <span class="min">en 9 min</span></p>
+      <p class="board-line" data-board="2"><span class="num">2</span> Escuela Nueva <span class="min">en 2 min</span></p>
+      <p class="board-line" data-board="3"><span class="num">2</span> Cuartel de Carbón <span class="min">en 6 min</span></p>
+      <p class="board-line" data-board="4"><span class="num">3</span> Vado de Abajo <span class="min">en 12 min</span></p>
+      <p class="board-line" data-board="5"><span class="num">4</span> Alto del Gasómetro <span class="min">en 27 min</span></p>
+    </div>
+  </div>
+
+  <div class="timetable" id="timetable" data-panel hidden>
+    <h2 class="tt-title">Headways by line and hour</h2>
+    <p class="tt-row"><span class="pip pip-1" aria-hidden="true"></span>Line 1 runs every twenty minutes from six in the morning to eleven at night, and every thirty between those hours. It is the only line with a night service worth the name.</p>
+    <p class="tt-row"><span class="pip pip-2" aria-hidden="true"></span>Line 2 runs every fifteen at peak and every half hour off peak. It is the school run and it is packed between eight and nine in the morning.</p>
+    <p class="tt-row"><span class="pip pip-3" aria-hidden="true"></span>Line 3 is the long one, thirty minutes all day, and the only line with a timed point at the far end.</p>
+    <p class="tt-row"><span class="pip pip-4" aria-hidden="true"></span>Line 4 is the hill, forty minutes, and drops to two journeys an evening after nine. The last one leaves at twenty past eleven.</p>
+  </div>
+</header>
+
+<main class="pages">
+
+  <section class="page" id="plaza-mayor">
+    <p class="kicker">Line 1 &middot; first stop &middot; every 20 min</p>
+    <h2>Plaza Mayor</h2>
+    <p>Everything in this town starts at the square, including the buses. There are four of them on the north side and they queue in the order they were painted, which is the only organised thing about the square and the reason the whole network was drawn on a sheet of graph paper in the first place.</p>
+    <p>The stop is a flag on a pole, red with a white band, and the pole leans about four degrees away from the road and has done since before the network was numbered. Line 1 comes up the avenue from the river, swings right at the fountain, and stops here for as long as the queue at the fountain takes, which the timetable does not account for and never has.</p>
+  </section>
+
+  <section class="page" id="mercado-puerto">
+    <p class="kicker">Line 1 &middot; second stop &middot; every 20 min</p>
+    <h2>Mercado del Puerto</h2>
+    <p>The end of Line 1 and the busiest stop on the network, by a distance that nobody in the depot disputes. The market opens at six and closes at two, the buses come every twenty minutes, and for eight hours a day this corner is the highest point of passenger traffic in the whole province.</p>
+    <p>The bus does not pull in to the kerb here. It stops in the middle of the road because the kerb is full of handcarts, and everybody has accepted that so completely that the street furniture includes a painted box on the tarmac marking where the bus waits. The box was repainted in 2019 and the paint scheme is the only modern thing in the square.</p>
+  </section>
+
+  <section class="page" id="escuela-nueva">
+    <p class="kicker">Line 2 &middot; third stop &middot; every 15 min</p>
+    <h2>Escuela Nueva</h2>
+    <p>Line 2 exists because of the school, and the school exists because of the mine, and the whole arrangement is about a hundred and thirty years old. The stop is directly outside the gate, which is illegal in most towns and perfectly normal here, and at eight in the morning the pavement outside it holds about two hundred children in a space made for forty.</p>
+    <p>Fifteen minutes at the peak, half an hour otherwise, and the depot knows the school term better than the calendar does. In the last week of July the line runs at the off-peak headway all day and the driver still waits for the bell, because the bell rings anyway and there is nobody in the building to ring it.</p>
+  </section>
+
+  <section class="page" id="cuartel-carbon">
+    <p class="kicker">Line 2 &middot; fourth stop &middot; every 15 min</p>
+    <h2>Cuartel de Carbón</h2>
+    <p>The depot, on a piece of flat ground where the coal used to be stacked. Four bays, an open yard, a washing frame from the days when the buses were painted by hand, and a small hut with the timetable in it, which is a printed sheet in a plastic sleeve and is correct to within about a year.</p>
+    <p>Line 2 starts and finishes here, twice an hour, and every vehicle in the network passes the gates twice a day. It is the only stop where you can watch the headway being produced rather than merely obeyed, and on a wet afternoon with the yard empty it is a quiet, practical, faintly sad place to stand.</p>
+  </section>
+
+  <section class="page" id="vado-abajo">
+    <p class="kicker">Line 3 &middot; fifth stop &middot; every 30 min</p>
+    <h2>Vado de Abajo</h2>
+    <p>The lowest crossing on the river, and the reason Line 3 exists at all. It is a concrete ford with a footbridge bolted to it in 1961, and for about six weeks a year when the river is in spate the buses are supposed to stop at the bridge and let people walk. The instruction on the printed timetable says eleven metres of water and nobody has ever seen that many.</p>
+    <p>Thirty minutes all day, one bus an hour after eleven at night, and a single timed point at the far end which means the driver waits four minutes if they are early. It is the only line in the network with a regulation that anyone has ever complained about, and the complaint is always from the far end.</p>
+  </section>
+
+  <section class="page" id="alto-gasometro">
+    <p class="kicker">Line 4 &middot; sixth stop &middot; every 40 min</p>
+    <h2>Alto del Gasómetro</h2>
+    <p>The top of the hill, where the gas holder stood until it was struck in 1974 and nobody built anything in its place. Four buses a day up there, two after nine at night, and a single passenger on most of them. The keeper's hut is still there, the door is locked, and the building is scheduled, which in this town means that nothing inside it has been touched since the gas stopped.</p>
+    <p>Forty minutes is not a headway, it is a rumour. In winter the road at the top goes ungritted and the last bus sometimes does not go at all, and the depot tells the driver, and the driver tells the four people waiting, and they wait. The stop flag is the only thing on the hill that anybody has looked after.</p>
+  </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --black:#07080a;
+  --black-up:#131619;
+  --steel:#aebac4;
+  --steel-hi:#eef4f8;
+  --copper:#b96a30;
+  --copper-hi:#f0a765;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:var(--black);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(44% 34% at 50% 22%,rgba(174,186,196,.14),rgba(174,186,196,0) 74%),
+    radial-gradient(120% 80% at 50% 122%,rgba(20,23,26,.9),rgba(20,23,26,0) 64%),
+    linear-gradient(174deg,#14181c 0%,#0a0d10 48%,#050607 100%);
+}
+
+.fig{
+  position:relative;
+  aspect-ratio:.8;
+  width:min(93vw,calc(80vh * .8));
+  perspective:1560px;
+}
+
+.hall{
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+}
+
+.deck{
+  position:absolute;
+  left:-4%;
+  right:-4%;
+  bottom:3%;
+  height:15%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,rgba(174,186,196,.18),rgba(90,100,110,.09) 48%,rgba(10,12,14,.3) 80%,rgba(10,12,14,0) 100%);
+}
+
+.coil{
+  position:absolute;
+  inset:0;
+  --rz:clamp(78px,15.5vw,138px);
+  transform-style:preserve-3d;
+  animation:turn var(--loop) linear infinite;
+}
+
+.coil i{
+  position:absolute;
+  left:50%;
+  width:30%;
+  height:9.4%;
+  margin-left:-15%;
+  border-radius:46%/50%;
+  background:linear-gradient(164deg,var(--steel-hi) 0%,var(--steel) 20%,#5c6a75 50%,#cfdae1 72%,#7c8a95 100%);
+  box-shadow:0 2px 8px rgba(0,0,0,.6);
+  transform:rotateY(var(--a)) translateX(var(--rz)) rotateX(var(--tilt));
+  animation:strain var(--loop) ease-in-out infinite;
+}
+
+.coil i::after{
+  content:"";
+  position:absolute;
+  inset:24% 13%;
+  border-radius:inherit;
+  background:linear-gradient(150deg,#05080a,#11161a 60%,#1b2228);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.9),0 0 0 1px rgba(210,226,238,.16);
+}
+
+.coil i:nth-child(3n){
+  background:linear-gradient(164deg,var(--copper-hi) 0%,var(--copper) 22%,#6d3b18 52%,#d78f52 74%,#7d4419 100%);
+}
+.coil i:nth-child(3n)::after{
+  background:linear-gradient(150deg,#0a0603,#170d05 60%,#21140a);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.9),0 0 0 1px rgba(240,167,101,.2);
+}
+
+.rake{
+  position:absolute;
+  inset:-26%;
+  pointer-events:none;
+  background:conic-gradient(from 0deg at 50% 46%,rgba(255,255,255,0) 0deg,rgba(255,255,255,.14) 16deg,rgba(255,255,255,0) 52deg,rgba(255,255,255,.1) 104deg,rgba(255,255,255,0) 158deg,rgba(255,255,255,.12) 244deg,rgba(255,255,255,0) 306deg,rgba(255,255,255,0) 360deg);
+  filter:blur(24px);
+  animation:rake var(--loop) linear infinite;
+}
+
+.pool{
+  position:absolute;
+  left:6%;
+  right:6%;
+  bottom:2%;
+  height:13%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,rgba(174,186,196,.18),rgba(174,186,196,.05) 54%,rgba(174,186,196,0) 80%);
+  filter:blur(12px);
+  animation:pool var(--loop) ease-in-out infinite;
+}
+
+@keyframes turn{
+  0%{transform:translateY(-7%) rotateX(40deg) rotateY(0deg)}
+  50%{transform:translateY(-1.5%) rotateX(40deg) rotateY(180deg)}
+  100%{transform:translateY(-7%) rotateX(40deg) rotateY(360deg)}
+}
+
+@keyframes strain{
+  0%,100%{opacity:.78}
+  50%{opacity:1}
+}
+
+@keyframes rake{
+  0%{transform:rotate(0deg)}
+  100%{transform:rotate(360deg)}
+}
+
+@keyframes pool{
+  0%,8%{opacity:.34;transform:scale(.92)}
+  50%{opacity:.9;transform:scale(1.06)}
+  88%,100%{opacity:.34;transform:scale(.92)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .coil,.coil i,.rake,.pool{animation:none}
+  .coil{transform:translateY(-4%) rotateX(40deg) rotateY(28deg)}
+  .coil i{opacity:1}
+  .rake{transform:rotate(64deg)}
+  .pool{opacity:.8;transform:scale(1)}
+}

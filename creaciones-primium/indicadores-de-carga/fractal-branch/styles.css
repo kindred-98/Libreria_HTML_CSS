@@ -1,0 +1,108 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --paper:#efe9dc;
+  --paper-warm:#e2d9c6;
+  --ink:#14171a;
+  --ink-soft:#333c39;
+  --green:#4c9c5a;
+  --green-hi:#9fd08a;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:var(--paper);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(66% 52% at 50% 96%,rgba(20,23,26,.16),rgba(20,23,26,0) 72%),
+    radial-gradient(130% 92% at 50% -12%,rgba(255,253,246,.95),rgba(255,253,246,0) 60%),
+    linear-gradient(172deg,#f4efe3 0%,#e9e2d1 52%,#dbd2be 100%);
+}
+
+.fig{
+  position:relative;
+  aspect-ratio:1.0417;
+  width:min(93vw,calc(80vh * 1.0417));
+}
+.bed{
+  position:absolute;
+  left:6%;
+  right:6%;
+  bottom:-1.5%;
+  height:7%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,rgba(24,30,26,.4),rgba(24,30,26,.12) 54%,rgba(24,30,26,0) 80%);
+  filter:blur(5px);
+  animation:bed var(--loop) ease-in-out infinite;
+}
+
+.crown{position:absolute;inset:0}
+
+.crown i{
+  position:absolute;
+  transform-origin:0 50%;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--ink) 0%,#1e2829 42%,var(--ink-soft) 68%,var(--green) 94%,var(--green-hi) 100%);
+  box-shadow:0 1px 0 rgba(255,255,255,.16);
+  animation:twig var(--loop) cubic-bezier(.3,.02,.4,1) infinite;
+}
+
+.crown i::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:50%;
+  width:26%;
+  height:100%;
+  transform:translateY(-50%) scaleY(.5);
+  border-radius:99px;
+  background:linear-gradient(90deg,rgba(76,156,90,0),var(--green-hi));
+  opacity:0;
+  animation:bud var(--loop) cubic-bezier(.2,.7,.3,1) infinite;
+}
+
+@keyframes twig{
+  0%{transform:rotate(var(--r)) scaleX(.84)}
+  20%{transform:rotate(var(--r)) scaleX(1.04)}
+  32%,88%{transform:rotate(var(--r)) scaleX(1)}
+  100%{transform:rotate(var(--r)) scaleX(.84)}
+}
+
+@keyframes bud{
+  0%{opacity:0;transform:translateY(-50%) scaleY(.4)}
+  14%{opacity:1;transform:translateY(-50%) scaleY(1.7)}
+  34%{opacity:0;transform:translateY(-50%) scaleY(1)}
+  100%{opacity:0;transform:translateY(-50%) scaleY(.4)}
+}
+
+@keyframes bed{
+  0%,10%{opacity:.5;transform:scale(.86)}
+  50%{opacity:1;transform:scale(1.05)}
+  86%,100%{opacity:.5;transform:scale(.86)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .bed,.crown i,.crown i::after{animation:none}
+  .bed{opacity:.9;transform:scale(1)}
+  .crown i{transform:rotate(var(--r)) scaleX(1)}
+  .crown i::after{opacity:.55;transform:translateY(-50%) scaleY(1.1)}
+}

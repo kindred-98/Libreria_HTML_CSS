@@ -1,0 +1,443 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bronze:#c08a3c;
+  --bronze-lo:#5d3a12;
+  --bronze-hi:#e8b366;
+  --fire:#ff7a18;
+  --steel:#2b2521;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:#0a0705;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  -webkit-font-smoothing:antialiased;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(44% 26% at 46% 12%,rgba(255,122,24,.18) 0%,rgba(255,122,24,0) 70%),
+    radial-gradient(54% 20% at 50% 78%,rgba(192,138,60,.16) 0%,rgba(192,138,60,0) 72%),
+    radial-gradient(96% 76% at 50% 44%,#241a13 0%,#120c08 56%,#070504 100%);
+}
+
+.obj{
+  position:relative;
+  --ar:.62;
+  aspect-ratio:var(--ar);
+  height:min(78vh,134vw);
+}
+
+.crucible{
+  position:absolute;
+  left:20%;
+  top:3%;
+  width:46%;
+  height:20%;
+  transform-origin:14% 34%;
+  animation:tilt var(--loop) cubic-bezier(.42,0,.24,1) infinite;
+}
+
+.body{
+  position:absolute;
+  inset:0;
+  border-radius:9% 9% 52% 52%/7% 7% 46% 46%;
+  background:linear-gradient(178deg,#453c33 0%,#241e19 46%,#100d0a 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(226,196,152,.24),
+    inset 0 -10px 14px rgba(0,0,0,.6),
+    0 10px 20px -8px rgba(0,0,0,.8);
+}
+
+.melt{
+  position:absolute;
+  inset:20% 7% 12%;
+  border-radius:10% 10% 56% 56%/12% 12% 42% 42%;
+  background:radial-gradient(66% 86% at 46% 76%,#ffeec4 0%,#ffb24a 32%,#e0670f 68%,#7c2c05 100%);
+  box-shadow:inset 0 2px 4px rgba(255,240,206,.42),inset 0 -5px 9px rgba(58,14,2,.66);
+  animation:slosh var(--loop) cubic-bezier(.36,.1,.3,1) infinite;
+}
+
+.rim{
+  position:absolute;
+  left:-1%;right:-1%;
+  top:-1%;
+  height:19%;
+  border-radius:12px 12px 4px 4px;
+  background:linear-gradient(180deg,#544a3f 0%,#2b2520 62%,#15110d 100%);
+  box-shadow:inset 0 2px 0 rgba(240,214,172,.34),0 3px 7px rgba(0,0,0,.6);
+}
+
+.handle{
+  position:absolute;
+  left:-30%;
+  top:6%;
+  width:40%;
+  height:9%;
+  border-radius:40%;
+  background:linear-gradient(180deg,#4a4239 0%,#221d18 70%,#12100d 100%);
+  box-shadow:inset 0 1px 0 rgba(232,206,166,.26),0 3px 6px rgba(0,0,0,.6);
+  transform:rotate(-15deg);
+  transform-origin:100% 50%;
+}
+
+.spout{
+  position:absolute;
+  right:-4%;
+  bottom:6%;
+  width:20%;
+  height:22%;
+  border-radius:0 60% 40% 0;
+  background:linear-gradient(180deg,#3b332b,#14100d);
+  box-shadow:inset -1px 1px 0 rgba(232,206,166,.24);
+}
+
+.stream{
+  position:absolute;
+  left:55.2%;
+  top:20.5%;
+  width:10%;
+  height:58%;
+  transform-origin:50% 0;
+  background:linear-gradient(92deg,#7d2f05 0%,#ff9a26 24%,#ffbe57 48%,#ff8b1e 76%,#5f2003 100%);
+  clip-path:polygon(31% 0,69% 0,80% 62%,74% 100%,26% 100%,20% 62%);
+  filter:drop-shadow(0 0 7px rgba(255,122,24,.5));
+  animation:pour var(--loop) cubic-bezier(.3,0,.2,1) infinite;
+}
+
+.glare{
+  position:absolute;
+  left:58.2%;
+  top:20.5%;
+  width:1.9%;
+  height:58%;
+  transform-origin:50% 0;
+  background:linear-gradient(180deg,rgba(255,252,240,.9),rgba(255,206,140,.08));
+  border-radius:40%;
+  filter:blur(.4px);
+  z-index:1;
+  animation:glareRun var(--loop) cubic-bezier(.35,0,.25,1) infinite;
+}
+
+.mould{
+  position:absolute;
+  left:10%;
+  bottom:2%;
+  width:80%;
+  height:36%;
+  z-index:2;
+}
+
+.back{
+  position:absolute;
+  left:0;right:0;
+  top:0;
+  height:16%;
+  border-radius:4px 4px 0 0;
+  background:linear-gradient(180deg,#413931 0%,#221c17 68%,#141110 100%);
+  box-shadow:inset 0 2px 0 rgba(232,172,86,.30),0 6px 14px rgba(0,0,0,.55);
+}
+
+.wall{
+  position:absolute;
+  bottom:0;
+  width:5%;
+  height:86%;
+  background:linear-gradient(90deg,#332c25 0%,#1a1613 60%,#0d0b09 100%);
+  box-shadow:inset 0 0 7px rgba(0,0,0,.6);
+}
+
+.w1{left:0;border-radius:0 0 0 5px}
+.w2{right:0;transform:scaleX(-1);border-radius:0 0 0 5px}
+
+.base{
+  position:absolute;
+  left:0;right:0;
+  bottom:0;
+  height:14%;
+  border-radius:0 0 5px 5px;
+  background:linear-gradient(180deg,#3a322a 0%,#1b1613 60%,#0c0a08 100%);
+  box-shadow:inset 0 2px 0 rgba(232,172,86,.24);
+}
+
+.pool{
+  position:absolute;
+  left:14%;
+  bottom:14%;
+  width:72%;
+  height:40%;
+  transform-origin:50% 100%;
+  animation:draw var(--loop) cubic-bezier(.36,.02,.2,1) infinite;
+}
+
+.hot{
+  position:absolute;
+  inset:0;
+  border-radius:34% 34% 18% 18%/58% 58% 42% 42%;
+  background:radial-gradient(70% 96% at 46% 82%,#ffedc0 0%,#ffae44 34%,#dd6210 70%,#7b2c05 100%);
+  transform-origin:50% 100%;
+  animation:fill var(--loop) cubic-bezier(.28,.7,.3,1) infinite;
+}
+
+.skin{
+  position:absolute;
+  inset:-5% -3%;
+  border-radius:34% 34% 18% 18%/58% 58% 42% 42%;
+  background:radial-gradient(74% 100% at 44% 84%,#eab970 0%,#ab7830 40%,#5e3a12 78%,#2f1d07 100%);
+  box-shadow:inset 0 2px 4px rgba(255,226,178,.3),inset 0 -5px 9px rgba(26,11,2,.6);
+  opacity:0;
+  transform-origin:50% 50%;
+  animation:skin var(--loop) cubic-bezier(.4,.05,.3,1) infinite;
+}
+
+.vein{
+  position:absolute;
+  left:5%;
+  top:34%;
+  width:90%;
+  height:15%;
+  border-radius:50%;
+  background:linear-gradient(90deg,rgba(255,140,30,0),#ffcf7e 30%,#fff5da 50%,#ffcf7e 70%,rgba(255,140,30,0));
+  opacity:0;
+  animation:vein var(--loop) cubic-bezier(.34,.02,.26,1) infinite;
+}
+
+.oxide{
+  position:absolute;
+  border-radius:50%;
+  background:rgba(48,26,7,.4);
+  box-shadow:inset 0 1px 1px rgba(255,214,150,.3);
+  opacity:0;
+  animation:specks var(--loop) linear infinite;
+}
+
+.o1{left:21%;top:30%;width:3%;height:14%;animation-delay:0s}
+.o2{left:57%;top:38%;width:2.4%;height:11%;animation-delay:-.4s}
+.o3{left:39%;top:56%;width:2.6%;height:13%;animation-delay:-.8s}
+.o4{left:73%;top:50%;width:2%;height:10%;animation-delay:-1.2s}
+
+.splash{
+  position:absolute;
+  left:53%;
+  top:77.4%;
+  width:15%;
+  height:5%;
+  border-radius:50%;
+  border:2px solid rgba(255,196,120,.85);
+  transform-origin:50% 100%;
+  opacity:0;
+  animation:ring var(--loop) cubic-bezier(.2,.7,.3,1) infinite;
+}
+
+.drop{
+  position:absolute;
+  left:60%;
+  top:78.4%;
+  width:1.8%;
+  height:3.2%;
+  border-radius:50% 50% 44% 44%;
+  background:linear-gradient(180deg,#fff0d2,#ff8f22);
+  transform-origin:50% 0;
+  opacity:0;
+  animation:fly var(--loop) cubic-bezier(.4,.05,.5,1) infinite;
+}
+
+.d1{animation-delay:-.34s}
+.d2{animation-delay:-.68s}
+
+.haze{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(10px);
+  background:radial-gradient(closest-side,rgba(168,152,132,.32),rgba(120,108,96,0) 74%);
+  opacity:0;
+  pointer-events:none;
+}
+
+.h1{left:12%;top:26%;width:34%;height:20%;animation:smokeA var(--loop) ease-in-out infinite}
+.h2{left:48%;top:20%;width:30%;height:19%;animation:smokeB var(--loop) ease-in-out infinite}
+
+.phase{
+  position:absolute;
+  left:50%;
+  bottom:2.2vh;
+  transform:translateX(-50%);
+  margin:0;
+  display:flex;
+  gap:1.15em;
+  font-size:10px;
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  color:rgba(226,196,150,.5);
+}
+
+.phase span{
+  opacity:.13;
+  animation:tag var(--loop) steps(1,end) infinite;
+}
+
+.phase .t1{animation-delay:0s}
+.phase .t2{animation-delay:1s}
+.phase .t3{animation-delay:2s}
+.phase .t4{animation-delay:3s}
+
+@keyframes tilt{
+  0%{transform:rotate(0deg)}
+  4%{transform:rotate(3deg)}
+  12%{transform:rotate(11deg)}
+  72%{transform:rotate(11deg)}
+  80%,100%{transform:rotate(0deg)}
+}
+
+@keyframes slosh{
+  0%{transform:rotate(0deg) scale(1,1)}
+  8%{transform:rotate(2.4deg) scale(1.05,.94)}
+  24%{transform:rotate(-1.4deg) scale(.96,1.04)}
+  44%{transform:rotate(1.4deg) scale(1.03,.97)}
+  60%{transform:rotate(-1deg) scale(.98,1.02)}
+  84%,100%{transform:rotate(0deg) scale(1,1)}
+}
+
+@keyframes pour{
+  0%{transform:scaleY(0) scaleX(.3);opacity:0}
+  4%{transform:scaleY(.14) scaleX(.55);opacity:.85}
+  10%{transform:scaleY(1) scaleX(1);opacity:1}
+  26%{transform:scaleY(1) scaleX(1.16);opacity:1}
+  42%{transform:scaleY(1) scaleX(.9);opacity:1}
+  58%{transform:scaleY(1) scaleX(1.08);opacity:1}
+  64%{transform:scaleY(1) scaleX(1.14);opacity:1}
+  68%{transform:scaleY(.48) scaleX(.66);opacity:.7}
+  72%{transform:scaleY(.03) scaleX(.32);opacity:0}
+  100%{transform:scaleY(0) scaleX(.3);opacity:0}
+}
+
+@keyframes glareRun{
+  0%,4%{transform:translateX(0) scaleY(0);opacity:0}
+  10%{transform:translateX(8%) scaleY(1);opacity:1}
+  28%{transform:translateX(-11%) scaleY(1);opacity:.75}
+  46%{transform:translateX(6%) scaleY(1);opacity:1}
+  64%{transform:translateX(-4%) scaleY(1);opacity:.9}
+  69%{transform:translateX(2%) scaleY(.5);opacity:.5}
+  73%,100%{transform:translateX(0) scaleY(0);opacity:0}
+}
+
+@keyframes fill{
+  0%{transform:scale(.02,.02);opacity:0}
+  6%{transform:scale(.52,.44);opacity:.9}
+  20%{transform:scale(.9,.84);opacity:1}
+  34%{transform:scale(1.05,1.06);opacity:1}
+  46%{transform:scale(.98,.94);opacity:1}
+  52%,92%{transform:scale(1,1);opacity:1}
+  95%{transform:scale(.84,.78);opacity:.5}
+  98%{transform:scale(.3,.08);opacity:0}
+  100%{transform:scale(.02,.02);opacity:0}
+}
+
+@keyframes draw{
+  0%,92%{transform:translateY(0) scale(1);opacity:1}
+  95%{transform:translateY(-5%) scale(1.02);opacity:.9}
+  97%{transform:translateY(-24%) scale(.94);opacity:.4}
+  99%{transform:translateY(-46%) scale(.86);opacity:0}
+  100%{transform:translateY(0) scale(1);opacity:1}
+}
+
+@keyframes skin{
+  0%,58%{transform:scale(1.14);opacity:0}
+  64%{transform:scale(1.08);opacity:.22}
+  74%{transform:scale(1.02);opacity:.86}
+  82%,92%{transform:scale(1,1);opacity:1}
+  97%,100%{transform:scale(1.14);opacity:0}
+}
+
+@keyframes vein{
+  0%,60%{transform:scaleX(.04);opacity:0;filter:blur(1.4px)}
+  68%{transform:scaleX(1);opacity:1;filter:blur(1.3px)}
+  78%{transform:scaleX(.9);opacity:.86;filter:blur(.6px)}
+  88%{transform:scaleX(.55);opacity:.5;filter:blur(.3px)}
+  95%{transform:scaleX(.3);opacity:.34;filter:blur(0px)}
+  98%,100%{transform:scaleX(.04);opacity:0;filter:blur(1.4px)}
+}
+
+@keyframes specks{
+  0%,58%{opacity:0;transform:scale(.2)}
+  64%{opacity:.65;transform:scale(1)}
+  82%{opacity:.65;transform:scale(1)}
+  93%{opacity:.22;transform:scale(.6)}
+  98%,100%{opacity:0;transform:scale(.2)}
+}
+
+@keyframes ring{
+  0%,8%{transform:scale(.2,1);opacity:0}
+  12%{transform:scale(1,1);opacity:.9}
+  26%{transform:scale(1.5,.5);opacity:.4}
+  40%{transform:scale(.9,1);opacity:.6}
+  52%{transform:scale(1.3,.4);opacity:.2}
+  58%,100%{transform:scale(.2,1);opacity:0}
+}
+
+@keyframes fly{
+  0%{transform:translateX(0) translateY(0) scaleY(1);opacity:0}
+  5%{transform:translateX(10%) translateY(4%) scaleY(1.5);opacity:1}
+  22%{transform:translateX(48%) translateY(320%) scaleY(1.6);opacity:1}
+  30%{transform:translateX(64%) translateY(600%) scaleY(1.6);opacity:0}
+  100%{transform:translateX(64%) translateY(600%) scaleY(1.6);opacity:0}
+}
+
+@keyframes smokeA{
+  0%{transform:translate(0,10%) scale(.5);opacity:0}
+  14%{opacity:.5}
+  38%{transform:translate(16%,-34%) scale(1.15);opacity:.42}
+  64%{transform:translate(-10%,-78%) scale(1.5);opacity:.2}
+  82%{opacity:0}
+  100%{transform:translate(0,10%) scale(.5);opacity:0}
+}
+
+@keyframes smokeB{
+  0%{transform:translate(0,0) scale(.4);opacity:0}
+  20%{opacity:.36}
+  48%{transform:translate(-20%,-56%) scale(1.3);opacity:.28}
+  76%{transform:translate(14%,-110%) scale(1.6);opacity:.1}
+  88%{opacity:0}
+  100%{transform:translate(0,0) scale(.4);opacity:0}
+}
+
+@keyframes tag{
+  0%,24%{opacity:1}
+  25%,100%{opacity:.13}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .crucible,.melt,.stream,.glare,.pool,.hot,.skin,.vein,.oxide,.splash,.drop,.haze,.phase span{animation:none}
+  .crucible{transform:rotate(0deg)}
+  .stream{transform:scaleY(1) scaleX(1);opacity:1}
+  .glare{opacity:.8}
+  .pool{transform:translateY(-8%) scale(.98)}
+  .hot{transform:scale(1,1);opacity:1}
+  .skin{transform:scale(1,1);opacity:1}
+  .vein{transform:scaleX(.3);opacity:.36}
+  .oxide{opacity:.55}
+  .h1,.h2{opacity:.16}
+  .phase .t3{opacity:1}
+  .phase .t1,.phase .t2,.phase .t4{opacity:.13}
+}
+
+@media (max-width:480px){
+  .phase{font-size:9px;letter-spacing:.26em}
+}

@@ -1,0 +1,271 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --clay:#b4674a;
+  --clay-lo:#6b3626;
+  --red:#c9301c;
+  --smoke:#7d6f68;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:#0b0705;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  -webkit-font-smoothing:antialiased;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(30% 22% at 50% 30%,rgba(201,48,28,.2) 0%,rgba(201,48,28,0) 70%),
+    linear-gradient(174deg,#221009 0%,#130a06 54%,#070403 100%);
+}
+
+.obj{
+  position:relative;
+  --ar:.66;
+  aspect-ratio:var(--ar);
+  height:min(80vh,calc(94vw / var(--ar)));
+}
+
+.kiln{
+  position:absolute;
+  inset:0;
+  border-radius:46% 46% 5% 5%/10% 10% 4% 4%;
+  background:linear-gradient(176deg,#3a1a10 0%,#26100a 40%,#180a06 74%,#0d0503 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(214,120,80,.14),
+    inset 0 -40px 60px -40px rgba(255,120,50,.34),
+    0 30px 60px -30px rgba(0,0,0,.95);
+  opacity:0;
+  animation:heatAir var(--loop) ease-in-out infinite;
+}
+
+.brick{
+  position:absolute;
+  inset:0;
+  border-radius:46% 46% 5% 5%/10% 10% 4% 4%;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,168,116,.045) 0 3px,rgba(0,0,0,0) 3px 38px),
+    repeating-linear-gradient(90deg,rgba(0,0,0,.1) 0 2px,rgba(0,0,0,0) 2px 66px);
+  opacity:0;
+  animation:heatAir var(--loop) ease-in-out infinite;
+}
+
+.pot{
+  position:absolute;
+  left:50%;
+  bottom:8%;
+  width:60%;
+  height:66%;
+  margin-left:-30%;
+  transform-origin:50% 100%;
+  animation:settle var(--loop) ease-in-out infinite;
+}
+
+.body{
+  position:absolute;
+  inset:0;
+  border-radius:38% 38% 20% 20%/24% 24% 10% 10%;
+  background:linear-gradient(96deg,#5e2a1c 0%,#8c4632 26%,#b0603f 48%,#7c3a26 74%,#4a2015 100%);
+  animation:glaze var(--loop) ease-in-out infinite;
+}
+
+.ring{
+  position:absolute;
+  left:12%;
+  right:12%;
+  height:3.4%;
+  border-radius:50%;
+  border-top:2px solid rgba(255,180,140,.3);
+  border-bottom:2px solid rgba(40,14,6,.34);
+  background:transparent;
+  animation:lightUp var(--loop) ease-in-out infinite;
+}
+
+.r1{top:38%}
+.r2{top:52%;animation-delay:-.1s}
+.r3{top:66%;animation-delay:-.2s}
+
+.rim{
+  position:absolute;
+  left:26%;
+  right:26%;
+  top:6%;
+  height:5%;
+  border-radius:50%;
+  background:linear-gradient(180deg,#a55a3c 0%,#6b3320 60%,#40190f 100%);
+  box-shadow:inset 0 1px 0 rgba(255,196,160,.5);
+  animation:glaze var(--loop) ease-in-out infinite;
+}
+
+.mouth{
+  position:absolute;
+  left:29%;
+  right:29%;
+  top:5.4%;
+  height:3.4%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,#120703,#3a1108 70%,rgba(58,17,8,0));
+  opacity:0;
+  animation:mouth var(--loop) ease-in-out infinite;
+}
+
+.glow{
+  position:absolute;
+  inset:-6%;
+  border-radius:38% 38% 20% 20%/24% 24% 10% 10%;
+  background:radial-gradient(58% 52% at 50% 22%,rgba(255,146,60,.5) 0%,rgba(226,72,20,.26) 46%,rgba(226,72,20,0) 74%);
+  filter:blur(5px);
+  opacity:0;
+  animation:glow var(--loop) ease-in-out infinite;
+}
+
+.shade{
+  position:absolute;
+  left:16%;
+  right:16%;
+  bottom:2%;
+  height:12%;
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 70%);
+  filter:blur(3px);
+}
+
+.smoke{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(12px);
+  background:radial-gradient(closest-side,rgba(140,124,116,.3),rgba(110,96,90,0) 74%);
+  opacity:0;
+  pointer-events:none;
+}
+
+.s1{left:32%;top:6%;width:20%;height:16%;animation:smokeA var(--loop) ease-in-out infinite}
+.s2{left:52%;top:2%;width:17%;height:14%;animation:smokeB var(--loop) ease-in-out infinite}
+
+.phase{
+  position:absolute;
+  left:50%;
+  bottom:2.2vh;
+  transform:translateX(-50%);
+  margin:0;
+  display:flex;
+  gap:1.15em;
+  font-size:10px;
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  color:rgba(230,170,140,.5);
+}
+
+.phase span{
+  opacity:.13;
+  animation:tag var(--loop) steps(1,end) infinite;
+}
+
+.phase .t1{animation-delay:0s}
+.phase .t2{animation-delay:1s}
+.phase .t3{animation-delay:2s}
+.phase .t4{animation-delay:3s}
+
+@keyframes heatAir{
+  0%,8%{opacity:.2;filter:brightness(.5)}
+  26%{opacity:.6;filter:brightness(.9)}
+  46%,58%{opacity:1;filter:brightness(1.5)}
+  74%{opacity:.7;filter:brightness(1)}
+  90%{opacity:.3;filter:brightness(.6)}
+  100%{opacity:.2;filter:brightness(.5)}
+}
+
+@keyframes glaze{
+  0%,8%{filter:saturate(.8) brightness(.8)}
+  26%{filter:saturate(1.15) brightness(1)}
+  46%,58%{filter:saturate(1.7) brightness(1.34) hue-rotate(-8deg)}
+  74%{filter:saturate(1.3) brightness(1.06)}
+  90%,100%{filter:saturate(.8) brightness(.8)}
+}
+
+@keyframes lightUp{
+  0%,8%{opacity:.2}
+  26%{opacity:.55}
+  46%,58%{opacity:1}
+  76%{opacity:.5}
+  100%{opacity:.2}
+}
+
+@keyframes mouth{
+  0%,10%{opacity:0}
+  30%{opacity:.4}
+  50%,58%{opacity:1}
+  76%{opacity:.4}
+  90%,100%{opacity:0}
+}
+
+@keyframes glow{
+  0%,8%{opacity:0;transform:scale(.8)}
+  26%{opacity:.4;transform:scale(.94)}
+  48%,58%{opacity:1;transform:scale(1.06)}
+  78%{opacity:.35;transform:scale(.94)}
+  92%,100%{opacity:0;transform:scale(.8)}
+}
+
+@keyframes settle{
+  0%{transform:scaleY(1)}
+  46%,58%{transform:scaleY(1.012)}
+  100%{transform:scaleY(1)}
+}
+
+@keyframes smokeA{
+  0%{transform:translate(0,10%) scale(.4);opacity:0}
+  16%{opacity:.2}
+  46%{transform:translate(-14%,-70%) scale(1.1);opacity:.4}
+  70%{transform:translate(10%,-140%) scale(1.5);opacity:.16}
+  86%{opacity:0}
+  100%{transform:translate(0,10%) scale(.4);opacity:0}
+}
+
+@keyframes smokeB{
+  0%{transform:translate(0,0) scale(.3);opacity:0}
+  22%{opacity:.16}
+  52%{transform:translate(18%,-84%) scale(1.2);opacity:.34}
+  76%{transform:translate(-8%,-160%) scale(1.6);opacity:.1}
+  88%{opacity:0}
+  100%{transform:translate(0,0) scale(.3);opacity:0}
+}
+
+@keyframes tag{
+  0%,24%{opacity:1}
+  25%,100%{opacity:.13}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .kiln,.brick,.pot,.body,.rim,.ring,.mouth,.glow,.smoke,.phase span{animation:none}
+  .kiln,.brick{opacity:.85;filter:brightness(1.2)}
+  .pot{transform:scaleY(1.01)}
+  .body,.rim{filter:saturate(1.6) brightness(1.28) hue-rotate(-8deg)}
+  .ring{opacity:.9}
+  .mouth{opacity:.9}
+  .glow{opacity:.9;transform:scale(1.04)}
+  .smoke{opacity:.14}
+  .phase .t3{opacity:1}
+  .phase .t1,.phase .t2,.phase .t4{opacity:.13}
+}
+
+@media (max-width:480px){
+  .phase{font-size:9px;letter-spacing:.26em}
+}

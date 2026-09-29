@@ -1,0 +1,118 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{overflow:hidden;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+
+.stage{position:relative;width:100%;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden;
+  background:
+    radial-gradient(46% 34% at 50% 40%,rgba(255,196,116,.12),rgba(255,196,116,0) 74%),
+    radial-gradient(140% 90% at 50% 122%,rgba(6,5,6,.92),rgba(6,5,6,0) 60%),
+    linear-gradient(176deg,#3a3a3d 0%,#26262a 30%,#18181b 64%,#0a0a0c 100%)}
+
+.forge{position:relative;width:min(74vh,92vw);height:min(82vh,150vw);
+  animation:bellows 4s ease-in-out infinite}
+
+.stump{position:absolute;left:16%;right:16%;bottom:0;height:20%;border-radius:4px;
+  background:linear-gradient(180deg,#3a2a1c 0%,#241810 46%,#120c08 100%);
+  box-shadow:inset 0 2px 0 rgba(255,206,150,.16),0 14px 26px -14px rgba(0,0,0,.95)}
+.stump::after{content:"";position:absolute;inset:12% 16%;
+  background:repeating-linear-gradient(94deg,rgba(255,208,156,.08) 0 2px,rgba(0,0,0,.2) 2px 9px)}
+
+.anvil{position:absolute;left:8%;right:8%;bottom:18%;height:24%}
+.face{position:absolute;left:0;right:0;top:0;height:34%;border-radius:3px;
+  background:linear-gradient(180deg,#8d9095 0%,#5c5f66 38%,#3a3d43 76%,#232529 100%);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.34),inset 0 -3px 5px rgba(0,0,0,.6),0 12px 22px -14px rgba(0,0,0,.95);
+  animation:ring 1s ease-out infinite}
+.face::after{content:"";position:absolute;left:6%;right:34%;top:26%;height:44%;
+  background:linear-gradient(96deg,rgba(255,246,232,.5),rgba(255,246,232,.05) 62%,rgba(255,246,232,0));
+  border-radius:2px;animation:ring 1s ease-out infinite}
+.step{position:absolute;left:26%;top:34%;width:24%;height:16%;border-radius:0 0 2px 2px;
+  background:linear-gradient(180deg,#4b4e55,#2b2d32)}
+.horn{position:absolute;right:0;top:6%;width:40%;height:22%;border-radius:0 80% 80% 0/0 50% 50% 0;
+  transform-origin:100% 50%;transform:scaleX(1);
+  background:linear-gradient(180deg,#7e8188,#4a4d54 60%,#2a2c31);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.2),0 8px 16px -10px rgba(0,0,0,.9);
+  animation:ring 1s ease-out infinite}
+.waist{position:absolute;left:34%;right:22%;top:50%;height:26%;
+  background:linear-gradient(96deg,#2a2c31,#4e5158 42%,#24262b)}
+.base{position:absolute;left:20%;right:30%;top:76%;height:24%;border-radius:2px;
+  background:linear-gradient(180deg,#3c3f45,#1b1d21)}
+
+.bar{position:absolute;left:16%;width:66%;height:5.4%;border-radius:2px;
+  background:linear-gradient(180deg,#fff0c8 0%,#ffb14a 24%,#d9641c 62%,#7c2f0c 100%);
+  box-shadow:0 0 22px rgba(255,148,48,.72),inset 0 1px 0 rgba(255,246,220,.85);
+  transform-origin:50% 100%}
+.bar[data-stage="0"]{top:16%;animation:lift 4s cubic-bezier(.36,.06,.2,1) infinite}
+.bar[data-stage="1"]{top:30%;width:70%;height:5%;opacity:0;
+  background:linear-gradient(180deg,#ffe7b0 0%,#f2902c 40%,#a13f0d 100%);
+  animation:strike 4s cubic-bezier(.4,.02,.16,1) infinite}
+.bar[data-stage="2"]{top:26%;width:74%;height:4.2%;opacity:0;border-radius:0 40% 40% 0;
+  background:linear-gradient(180deg,#f7dfae,#c8701f 52%,#6d2a0a);
+  animation:flatten 4s cubic-bezier(.3,.02,.2,1) infinite}
+
+.flash{position:absolute;left:26%;top:36%;width:26%;height:9%;border-radius:50%;
+  transform:scale(.4);opacity:0;
+  background:radial-gradient(closest-side,rgba(255,252,238,.95),rgba(255,196,96,.55) 46%,rgba(255,140,40,0) 74%);
+  animation:flash 4s ease-out infinite}
+
+.sparks{position:absolute;left:39%;top:38%;width:0;height:0}
+.sparks i{position:absolute;left:0;top:0;width:1.5%;height:1.5%;border-radius:99px;opacity:0;
+  background:radial-gradient(closest-side,#fffdf2,#ffb64a 52%,rgba(255,110,20,0) 82%);
+  box-shadow:0 0 6px rgba(255,164,64,.85);
+  animation:spark 4s cubic-bezier(.14,.62,.3,1) infinite;
+  animation-delay:calc(var(--a)*.052s)}
+
+.heat{position:absolute;left:14%;right:14%;top:34%;height:20%;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,132,38,.2),rgba(255,132,38,0) 72%);
+  animation:heat 4s ease-in-out infinite}
+
+@keyframes bellows{
+  0%,100%{transform:translateY(0)}
+  46%{transform:translateY(1.4%)}}
+@keyframes ring{
+  0%,100%{transform:scale(1)}
+  5%{transform:scale(1.012,.9)}
+  16%{transform:scale(1,.982)}
+  32%{transform:scale(1,1)}}
+@keyframes lift{
+  0%,30%{transform:translateY(0) rotate(-4deg)}
+  8%{transform:translateY(-3%) rotate(-6deg)}
+  46%{transform:translateY(2%) rotate(1deg)}
+  52%,100%{transform:translateY(2%) rotate(1deg)}}
+@keyframes strike{
+  0%,30%{transform:translateY(0) rotate(6deg);opacity:0}
+  33%{opacity:1}
+  44%{transform:translateY(0) rotate(0);opacity:1}
+  52%,100%{transform:translateY(0) rotate(0);opacity:0}}
+@keyframes flatten{
+  0%,44%{transform:scaleX(.5) scaleY(1);opacity:0}
+  47%{opacity:1}
+  58%{transform:scaleX(1) scaleY(.56);opacity:1}
+  78%{transform:scaleX(1) scaleY(.56);opacity:1}
+  90%,100%{transform:scaleX(1) scaleY(.56);opacity:0}}
+@keyframes flash{
+  0%,43%{transform:scale(.4);opacity:0}
+  45%{transform:scale(1.5);opacity:1}
+  58%{transform:scale(1.15);opacity:.5}
+  72%,100%{transform:scale(.7);opacity:0}}
+@keyframes spark{
+  0%,44%{transform:translate(0,0) scale(.4);opacity:0}
+  46%{transform:translate(0,0) scale(1);opacity:1}
+  64%{opacity:.9}
+  100%{transform:translate(calc(var(--a)*var(--r)*1.5%),calc(var(--r)*1.9% + var(--a)*var(--r)*.34%)) scale(.3);opacity:0}}
+@keyframes heat{
+  0%,34%{transform:scale(.86);opacity:.7}
+  48%{transform:scale(1.06);opacity:1}
+  70%,100%{transform:scale(.9);opacity:.72}}
+
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+
+@media (prefers-reduced-motion:reduce){
+  .forge{animation:none;transform:none}
+  .face,.face::after,.horn{animation:none;transform:none}
+  .bar[data-stage="0"]{animation:none;transform:translateY(0) rotate(-4deg)}
+  .bar[data-stage="1"]{animation:none;opacity:0;transform:none}
+  .bar[data-stage="2"]{animation:none;opacity:1;transform:scaleX(1) scaleY(.56)}
+  .flash{animation:none;opacity:0;transform:scale(.4)}
+  .sparks i{animation:none;opacity:0;transform:none}
+  .heat{animation:none;transform:scale(.9);opacity:.8}
+}

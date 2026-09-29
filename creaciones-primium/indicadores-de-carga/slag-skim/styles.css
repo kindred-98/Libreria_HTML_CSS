@@ -1,0 +1,290 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --iron:#2f2a26;
+  --iron-lo:#14100e;
+  --grey:#6d6862;
+  --fire:#ff7a1e;
+  --hot:#fff3d0;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:#0a0706;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  -webkit-font-smoothing:antialiased;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(40% 30% at 50% 40%,rgba(255,122,30,.2) 0%,rgba(255,122,30,0) 72%),
+    linear-gradient(174deg,#1d1512 0%,#110c0a 52%,#060404 100%);
+}
+
+.obj{
+  position:relative;
+  --ar:.86;
+  aspect-ratio:var(--ar);
+  height:min(72vh,calc(94vw / var(--ar)));
+}
+
+.heat{
+  position:absolute;
+  left:-14%;
+  right:-14%;
+  top:34%;
+  bottom:2%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,132,40,.3),rgba(226,80,16,.1) 52%,rgba(226,80,16,0) 76%);
+  filter:blur(10px);
+  animation:heatAir var(--loop) ease-in-out infinite;
+}
+
+.crucible{
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:12%;
+  height:62%;
+  border-radius:50% 50% 44% 44%/42% 42% 58% 58%;
+  background:linear-gradient(178deg,#413a34 0%,#2a2521 40%,#191512 76%,#0e0b09 100%);
+  box-shadow:
+    inset 0 3px 0 rgba(226,196,152,.18),
+    inset 0 -30px 44px -28px rgba(0,0,0,.9),
+    0 30px 54px -30px rgba(0,0,0,.95);
+  overflow:hidden;
+}
+
+.rimback{
+  position:absolute;
+  inset:0;
+  border-radius:50% 50% 44% 44%/42% 42% 58% 58%;
+  box-shadow:inset 0 14px 26px -12px rgba(0,0,0,.9);
+}
+
+.bath{
+  position:absolute;
+  left:9%;
+  right:9%;
+  top:12%;
+  bottom:10%;
+  border-radius:50%;
+  background:
+    radial-gradient(56% 54% at 44% 40%,#fff6dd 0%,#ffcb72 22%,#ff8b28 48%,#c2410a 76%,#6d2004 100%);
+  box-shadow:inset 0 0 22px rgba(255,190,110,.5);
+  animation:bath var(--loop) ease-in-out infinite;
+}
+
+.sheen{
+  position:absolute;
+  left:12%;
+  right:12%;
+  top:16%;
+  height:16%;
+  border-radius:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.66),rgba(255,255,255,0) 78%);
+  filter:blur(2px);
+  opacity:0;
+  animation:sheen var(--loop) ease-in-out infinite;
+}
+
+.slag{
+  position:absolute;
+  left:-6%;
+  width:112%;
+  top:10%;
+  bottom:8%;
+  transform-origin:0 50%;
+  clip-path:polygon(0% 10%,7% 2%,3% 24%,11% 38%,4% 54%,12% 68%,5% 84%,0% 94%,100% 100%,100% 0);
+  background:
+    repeating-linear-gradient(72deg,rgba(18,15,13,.3) 0 2px,rgba(18,15,13,0) 2px 17px),
+    repeating-linear-gradient(-58deg,rgba(226,216,204,.1) 0 1px,rgba(226,216,204,0) 1px 29px),
+    linear-gradient(158deg,#837c74 0%,#615a53 28%,#413b36 60%,#272220 100%);
+  box-shadow:inset 0 3px 0 rgba(198,188,176,.26);
+  animation:skim var(--loop) cubic-bezier(.36,.04,.24,1) infinite;
+}
+
+.rim{
+  position:absolute;
+  inset:0;
+  border-radius:50% 50% 44% 44%/42% 42% 58% 58%;
+  border:3px solid #322c28;
+  box-shadow:inset 0 0 0 1px rgba(226,196,152,.16),inset 0 6px 14px -6px rgba(0,0,0,.6);
+  pointer-events:none;
+}
+
+.rod{
+  position:absolute;
+  left:0;
+  top:6%;
+  width:64%;
+  height:8%;
+  transform-origin:8% 50%;
+  animation:sweep var(--loop) cubic-bezier(.4,.02,.28,1) infinite;
+}
+
+.shaft{
+  position:absolute;
+  left:0;
+  right:0;
+  top:26%;
+  height:48%;
+  border-radius:3px;
+  background:linear-gradient(180deg,#8a837c 0%,#544e48 30%,#2b2622 72%,#141110 100%);
+  box-shadow:inset 0 1px 0 rgba(232,220,204,.4),0 4px 10px rgba(0,0,0,.7);
+}
+
+.tip{
+  position:absolute;
+  right:-3%;
+  top:0;
+  width:9%;
+  height:100%;
+  border-radius:2px 6px 6px 2px;
+  background:linear-gradient(180deg,#b8ada0 0%,#6d6259 36%,#332c26 100%);
+  box-shadow:inset 0 1px 0 rgba(255,246,232,.5);
+}
+
+.flame{
+  position:absolute;
+  border-radius:50% 50% 44% 44%/62% 62% 38% 38%;
+  filter:blur(3px);
+  opacity:0;
+  pointer-events:none;
+  animation:lick var(--loop) ease-in-out infinite;
+}
+
+.f1{left:10%;bottom:0;width:20%;height:24%;animation-delay:0s;
+  background:radial-gradient(closest-side,rgba(255,206,132,.85) 0%,rgba(255,124,26,.5) 48%,rgba(214,72,10,0) 78%)}
+.f2{left:40%;bottom:-2%;width:18%;height:30%;animation-delay:-.5s;
+  background:radial-gradient(closest-side,rgba(255,224,164,.8) 0%,rgba(255,132,32,.48) 48%,rgba(214,72,10,0) 78%)}
+.f3{left:70%;bottom:0;width:21%;height:22%;animation-delay:-1s;
+  background:radial-gradient(closest-side,rgba(255,206,132,.85) 0%,rgba(255,124,26,.5) 48%,rgba(214,72,10,0) 78%)}
+
+.spark{
+  position:absolute;
+  width:2%;
+  height:2.6%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,#fff6dd,rgba(255,150,50,.6) 50%,rgba(255,140,40,0) 82%);
+  opacity:0;
+  animation:fly var(--loop) linear infinite;
+}
+
+.s1{left:34%;top:56%;animation-delay:-.6s}
+.s2{left:60%;top:58%;animation-delay:-1.9s}
+
+.phase{
+  position:absolute;
+  left:50%;
+  bottom:2.2vh;
+  transform:translateX(-50%);
+  margin:0;
+  display:flex;
+  gap:1.15em;
+  font-size:10px;
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  color:rgba(226,180,140,.5);
+}
+
+.phase span{
+  opacity:.13;
+  animation:tag var(--loop) steps(1,end) infinite;
+}
+
+.phase .t1{animation-delay:0s}
+.phase .t2{animation-delay:1s}
+.phase .t3{animation-delay:2s}
+.phase .t4{animation-delay:3s}
+
+@keyframes heatAir{
+  0%,100%{opacity:.5;transform:scale(.92)}
+  50%{opacity:1;transform:scale(1.05)}
+}
+
+@keyframes bath{
+  0%,6%{filter:brightness(.8) saturate(.92)}
+  20%{filter:brightness(.92) saturate(1)}
+  38%,66%{filter:brightness(1.24) saturate(1.2)}
+  52%{filter:brightness(1.12) saturate(1.1)}
+  80%{filter:brightness(.86) saturate(.94)}
+  100%{filter:brightness(.8) saturate(.92)}
+}
+
+@keyframes sheen{
+  0%,28%{opacity:0;transform:translateX(-24%)}
+  40%{opacity:.9;transform:translateX(-6%)}
+  56%{opacity:.7;transform:translateX(12%)}
+  72%,100%{opacity:0;transform:translateX(34%)}
+}
+
+@keyframes skim{
+  0%,6%{transform:translateX(0) rotate(0deg)}
+  20%{transform:translateX(24%) rotate(-1.2deg)}
+  36%,68%{transform:translateX(116%) rotate(-2.4deg)}
+  84%{transform:translateX(26%) rotate(-1.2deg)}
+  94%,100%{transform:translateX(0) rotate(0deg)}
+}
+
+@keyframes sweep{
+  0%,6%{transform:translateX(0) rotate(-8deg)}
+  18%{transform:translateX(22%) rotate(-5deg)}
+  36%,68%{transform:translateX(58%) rotate(-2deg)}
+  84%{transform:translateX(12%) rotate(2deg)}
+  94%,100%{transform:translateX(0) rotate(6deg)}
+}
+
+@keyframes lick{
+  0%,100%{transform:scale(.9,1);opacity:.5}
+  22%{transform:scale(1.1,1.16);opacity:.85}
+  46%{transform:scale(.95,.92);opacity:.62}
+  70%{transform:scale(1.06,1.2);opacity:.9}
+}
+
+@keyframes fly{
+  0%{transform:translate(0,0) scale(.4);opacity:0}
+  8%{opacity:1}
+  40%{transform:translate(46%,-130%) scale(1);opacity:.8}
+  60%{transform:translate(96%,-210%) scale(.5);opacity:0}
+  100%{transform:translate(96%,-210%) scale(.5);opacity:0}
+}
+
+@keyframes tag{
+  0%,24%{opacity:1}
+  25%,100%{opacity:.13}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .heat,.bath,.sheen,.slag,.rod,.flame,.spark,.phase span{animation:none}
+  .heat{opacity:.9;transform:scale(1)}
+  .bath{filter:brightness(1.2) saturate(1.18)}
+  .sheen{opacity:.5}
+  .slag{transform:translateX(116%) rotate(-2.4deg)}
+  .rod{transform:translateX(58%) rotate(-2deg)}
+  .flame{opacity:.7}
+  .spark{opacity:0}
+  .phase .t3{opacity:1}
+  .phase .t1,.phase .t2,.phase .t4{opacity:.13}
+}
+
+@media (max-width:480px){
+  .obj{--ar:.7}
+  .phase{font-size:9px;letter-spacing:.26em}
+}

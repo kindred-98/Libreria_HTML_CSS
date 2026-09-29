@@ -1,0 +1,161 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#0a0908;
+  --ink-up:#1d1712;
+  --cream:#f3e6cc;
+  --gold:#c9993c;
+  --gold-hi:#ffdf9d;
+  --loop:4s;
+}
+
+html,body{height:100%}
+
+body{
+  overflow:hidden;
+  background:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+.sr{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(58% 42% at 78% 96%,rgba(255,223,157,.13),rgba(255,223,157,0) 70%),
+    radial-gradient(120% 90% at 22% 4%,rgba(243,230,204,.07),rgba(243,230,204,0) 62%),
+    linear-gradient(158deg,#17110c 0%,#0d0a08 46%,#060505 100%);
+}
+
+.fig{
+  position:relative;
+  aspect-ratio:.7647;
+  width:min(92vw,calc(84vh * .7647));
+}
+
+.pool{
+  position:absolute;
+  inset:-18%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,214,138,.15),rgba(201,153,60,.06) 42%,rgba(201,153,60,0) 70%);
+  filter:blur(14px);
+  animation:pool var(--loop) ease-in-out infinite;
+}
+
+.tiles{position:absolute;inset:0}
+
+.q{
+  position:absolute;
+  border:1px solid rgba(224,178,94,.9);
+  background:linear-gradient(148deg,rgba(243,230,204,.11),rgba(201,153,60,.045) 58%,rgba(243,230,204,.02));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,232,180,.16),
+    inset 0 0 26px -6px rgba(255,214,138,.5),
+    0 0 0 1px rgba(0,0,0,.5),
+    0 0 26px -10px rgba(201,153,60,.75);
+  animation:lay var(--loop) cubic-bezier(.3,0,.3,1) infinite;
+}
+.q:nth-child(1){transform-origin:100% 100%;z-index:7}
+.q:nth-child(2){transform-origin:0 0;z-index:6}
+.q:nth-child(3){transform-origin:0 100%;z-index:5}
+.q:nth-child(4){transform-origin:0 0;z-index:4}
+.q:nth-child(5){transform-origin:0 100%;z-index:3}
+.q:nth-child(6){transform-origin:0 0;z-index:2}
+.q:nth-child(7){transform-origin:0 100%;z-index:1}
+
+.arcs{position:absolute;inset:0;z-index:8}
+
+.a{
+  position:absolute;
+  border-radius:50%;
+  border:2px solid var(--gold-hi);
+  box-shadow:
+    0 0 16px rgba(255,214,138,.62),
+    inset 0 0 12px rgba(255,232,180,.4);
+  animation:sweep var(--loop) cubic-bezier(.24,.72,.28,1) infinite;
+}
+.a:nth-child(1){z-index:7}
+.a:nth-child(2){z-index:6}
+.a:nth-child(3){z-index:5}
+.a:nth-child(4){z-index:4}
+.a:nth-child(5){z-index:3}
+.a:nth-child(6){z-index:2}
+.a:nth-child(7){z-index:1}
+.a.tl{clip-path:polygon(0 0,50% 0,50% 50%,0 50%)}
+.a.tr{clip-path:polygon(50% 0,100% 0,100% 50%,50% 50%)}
+.a.br{clip-path:polygon(50% 50%,100% 50%,100% 100%,50% 100%)}
+
+.eye{
+  position:absolute;
+  left:80.769%;
+  top:97.059%;
+  width:9%;
+  aspect-ratio:1;
+  margin:-4.5% 0 0 -4.5%;
+  border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,248,228,.95),rgba(255,214,138,.55) 38%,rgba(201,153,60,0) 74%);
+  filter:blur(1.5px);
+  animation:eye var(--loop) ease-in-out infinite;
+}
+
+.sheen{
+  position:absolute;
+  inset:-32%;
+  border-radius:50%;
+  background:conic-gradient(from 0deg at 74% 88%,rgba(255,240,206,0) 0deg,rgba(255,240,206,.11) 34deg,rgba(255,240,206,0) 88deg,rgba(255,240,206,.07) 168deg,rgba(255,240,206,0) 226deg,rgba(255,240,206,.09) 306deg,rgba(255,240,206,0) 360deg);
+  filter:blur(26px);
+  pointer-events:none;
+  animation:turn var(--loop) linear infinite;
+}
+
+@keyframes lay{
+  0%{transform:scale(.05);opacity:0}
+  6%{opacity:1}
+  50%{transform:scale(1.03);opacity:1}
+  58%,86%{transform:scale(1);opacity:1}
+  100%{transform:scale(.12);opacity:0}
+}
+
+@keyframes sweep{
+  0%{transform:scale(.04);opacity:0}
+  8%{opacity:1}
+  50%{transform:scale(1.015);opacity:1}
+  60%,86%{transform:scale(1);opacity:1}
+  100%{transform:scale(.16);opacity:0}
+}
+
+@keyframes eye{
+  0%,8%{opacity:.12;transform:scale(.45)}
+  50%,84%{opacity:1;transform:scale(1.14)}
+  100%{opacity:.12;transform:scale(.45)}
+}
+
+@keyframes pool{
+  0%,10%{opacity:.3;transform:scale(.9)}
+  50%{opacity:1;transform:scale(1.06)}
+  86%,100%{opacity:.3;transform:scale(.9)}
+}
+
+@keyframes turn{
+  0%{transform:rotate(0deg)}
+  100%{transform:rotate(360deg)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .pool,.q,.a,.eye,.sheen{animation:none}
+  .pool{opacity:.85;transform:scale(1)}
+  .q{transform:scale(1);opacity:1}
+  .a{transform:scale(1);opacity:1}
+  .eye{opacity:.95;transform:scale(1)}
+  .sheen{transform:rotate(38deg)}
+}
