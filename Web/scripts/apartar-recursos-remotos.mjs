@@ -163,8 +163,11 @@ async function traerDeCss(cssPath, urlCss) {
     }
   };
 
-  for (const m of [...css.matchAll(/url\(\s*(['"]?)([^'")]+)\1\s*\)/gi)]) {
-    const bruto = m[2].trim();
+  // Ojo con el patron: una url() entre comillas puede llevar parentesis dentro
+  // (las fuentes de Inter se llaman "Inter (web)/Inter-Regular.woff2"), asi que
+  // se captura hasta la comilla de cierre y no hasta el primer parentesis.
+  for (const m of [...css.matchAll(/url\(\s*(['"])([\s\S]*?)\1\s*\)|url\(([^'")\s][^)]*)\)/gi)]) {
+    const bruto = (m[2] ?? m[3] ?? "").trim();
     if (!bruto || bruto.startsWith("data:") || bruto.startsWith("#")) continue;
     const absoluta = resolver(bruto);
     if (!absoluta) continue;
