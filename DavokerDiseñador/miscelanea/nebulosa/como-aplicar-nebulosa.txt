@@ -1,0 +1,77 @@
+================================================================
+EFECTO NEBULOSA - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "nebulosa.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/nebulosa.css">
+
+Contenido del archivo:
+  · La clase .efecto-nebulosa
+  · 2 @keyframes: nebulosa-viaje y nebulosa-titileo
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-nebulosa">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-nebulosa">Nebulosa</span></h1>
+
+IMPORTANTE: usa SIEMPRE fondo oscuro. Sobre fondo claro el vacío
+de las letras y las estrellas blancas no se distinguen. El texto
+en negrita (font-weight: bold o 800) deja más interior dentro de
+las letras para ver el espacio.
+
+
+QUÉ HACE
+--------
+Dos animaciones simultáneas en bucle infinito:
+  · nebulosa-viaje (16 s) →
+      1) tres capas de gas (magenta, cian y violeta) fluyen
+         hacia la derecha a distinta velocidad. Cada gas es un
+         mosaico de 640 / 560 / 480 px y se desplaza exactamente
+         un mosaico en cada vuelta, así que el corte del bucle
+         no se ve.
+      2) el doble campo de estrellas (rejillas de 36px y 47px)
+         se mueve mucho más despacio = parallax de fondo.
+      3) a los 3,2 s de cada vuelta una ESTRELLA FUGAZ cruza el
+         texto en diagonal hacia arriba y a la derecha (0,48 s
+         de recorrido, unos 0,24 s visible). Su estela está
+         pintada en el centro de una tesela del 300% y, en
+         reposo, aparcada fuera del área visible: por eso se ve
+         con cualquier tamaño de texto y el bucle no se nota.
+  · nebulosa-titileo (4,4 s) → las dos rejillas de estrellas
+    suben y bajan de brillo de forma ALTERNADA e irregular:
+    cada rejilla titila con su propio ritmo, como las
+    estrellas de verdad.
+
+TÉCNICA: background-clip: text + listas de background-position
+(7 capas, una entrada por capa) y background-image animadas.
+Las capas 1-4 y 7 de background-image son idénticas en todos
+los fotogramas: solo cambian los alpha de las dos rejillas.
+
+
+AJUSTES FÁCILES
+---------------
+· Estrellas más gruesas: sube los radios (1.7px → 2.5px en la
+  capa fina y 2.8px → 3.5px en la brillante).
+· Estrellas más densas: baja el mosaico (36px → 24px y
+  47px → 34px) y mueve en proporción el desplazamiento final
+  de nebulosa-viaje (180px → 120px y el par (60, -40) →
+  (47, -27)) para que el bucle siga cerrando.
+· Gas más lento: cambia 16s por 24s.
+· Gas más rápido: cambia 16s por 8s.
+· Estrella fugaz más frecuente: cambia 16s por 8s (el cruce
+  está entre los fotogramas 20% y 23% de nebulosa-viaje).
+· Titileo más vivo: cambia 4.4s por 2.5s.
+· Más color en el gas: sube las opacidades (0.55 → 0.75, etc.).
+· Quitar la estrella fugaz: borra la capa 1 de background-image
+  y su entrada en background-size, background-repeat,
+  background-position y en los dos @keyframes (pon su
+  background-position en 0 0).
+· Quitar el halo azulado: borra la text-shadow de la clase.

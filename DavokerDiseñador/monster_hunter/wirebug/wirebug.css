@@ -1,0 +1,98 @@
+/* ================================================================
+   EFECTO 72: WIREBUG - la seda del wirebug cruza las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-wirebug">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-wirebug, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras están atravesadas POR SEDA DE WIREBUG: dos
+      tramas de hilos en cruz se desplazan dentro del texto,
+      un hilo luminoso lo cruza en diagonal y se tensa y la
+      luciérnaga del bicho recorre ese hilo dejando un rastro
+      cian. El aparejo de sustitución, dentro de las letras.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: dos repeating-linear-gradient con background-clip: text
+    y background-position animado, hilo ::before con
+    linear-gradient inclinado y luciérnaga ::after con
+    radial-gradient movida con left en porcentaje.
+   ================================================================ */
+
+
+.efecto-wirebug {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        repeating-linear-gradient(56deg,
+            rgba(224, 247, 250, .55) 0 .05em,
+            rgba(224, 247, 250, 0) .05em .46em),
+        repeating-linear-gradient(-56deg,
+            rgba(6, 60, 80, .5) 0 .05em,
+            rgba(6, 60, 80, 0) .05em .46em),
+        linear-gradient(118deg, #b388ff 0%, #40c4ff 40%, #18ffff 62%,
+                #e0f7fa 100%);
+    background-size: 1.4em 1.4em, 1.4em 1.4em, 100% 100%;
+    background-position: 0 0, 0 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(0, 229, 255, .5));
+
+    animation: mh-wirebug-seda 4.4s linear infinite;
+}
+
+/* el hilo que cruza las letras y se tensa */
+.efecto-wirebug::before {
+    content: "";
+    position: absolute;
+    left: -.4em;
+    right: -.4em;
+    top: 46%;
+    height: .09em;
+    background: linear-gradient(90deg, rgba(128, 222, 234, 0),
+                #e0f7fa 30%, #80deea 62%, rgba(128, 222, 234, 0));
+    box-shadow: 0 0 .3em rgba(0, 229, 255, .9);
+    transform: rotate(-9deg);
+    opacity: .7;
+    pointer-events: none;
+    animation: mh-wirebug-tensado 4.4s ease-in-out infinite;
+}
+
+/* la luz del wirebug recorriendo el hilo */
+.efecto-wirebug::after {
+    content: "";
+    position: absolute;
+    left: -6%;
+    top: 34%;
+    width: .34em;
+    height: .34em;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, #84ffff 38%,
+                rgba(0, 229, 255, .5) 62%, rgba(0, 229, 255, 0) 78%);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-wirebug-luciernaga 4.4s ease-in-out infinite;
+}
+
+@keyframes mh-wirebug-seda {
+    0%   { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 1.4em -.7em, -1.4em .7em, 0 0; }
+}
+@keyframes mh-wirebug-tensado {
+    0%, 100% { opacity: .5; transform: rotate(-9deg) scaleX(1); }
+    50%      { opacity: 1; transform: rotate(-9deg) scaleX(1.04); }
+}
+@keyframes mh-wirebug-luciernaga {
+    0%, 8%   { opacity: 0; left: -6%; }
+    18%      { opacity: 1; }
+    62%      { opacity: 1; }
+    76%,100% { opacity: 0; left: 100%; }
+}

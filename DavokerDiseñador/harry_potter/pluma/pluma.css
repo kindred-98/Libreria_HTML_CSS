@@ -1,0 +1,96 @@
+/* ================================================================
+   EFECTO 91: PLUMA - la línea de tinta se dibuja sola bajo las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-pluma">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-pluma, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras están escritas con TINTA DE PLUMÓN y una
+      línea se dibuja sola bajo la palabra: crece desde la
+      izquierda, la plumilla de luz sigue el trazo y al final
+      la tinta se asienta con un brillo. Un reino tras otro.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado índigo con background-clip: text, línea
+    ::before con background-size 0% → 100% animado y
+    plumilla ::after movida por left en porcentaje (vale
+    para palabras de cualquier ancho).
+   ================================================================ */
+
+
+.efecto-pluma {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(172deg, #c5cae9 0%, #8c9eff 34%, #5c6bc0 66%,
+                #3949ab 100%);
+    background-size: 100% 180%;
+    background-position: 50% 40%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 7px rgba(100, 120, 255, .45));
+
+    animation: hp-pluma-tinta 4.8s ease-in-out infinite;
+}
+
+/* la línea de tinta que se dibuja sola bajo las letras */
+.efecto-pluma::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -.16em;
+    width: 100%;
+    height: .1em;
+    background: linear-gradient(90deg, #3949ab, #8c9eff 70%, #c5cae9);
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-pluma-traza 4.8s ease-in-out infinite;
+}
+
+/* la plumilla: un punto de luz que sigue el trazo */
+.efecto-pluma::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -.2em;
+    width: .2em;
+    height: .2em;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, #8c9eff 50%,
+                rgba(140, 158, 255, 0) 78%);
+    box-shadow: 0 0 .35em rgba(180, 190, 255, .9);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-pluma-plumilla 4.8s ease-in-out infinite;
+}
+
+@keyframes hp-pluma-traza {
+    0%, 12%  { opacity: 0; background-size: 0% 100%; }
+    16%      { opacity: 1; }
+    58%      { opacity: 1; background-size: 100% 100%; }
+    74%      { opacity: .85; background-size: 100% 100%; }
+    88%,100% { opacity: 0; background-size: 100% 100%; }
+}
+@keyframes hp-pluma-plumilla {
+    0%, 12%  { opacity: 0; left: 0%; }
+    18%      { opacity: 1; }
+    58%      { opacity: 1; left: 98%; }
+    74%      { opacity: .6; left: 98%; }
+    88%,100% { opacity: 0; left: 98%; }
+}
+@keyframes hp-pluma-tinta {
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(100, 120, 255, .4)); }
+    50%      { filter: drop-shadow(0 0 15px rgba(160, 175, 255, .85)); }
+}

@@ -1,0 +1,96 @@
+/* ================================================================
+   EFECTO 13: ECLIPSE - corona dorada tras una silueta oscura (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-eclipse">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-eclipse y los 3 @keyframes).
+     No depende de ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:  tres animaciones simultáneas en bucle infinito
+     · eclipse-corona  → el halo dorado que rodea las letras
+       (la corona del Sol oculto) respira: crece y enciende.
+     · eclipse-halo    → la silueta oscura de las letras se
+       incendia de luz al final de cada ciclo.
+     · eclipse-diamante→ un punto blanco estalla en una esquina:
+       el "anillo de diamante" justo antes de volver a empezar.
+
+   TÉCNICA: color + text-shadow animados y dos pseudo-elementos
+   (corona radial con blur, destello radial). Nada más.
+   ================================================================ */
+
+.efecto-eclipse {
+    display: inline-block;
+    position: relative;
+    z-index: 0;                 /* ancla la corona tras las letras */
+
+    color: #16122b;             /* silueta: el Sol tapado por la Luna */
+    text-shadow: 0 0 12px rgba(255,213,79,.25);
+
+    animation: eclipse-halo 4s ease-in-out infinite;
+}
+
+/* la corona: anillo dorado difuso por DETRÁS de las letras */
+.efecto-eclipse::before {
+    content: "";
+    position: absolute;
+    inset: -.5em -.7em;
+    background: radial-gradient(ellipse at 50% 50%,
+        transparent 34%,
+        rgba(255,213,79,.9) 45%,
+        rgba(255,241,118,.5) 54%,
+        rgba(255,179,0,.28) 63%,
+        transparent 78%);
+    filter: blur(2px);
+    z-index: -1;
+    animation: eclipse-corona 4s ease-in-out infinite;
+}
+
+/* el "anillo de diamante": destella en la esquina superior derecha */
+.efecto-eclipse::after {
+    content: "";
+    position: absolute;
+    right: -.35em;
+    top: -.4em;
+    width: .5em;
+    height: .5em;
+    background: radial-gradient(circle,
+        #ffffff 0%, #fff9c4 32%, rgba(255,241,118,0) 72%);
+    opacity: 0;
+    transform: scale(.4);
+    animation: eclipse-diamante 4s ease-in-out infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* La corona se enciende justo antes del final de cada ciclo */
+@keyframes eclipse-halo {
+    0%, 70%  { color: #16122b;
+               text-shadow: 0 0 12px rgba(255,213,79,.25); }
+    84%      { color: #2a2145;
+               text-shadow: 0 0 26px rgba(255,213,79,.85),
+                            0 0 60px rgba(255,179,0,.5); }
+    100%     { color: #16122b;
+               text-shadow: 0 0 12px rgba(255,213,79,.25); }
+}
+
+/* La corona respira despacio */
+@keyframes eclipse-corona {
+    0%, 100% { opacity: .55; transform: scale(.94); }
+    50%      { opacity: 1;   transform: scale(1.06); }
+}
+
+/* El punto diamantino: aparece, puntea y se apaga */
+@keyframes eclipse-diamante {
+    0%, 78%  { opacity: 0;  transform: scale(.4); }
+    84%      { opacity: 1;  transform: scale(1.35); }
+    92%      { opacity: .7; transform: scale(1); }
+    100%     { opacity: 0;  transform: scale(.5); }
+}

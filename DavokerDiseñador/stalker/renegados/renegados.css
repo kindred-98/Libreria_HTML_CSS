@@ -1,0 +1,94 @@
+/* ================================================================
+   EFECTO 109: RENEGADOS - las letras de herrumbre gotean sobre la marcha (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-renegados">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-renegados, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un RENEGADO EXCOMULADO: óxido que se
+      extiende por el texto, gotas de herrumbre caen desde la
+      palabra y una sombra de tierra parpadea sobre las
+      letras. Fondo oscuro recomendado.
+
+   TÉCNICA: degradado ferruginoso recortado en el texto con
+    background-position animado, gotas ::before
+    estiradas con transform: scaleY y sombra ::after con
+    opacidad cambiante.
+   ================================================================ */
+
+
+/* --- base: óxido que se extiende por las letras --- */
+.efecto-renegados {
+    display: inline-block;
+    position: relative;
+    background-image:
+        repeating-linear-gradient(102deg,
+                rgba(61, 34, 20, .55) 0 .26em,
+                rgba(61, 34, 20, 0) .26em .7em),
+        linear-gradient(170deg, #4e342e 0%, #bf6a3f 36%, #e08a55 50%,
+                #7d4a2b 66%, #35221a 100%);
+    background-size: 100% 100%, 200% 200%;
+    background-position: 0 0, 0% 0%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 .06em .12em rgba(0, 0, 0, .75));
+    animation: stk-renegados-herrumbre 8s linear infinite;
+}
+/* --- gotas de herrumbre creciendo desde arriba --- */
+.efecto-renegados::before {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: -.1em;
+    height: .9em;
+    background-image:
+        linear-gradient(180deg, rgba(191, 106, 63, .95),
+                rgba(191, 106, 63, 0)),
+        linear-gradient(180deg, rgba(140, 74, 42, .85),
+                rgba(140, 74, 42, 0)),
+        linear-gradient(180deg, rgba(224, 138, 85, .7),
+                rgba(224, 138, 85, 0));
+    background-size: 14% 100%, 10% 100%, 8% 100%;
+    background-position: 12% 0, 52% 0, 84% 0;
+    background-repeat: no-repeat;
+    transform-origin: top;
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-renegados-goteo 5.6s ease-in infinite;
+}
+/* --- sombra de tierra parpadeando sobre el texto --- */
+.efecto-renegados::after {
+    content: "";
+    position: absolute;
+    inset: -.3em -.4em;
+    background: radial-gradient(ellipse at 50% 50%,
+                rgba(30, 18, 12, 0) 40%, rgba(30, 18, 12, .75) 100%);
+    opacity: .3;
+    pointer-events: none;
+    animation: stk-renegados-parpadeo 3.8s ease-in-out infinite;
+}
+@keyframes stk-renegados-herrumbre {
+    0%   { background-position: 0 0, 0% 0%; }
+    50%  { background-position: 0 0, 60% 34%; }
+    100% { background-position: 0 0, 0% 0%; }
+}
+@keyframes stk-renegados-goteo {
+    0%, 42%  { opacity: 0; transform: scaleY(.1); }
+    50%      { opacity: .9; transform: scaleY(.45); }
+    74%      { opacity: .9; transform: scaleY(1); }
+    92%, 100% { opacity: 0; transform: scaleY(1); }
+}
+@keyframes stk-renegados-parpadeo {
+    0%, 100% { opacity: .15; }
+    46%      { opacity: .45; }
+    54%      { opacity: .2; }
+}

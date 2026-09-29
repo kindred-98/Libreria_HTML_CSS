@@ -1,0 +1,128 @@
+/* ================================================================
+   EFECTO 19: CHISPA - chispas volando de las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-chispa">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-chispa y los 3 @keyframes).
+     No depende de ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:  tres animaciones simultáneas en bucle infinito,
+   todas en SALTO SECO (steps) para el crujido del arco:
+     · chispa-luz       → el resplandor amarillo de las letras
+       cruje: late entre tenue y encendido.
+     · chispa-chispa-a  → una estrella de chispas salta por la
+       parte IZQUIERDA en tres puntos del ciclo.
+     · chispa-chispa-b  → otra estrella contesta por la DERECHA
+       en los huecos de la primera (con sus satélites box-shadow).
+
+   TÉCNICA: text-shadow en salto seco + dos pseudo-elementos con
+   radial-gradient (chispa) y box-shadow (satélites). Nada más.
+   ================================================================ */
+
+.efecto-chispa {
+    display: inline-block;
+    position: relative;
+
+    color: #fff8e1;
+    text-shadow: 0 0 5px rgba(255,234,0,.55), 0 0 16px rgba(255,111,0,.3);
+
+    animation: chispa-luz 1.6s steps(1, end) infinite;
+}
+
+/* estrella A: chispa principal arriba-izquierda con dos satélites */
+.efecto-chispa::before {
+    content: "";
+    position: absolute;
+    left: 14%;
+    top: -.3em;
+    width: .3em;
+    height: .3em;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        #ffffff 0%, #ffee58 45%, #ff8f00 85%, rgba(255,143,0,0) 100%);
+    box-shadow: .8em .5em 0 -.09em #ffd600,
+                1.5em -.3em 0 -.1em #ffab00;
+    opacity: 0;
+    animation: chispa-chispa-a 1.6s steps(1, end) infinite;
+}
+
+/* estrella B: contesta abajo-derecha con otros dos satélites */
+.efecto-chispa::after {
+    content: "";
+    position: absolute;
+    right: 12%;
+    bottom: -.2em;
+    width: .26em;
+    height: .26em;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        #fffde7 0%, #ffd600 50%, #ff6f00 90%, rgba(255,111,0,0) 100%);
+    box-shadow: -.7em .4em 0 -.08em #ffee58,
+                -1.4em -.3em 0 -.09em #ffd600;
+    opacity: 0;
+    animation: chispa-chispa-b 1.6s steps(1, end) infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* El arco cruje: tres destellos por vuelta (steps: se sostiene) */
+@keyframes chispa-luz {
+    0%  { color: #fffde7;
+          text-shadow: 0 0 7px rgba(255,234,0,.95),
+                       0 0 22px rgba(255,111,0,.55); }
+    7%  { color: #fff8e1;
+          text-shadow: 0 0 4px rgba(255,234,0,.5),
+                       0 0 12px rgba(255,111,0,.22); }
+    49% { color: #fffde7;
+          text-shadow: 0 0 8px rgba(255,234,0,1),
+                       0 0 26px rgba(255,111,0,.6); }
+    56% { color: #fff8e1;
+          text-shadow: 0 0 4px rgba(255,234,0,.5),
+                       0 0 12px rgba(255,111,0,.22); }
+    87% { color: #fffde7;
+          text-shadow: 0 0 7px rgba(255,234,0,.9),
+                       0 0 20px rgba(255,111,0,.5); }
+    93% { color: #fff8e1;
+          text-shadow: 0 0 4px rgba(255,234,0,.5),
+                       0 0 12px rgba(255,111,0,.22); }
+    100%{ color: #fffde7;
+          text-shadow: 0 0 7px rgba(255,234,0,.9),
+                       0 0 22px rgba(255,111,0,.55); }
+}
+
+/* Tres saltos de la estrella A (los viajes ocurren con
+   opacidad 0: no se ven) */
+@keyframes chispa-chispa-a {
+    0%   { opacity: .95; transform: translate(0, 0); }
+    6%   { opacity: 0;   transform: translate(.6em, -.7em); }
+    30%  { opacity: 0;   transform: translate(0, 0); }
+    31%  { opacity: .9;  transform: translate(.3em, -.2em); }
+    37%  { opacity: 0;   transform: translate(.9em, -.8em); }
+    66%  { opacity: 0;   transform: translate(0, 0); }
+    67%  { opacity: .85; transform: translate(-.2em, -.4em); }
+    73%  { opacity: 0;   transform: translate(.4em, -.9em); }
+    100% { opacity: 0;   transform: translate(0, 0); }
+}
+
+/* La estrella B: en los huecos de la A */
+@keyframes chispa-chispa-b {
+    0%   { opacity: 0;   transform: translate(0, 0); }
+    13%  { opacity: 0;   transform: translate(0, 0); }
+    14%  { opacity: .9;  transform: translate(-.3em, .2em); }
+    20%  { opacity: 0;   transform: translate(-.9em, .6em); }
+    46%  { opacity: 0;   transform: translate(0, 0); }
+    47%  { opacity: .95; transform: translate(.2em, .3em); }
+    53%  { opacity: 0;   transform: translate(.7em, .8em); }
+    79%  { opacity: 0;   transform: translate(0, 0); }
+    80%  { opacity: .8;  transform: translate(-.2em, .1em); }
+    86%  { opacity: 0;   transform: translate(-.8em, .5em); }
+    100% { opacity: 0;   transform: translate(0, 0); }
+}

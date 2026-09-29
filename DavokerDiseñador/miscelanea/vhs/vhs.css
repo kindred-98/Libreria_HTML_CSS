@@ -1,0 +1,90 @@
+/* ================================================================
+   EFECTO 9: VHS - cinta de vídeo con barra de tracking (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-vhs">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-vhs y los 2 @keyframes).
+
+   QUÉ HACE:
+     Las letras son una CINTA DE VÍDEO de los 90:
+     · Color desvanecido de casete (rosa → blanco → cian).
+     · Una BARRA DE TRACKING blanca sube por el texto cada
+       pocos segundos, como cuando el vídeo se descuadra.
+     · Micro-saltos de encuadre: cada cierto tiempo el texto
+       da un pequeño tirón lateral con destello de brillo.
+
+   TÉCNICA: background-clip: text (barra + degradado de
+   cinta) + transform/filter animados con steps(1).
+   ================================================================ */
+
+.efecto-vhs {
+    display: inline-block;
+
+    background-image:
+        /* barra de tracking blanca que sube por el texto */
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0) 46%,
+            rgba(255, 255, 255, .9) 50%,
+            rgba(255, 255, 255, 0) 54%
+        ),
+        /* color de cinta desvanecido */
+        linear-gradient(
+            180deg,
+            #ff9ecb 0%,
+            #ffeef7 45%,
+            #d7f6ff 70%,
+            #8ed8f8 100%
+        );
+
+    /* la barra vive en una capa de 300% para poder viajar */
+    background-size: 100% 300%, 100% 100%;
+
+    /* la cinta se pinta SOLO dentro de las letras */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow: 0 2px 10px rgba(255, 64, 129, .35);
+
+    animation:
+        vhs-tracking 5s linear infinite,
+        vhs-salto 2.4s steps(1, end) infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* La barra de tracking sube (fondo de 300%: 0% → 100% recorre
+   dos alturas de imagen sin repetir; al empezar y terminar la
+   barra está FUERA del texto, así que el bucle no se nota). */
+@keyframes vhs-tracking {
+    0%   { background-position: 0 100%, 0 0; }
+    100% { background-position: 0 0%,   0 0; }
+}
+
+/* Saltos de encuadre secos: tirones laterales + destellos.
+   steps(1) mantiene cada fotograma hasta el siguiente. */
+@keyframes vhs-salto {
+    0%   { transform: translate(0, 0) skewX(0);       filter: brightness(1); }
+    9%   { transform: translate(3px, 0) skewX(.7deg); filter: brightness(1.15); }
+    13%  { transform: translate(0, 0) skewX(0);       filter: brightness(1); }
+    30%  { transform: translate(0, 0) skewX(0);       filter: brightness(1); }
+    34%  { transform: translate(-3px, 0) skewX(-.7deg); filter: brightness(1.12); }
+    38%  { transform: translate(0, 0) skewX(0);       filter: brightness(1); }
+    56%  { transform: translate(0, 0) skewX(0);       filter: brightness(1); }
+    60%  { transform: translate(2px, 0) skewX(.5deg); filter: brightness(1.2); }
+    64%  { transform: translate(0, 0) skewX(0);       filter: brightness(1); }
+    82%  { transform: translate(0, 0) skewX(0);       filter: brightness(1); }
+    86%  { transform: translate(-2px, 0) skewX(-.5deg); filter: brightness(1.1); }
+    90%  { transform: translate(0, 0) skewX(0);       filter: brightness(1); }
+    100% { transform: translate(0, 0) skewX(0);       filter: brightness(1); }
+}

@@ -1,0 +1,93 @@
+/* ================================================================
+   EFECTO 45: APUNTAR - corchetes de puntería que cierran (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-apuntar">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-apuntar, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un OBJETIVO en el visor: los dos
+      CORCHETES de puntería entran desde fuera, rebotan
+      hasta encajar y, al bloquear, las letras destellan
+      verdes con un temblor seco mientras la etiqueta de
+      bloqueo brilla. Fondo verde terminal recomendado.
+
+   TÉCNICA: background-clip: text (verde visor) +
+    ::before/::after con translate propio (dos
+    keyframes espejo) y destello con steps(1).
+   ================================================================ */
+
+
+.efecto-apuntar {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(90deg, #dcedc8, #76ff03 50%, #64dd17);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: apuntar-bloqueo 3.4s steps(1, end) infinite;
+}
+
+/* corchetes de puntería (entran y rebotan) */
+.efecto-apuntar::before,
+.efecto-apuntar::after {
+    content: "";
+    position: absolute;
+    top: 4%;
+    bottom: 4%;
+    width: .3em;
+    border: solid #76ff03;
+    border-width: 3px 0;
+    opacity: 0;
+}
+.efecto-apuntar::before {
+    left: -1em;
+    border-left-width: 3px;
+    border-radius: .2em 0 0 .2em;
+    animation: apuntar-cierre-i 3.4s steps(1, end) infinite;
+}
+.efecto-apuntar::after {
+    right: -1em;
+    border-right-width: 3px;
+    border-radius: 0 .2em .2em 0;
+    animation: apuntar-cierre-d 3.4s steps(1, end) infinite;
+}
+
+@keyframes apuntar-bloqueo {
+    0%, 23%   { filter: brightness(1); transform: translate(0, 0); }
+    24%       { filter: brightness(2.1); transform: translate(1px, -1px); }
+    27%       { filter: brightness(1.35); transform: translate(-1px, 1px); }
+    30%       { filter: brightness(1); transform: translate(0, 0); }
+    64%       { filter: brightness(1); transform: translate(0, 0); }
+    66%, 100% { filter: brightness(.85); transform: translate(0, 0); }
+}
+@keyframes apuntar-cierre-i {
+    0%     { opacity: 0; transform: translateX(-1.1em); }
+    4%     { opacity: .95; transform: translateX(-1.1em); }
+    14%    { opacity: .95; transform: translateX(-.3em); }
+    17%    { opacity: .95; transform: translateX(-.62em); }
+    21%    { opacity: .95; transform: translateX(-.4em); }
+    24%    { opacity: .95; transform: translateX(-.48em); }
+    64%    { opacity: .95; transform: translateX(-.48em); }
+    66%    { opacity: 0; transform: translateX(-1.1em); }
+    100%   { opacity: 0; transform: translateX(-1.1em); }
+}
+@keyframes apuntar-cierre-d {
+    0%     { opacity: 0; transform: translateX(1.1em); }
+    4%     { opacity: .95; transform: translateX(1.1em); }
+    14%    { opacity: .95; transform: translateX(.3em); }
+    17%    { opacity: .95; transform: translateX(.62em); }
+    21%    { opacity: .95; transform: translateX(.4em); }
+    24%    { opacity: .95; transform: translateX(.48em); }
+    64%    { opacity: .95; transform: translateX(.48em); }
+    66%    { opacity: 0; transform: translateX(1.1em); }
+    100%   { opacity: 0; transform: translateX(1.1em); }
+}

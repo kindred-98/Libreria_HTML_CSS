@@ -1,0 +1,87 @@
+/* ================================================================
+   EFECTO 25: BOTÍN - haz de botín legendaria (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-botin">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-botin, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son BOTÍN LEGENDARIO: dorado brillante con
+      un destello de brillo que barre el texto, un HAZ DE
+      LUZ dorado que sube y respira por delante de las
+      letras y una estrella que destella en la esquina,
+      como un objeto exótico en el suelo.
+      Fondo casi negro recomendado.
+
+   TÉCNICA: background-clip: text con degradado dorado y destello
+    deslizante + pseudo-elementos (haz y estrella) con
+    opacity/transform/filter animados.
+   ================================================================ */
+
+
+.efecto-botin {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        /* destello que barre en diagonal */
+        linear-gradient(115deg, rgba(255, 255, 255, 0) 40%,
+                          rgba(255, 255, 255, .9) 50%,
+                          rgba(255, 255, 255, 0) 60%),
+        /* dorado de objeto exótico */
+        linear-gradient(90deg, #fff8e1, #ffd54f 45%, #ff8f00);
+    background-size: 260% 100%, 100% 100%;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: botin-brillo 4s linear infinite;
+}
+
+/* haz de luz que sube por delante de las letras */
+.efecto-botin::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -.3em;
+    width: 1.5em;
+    height: 2.2em;
+    margin-left: -.75em;
+    background: linear-gradient(0deg, rgba(255, 213, 0, .55),
+                rgba(255, 213, 0, .2) 55%, rgba(255, 213, 0, 0));
+    filter: blur(3px);
+    animation: botin-haz 2.6s ease-in-out infinite;
+}
+
+/* estrella de rareza en la esquina */
+.efecto-botin::after {
+    content: "\2726";
+    position: absolute;
+    right: -.5em;
+    top: -.45em;
+    color: #ffee58;
+    text-shadow: 0 0 8px rgba(255, 238, 88, .9);
+    animation: botin-destello 1.4s steps(1, end) infinite;
+}
+
+@keyframes botin-brillo {
+    0%   { background-position: 140% 0, 0 0; }
+    100% { background-position: -140% 0, 0 0; }
+}
+@keyframes botin-haz {
+    0%, 100% { opacity: .55; transform: translateY(8%); }
+    50%      { opacity: 1; transform: translateY(-8%); }
+}
+@keyframes botin-destello {
+    0%, 64%   { opacity: 0; transform: scale(.3) rotate(0deg); }
+    65%, 74%  { opacity: 1; transform: scale(1) rotate(90deg); }
+    75%, 84%  { opacity: .4; transform: scale(.8) rotate(140deg); }
+    85%, 100% { opacity: 0; transform: scale(.3) rotate(180deg); }
+}

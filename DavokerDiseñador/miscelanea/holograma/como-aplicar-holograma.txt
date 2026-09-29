@@ -1,0 +1,59 @@
+================================================================
+EFECTO HOLOGRAMA - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "holograma.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/holograma.css">
+
+Contenido del archivo:
+  · La clase .efecto-holograma
+  · 2 @keyframes: holo-movimiento y holo-flicker
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-holograma">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-holograma">Holograma</span></h1>
+
+IMPORTANTE: fondo casi negro. Sobre fondo claro la proyección
+cian no se distingue.
+
+
+QUÉ HACE
+--------
+Dos animaciones simultáneas en bucle infinito:
+  · holo-movimiento (1 s) → las líneas de barrido (scanlines)
+    suben -50px por vuelta = 10 ciclos de 5px: barrido
+    continuo e invisible en el reinicio. El degradado cian
+    se mantiene fijo.
+  · holo-flicker (3,4 s, steps(1)) → parpadeos secos de
+    brillo, temblor de 1px y DOS caídas de señal (en el 62%
+    y el 95% del ciclo) donde el holograma baja a opacidad
+    .35/.5 antes de recupararse.
+
+El halo cian (text-shadow) está en la clase base y las
+animaciones no lo tocan, así que nunca se apaga del todo.
+
+
+AJUSTES FÁCILES
+---------------
+· Barrido más rápido: cambia 1s por 0.5s.
+· Líneas más gruesas: sube los px del repeating-linear
+  (0 2px / 2px 5px → 0 3px / 3px 7px) y, si cambias el
+  ciclo, ajusta el -50px de holo-movimiento a múltiplos
+  del nuevo ciclo.
+· Más parpadeos: mete fotogramas con opacidad < 1 dentro
+  de holo-flicker (recuerda: siempre steps(1) y con los
+  3 filtros/propiedades juntos en cada fotograma).
+· Menos caídas: borra los fotogramas 62% y 95%.
+· Holograma azul: cambia #00e5ff/#18ffff/#00b0f9/#80f8ff
+  por #2979ff/#448aff/#82b1ff/#8c9eff y el text-shadow
+  por rgba(41, 121, 255, ...).
+· Más "antiguo": sube la duración de holo-flicker a 6s.

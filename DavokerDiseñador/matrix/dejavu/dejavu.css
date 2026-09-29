@@ -1,0 +1,65 @@
+/* ================================================================
+   EFECTO 51: DEJAVU - el gato negro y el texto que se repite (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-dejavu">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-dejavu, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      El texto SE REPITE como el gato negro: cada pocos
+      segundos la palabra se desdobla en dos ecos verdes
+      que saltan a izquierda y derecha (steps) y vuelven
+      a su sitio, mientras dos ojos de gato destellan en
+      la esquina superior.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: text-shadow y transform por pasos (steps(1)) para el
+    eco desfasado + pseudo-elemento con dos degradados
+    radiales (los ojos) que parpadea.
+   ================================================================ */
+
+
+.efecto-dejavu {
+    display: inline-block;
+    position: relative;
+
+    color: #d7ffe4;
+    animation: mx-dejavu-eco 3.4s steps(1, end) infinite;
+}
+
+/* los ojos del gato negro */
+.efecto-dejavu::after {
+    content: "";
+    position: absolute;
+    right: -.72em;
+    top: -.34em;
+    width: .58em;
+    height: .36em;
+    background:
+        radial-gradient(ellipse at 28% 50%, #ffffff 0 34%, transparent 40%),
+        radial-gradient(ellipse at 72% 50%, #ffffff 0 34%, transparent 40%);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, .8));
+    opacity: 0;
+    animation: mx-dejavu-ojos 3.4s steps(1, end) infinite;
+}
+
+@keyframes mx-dejavu-eco {
+    0%, 60%   { text-shadow: none; transform: translateX(0); }
+    61%, 69%  { text-shadow: -5px 0 rgba(0, 255, 110, .55),
+                             5px 0 rgba(160, 255, 200, .3);
+                transform: translateX(-4px); }
+    70%, 78%  { text-shadow: 6px 0 rgba(0, 255, 110, .55),
+                             -6px 0 rgba(160, 255, 200, .3);
+                transform: translateX(5px); }
+    79%, 100% { text-shadow: none; transform: translateX(0); }
+}
+@keyframes mx-dejavu-ojos {
+    0%, 60%   { opacity: 0; }
+    61%, 78%  { opacity: .95; }
+    79%, 100% { opacity: 0; }
+}

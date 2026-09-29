@@ -1,0 +1,90 @@
+/* ================================================================
+   EFECTO 107: ECOLOGISTAS - las letras de laboratorio con su barra de análisis (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-ecologistas">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-ecologistas, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son una MUESTRA DE LABORATORIO: blanco y
+      ámbar de bata que respiran bajo la luz, una BARRA DE
+      ANÁLISIS se rellena bajo la palabra y el TESTIGO
+      naranja parpadea al ritmo de la pantalla.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado blanco/ámbar recortado en el texto con
+    background-position animado, barra ::before
+    rellenada con background-size y testigo ::after con
+    opacidad intermitente.
+   ================================================================ */
+
+
+/* --- base: luz del laboratorio sobre la bata --- */
+.efecto-ecologistas {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(115deg, #fafafa 0%, #ffe0b2 34%, #ffb74d 52%,
+                #ffffff 74%, #ffcc80 100%);
+    background-size: 240% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 .35em rgba(255, 183, 77, .35));
+    animation: stk-ecologistas-luz 6.6s ease-in-out infinite;
+}
+/* --- barra de análisis rellenándose bajo la palabra --- */
+.efecto-ecologistas::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -.3em;
+    width: 100%;
+    height: .13em;
+    background:
+        linear-gradient(90deg, #ffb74d, #fff3e0) 0 0 / 0% 100% no-repeat,
+        rgba(255, 224, 178, .16);
+    pointer-events: none;
+    animation: stk-ecologistas-analisis 4.4s ease-in infinite;
+}
+/* --- testigo naranja del equipo --- */
+.efecto-ecologistas::after {
+    content: "";
+    position: absolute;
+    right: -.5em;
+    top: -.35em;
+    width: .3em;
+    height: .3em;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff8e1 0%, #ffb74d 55%,
+                rgba(255, 183, 77, 0) 80%);
+    box-shadow: 0 0 .45em rgba(255, 183, 77, .9);
+    opacity: .2;
+    pointer-events: none;
+    animation: stk-ecologistas-testigo 1.7s ease-in-out infinite;
+}
+@keyframes stk-ecologistas-luz {
+    0%, 100% { background-position: 100% 0; }
+    50%      { background-position: 0% 0; }
+}
+@keyframes stk-ecologistas-analisis {
+    0%   { background-size: 0% 100%, 100% 100%; }
+    72%  { background-size: 100% 100%, 100% 100%; }
+    82%  { background-size: 100% 100%, 100% 100%; }
+    90%  { background-size: 0% 100%, 100% 100%; }
+    100% { background-size: 0% 100%, 100% 100%; }
+}
+@keyframes stk-ecologistas-testigo {
+    0%, 100% { opacity: .15; }
+    8%       { opacity: 1; }
+    20%      { opacity: .15; }
+    34%      { opacity: .9; }
+    46%      { opacity: .15; }
+}

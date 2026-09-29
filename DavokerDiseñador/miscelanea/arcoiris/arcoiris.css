@@ -1,0 +1,50 @@
+/* ================================================================
+   EFECTO 2: ARCOÍRIS ANIMADO EN EL TEXTO (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-arcoiris">Tu texto</span>
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-arcoiris y el @keyframes
+     arcoiris-movimiento). No depende de ningún otro estilo
+     ni de librerías externas.
+
+   QUÉ HACE: el degradado arcoíris recorre las letras de forma
+   CONTINUA e infinita (linear, sin cortes ni pausas).
+
+   NOTA TÉCNICA: usa background-clip: text para pintar el
+   degradado SOLO dentro de las letras (navegadores modernos).
+   ================================================================ */
+
+.efecto-arcoiris {
+    /* degradado arcoíris que empieza y termina en rojo
+       para que el bucle sea perfectamente continuo */
+    background-image: linear-gradient(
+        90deg,
+        #ff0000,
+        #ff8a00,
+        #ffe600,
+        #00c853,
+        #00b0ff,
+        #2962ff,
+        #d500f9,
+        #ff0000
+    );
+    background-size: 200% 100%;
+    background-repeat: repeat;
+
+    /* el degradado se recorta dentro del texto */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;               /* respaldo estándar */
+    -webkit-text-fill-color: transparent;  /* Chrome/Safari/Edge */
+
+    /* movimiento constante: 0% → 200% = exactamente un bucle */
+    animation: arcoiris-movimiento 3.5s linear infinite;
+}
+
+@keyframes arcoiris-movimiento {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}

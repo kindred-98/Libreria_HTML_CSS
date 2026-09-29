@@ -1,0 +1,91 @@
+/* ================================================================
+   EFECTO 118: FAUNA - las letras de cuerno respiran con la manada (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-fauna">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-fauna, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son LA FAUNA DE LA ZONA: cuerno y piel que
+      respiran a lo ancho de la palabra, la SOMBRA se acerca
+      por abajo y el FULGOR del ojo encendido parpadea dos
+      veces. Fondo oscuro recomendado.
+
+   TÉCNICA: manchas de cuerno recortadas en el texto con transform
+    animado (el aliento mueve la palabra), sombra ::before
+    estirada con scaleX y fulgor ::after con radial-gradient
+    de opacidad intermitente.
+   ================================================================ */
+
+
+/* --- base: cuerno y piel respirando dentro de las letras --- */
+.efecto-fauna {
+    display: inline-block;
+    position: relative;
+    background-image:
+        repeating-linear-gradient(158deg, rgba(52, 30, 14, .45) 0 .22em,
+                rgba(52, 30, 14, 0) .22em .6em),
+        linear-gradient(146deg, #5c3a1c 0%, #e0a96d 34%, #ffe3c2 50%,
+                #b87639 66%, #33200f 100%);
+    background-size: .6em 100%, 100% 100%;
+    background-position: 0 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 .05em .14em rgba(0, 0, 0, .7));
+    transform-origin: 50% 70%;
+    animation: stk-fauna-aliento 4.4s ease-in-out infinite;
+}
+/* --- la sombra se acerca por debajo de la palabra --- */
+.efecto-fauna::before {
+    content: "";
+    position: absolute;
+    left: -6%;
+    right: -6%;
+    bottom: -.4em;
+    height: .55em;
+    background: linear-gradient(180deg, rgba(20, 12, 6, .85),
+                rgba(20, 12, 6, 0));
+    filter: blur(.14em);
+    opacity: .5;
+    pointer-events: none;
+    animation: stk-fauna-acecho 5.6s ease-in-out infinite;
+}
+/* --- fulgor: el ojo de la bestia se enciende --- */
+.efecto-fauna::after {
+    content: "";
+    position: absolute;
+    right: -.45em;
+    top: -.35em;
+    width: .3em;
+    height: .3em;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff6d8 0%, #ffb300 50%,
+                rgba(255, 179, 0, 0) 78%);
+    box-shadow: 0 0 .5em rgba(255, 179, 0, .9);
+    opacity: .3;
+    pointer-events: none;
+    animation: stk-fauna-fulgor 3.8s ease-in-out infinite;
+}
+@keyframes stk-fauna-aliento {
+    0%, 100% { transform: scale(1) skewX(0deg); }
+    38%      { transform: scale(1.035) skewX(-1.2deg); }
+    54%      { transform: scale(.995) skewX(.6deg); }
+}
+@keyframes stk-fauna-acecho {
+    0%, 100% { opacity: .3; transform: scaleX(.9); }
+    50%      { opacity: .7; transform: scaleX(1.04); }
+}
+@keyframes stk-fauna-fulgor {
+    0%, 34%  { opacity: .25; }
+    40%      { opacity: .95; }
+    52%      { opacity: .3; }
+    64%      { opacity: .85; }
+    78%, 100% { opacity: .25; }
+}

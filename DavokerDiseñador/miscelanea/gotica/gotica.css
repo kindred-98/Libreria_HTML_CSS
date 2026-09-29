@@ -1,0 +1,130 @@
+/* ================================================================
+   EFECTO 21: GÓTICA - sombras vivas en letra antigua (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-gotica" data-text="Tu texto">Tu texto</span>
+
+   ⚠ EL ATRIBUTO data-text ES OBLIGATORIO y debe repetir el texto
+     visible: los pseudo-elementos ::before y ::after lo copian
+     para crear las dos capas de sombra.
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-gotica, sus dos
+     pseudo-elementos y los 4 @keyframes). No depende de
+     ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:
+     · Texto base con degradado gótico (burdeos → púrpura → oro)
+     · Dos capas de sombra animadas (::before y ::after) que se
+       desplazan y difuminan creando profundidad viva
+     · Resplandor perimetral que "respira" en bucle infinito
+     · Todo sin JavaScript, solo CSS
+
+   TÉCNICA: background-clip: text (degradado en el texto) +
+   pseudo-elementos con text-shadow animado + filter: brightness.
+   ================================================================ */
+
+.efecto-gotica {
+    display: inline-block;
+    position: relative;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+
+    /* Degradado gótico pintado SOLO dentro de los glifos.
+       Todas las paradas tienen luminancia suficiente para que
+       el texto siga legible sobre fondo oscuro: la gama va de
+       burdeos a oro, sin negros que lo hagan desaparecer. */
+    background-image: linear-gradient(
+        180deg,
+        #d4303c 0%,     /* burdeos vivo */
+        #9b2b7d 28%,    /* púrpura gótico */
+        #5f1e63 50%,    /* violeta profundo */
+        #d3a13a 74%,    /* oro viejo */
+        #f3d998 100%    /* oro pálido */
+    );
+    background-size: 100% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    /* Animaciones: desplazamiento del degradado + respiración del brillo */
+    animation:
+        go-gotica-degradado 8s linear infinite,
+        go-gotica-resplandor 3.5s ease-in-out infinite alternate;
+}
+
+/* Capa de sombra profunda (::before) - se desliza diagonal */
+.efecto-gotica::before,
+.efecto-gotica::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    /* Mismo degradado base, más oscuro, para la sombra */
+    background-image: linear-gradient(
+        180deg,
+        #7a1420 0%,
+        #55124f 28%,
+        #330f36 50%,
+        #7a5c1e 74%,
+        #8a7440 100%
+    );
+    background-size: 100% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Sombra 1: desplazamiento lento diagonal + difuminado */
+.efecto-gotica::before {
+    transform: translate(0.06em, 0.08em);
+    filter: blur(0.04em) opacity(0.7);
+    animation:
+        go-gotica-sombra1 6s ease-in-out infinite alternate,
+        go-gotica-degradado 8s linear infinite reverse;
+}
+
+/* Sombra 2: desplazamiento opuesto + mayor difuminado */
+.efecto-gotica::after {
+    transform: translate(-0.04em, -0.06em);
+    filter: blur(0.08em) opacity(0.5);
+    animation:
+        go-gotica-sombra2 7s ease-in-out infinite alternate-reverse,
+        go-gotica-degradado 8s linear infinite;
+}
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* Desplazamiento vertical del degradado (efecto "sangre subiendo") */
+@keyframes go-gotica-degradado {
+    0%   { background-position: 50% 0%; }
+    100% { background-position: 50% 200%; }
+}
+
+/* Sombra 1: se desliza y difumina en diagonal descendente */
+@keyframes go-gotica-sombra1 {
+    0%   { transform: translate(0.06em, 0.08em); filter: blur(0.04em) opacity(0.7); }
+    50%  { transform: translate(0.12em, 0.16em); filter: blur(0.06em) opacity(0.5); }
+    100% { transform: translate(0.02em, 0.04em); filter: blur(0.03em) opacity(0.8); }
+}
+
+/* Sombra 2: se desliza en dirección opuesta, más difusa */
+@keyframes go-gotica-sombra2 {
+    0%   { transform: translate(-0.04em, -0.06em); filter: blur(0.08em) opacity(0.5); }
+    50%  { transform: translate(-0.08em, -0.12em); filter: blur(0.12em) opacity(0.35); }
+    100% { transform: translate(-0.02em, -0.03em); filter: blur(0.06em) opacity(0.6); }
+}
+
+/* Resplandor perimetral que "respira" (filter en el elemento principal) */
+@keyframes go-gotica-resplandor {
+    0%   { filter: drop-shadow(0 0 0.03em rgba(212,48,60,0.55)) brightness(1); }
+    100% { filter: drop-shadow(0 0 0.11em rgba(243,217,152,0.8)) brightness(1.14); }
+}

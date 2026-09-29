@@ -1,0 +1,69 @@
+/* ================================================================
+   EFECTO 57: ORACLE - la galleta del Oráculo que se desmigaja (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-oracle">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-oracle, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son la GALLETA del Oráculo: degradado
+      cálido con halo ámbar que respira y, debajo, migajas
+      que se desprenden y caen poco a poco mientras el
+      texto se queda quieto, como una galleta comiéndose.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: background-clip: text con degradado de galleta +
+    filter: drop-shadow animado en la clase +
+    pseudo-elemento de migajas con content y \A.
+   ================================================================ */
+
+
+.efecto-oracle {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(180deg, #ffe9c4 0%, #ffcc80 44%,
+                      #d98a3c 66%, #ffdca8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(255, 180, 90, .5));
+
+    animation: mx-oracle-calor 3.8s ease-in-out infinite;
+}
+
+/* migajas que se desprenden bajo las letras */
+.efecto-oracle::after {
+    content: "· · · · ·\A · · · · ·";
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    top: 74%;
+    white-space: pre;
+    overflow: hidden;
+
+    font-family: "Courier New", Courier, monospace;
+    font-size: .5em;
+    letter-spacing: .34em;
+    line-height: 1.5;
+    color: #d7a86e;
+    opacity: 0;
+    animation: mx-oracle-migajas 3.8s linear infinite;
+}
+
+@keyframes mx-oracle-calor {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 180, 90, .4)); }
+    50%      { filter: drop-shadow(0 0 20px rgba(255, 195, 110, .85)); }
+}
+@keyframes mx-oracle-migajas {
+    0%, 26%  { opacity: 0; transform: translateY(0); }
+    36%      { opacity: .95; transform: translateY(8%); }
+    88%      { opacity: .45; transform: translateY(52%); }
+    100%     { opacity: 0; transform: translateY(62%); }
+}

@@ -7,7 +7,9 @@ const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "../..");
 // Cada raiz declara su autor: es el dato del filtro de autores de la web.
 // GevendraAutorExterno agrupa los 116 demos de terceros de gevendra2004/gevstack
-// y DavokerDiseñador los futuros demos de davoker.
+// y DavokerDiseñador los 119 efectos de texto de davoker. Su portada,
+// DavokerDiseñador/davoker.html, no es un componente: solo se catalogan los
+// index.html, y la abre el filtro de autores dentro de la rejilla.
 const libraryRoots = [
   {
     name: "GevendraAutorExterno",
@@ -18,6 +20,27 @@ const libraryRoots = [
     name: "DavokerDiseñador",
     directory: path.join(repositoryDirectory, "DavokerDiseñador"),
     author: "Davoker",
+    // Sus 7 carpetas son temas (stalker, matrix...), no categorias funcionales:
+    // todo su contenido es efecto de texto, y el tema viaja en los tags.
+    categories: {
+      harry_potter: "Effects",
+      matrix: "Effects",
+      miscelanea: "Effects",
+      monster_hunter: "Effects",
+      stalker: "Effects",
+      star_wars: "Effects",
+      the_division: "Effects",
+    },
+    // MIT de davoker declarado en la raiz: se anade al ZIP de cada efecto.
+    license: "MIT",
+    licenseFile: "LICENSE",
+    source: "https://github.com/davoker/efectos_css_para_html",
+    redistributable: true,
+    // Sus paginas no traen meta description; el texto por defecto va aqui.
+    description: "CSS text effect with its own showcase page and a downloadable pack.",
+    descriptionEs: "Efecto de texto CSS con su propia página de showcase y su pack descargable.",
+    // Los titulos son "Efecto GLITCH - Showcase": la tarjeta se queda con GLITCH.
+    titleCleanup: (title) => title.replace(/^Efecto\s+/i, "").replace(/\s*[-|:]\s*Showcase$/i, "").trim(),
   },
   {
     name: "CreacionesNuevas",
@@ -236,7 +259,8 @@ async function createComponent(root, pagePath) {
   const titleMatch = html.match(/<title\b[^>]*>([\s\S]*?)<\/title\s*>/i);
   const rawTitle = cleanText(titleMatch?.[1] ?? "");
   const titleWithoutPrefix = rawTitle.replace(/^(?:Gev\s*Stack|Gevstack|2much_tech)\s*(?:[-|:]\s*)?/i, "");
-  const title = removeBrandSuffix(titleWithoutPrefix);
+  const titleAfterCleanup = root.titleCleanup ? root.titleCleanup(titleWithoutPrefix) : titleWithoutPrefix;
+  const title = removeBrandSuffix(titleAfterCleanup);
   const id = createSlug(folderPath);
   const override = catalogOverrides[id] ?? {};
   const name = override.name ?? (title || directoryName.replace(/[-_]+/g, " "));
@@ -246,22 +270,40 @@ async function createComponent(root, pagePath) {
   const descriptionType = category === "Other" ? "HTML and CSS" : category.toLowerCase();
   const description = override.description ?? (descriptionMatch
     ? readAttribute(descriptionMatch[0], "content")
-    : `Standalone ${descriptionType} demo from the component collection.`);
+    : root.description ?? `Standalone ${descriptionType} demo from the component collection.`);
   const descriptionEsMatch = html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description[-:]es["'])[^>]*>/i)
     ?? html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description["'])[^>]*\bhreflang\s*=\s*["']es["'][^>]*>/i)
     ?? html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description["'])[^>]*\blang\s*=\s*["']es["'][^>]*>/i);
   const descriptionEs = override.descriptionEs ?? (descriptionEsMatch
     ? readAttribute(descriptionEsMatch[0], "content")
-    : null);
+    : root.descriptionEs ?? null);
   const previewPath = path.relative(repositoryDirectory, pagePath).split(path.sep).join("/");
   const missingReferences = await getMissingReferences(html, pageDirectory, root.directory);
   const files = await collectComponentFiles(pageDirectory, id);
-  const license = override.license ?? "Unverified";
-  const source = override.source ?? "Unverified";
-  const rawLicenseFile = String(override.licenseFile ?? "").replaceAll("\\", "/");
+  const license = override.license ?? root.license ?? "Unverified";
+  const source = override.source ?? root.source ?? "Unverified";
+  const rawLicenseFile = String(override.licenseFile ?? root.licenseFile ?? "").replaceAll("\\", "/");
   const licenseFile = rawLicenseFile.startsWith("./") ? rawLicenseFile.slice(2) : rawLicenseFile;
+  // La licencia de la raiz entra en el ZIP de cada componente: si no, la descarga
+  // saldria sin el texto que la ampara.
+  if (licenseFile && !files.some((file) => file.relativePath === licenseFile)) {
+    const rootLicensePath = path.join(root.directory, licenseFile);
+    try {
+      if ((await stat(rootLicensePath)).isFile()) {
+        files.push({
+          name: path.basename(rootLicensePath),
+          relativePath: licenseFile,
+          path: `../${path.relative(repositoryDirectory, rootLicensePath).split(path.sep).join("/")}`,
+          archivePath: `${id}/${licenseFile}`,
+        });
+      }
+    } catch {
+      // Sin licencia en disco no hay descarga: lo comprueba el calculo de abajo.
+    }
+  }
   const includesLicenseFile = files.some((file) => file.relativePath === licenseFile);
-  const downloadable = override.redistributable === true
+  const redistributable = (override.redistributable ?? root.redistributable) === true;
+  const downloadable = redistributable
     && source !== "Unverified"
     && license !== "Unverified"
     && includesLicenseFile
@@ -275,7 +317,7 @@ async function createComponent(root, pagePath) {
     featured: override.featured === true,
     description,
     ...(descriptionEs ? { descriptionEs } : {}),
-    tags: override.tags ?? getTags(directoryName, name, category),
+    tags: override.tags ?? getTags(folderPath, name, category),
     root: root.name,
     folder: folderPath,
     preview: `../${previewPath}`,

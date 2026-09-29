@@ -1,0 +1,51 @@
+================================================================
+EFECTO TORPEDO - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "torpedo.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/torpedo.css">
+
+Contenido del archivo:
+  · La clase .efecto-torpedo
+  · Sus pseudo-elementos ::before y ::after
+    (el rayo que cruza y el impacto)
+  ·   · torpedo-destello, torpedo-rayo, torpedo-impacto
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-torpedo">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-torpedo">PEW</span></h1>
+
+
+QUÉ HACE
+--------
+Tres animaciones sincronizadas en bucle infinito:
+  · torpedo-rayo (2,4 s) → el rayo ::before parte de la
+    izquierda, cruza el texto por encima y sale por la
+    derecha; la cola lleva un núcleo blanco.
+  · torpedo-destello (2,4 s, steps(1)) → en el instante
+    en que el rayo sale, las letras destellan 1,9x de
+    brillo y vuelven a la normalidad, secas.
+  · torpedo-impacto (2,4 s, steps(1)) → el impacto ::after
+    estalla en la esquina derecha con el mismo timing.
+El color base es un degradado gris de casco imperial.
+
+TÉCNICA: background-clip: text (chapa gris) + ::before como
+    rayo con left animado, ::after de impacto y
+    brightness del destello, todos en steps().
+
+
+AJUSTES FÁCILES
+---------------
+· Disparos más seguidos: 2.4s → 1.4s.
+· Rayo verde (Rebelión): #ff5252 → #76ff03 en ::before.
+· Rayo más rápido: 30% → 18% en torpedo-rayo.
+· Destello más fuerte: brightness(1.9) → brightness(2.6).

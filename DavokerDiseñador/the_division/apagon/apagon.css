@@ -1,0 +1,78 @@
+/* ================================================================
+   EFECTO 26: APAGÓN - directiva apagón de emergencia (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-apagon">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-apagon, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      El texto está APAGADO (casi invisible sobre fondo
+      oscuro) y solo se enciende en DESTELLOS SECOS de luz
+      de emergencia roja, con saltos bruscos de luz a
+      oscuridad; dos barras de respaldo arriba y abajo
+      parpadean en el mismo instante. Una ciudad sin
+      electricidad.
+
+   TÉCNICA: color/text-shadow con steps(1) (encendidos secos) y
+    pseudo-elementos con barras de respaldo
+    sincronizadas.
+   ================================================================ */
+
+
+.efecto-apagon {
+    display: inline-block;
+    position: relative;
+
+    color: #4a0f0f;              /* apagada: casi invisible */
+    text-shadow: none;
+
+    animation: apagon-parpadeo 4.6s steps(1, end) infinite;
+}
+
+/* barras de respaldo: se encienden con el texto */
+.efecto-apagon::before,
+.efecto-apagon::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: .12em;
+    background: #ff5252;
+    box-shadow: 0 0 8px rgba(255, 82, 82, .9);
+    opacity: 0;
+    animation: apagon-respaldo 4.6s steps(1, end) infinite;
+}
+.efecto-apagon::before { top: -.35em; }
+.efecto-apagon::after  { bottom: -.35em; }
+
+@keyframes apagon-parpadeo {
+    0%    { color: #4a0f0f; text-shadow: none; }
+    18%   { color: #ff5252; text-shadow: 0 0 16px rgba(255, 82, 82, .9); }
+    20%   { color: #4a0f0f; text-shadow: none; }
+    30%   { color: #4a0f0f; text-shadow: none; }
+    33%   { color: #ff8a80; text-shadow: 0 0 24px rgba(255, 138, 128, 1); }
+    36%   { color: #3e0a0a; text-shadow: none; }
+    55%   { color: #3e0a0a; text-shadow: none; }
+    58%   { color: #ff5252; text-shadow: 0 0 14px rgba(255, 82, 82, .8); }
+    60%   { color: #4a0f0f; text-shadow: none; }
+    78%   { color: #4a0f0f; text-shadow: none; }
+    81%   { color: #ff8a80; text-shadow: 0 0 28px rgba(255, 138, 128, 1); }
+    84%   { color: #4a0f0f; text-shadow: none; }
+    100%  { color: #4a0f0f; text-shadow: none; }
+}
+@keyframes apagon-respaldo {
+    0%, 17%   { opacity: 0; }
+    18%, 20%  { opacity: 1; }
+    21%, 32%  { opacity: 0; }
+    33%, 36%  { opacity: .7; }
+    37%, 57%  { opacity: 0; }
+    58%, 60%  { opacity: 1; }
+    61%, 80%  { opacity: 0; }
+    81%, 84%  { opacity: .7; }
+    85%, 100% { opacity: 0; }
+}

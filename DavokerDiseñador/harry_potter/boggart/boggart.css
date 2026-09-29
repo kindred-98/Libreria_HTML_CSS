@@ -1,0 +1,98 @@
+/* ================================================================
+   EFECTO 95: BOGGART - una sombra cambiante acecha tras las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-boggart">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-boggart, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras están en pena: tiemblan mientras una SOMBRA
+      cambia de forma detrás (la maldad, el armario, lo que
+      sea) y dos ojos ámbar parpadean en la penumbra.
+      Riddikulus.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: textura gris cálida con background-clip: text, temblor
+    en steps con translateX, sombra ::before con elipse
+    difuminada y border-radius animado (la forma que
+    cambia) y ojos ::after con dos radial-gradient.
+   ================================================================ */
+
+
+.efecto-boggart {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(168deg, #e7e2dd 0%, #bcaaa4 44%, #8d8079 74%,
+                #d7ccc8 100%);
+    background-size: 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 7px rgba(160, 150, 145, .4));
+
+    animation: hp-boggart-tiembla 3.8s steps(1, end) infinite;
+}
+
+/* la sombra que cambia de forma tras las letras */
+.efecto-boggart::before {
+    content: "";
+    position: absolute;
+    inset: -.35em -.5em;
+    background: radial-gradient(ellipse at 50% 50%,
+            rgba(10, 8, 12, 0) 34%, rgba(10, 8, 12, .7) 62%,
+            rgba(10, 8, 12, 0) 88%);
+    border-radius: 46% 54% 60% 40% / 55% 45% 55% 45%;
+    filter: blur(.1em);
+    opacity: .8;
+    pointer-events: none;
+    animation: hp-boggart-sombra 3.8s ease-in-out infinite;
+}
+
+/* dos ojos que parpadean en la penumbra */
+.efecto-boggart::after {
+    content: "";
+    position: absolute;
+    inset: -.4em -.55em;
+    background-image:
+        radial-gradient(circle at 26% 38%, #ffb300 0 .07em,
+                rgba(255, 179, 0, 0) .16em),
+        radial-gradient(circle at 74% 32%, #ffb300 0 .07em,
+                rgba(255, 179, 0, 0) .16em);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-boggart-ojos 3.8s steps(1, end) infinite;
+}
+
+@keyframes hp-boggart-tiembla {
+    0%, 40%  { transform: translateX(0); }
+    44%      { transform: translateX(.02em); }
+    48%      { transform: translateX(-.02em); }
+    52%      { transform: translateX(.015em); }
+    56%      { transform: translateX(-.015em); }
+    60%      { transform: translateX(.01em); }
+    64%,100% { transform: translateX(0); }
+}
+@keyframes hp-boggart-sombra {
+    0%, 100% { border-radius: 46% 54% 60% 40% / 55% 45% 55% 45%;
+               transform: scale(1); opacity: .75; }
+    34%      { border-radius: 62% 38% 45% 55% / 42% 58% 42% 58%;
+               transform: scale(1.09) rotate(2deg); opacity: .95; }
+    68%      { border-radius: 40% 60% 52% 48% / 60% 40% 60% 40%;
+               transform: scale(.96) rotate(-2deg); opacity: .7; }
+}
+@keyframes hp-boggart-ojos {
+    0%, 46%  { opacity: 0; }
+    50%      { opacity: 1; }
+    56%      { opacity: 1; }
+    60%      { opacity: 0; }
+    64%      { opacity: .9; }
+    72%,100% { opacity: 0; }
+}

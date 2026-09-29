@@ -1,0 +1,54 @@
+================================================================
+EFECTO WIREBUG - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "wirebug.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/wirebug.css">
+
+Contenido del archivo:
+  · La clase .efecto-wirebug
+  · Sus pseudo-elementos ::before y ::after
+    (hilo tenso ::before y luciérnaga ::after)
+  ·   · mh-wirebug-seda, mh-wirebug-tensado,
+    mh-wirebug-luciernaga
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-wirebug">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-wirebug">WIREBUG</span></h1>
+
+
+QUÉ HACE
+--------
+Tres animaciones en bucle infinito:
+  · mh-wirebug-seda (4,4 s) → la malla de hilos se desplaza
+    en diagonal dentro de las letras; cada eje vuelve al
+    punto de partida, así que el bucle cierra sin costura.
+  · mh-wirebug-tensado (4,4 s) → el hilo que cruza el texto
+    se ilumina y se estira un poco (transform: scaleX).
+  · mh-wirebug-luciernaga (4,4 s) → la luz del bicho viaja
+    de izquierda a derecha por el hilo; se mueve con left en
+    porcentaje, para que cruce palabras de cualquier ancho.
+El truco del patrón es el background-size en em: los hilos
+escalan con el tamaño de la letra.
+
+TÉCNICA: dos repeating-linear-gradient con background-clip: text
+    y background-position animado, hilo ::before con
+    linear-gradient inclinado y luciérnaga ::after con
+    radial-gradient movida con left en porcentaje.
+
+
+AJUSTES FÁCILES
+---------------
+· Hilos más finos: .05em/.46em → .03em/.3em.
+· Bicho más rápido: 4.4s → 2.6s en mh-wirebug-luciernaga.
+· Sin luciérnaga: borra el ::after y mh-wirebug-luciernaga.
+· Más violeta: cambia el #b388ff por #7c4dff.

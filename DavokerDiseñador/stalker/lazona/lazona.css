@@ -1,0 +1,83 @@
+/* ================================================================
+   EFECTO 119: LA ZONA - las letras de cinta radiactiva parpadean (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-lazona">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-lazona, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son LA ZONA ENTERA: cinta de aviso con
+      rayas amarillo y negro a 115°, la INTERFERENCIA de la
+      señal corre por las letras y la ALERTA se enciende a
+      saltos fijos. Fondo oscuro recomendado.
+
+   TÉCNICA: repeating-linear-gradient de cinta radiactiva recortado
+    en el texto, interferencia ::before con barras finas
+    movidas por background-position y alerta ::after con
+    animation steps(1, end) para que corte sin avisar.
+   ================================================================ */
+
+
+/* --- base: cinta radiactiva a 115° parpadeando dentro del texto --- */
+.efecto-lazona {
+    display: inline-block;
+    position: relative;
+    background-image:
+        repeating-linear-gradient(115deg, #14100a 0 1.8em,
+                #ffd54f 1.8em 3.6em);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 .35em rgba(255, 213, 79, .6));
+    animation: stk-lazona-parpadeo 2.4s steps(1, end) infinite;
+}
+/* --- interferencia: barras de señal sobre la palabra --- */
+.efecto-lazona::before {
+    content: "";
+    position: absolute;
+    inset: -.3em -.5em;
+    background: repeating-linear-gradient(180deg,
+                rgba(255, 240, 190, .5) 0 .06em,
+                rgba(20, 16, 10, .35) .06em .14em);
+    opacity: .35;
+    pointer-events: none;
+    animation: stk-lazona-interferencia 3.6s linear infinite;
+}
+/* --- banda de alerta que se enciende a saltos fijos --- */
+.efecto-lazona::after {
+    content: "";
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    top: 50%;
+    height: .34em;
+    margin-top: -.17em;
+    background: repeating-linear-gradient(115deg,
+                rgba(255, 213, 79, .85) 0 .6em,
+                rgba(20, 16, 10, .8) .6em 1.2em);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-lazona-alerta 1.8s steps(1, end) infinite;
+}
+@keyframes stk-lazona-parpadeo {
+    0%, 62%   { opacity: 1; }
+    63%, 76%  { opacity: .35; }
+    77%, 100% { opacity: 1; }
+}
+@keyframes stk-lazona-interferencia {
+    0%   { background-position: 0 0; opacity: .3; }
+    50%  { opacity: .55; }
+    100% { background-position: 0 .56em; opacity: .3; }
+}
+@keyframes stk-lazona-alerta {
+    0%, 54%   { opacity: 0; }
+    55%, 68%  { opacity: .9; }
+    69%, 82%  { opacity: .25; }
+    83%, 100% { opacity: 0; }
+}

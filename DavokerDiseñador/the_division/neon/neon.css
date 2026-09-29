@@ -1,0 +1,96 @@
+/* ================================================================
+   EFECTO 29: NEÓN - letrero de neón parpadeante (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-neon">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-neon, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un LETRERO DE NEÓN rosa con doble halo
+      y ZUMBIDO de tubo: el brillo vibra a cada instante y
+      se apaga un fotograma de vez en cuando; un marco de
+      neón rodea el texto y parpadea con independencia,
+      alternando rosa y cian, como un local de mala muerte.
+      Fondo noche recomendado.
+
+   TÉCNICA: text-shadow múltiple animado con steps(1) (zumbido y
+    fallos de tubo) + ::before como marco de neón con
+    su propio parpadeo y ::after como soporte.
+   ================================================================ */
+
+
+.efecto-neon {
+    display: inline-block;
+    position: relative;
+
+    color: #ff80ab;
+    text-shadow:
+        0 0 4px #ffffff,
+        0 0 10px #ff4081,
+        0 0 24px #ff4081,
+        0 0 48px #d500f9;
+
+    animation: neon-zumbido 2.6s steps(1, end) infinite;
+}
+
+/* marco de neón alrededor del texto (parpadea por su cuenta) */
+.efecto-neon::before {
+    content: "";
+    position: absolute;
+    inset: -.25em -.5em;
+    border: 2px solid #ff4081;
+    border-radius: .4em;
+    box-shadow: 0 0 8px rgba(255, 64, 129, .9),
+                inset 0 0 8px rgba(255, 64, 129, .6);
+    animation: neon-tubo 3.4s steps(1, end) infinite;
+}
+
+/* soporte de metal del letrero (no anima) */
+.efecto-neon::after {
+    content: "";
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    top: -.62em;
+    height: .22em;
+    background: #37474f;
+    border-radius: 2px;
+    opacity: .85;
+}
+
+@keyframes neon-zumbido {
+    0%, 100% { text-shadow: 0 0 4px #ffffff, 0 0 10px #ff4081,
+                0 0 24px #ff4081, 0 0 48px #d500f9; }
+    8%       { text-shadow: 0 0 4px #ffffff, 0 0 10px #ff4081; }
+    10%      { text-shadow: 0 0 4px #ffffff, 0 0 10px #ff4081,
+                0 0 24px #ff4081, 0 0 48px #d500f9; }
+    44%      { text-shadow: 0 0 4px #ffffff, 0 0 10px #ff4081,
+                0 0 24px #ff4081, 0 0 48px #d500f9; }
+    46%      { text-shadow: 0 0 2px #ffffff; }
+    47%      { text-shadow: 0 0 4px #ffffff, 0 0 10px #ff4081,
+                0 0 24px #ff4081, 0 0 48px #d500f9; }
+    71%      { text-shadow: 0 0 4px #ffffff, 0 0 10px #ff4081,
+                0 0 24px #ff4081, 0 0 48px #d500f9; }
+    72%      { text-shadow: 0 0 4px #ffffff, 0 0 8px #ff4081; }
+    74%      { text-shadow: 0 0 4px #ffffff, 0 0 10px #ff4081,
+                0 0 24px #ff4081, 0 0 48px #d500f9; }
+}
+@keyframes neon-tubo {
+    0%, 100% { border-color: #ff4081; opacity: 1;
+               box-shadow: 0 0 8px rgba(255, 64, 129, .9),
+                           inset 0 0 8px rgba(255, 64, 129, .6); }
+    25%      { opacity: .25; }
+    27%      { opacity: 1; border-color: #18ffff;
+               box-shadow: 0 0 8px rgba(24, 255, 255, .9),
+                           inset 0 0 8px rgba(24, 255, 255, .6); }
+    30%      { border-color: #ff4081;
+               box-shadow: 0 0 8px rgba(255, 64, 129, .9),
+                           inset 0 0 8px rgba(255, 64, 129, .6); }
+    60%      { opacity: .3; }
+    62%      { opacity: 1; }
+}

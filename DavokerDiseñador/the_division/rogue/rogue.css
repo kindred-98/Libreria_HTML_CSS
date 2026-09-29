@@ -1,0 +1,70 @@
+/* ================================================================
+   EFECTO 23: ROGUE - estado rogue de la División (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-rogue">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-rogue, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un AGENTE ROGUE: rojo de alerta en
+      degradado con doble LATIDO de corazón (dos golpes
+      fuertes y uno suave por ciclo), mientras dos marcas
+      rojas a los lados destellan en fases opuestas, como
+      las luces de aviso de un estado crítico.
+      Fondo casi negro recomendado.
+
+   TÉCNICA: background-clip: text (degradado rojo) + pseudo-elementos
+    para las marcas laterales + text-shadow y opacity
+    animados con steps().
+   ================================================================ */
+
+
+.efecto-rogue {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(90deg, #ff8a80, #ff1744 45%, #b71c1c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: rogue-latido 1.6s ease-in-out infinite;
+}
+
+/* marcas de aviso laterales (izquierda y derecha, en fases opuestas) */
+.efecto-rogue::before,
+.efecto-rogue::after {
+    content: "";
+    position: absolute;
+    top: 8%;
+    bottom: 8%;
+    width: .16em;
+    background: linear-gradient(180deg, #ff5252, rgba(255, 82, 82, 0));
+    animation: rogue-marca 1.6s steps(1, end) infinite;
+}
+.efecto-rogue::before { left: -.5em; }
+.efecto-rogue::after {
+    right: -.5em;
+    transform: scaleY(-1);
+    animation-delay: .8s;          /* fase opuesta a la izquierda */
+}
+
+@keyframes rogue-latido {
+    0%   { text-shadow: 0 0 0 rgba(255, 23, 68, 0); }
+    10%  { text-shadow: 0 0 16px rgba(255, 23, 68, .95); }
+    22%  { text-shadow: 0 0 4px rgba(255, 23, 68, .25); }
+    34%  { text-shadow: 0 0 20px rgba(255, 23, 68, 1); }
+    50%  { text-shadow: 0 0 3px rgba(255, 23, 68, .2); }
+    100% { text-shadow: 0 0 0 rgba(255, 23, 68, 0); }
+}
+@keyframes rogue-marca {
+    0%, 32%   { opacity: .95; }
+    33%, 64%  { opacity: .2; }
+    65%, 100% { opacity: .95; }
+}

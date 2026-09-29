@@ -1,0 +1,110 @@
+/* ================================================================
+   EFECTO 14: BROTE - el texto germina de abajo arriba (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-brote">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-brote y los 3 @keyframes).
+     No depende de ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:  tres animaciones simultáneas en bucle infinito
+     · brote-crece  → las letras empiezan de "tierra" marrón y
+       un verde vivo SUBE por ellas (como la savia germinando)
+       hasta dejarlas todas en verde; luego vuelve a la tierra.
+     · brote-hoja   → una hojita grande brota arriba a la derecha
+       cuando el verde llega a la cima.
+     · brote-hoja2  → un brote secundario asoma más tarde abajo
+       a la izquierda, con retardo.
+
+   TÉCNICA: background-clip: text con degradado vertical grande
+   (background-position sube y baja) + dos pseudo-elementos hoja
+   con transform-origin. Nada más.
+   ================================================================ */
+
+.efecto-brote {
+    display: inline-block;
+    position: relative;
+    z-index: 0;                 /* las hojas quedan tras las letras */
+
+    /* tierra marrón arriba / verde brotando abajo (0deg = hacia
+       arriba: el primer color stop queda en el suelo) */
+    background-image: linear-gradient(0deg,
+        #76c043 0 42%, #2e7d32 42% 46%, #4e342e 54% 100%);
+    background-size: 100% 240%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: brote-crece 5s ease-in-out infinite;
+}
+
+/* hojita grande que brota arriba a la derecha */
+.efecto-brote::before {
+    content: "";
+    position: absolute;
+    right: -.5em;
+    top: -.35em;
+    width: .55em;
+    height: .38em;
+    background: radial-gradient(ellipse at 20% 80%,
+        #c5e1a5 0%, #7cb342 55%, #2e7d32 100%);
+    border-radius: 0 100% 0 100%;
+    transform: scale(0) rotate(-25deg);
+    transform-origin: 0% 100%;
+    z-index: -1;
+    animation: brote-hoja 5s ease-out infinite;
+}
+
+/* brotecito secundario abajo a la izquierda (más tarde) */
+.efecto-brote::after {
+    content: "";
+    position: absolute;
+    left: -.45em;
+    bottom: -.3em;
+    width: .4em;
+    height: .28em;
+    background: radial-gradient(ellipse at 80% 80%,
+        #dcedc8 0%, #8bc34a 60%, #33691e 100%);
+    border-radius: 100% 0 100% 0;
+    transform: scale(0);
+    transform-origin: 100% 0;
+    z-index: -1;
+    animation: brote-hoja2 5s ease-out infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* La savia sube (pos 0 = tierra; pos 100% = verde completo) y
+   vuelve: el estado final ES el inicial, el bucle no corta nada */
+@keyframes brote-crece {
+    0%, 12% { background-position: 0 0; }
+    52%     { background-position: 0 100%; }
+    86%     { background-position: 0 100%; }
+    100%    { background-position: 0 0; }
+}
+
+/* La hoja grande crece con rebote y se recoge al final */
+@keyframes brote-hoja {
+    0%, 40%   { transform: scale(0) rotate(-25deg);  opacity: 0; }
+    58%       { transform: scale(1.15) rotate(-12deg); opacity: 1; }
+    66%       { transform: scale(1) rotate(-18deg);   opacity: 1; }
+    88%       { transform: scale(1) rotate(-18deg);   opacity: 1; }
+    96%, 100% { transform: scale(0) rotate(-25deg);   opacity: 0; }
+}
+
+/* El brote secundario: entra más tarde y se va con la hoja grande */
+@keyframes brote-hoja2 {
+    0%, 52%   { transform: scale(0); opacity: 0; }
+    68%       { transform: scale(1.15); opacity: 1; }
+    76%       { transform: scale(1);    opacity: 1; }
+    88%       { transform: scale(1);    opacity: 1; }
+    96%, 100% { transform: scale(0);    opacity: 0; }
+}

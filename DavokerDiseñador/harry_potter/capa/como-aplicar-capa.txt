@@ -1,0 +1,54 @@
+================================================================
+EFECTO CAPA - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "capa.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/capa.css">
+
+Contenido del archivo:
+  · La clase .efecto-capa
+  · Sus pseudo-elementos ::before y ::after
+    (pliegue ::before y tejido ::after)
+  ·   · hp-capa-desvane, hp-capa-pliegue, hp-capa-tejido
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-capa">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-capa">CAPA</span></h1>
+
+
+QUÉ HACE
+--------
+Tres animaciones en bucle infinito:
+  · hp-capa-desvane (4,4 s) → las letras se desvanecen y
+    regresan. El truco: el keyframe NO toca la opacidad del
+    elemento (apagarla apagaría también los pseudos), sino
+    las paradas del degradado, que pasan de alpha 1 a 0.
+  · hp-capa-pliegue (4,4 s) → el pliegue de luz cruza el
+    texto exactamente durante la ventana en que desaparece.
+  · hp-capa-tejido (4,4 s) → la rejilla del tejido respira
+    y se desplaza sobre las letras.
+Misma duración en los tres: el pliegue ES la causa visual del
+desvanecimiento.
+
+TÉCNICA: degradado plateado con paradas en rgba() intercaladas
+    en @keyframes (las letras se apagan sin tocar los
+    pseudos), pliegue ::before con degradado movido por
+    translateX y tejido ::after con dos repeating-linear-
+    gradient en tile contraído.
+
+
+AJUSTES FÁCILES
+---------------
+· Plata más blanca: #eceff1 → #ffffff en el degradado.
+· Desvanecer antes: mueve la ventana 34%/68% del keyframe.
+· Sin tejido: borra el ::after y hp-capa-tejido.
+· Ventana más larga: alarga los tramos alpha 0 del keyframe.

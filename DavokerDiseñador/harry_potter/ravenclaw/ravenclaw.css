@@ -1,0 +1,92 @@
+/* ================================================================
+   EFECTO 82: RAVENCLAW - las alas del águila se abren desde el centro del texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-ravenclaw">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-ravenclaw, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son el ESTANDARTE DE RAVENCLAW: azul profundo
+      con bronce y dos destellos de ALA que se abren desde el
+      corazón de la palabra hacia los extremos, como el águila
+      desplegando las plumas. Sabiduría y wit en azul frío.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado azul/bronce con background-clip: text, dos
+    pseudo-elementos espejo (::before izquierdo y ::after
+    derecho) con gradientes inclinados sincronizados y
+    pulso de resplandor en el texto.
+   ================================================================ */
+
+
+.efecto-ravenclaw {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(104deg, #0b2f66 0%, #1e4bb8 30%, #7db1ff 46%,
+                #c8892f 58%, #8a5a1c 74%, #0b2f66 100%);
+    background-size: 200% 100%;
+    background-position: 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(70, 130, 255, .45));
+
+    animation: hp-ravenclaw-reflejo 5.2s ease-in-out infinite;
+}
+
+/* plumaje izquierdo: nace en el centro y se abre hacia la izquierda */
+.efecto-ravenclaw::before {
+    content: "";
+    position: absolute;
+    left: -.5em;
+    right: 46%;
+    top: 6%;
+    bottom: 6%;
+    background: linear-gradient(264deg,
+            rgba(200, 137, 47, 0) 34%, rgba(226, 168, 84, .8) 62%,
+            rgba(236, 244, 255, .95) 84%, rgba(236, 244, 255, 0) 100%);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-ravenclaw-izq 5.2s ease-out infinite;
+}
+
+/* plumaje derecho: el mismo vuelo en espejo */
+.efecto-ravenclaw::after {
+    content: "";
+    position: absolute;
+    left: 46%;
+    right: -.5em;
+    top: 6%;
+    bottom: 6%;
+    background: linear-gradient(96deg,
+            rgba(200, 137, 47, 0) 34%, rgba(226, 168, 84, .8) 62%,
+            rgba(236, 244, 255, .95) 84%, rgba(236, 244, 255, 0) 100%);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-ravenclaw-der 5.2s ease-out infinite;
+}
+
+@keyframes hp-ravenclaw-izq {
+    0%, 46%  { opacity: 0; transform: translateX(46%) scaleX(.2); }
+    58%      { opacity: .95; }
+    86%      { opacity: .5; }
+    100%     { opacity: 0; transform: translateX(-6%) scaleX(1); }
+}
+@keyframes hp-ravenclaw-der {
+    0%, 46%  { opacity: 0; transform: translateX(-46%) scaleX(.2); }
+    58%      { opacity: .95; }
+    86%      { opacity: .5; }
+    100%     { opacity: 0; transform: translateX(6%) scaleX(1); }
+}
+@keyframes hp-ravenclaw-reflejo {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(70, 130, 255, .4)); }
+    55%      { filter: drop-shadow(0 0 18px rgba(130, 180, 255, .9)); }
+}

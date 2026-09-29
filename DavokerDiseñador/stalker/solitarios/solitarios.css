@@ -1,0 +1,87 @@
+/* ================================================================
+   EFECTO 100: SOLITARIOS - las letras tostadas siguen su camino por la Zona (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-solitarios">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-solitarios, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un STALKER SIN BANDERA: tierra color
+      polvo que brilla al pasar la luz, un CAMINO punteado
+      corre bajo la palabra y el viejo SÍMBOLO RADIATIVO
+      amarillo gira lentamente detrás del texto.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado pardo recortado en el texto con
+    background-position animado, camino punteado ::before
+    con repeating-linear-gradient y trebol radiactivo
+    ::after con conic-gradient girando 360°.
+   ================================================================ */
+
+
+/* --- base: luz de sol recorriendo la tierra del camino --- */
+.efecto-solitarios {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(96deg, #6b5a34 0%, #c8a86a 24%, #f0dcb0 46%,
+                #c8a86a 68%, #6b5a34 100%);
+    background-size: 240% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 .12em rgba(240, 200, 90, .35));
+    animation: stk-solitarios-viaje 7s ease-in-out infinite;
+}
+/* --- el camino punteado corre bajo la palabra --- */
+.efecto-solitarios::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -.34em;
+    height: .1em;
+    background: repeating-linear-gradient(90deg, #c8a86a 0 .42em,
+                rgba(200, 168, 106, 0) .42em .82em);
+    opacity: .85;
+    animation: stk-solitarios-camino 3.4s linear infinite;
+}
+/* --- trebol radiactivo girando detrás del texto --- */
+.efecto-solitarios::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2.6em;
+    height: 2.6em;
+    margin: -1.3em 0 0 -1.3em;
+    border-radius: 50%;
+    background: conic-gradient(rgba(245, 197, 24, 0) 0 8deg,
+                rgba(245, 197, 24, .5) 8deg 48deg,
+                rgba(245, 197, 24, 0) 48deg 128deg,
+                rgba(245, 197, 24, .5) 128deg 168deg,
+                rgba(245, 197, 24, 0) 168deg 248deg,
+                rgba(245, 197, 24, .5) 248deg 288deg,
+                rgba(245, 197, 24, 0) 288deg 360deg);
+    filter: blur(.16em);
+    opacity: .3;
+    pointer-events: none;
+    animation: stk-solitarios-trebol 9s linear infinite;
+}
+@keyframes stk-solitarios-viaje {
+    0%, 100% { background-position: 100% 0; }
+    50%      { background-position: 0% 0; }
+}
+@keyframes stk-solitarios-camino {
+    to       { background-position: .82em 0; }
+}
+@keyframes stk-solitarios-trebol {
+    to       { transform: rotate(360deg); }
+}

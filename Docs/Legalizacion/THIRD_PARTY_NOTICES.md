@@ -4,17 +4,20 @@
 
 La `LICENSE` de la raíz se aplica al código original de la aplicación y a la documentación creados para este repositorio por `kindred-98`, **y también a los demos originales de `CreacionesNuevas/`**, cada uno de los cuales incluye además su propio archivo `LICENSE`. No concede derechos sobre los demos de terceros de `GevendraAutorExterno/` ni sobre recursos de terceros.
 
-## Las dos colecciones
+## Las colecciones
 
 | Carpeta | Componentes | Autoría | Licencia | ZIP |
 |---|---:|---|---|---|
 | `CreacionesNuevas/` | **248** | `kindred-98`, creations originales | MIT (archivo `LICENSE` en cada carpeta) | **Habilitado** |
+| `DavokerDiseñador/` | **119** | `davoker`, efectos de texto CSS | MIT (archivo `DavokerDiseñador/LICENSE`, de su repositorio) | **Habilitado** |
 | `GevendraAutorExterno/` | **116** | Gevendra Sahu (`gevendra2004`) | **Ninguna declarada** | Deshabilitado |
-| **Total** | **364** | | | 248 de 364 |
+| **Total** | **483** | | | 367 de 483 |
 
 ## Estado de distribución
 
 Los 248 componentes de `CreacionesNuevas/` están autorizados: el catálogo los marca con `license: "MIT"`, `redistributable: true`, `licenseFile: "LICENSE"` y `source` apuntando a este repositorio. Sus descargas ZIP incluyen el `LICENSE` del componente y un `ATTRIBUTION.txt` generado en el momento de la descarga.
+
+Los 119 efectos de `DavokerDiseñador/` proceden de `https://github.com/davoker/efectos_css_para_html`, de un miembro del equipo y con licencia **MIT** declarada en su `LICENSE`. Ese archivo vive en la raíz de la carpeta y el generador lo añade a cada ZIP, así que `license: "MIT"`, `licenseFile: "LICENSE"` y `source` salen verificados y la descarga está habilitada. `transicion.html`, `transicion.css` y la portada `davoker.html` (renombrada para no chocar con el `index.html` de la web) son piezas del mismo repositorio: la portada no es un componente del catálogo, se abre dentro de la rejilla al elegir a **davoker** en el filtro de autores.
 
 Sobre los 116 componentes de `GevendraAutorExterno/`, ver la investigación completa que sigue.
 

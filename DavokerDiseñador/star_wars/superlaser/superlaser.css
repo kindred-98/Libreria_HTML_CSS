@@ -1,0 +1,84 @@
+/* ================================================================
+   EFECTO 43: SUPERLÁSER - disparo del superláser (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-superlaser">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-superlaser, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      El texto es el SUPERLÁSER de la Estación de la
+      Muerte: se carga lento (tinte apagado → verde
+      eléctrico), DESTELLA a tope con halo enorme y, en
+      ese instante, salta un pulso de disparo seco y
+      chispean los extremos. Fondo verde casi negro
+      recomendado.
+
+   TÉCNICA: background-clip: text + filter brightness/saturate
+    y text-shadow del halo, con steps(1) para el
+    pulso del disparo y chispas en los pseudos.
+   ================================================================ */
+
+
+.efecto-superlaser {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(90deg, #1b5e20, #00e676 45%, #00c853);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: superlaser-carga 4.8s ease-in infinite,
+               superlaser-disparo 4.8s steps(1, end) infinite;
+}
+
+/* chispas de carga en los extremos */
+.efecto-superlaser::before,
+.efecto-superlaser::after {
+    content: "";
+    position: absolute;
+    top: 40%;
+    width: .3em;
+    height: .3em;
+    border-radius: 50%;
+    background: #d7ffe4;
+    box-shadow: 0 0 10px #69f0ae;
+    opacity: 0;
+    animation: superlaser-chispa 4.8s steps(1, end) infinite;
+}
+.efecto-superlaser::before { left: -.5em; }
+.efecto-superlaser::after  { right: -.5em; }
+
+@keyframes superlaser-carga {
+    0%   { filter: brightness(.75) saturate(.7);
+           text-shadow: 0 0 0 rgba(0, 230, 118, 0); }
+    68%  { filter: brightness(1) saturate(1);
+           text-shadow: 0 0 6px rgba(0, 230, 118, .4); }
+    74%  { filter: brightness(2.6) saturate(1.6);
+           text-shadow: 0 0 34px rgba(0, 230, 118, 1),
+                        0 0 70px rgba(0, 200, 83, .8); }
+    77%  { filter: brightness(2.6) saturate(1.6);
+           text-shadow: 0 0 34px rgba(0, 230, 118, 1),
+                        0 0 70px rgba(0, 200, 83, .8); }
+    80%  { filter: brightness(.7) saturate(.6);
+           text-shadow: 0 0 0 rgba(0, 230, 118, 0); }
+    100% { filter: brightness(.75) saturate(.7);
+           text-shadow: 0 0 0 rgba(0, 230, 118, 0); }
+}
+@keyframes superlaser-disparo {
+    0%, 73%   { transform: scale(1); }
+    74%, 77%  { transform: scale(1.07); }
+    78%, 100% { transform: scale(1); }
+}
+@keyframes superlaser-chispa {
+    0%, 67%   { opacity: 0; transform: scale(.5); }
+    68%, 73%  { opacity: .9; transform: scale(1.2); }
+    74%, 77%  { opacity: 1; transform: scale(1.6); }
+    78%, 100% { opacity: 0; transform: scale(.5); }
+}

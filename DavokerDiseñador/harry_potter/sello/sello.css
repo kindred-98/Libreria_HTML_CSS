@@ -1,0 +1,89 @@
+/* ================================================================
+   EFECTO 93: SELLO - las letras selladas con lacre carmesí (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-sello">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-sello, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son una CARTA SELLADA: el lacre carmesí se
+      hincha tras el texto, un anillo de prensa estampa la
+      marca y un barniz dorado barre el relieve. Correo de
+      Hogwarts con sello de cera.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado carmesí con los bordes claros simulando el
+    relieve, background-position animado para el barniz,
+    lacre ::before con radial-gradient y elipse pulada y
+    anillo de prensa ::after que escala y se desvanece.
+   ================================================================ */
+
+
+.efecto-sello {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(168deg, #ff8a80 0%, #e53935 24%, #c62828 56%,
+                #7f0f0f 84%, #e53935 100%);
+    background-size: 220% 100%;
+    background-position: 70% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, .55));
+
+    animation: hp-sello-barniz 5.2s ease-in-out infinite;
+}
+
+/* la gota de lacre hinchándose tras la marca */
+.efecto-sello::before {
+    content: "";
+    position: absolute;
+    inset: -.3em -.5em;
+    border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%;
+    background: radial-gradient(ellipse at 50% 42%,
+            rgba(229, 57, 53, .75) 0%, rgba(142, 0, 0, .55) 62%,
+            rgba(142, 0, 0, 0) 84%);
+    filter: blur(.06em);
+    opacity: .7;
+    pointer-events: none;
+    animation: hp-sello-lacre 5.2s ease-in-out infinite;
+}
+
+/* el anillo de la prensa estampando */
+.efecto-sello::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2.4em;
+    height: 1.4em;
+    margin: -.7em 0 0 -1.2em;
+    border-radius: 50%;
+    border: .05em solid rgba(255, 138, 128, .85);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-sello-presion 5.2s ease-out infinite;
+}
+
+@keyframes hp-sello-barniz {
+    0%, 100% { background-position: 70% 50%; }
+    50%      { background-position: 15% 50%; }
+}
+@keyframes hp-sello-lacre {
+    0%, 100% { opacity: .6; transform: scale(1); }
+    42%      { opacity: .95; transform: scale(1.07); }
+}
+@keyframes hp-sello-presion {
+    0%, 36%  { opacity: 0; transform: scale(.35); }
+    44%      { opacity: .95; transform: scale(.62); }
+    78%      { opacity: 0; transform: scale(1.5); }
+    100%     { opacity: 0; transform: scale(1.6); }
+}

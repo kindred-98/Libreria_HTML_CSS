@@ -1,0 +1,97 @@
+/* ================================================================
+   EFECTO 87: VARITA - una chispa enciende las letras de izquierda a derecha (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-varita">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-varita, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras están APAGADAS y una CHISPA DE VARITA las
+      enciende de izquierda a derecha: el destello recorre el
+      texto dejando un rastro dorado, revienta en el último
+      carácter y todo vuelve a la penumbra. Lumos en texto.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado tenue con background-clip: text, chispa
+    ::before con radial-gradient movida por left en
+    porcentaje y rastro ::after con degradado que crece y
+    se apaga.
+   ================================================================ */
+
+
+.efecto-varita {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(96deg, #2f2350 0%, #3b2a6e 45%, #5a44a8 70%,
+                #2f2350 100%);
+    background-size: 240% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 6px rgba(140, 110, 240, .4));
+
+    animation: hp-varita-carga 5s ease-in-out infinite;
+}
+
+/* la chispa de la varita recorriendo el texto */
+.efecto-varita::before {
+    content: "";
+    position: absolute;
+    left: -8%;
+    top: 24%;
+    width: .34em;
+    height: .34em;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, #ffe9a8 38%,
+                rgba(255, 200, 80, .6) 62%, rgba(255, 200, 80, 0) 82%);
+    box-shadow: 0 0 .5em rgba(255, 226, 150, .95);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-varita-chispa 5s ease-in infinite;
+}
+
+/* rastro de luz que crece a su paso */
+.efecto-varita::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 46%;
+    width: 100%;
+    height: .1em;
+    background: linear-gradient(90deg, rgba(255, 233, 168, .95),
+                rgba(255, 200, 80, .65) 70%, rgba(255, 200, 80, 0));
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    box-shadow: 0 0 .3em rgba(255, 214, 120, .8);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-varita-enciende 5s ease-in-out infinite;
+}
+
+@keyframes hp-varita-enciende {
+    0%, 14%  { opacity: 0; background-size: 0% 100%; }
+    18%      { opacity: .95; }
+    56%      { opacity: .95; background-size: 100% 100%; }
+    74%      { opacity: .6; background-size: 100% 100%; }
+    88%,100% { opacity: 0; background-size: 100% 100%; }
+}
+@keyframes hp-varita-chispa {
+    0%, 14%  { opacity: 0; transform: translateX(0) scale(.6); left: -8%; }
+    20%      { opacity: 1; }
+    56%      { opacity: 1; left: 100%; transform: translateX(0) scale(1); }
+    64%      { opacity: 1; transform: scale(1.7); }
+    74%,100% { opacity: 0; transform: scale(.4); left: 100%; }
+}
+@keyframes hp-varita-carga {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(140, 110, 240, .35)); }
+    50%      { filter: drop-shadow(0 0 12px rgba(170, 140, 255, .75)); }
+}

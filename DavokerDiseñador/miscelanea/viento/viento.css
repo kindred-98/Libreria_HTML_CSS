@@ -1,0 +1,109 @@
+/* ================================================================
+   EFECTO 15: VIENTO - ráfagas que inclinan el texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-viento">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-viento y los 3 @keyframes).
+     No depende de ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:  tres animaciones simultáneas en bucle infinito
+     · viento-racha → dos ráfagas por ciclo: las letras se
+       inclinan hacia el empujón (skew) y se enderezan.
+     · viento-lineas→ líneas finas de viento barre el texto de
+       izquierda a derecha EN CADA ráfaga.
+     · viento-hoja  → una hoja arrastrada cruza girando sobre
+       las letras y sale por el otro lado.
+
+   TÉCNICA: transform (skew) en la clase + dos pseudo-elementos
+   (repeating-linear-gradient para el aire, radial-gradient para
+   la hoja). Nada más.
+   ================================================================ */
+
+.efecto-viento {
+    display: inline-block;
+    position: relative;
+
+    color: #eaf7ef;             /* blanco con verde: aire limpio */
+    text-shadow: 0 0 8px rgba(168,230,207,.5);
+
+    animation: viento-racha 3s ease-in-out infinite;
+}
+
+/* las líneas del viento: franjas finas ligeramente inclinadas
+   que barre el texto en cada ráfaga */
+.efecto-viento::before {
+    content: "";
+    position: absolute;
+    left: -55%;
+    right: -55%;
+    top: -.3em;
+    bottom: -.3em;
+    background: repeating-linear-gradient(-7deg,
+        transparent 0 .34em,
+        rgba(255,255,255,.55) .34em .4em,
+        transparent .4em .95em);
+    opacity: 0;
+    animation: viento-lineas 3s linear infinite;
+}
+
+/* la hoja arrastrada: entra por la izquierda, gira y sale */
+.efecto-viento::after {
+    content: "";
+    position: absolute;
+    left: -.6em;
+    top: 30%;
+    width: .52em;
+    height: .36em;
+    background: radial-gradient(ellipse at 25% 65%,
+        #dcedc8 0%, #8bc34a 55%, #33691e 100%);
+    border-radius: 0 100% 0 100%;
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+    animation: viento-hoja 3s ease-in infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* Dos ráfagas por ciclo: inclinación al viento + pequeño empujón */
+@keyframes viento-racha {
+    0%    { transform: skewX(0deg) translateX(0); }
+    10%   { transform: skewX(-7deg) translateX(-.06em); }
+    22%   { transform: skewX(3deg) translateX(.03em); }
+    30%   { transform: skewX(0deg) translateX(0); }
+    50%   { transform: skewX(0deg) translateX(0); }
+    58%   { transform: skewX(-8deg) translateX(-.07em); }
+    70%   { transform: skewX(4deg) translateX(.04em); }
+    78%   { transform: skewX(0deg) translateX(0); }
+    100%  { transform: skewX(0deg) translateX(0); }
+}
+
+/* Cada ráfaga arrastra su barrido de líneas (los saltos de
+   posición ocurren con opacidad 0: no se ven) */
+@keyframes viento-lineas {
+    0%    { opacity: 0; transform: translateX(-30%); }
+    6%    { opacity: .9; transform: translateX(-26%); }
+    30%   { opacity: .9; transform: translateX(30%); }
+    31%   { opacity: 0; transform: translateX(-26%); }
+    56%   { opacity: 0; transform: translateX(-26%); }
+    58%   { opacity: .9; transform: translateX(-26%); }
+    80%   { opacity: .9; transform: translateX(30%); }
+    82%   { opacity: 0; transform: translateX(-26%); }
+    100%  { opacity: 0; transform: translateX(-26%); }
+}
+
+/* La hoja cruza una vez por ciclo, girando sobre sí misma */
+@keyframes viento-hoja {
+    0%, 12%  { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+    18%      { opacity: 1; transform: translate(1.4em, -.4em) rotate(120deg); }
+    44%      { opacity: 1; transform: translate(5em, -1em) rotate(360deg); }
+    70%      { opacity: .9; transform: translate(9em, .5em) rotate(560deg); }
+    74%, 100%{ opacity: 0; transform: translate(9.5em, .8em) rotate(600deg); }
+}

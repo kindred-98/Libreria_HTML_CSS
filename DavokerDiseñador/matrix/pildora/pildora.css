@@ -1,0 +1,68 @@
+/* ================================================================
+   EFECTO 49: PÍLDORA - la píldora roja y la azul cruzándose en el texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-pildora">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-pildora, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras contienen las DOS PÍLDORAS: un degradado
+      rojo-azul con banda blanca en la junta se desliza de
+      un lado a otro (rojo -> azul -> rojo) y una línea de
+      luz cruza el texto justo en el cambio de elección.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: background-clip: text con degradado rojo/azul de
+    background-size grande y background-position
+    animado + pseudo-elemento de luz cruzando.
+   ================================================================ */
+
+
+.efecto-pildora {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(100deg,
+        #ff1744 0 38%, #ffd7de 46%, #ffffff 50%,
+        #d7e6ff 54%, #2979ff 62% 100%);
+    background-size: 260% 100%;
+    background-position: 0% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(120, 120, 255, .35));
+
+    animation: mx-pildora-ida 4.4s ease-in-out infinite;
+}
+
+/* destello que cruza justo al cambiar de elección */
+.efecto-pildora::after {
+    content: "";
+    position: absolute;
+    left: -14%;
+    top: 44%;
+    width: 26%;
+    height: .14em;
+    background: linear-gradient(90deg, transparent, #ffffff 55%,
+                rgba(255, 255, 255, 0));
+    opacity: 0;
+    animation: mx-pildora-brillo 4.4s ease-in-out infinite;
+}
+
+@keyframes mx-pildora-ida {
+    0%, 14%  { background-position: 0% 0; }
+    50%, 64% { background-position: 100% 0; }
+    100%     { background-position: 0% 0; }
+}
+@keyframes mx-pildora-brillo {
+    0%, 38%  { opacity: 0; transform: translateX(0); }
+    42%      { opacity: .95; transform: translateX(120%); }
+    56%      { opacity: .95; transform: translateX(340%); }
+    58%,100% { opacity: 0; transform: translateX(360%); }
+}

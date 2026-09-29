@@ -1,0 +1,91 @@
+/* ================================================================
+   EFECTO 111: UNISG - las letras selladas del laboratorio de la ONU (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-unisg">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-unisg, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son EL INFORME SELLADO: azul de expediente
+      que se tiñe de blanco al pasar la luz, la LÍNEA DEL
+      PLIEGO se dibuja bajo la palabra y el SELLO de la
+      ciencia militar se estampa en la esquina.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado azul de expediente recortado en el texto con
+    background-position animado, línea del pliego ::before
+    dibujada con transform: scaleX y sello ::after
+    estampado con scale y opacidad.
+   ================================================================ */
+
+
+/* --- base: azul de expediente tiñéndose de blanco --- */
+.efecto-unisg {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(104deg, #123a5e 0%, #4a90d9 32%, #d9ecff 50%,
+                #4a90d9 68%, #123a5e 100%);
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 .04em .16em rgba(74, 144, 217, .45));
+    animation: stk-unisg-marca 7s ease-in-out infinite;
+}
+/* --- línea del informe dibujándose bajo la palabra --- */
+.efecto-unisg::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -.28em;
+    width: 100%;
+    height: .1em;
+    background: linear-gradient(90deg, #90caf9, #e3f2fd);
+    box-shadow: 0 0 .35em rgba(144, 202, 249, .8);
+    transform-origin: left center;
+    transform: scaleX(0);
+    opacity: .9;
+    pointer-events: none;
+    animation: stk-unisg-pliego 4.4s ease-in-out infinite;
+}
+/* --- sello: el cuño se estampa en la esquina --- */
+.efecto-unisg::after {
+    content: "";
+    position: absolute;
+    right: -.5em;
+    top: -.55em;
+    width: .55em;
+    height: .55em;
+    border: .07em solid rgba(214, 240, 255, .9);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(74, 144, 217, .8) 0%,
+                rgba(18, 58, 94, .2) 70%);
+    opacity: 0;
+    transform: scale(1.7);
+    pointer-events: none;
+    animation: stk-unisg-sello 4.4s ease-out infinite;
+}
+@keyframes stk-unisg-marca {
+    0%, 100% { background-position: 100% 0; }
+    50%      { background-position: 0% 0; }
+}
+@keyframes stk-unisg-pliego {
+    0%, 12%   { transform: scaleX(0); opacity: .2; }
+    46%       { transform: scaleX(1); opacity: .95; }
+    78%       { transform: scaleX(1); opacity: .95; }
+    94%, 100% { transform: scaleX(1); opacity: 0; }
+}
+@keyframes stk-unisg-sello {
+    0%, 50%   { opacity: 0; transform: scale(1.7); }
+    60%       { opacity: .95; transform: scale(1); }
+    76%       { opacity: .9; transform: scale(1); }
+    92%, 100% { opacity: 0; transform: scale(1.12); }
+}

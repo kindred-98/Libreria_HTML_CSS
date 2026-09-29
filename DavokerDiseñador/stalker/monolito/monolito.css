@@ -1,0 +1,86 @@
+/* ================================================================
+   EFECTO 108: MONOLITO - las letras blancas laten con el pulso psi (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-monolito">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-monolito, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son EL MONOLITO: blanco helado de
+      camuflaje que late con pulso psi, un CANAL de luz
+      barre la palabra como la señal del superstición y un
+      ANILLO psi se desvanece hacia fuera. No mires atrás.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado blanco helado recortado en el texto con
+    filter animado (pulso psi), canal ::before barrido
+    en horizontal y anillo ::after escalado con border.
+   ================================================================ */
+
+
+/* --- base: blanco helado latiendo con pulso psi --- */
+.efecto-monolito {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(180deg, #ffffff 0%, #e0f7fa 38%, #b2ebf2 58%,
+                #78909c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 .5em rgba(150, 230, 255, .55));
+    animation: stk-monolito-psi 5.2s ease-in-out infinite;
+}
+/* --- canal de luz barriendo la palabra --- */
+.efecto-monolito::before {
+    content: "";
+    position: absolute;
+    top: -.3em;
+    bottom: -.3em;
+    left: -24%;
+    width: 22%;
+    background: linear-gradient(90deg, rgba(224, 247, 250, 0),
+                rgba(224, 247, 250, .9) 45%, rgba(255, 255, 255, .95) 55%,
+                rgba(224, 247, 250, 0));
+    filter: blur(.14em);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-monolito-canal 5.2s linear infinite;
+}
+/* --- anillo psi desvaneciéndose hacia fuera --- */
+.efecto-monolito::after {
+    content: "";
+    position: absolute;
+    inset: -.8em;
+    border-radius: .6em;
+    border: .08em solid rgba(178, 235, 242, .8);
+    opacity: 0;
+    filter: blur(.05em);
+    pointer-events: none;
+    animation: stk-monolito-eco 5.2s ease-out infinite;
+}
+@keyframes stk-monolito-psi {
+    0%, 100% { opacity: .92;
+               filter: drop-shadow(0 0 .4em rgba(150, 230, 255, .45)); }
+    46%      { opacity: 1;
+               filter: drop-shadow(0 0 .9em rgba(150, 230, 255, .85)); }
+    54%      { opacity: .85; }
+    62%      { opacity: 1; }
+}
+@keyframes stk-monolito-canal {
+    0%, 10%  { opacity: 0; left: -24%; }
+    24%      { opacity: .75; }
+    64%      { opacity: .75; }
+    82%, 100% { opacity: 0; left: 104%; }
+}
+@keyframes stk-monolito-eco {
+    0%, 30%  { opacity: 0; transform: scale(.92); }
+    44%      { opacity: .7; }
+    70%, 100% { opacity: 0; transform: scale(1.14); }
+}

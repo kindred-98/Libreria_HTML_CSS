@@ -1,0 +1,57 @@
+================================================================
+EFECTO FORJA - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "forja.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/forja.css">
+
+Contenido del archivo:
+  · La clase .efecto-forja
+  · Sus pseudo-elementos ::before y ::after
+    (chispas ::before y fogonazo del martillo ::after)
+  ·   · mh-forja-calor, mh-forja-golpe, mh-forja-chispas,
+    mh-forja-martillo
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-forja">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-forja">FORJA</span></h1>
+
+
+QUÉ HACE
+--------
+Cuatro animaciones en bucle infinito, con la misma duración
+para que caigan todas en el mismo golpe:
+  · mh-forja-calor (3,4 s) → el degradado sube por las
+    letras: el metal pasa de blanco a rojo vivo y de ahí
+    al rojo oscuro del hierro ya frío.
+  · mh-forja-golpe (3,4 s) → las letras se encogen en el
+    instante del martillazo (transform: scale).
+  · mh-forja-chispas (3,4 s) → dos capas de chispas caen en
+    sentido contrario dentro del texto.
+  · mh-forja-martillo (3,4 s) → el fogonazo blanco se abre
+    por encima y se apaga.
+El truco es repetir la duración: calor, golpe, chispas y
+destello comparten reloj.
+
+TÉCNICA: linear-gradient vertical con background-clip: text y
+    background-position animado (el calor sube), chispas
+    ::before con dos radial-gradient en tile, fogonazo
+    ::after y una segunda animación de escala en la clase
+    para el golpe de martillo.
+
+
+AJUSTES FÁCILES
+---------------
+· Calor más rápido: 3.4s → 2s en mh-forja-calor.
+· Pieza más fría: cambia el #ff6d00 por #bf360c.
+· Sin chispas: borra el ::before y mh-forja-chispas.
+· Golpe doble: duplica mh-forja-martillo con delay: -.9s.

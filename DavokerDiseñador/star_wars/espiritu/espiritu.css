@@ -1,0 +1,91 @@
+/* ================================================================
+   EFECTO 46: ESPÍRITU - aparición de espíritu de la Fuerza (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-espiritu">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-espiritu, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un ESPÍRITU DE LA FUERZA: se
+      materializan desde el desenfoque, parpadean con un
+      temblor tenue y se disuelven otra vez, mientras un
+      aura helada respira y motas blancas ascienden a su
+      alrededor. Fondo azul noche recomendado.
+
+   TÉCNICA: background-clip: text (blanco azulado) +
+    filter blur/opacity para la aparición, aura en
+    ::before con su propio ciclo y motas en ::after.
+   ================================================================ */
+
+
+.efecto-espiritu {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(90deg, #ffffff, #e1f5fe 45%, #b3e5fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 16px rgba(224, 245, 254, .7);
+
+    animation: espiritu-aparece 7s ease-in-out infinite;
+}
+
+/* aura etérea que respira con el texto */
+.efecto-espiritu::before {
+    content: "";
+    position: absolute;
+    inset: -.5em -.7em;
+    background: radial-gradient(ellipse at 50% 50%,
+                rgba(179, 229, 252, .55), rgba(179, 229, 252, 0) 70%);
+    filter: blur(6px);
+    opacity: 0;
+    animation: espiritu-aura 7s ease-in-out infinite;
+}
+
+/* motas de luz que ascienden */
+.efecto-espiritu::after {
+    content: "";
+    position: absolute;
+    left: 30%;
+    top: -20%;
+    width: .28em;
+    height: .28em;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 1.6em .6em 0 rgba(224, 245, 254, .75),
+                -1.1em 1.4em 0 rgba(179, 229, 252, .6);
+    opacity: 0;
+    animation: espiritu-motas 7s ease-in-out infinite;
+}
+
+@keyframes espiritu-aparece {
+    0%    { opacity: 0; filter: blur(7px); }
+    18%   { opacity: 1; filter: blur(0); }
+    24%   { opacity: .82; filter: blur(.4px); }
+    32%   { opacity: 1; filter: blur(0); }
+    64%   { opacity: .9; filter: blur(.3px); }
+    84%   { opacity: 0; filter: blur(7px); }
+    100%  { opacity: 0; filter: blur(7px); }
+}
+@keyframes espiritu-aura {
+    0%    { opacity: 0; transform: scale(.9); }
+    18%   { opacity: .8; transform: scale(1); }
+    40%   { opacity: 1; transform: scale(1.06); }
+    64%   { opacity: .7; transform: scale(1); }
+    84%   { opacity: 0; transform: scale(.9); }
+    100%  { opacity: 0; transform: scale(.9); }
+}
+@keyframes espiritu-motas {
+    0%    { opacity: 0; transform: translateY(.4em); }
+    20%   { opacity: .9; transform: translateY(0); }
+    70%   { opacity: .5; transform: translateY(-.7em); }
+    84%   { opacity: 0; transform: translateY(-1em); }
+    100%  { opacity: 0; transform: translateY(-1em); }
+}

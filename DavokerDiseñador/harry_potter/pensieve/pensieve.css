@@ -1,0 +1,98 @@
+/* ================================================================
+   EFECTO 99: PENSIEVE - las letras flotan sobre la memoria plateada (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-pensieve">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-pensieve, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un PENSIEVE: bandas de onda plateadas
+      se deslizan dentro del texto como la superficie de un
+      agua quieta, recuerdos ascienden en hebras finas y una
+      onda circular se abre al sumergir la pluma.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: dos capas con background-clip: text (bandas horizontales
+    en repeating-linear-gradient de un solo .3em de alto
+    + degradado azul plata) con background-position
+    animado, recuerdos ::before ascendentes y onda
+    ::after elíptica que escala.
+   ================================================================ */
+
+
+.efecto-pensieve {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        repeating-linear-gradient(180deg,
+            rgba(255, 255, 255, .3) 0 .07em,
+            rgba(255, 255, 255, 0) .07em .3em),
+        linear-gradient(172deg, #e1f5fe 0%, #80d8ff 40%, #4fc3f7 68%,
+                #b3e5fc 100%);
+    background-size: 100% .3em, 100% 100%;
+    background-position: 0 0, 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(79, 195, 247, .5));
+
+    animation: hp-pensieve-ondas 5.4s linear infinite;
+}
+
+/* recuerdos plateados subiendo desde el fondo */
+.efecto-pensieve::before {
+    content: "";
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    bottom: -.3em;
+    height: .7em;
+    background-image:
+        linear-gradient(0deg, rgba(225, 245, 254, .8), rgba(225, 245, 254, 0)),
+        linear-gradient(0deg, rgba(179, 229, 252, .7), rgba(179, 229, 252, 0));
+    background-size: .09em 100%, .07em 100%;
+    background-position: 18% 0, 74% 0;
+    background-repeat: no-repeat;
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-pensieve-recuerdo 5.4s ease-out infinite;
+}
+
+/* la onda circular al sumergir la pluma */
+.efecto-pensieve::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -.34em;
+    width: 2.6em;
+    height: .7em;
+    margin-left: -1.3em;
+    border-radius: 50%;
+    border: .045em solid rgba(225, 245, 254, .9);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-pensieve-onda 5.4s ease-out infinite;
+}
+
+@keyframes hp-pensieve-ondas {
+    0%   { background-position: 0 0, 50% 50%; }
+    100% { background-position: 0 .3em, 50% 50%; }
+}
+@keyframes hp-pensieve-recuerdo {
+    0%, 40%  { opacity: 0; transform: translateY(.1em); }
+    52%      { opacity: .85; }
+    84%      { opacity: .2; }
+    100%     { opacity: 0; transform: translateY(-.6em); }
+}
+@keyframes hp-pensieve-onda {
+    0%, 44%  { opacity: 0; transform: scale(.45); }
+    54%      { opacity: .9; }
+    100%     { opacity: 0; transform: scale(1.45); }
+}

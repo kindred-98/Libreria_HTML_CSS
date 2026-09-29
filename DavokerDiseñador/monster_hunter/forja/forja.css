@@ -1,0 +1,102 @@
+/* ================================================================
+   EFECTO 74: FORJA - metal al rojo, chispas y golpe de martillo (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-forja">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-forja, sus pseudo-elementos y los 4 @keyframes).
+
+   QUÉ HACE:
+      Las letras son METAL EN CALOR: el degradado sube dentro
+      del texto como el calor del horno, estallan chispas en
+      dos direcciones y, cuando martillan, las letras se
+      encogen un instante y un fogonazo blanco se abre por
+      encima de la pieza. El taller de herrería del campamento.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: linear-gradient vertical con background-clip: text y
+    background-position animado (el calor sube), chispas
+    ::before con dos radial-gradient en tile, fogonazo
+    ::after y una segunda animación de escala en la clase
+    para el golpe de martillo.
+   ================================================================ */
+
+
+.efecto-forja {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        repeating-linear-gradient(72deg,
+            rgba(255, 236, 210, .3) 0 .06em,
+            rgba(255, 236, 210, 0) .06em .5em),
+        linear-gradient(180deg, #fff3e0 0%, #ffb74d 20%, #ff6d00 48%,
+                #bf360c 76%, #4e1503 100%);
+    background-size: 1em 1em, 100% 240%;
+    background-position: 0 0, 0 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(255, 109, 0, .6));
+
+    animation:
+        mh-forja-calor 3.4s ease-in-out infinite,
+        mh-forja-golpe 3.4s ease-out infinite;
+}
+
+/* chispas que saltan del yunque dentro del texto */
+.efecto-forja::before {
+    content: "";
+    position: absolute;
+    inset: -.55em -.4em -.2em;
+    background-image:
+        radial-gradient(circle at 30% 20%, rgba(255, 235, 180, .95) 0 .05em,
+                rgba(255, 152, 0, 0) .12em),
+        radial-gradient(circle at 74% 62%, rgba(255, 213, 79, .9) 0 .04em,
+                rgba(255, 87, 38, 0) .1em);
+    background-size: 1.1em 1.4em, 1.5em 1.2em;
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-forja-chispas 3.4s linear infinite;
+}
+
+/* fogonazo del golpe de martillo */
+.efecto-forja::after {
+    content: "";
+    position: absolute;
+    inset: -.5em -.7em;
+    background: radial-gradient(ellipse at 44% 34%,
+                rgba(255, 255, 255, .95) 0%, rgba(255, 213, 79, .5) 34%,
+                rgba(255, 109, 0, 0) 70%);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-forja-martillo 3.4s ease-out infinite;
+}
+
+@keyframes mh-forja-calor {
+    0%   { background-position: 0 0, 0 100%; }
+    50%  { background-position: 0 0, 0 42%; }
+    100% { background-position: 0 0, 0 100%; }
+}
+@keyframes mh-forja-golpe {
+    0%, 46%  { transform: scale(1); }
+    54%      { transform: scale(.94); }
+    66%      { transform: scale(.99); }
+    80%,100% { transform: scale(1); }
+}
+@keyframes mh-forja-chispas {
+    0%, 40%  { opacity: 0; background-position: 0 0, 0 0; }
+    50%      { opacity: .95; }
+    66%      { opacity: .7; }
+    78%,100% { opacity: 0; background-position: -1.1em 1.4em, 1.5em -1.2em; }
+}
+@keyframes mh-forja-martillo {
+    0%, 46%  { opacity: 0; transform: scale(.6); }
+    54%      { opacity: .95; transform: scale(1); }
+    78%,100% { opacity: 0; transform: scale(1.7); }
+}

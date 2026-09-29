@@ -1,0 +1,90 @@
+/* ================================================================
+   EFECTO 101: DEBER - las letras de acero rojo bajo la vigilancia (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-deber">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-deber, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son el ESTANDARTE DE DEBER: acero y rojo
+      peligro con las rayas verticales de la formación
+      marchando dentro del texto, una línea de inspección
+      roja barre la palabra y el halo late como un corazón
+      en la penumbra. Fondo oscuro recomendado.
+
+   TÉCNICA: repeating-linear-gradient vertical recortado en el
+    texto con background-position animado (la formación
+    marcha), línea de inspección ::before barrida en
+    horizontal y halo latiendo ::after con radial-gradient.
+   ================================================================ */
+
+
+/* --- base: acero y rojo con las rayas de la formación marchando --- */
+.efecto-deber {
+    display: inline-block;
+    position: relative;
+    background-image:
+        repeating-linear-gradient(90deg,
+                rgba(10, 6, 6, .5) 0 .3em, rgba(10, 6, 6, 0) .3em .66em),
+        linear-gradient(180deg, #f5f5f5 0%, #e53935 40%, #7d1416 66%,
+                #26262a 100%);
+    background-size: .66em 100%, 100% 100%;
+    background-position: 0 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: stk-deber-orden 3.6s linear infinite;
+}
+/* --- línea de inspección barre la palabra --- */
+.efecto-deber::before {
+    content: "";
+    position: absolute;
+    top: -.15em;
+    bottom: -.15em;
+    left: 0;
+    width: .18em;
+    background: linear-gradient(180deg, rgba(255, 84, 64, 0),
+                rgba(255, 84, 64, .95) 30%, rgba(255, 255, 255, .9) 50%,
+                rgba(255, 84, 64, .95) 70%, rgba(255, 84, 64, 0));
+    box-shadow: 0 0 .5em rgba(229, 57, 53, .9);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-deber-barrido 4.4s ease-in-out infinite;
+}
+/* --- halo rojo que late tras las letras --- */
+.efecto-deber::after {
+    content: "";
+    position: absolute;
+    inset: -.35em -.5em;
+    border-radius: .4em;
+    background: radial-gradient(ellipse at 50% 50%,
+                rgba(229, 57, 53, .55) 0%, rgba(140, 20, 22, .3) 55%,
+                transparent 78%);
+    filter: blur(.3em);
+    opacity: .3;
+    pointer-events: none;
+    animation: stk-deber-latido 1.4s ease-out infinite;
+}
+@keyframes stk-deber-orden {
+    0%   { background-position: 0 0, 0 0; }
+    100% { background-position: .66em 0, 0 0; }
+}
+@keyframes stk-deber-barrido {
+    0%, 12%  { opacity: 0; left: -8%; }
+    22%      { opacity: 1; }
+    70%      { opacity: 1; }
+    84%, 100% { opacity: 0; left: 104%; }
+}
+@keyframes stk-deber-latido {
+    0%   { opacity: .18; transform: scale(.98); }
+    18%  { opacity: .75; transform: scale(1.03); }
+    40%  { opacity: .3; }
+    55%  { opacity: .6; }
+    100% { opacity: .18; transform: scale(.98); }
+}

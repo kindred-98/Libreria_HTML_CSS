@@ -1,0 +1,63 @@
+/* ================================================================
+   EFECTO 56: MUNDO TIEMBLA - el mundo se descompone y el texto tiembla (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-mundo">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-mundo, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      El texto se da cuenta de que es una CONSTRUCCIÓN:
+      las letras se abren de letter-spacing, se inclinan y
+      se desdoblan en canal rojo/azul, mientras aparece una
+      rejilla de registro sobre ellas y se vuelve a
+      cerrar. Fondo oscuro recomendado.
+
+   TÉCNICA: letter-spacing, skewX y text-shadow desfasados en
+    rojo/azul (canal cromático) + pseudo-elemento con
+    rejilla de líneas que aparece en el temblor.
+   ================================================================ */
+
+
+.efecto-mundo {
+    display: inline-block;
+    position: relative;
+
+    color: #fff59d;
+
+    animation: mx-mundo 4.6s ease-in-out infinite;
+}
+
+/* rejilla de registro del mundo construido */
+.efecto-mundo::after {
+    content: "";
+    position: absolute;
+    inset: -26% -8%;
+    background:
+        repeating-linear-gradient(90deg, rgba(255, 70, 70, .55) 0 1px,
+                                  transparent 1px 11px),
+        repeating-linear-gradient(180deg, rgba(70, 190, 255, .5) 0 1px,
+                                  transparent 1px 9px);
+    opacity: 0;
+    animation: mx-mundo-rejilla 4.6s ease-in-out infinite;
+}
+
+@keyframes mx-mundo {
+    0%, 100% { letter-spacing: normal; transform: skewX(0);
+               text-shadow: none; }
+    44%      { letter-spacing: .26em; transform: skewX(-4deg);
+               text-shadow: 5px 0 rgba(255, 60, 60, .65),
+                            -5px 0 rgba(60, 200, 255, .6); }
+    70%      { letter-spacing: -.02em; transform: skewX(2deg);
+               text-shadow: -2px 0 rgba(255, 60, 60, .4),
+                            2px 0 rgba(60, 200, 255, .35); }
+}
+@keyframes mx-mundo-rejilla {
+    0%, 26%  { opacity: 0; }
+    44%, 70% { opacity: .75; }
+    86%,100% { opacity: 0; }
+}

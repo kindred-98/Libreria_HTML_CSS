@@ -1,0 +1,84 @@
+/* ================================================================
+   EFECTO 68: VENENO - burbujas de veneno suben por las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-veneno">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-veneno, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras están ENVENENADAS: burbujas moradas suben
+      por el texto, un halo púrpura late y una gota se
+      desprende del borde inferior, igual que el icono de
+      estado de veneno en elHUD.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: ::before con tres radial-gradient en tile animando
+    background-position (las burbujas suben en bucle),
+    gota ::after con border-radius asimétrico y halo
+    con text-shadow por tramos.
+   ================================================================ */
+
+
+.efecto-veneno {
+    display: inline-block;
+    position: relative;
+
+    color: #e1bee7;
+    text-shadow: 0 0 9px rgba(156, 39, 176, .65),
+                 0 0 26px rgba(103, 58, 183, .45);
+
+    animation: mh-veneno-latido 2.8s ease-in-out infinite;
+}
+
+/* tres capas de burbujas que suben por el texto */
+.efecto-veneno::before {
+    content: "";
+    position: absolute;
+    inset: -.55em -.35em;
+    background-image:
+        radial-gradient(circle at 22% 78%,
+            rgba(206, 147, 216, .95) 0 .09em, rgba(206, 147, 216, 0) .13em),
+        radial-gradient(circle at 58% 62%,
+            rgba(179, 154, 240, .9) 0 .07em, rgba(179, 154, 240, 0) .11em),
+        radial-gradient(circle at 86% 88%,
+            rgba(206, 147, 216, .85) 0 .1em, rgba(206, 147, 216, 0) .14em);
+    background-size: 1.4em 1.4em, 2em 2em, 1.7em 1.7em;
+    pointer-events: none;
+    animation: mh-veneno-burbuja 3.4s linear infinite;
+}
+
+/* gota que se desprende del borde inferior */
+.efecto-veneno::after {
+    content: "";
+    position: absolute;
+    left: 14%;
+    bottom: -.46em;
+    width: .17em;
+    height: .3em;
+    border-radius: 999px 999px 60% 60%;
+    background: linear-gradient(180deg, #ce93d8, #7b1fa2);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-veneno-gota 3.4s ease-in infinite;
+}
+
+@keyframes mh-veneno-latido {
+    0%, 100% { text-shadow: 0 0 9px rgba(156, 39, 176, .65),
+                             0 0 26px rgba(103, 58, 183, .45); }
+    50%      { text-shadow: 0 0 16px rgba(206, 147, 216, .95),
+                             0 0 42px rgba(129, 79, 196, .7); }
+}
+@keyframes mh-veneno-burbuja {
+    0%   { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 0 -1.4em, 0 -2em, 0 -1.7em; }
+}
+@keyframes mh-veneno-gota {
+    0%, 62%  { opacity: 0; transform: translateY(0) scaleY(.6); }
+    70%      { opacity: .95; transform: translateY(.1em) scaleY(1); }
+    92%,100% { opacity: 0; transform: translateY(1em) scaleY(1.5); }
+}

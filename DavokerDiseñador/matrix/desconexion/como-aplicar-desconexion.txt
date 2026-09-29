@@ -1,0 +1,49 @@
+================================================================
+EFECTO DESCONEXIÓN - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "desconexion.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/desconexion.css">
+
+Contenido del archivo:
+  · La clase .efecto-desconexion
+  · Sus pseudo-elementos ::before y ::after
+    (banda negra de caída de señal que cruza el texto)
+  ·   · mx-desconexion, mx-desconexion-banda
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-desconexion">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-desconexion">SIN SEÑAL</span></h1>
+
+
+QUÉ HACE
+--------
+Dos animaciones en bucle infinito, sincronizadas:\n  · mx-desconexion (4,2 s) → el texto está verde, se
+    vuelve gris con filtro y tiembla un par de veces,
+    pierde contraste durante la caída y al final recupera
+    todo el color de golpe.
+  · mx-desconexion-banda (4,2 s) → la banda negra solo
+    se enciende mientras la señal está caída.
+steps(1) hace que todos los cambios sean secos, como un
+corte de transmisión.
+
+TÉCNICA: color, filter y transform por tramos con steps(1) +
+    pseudo-elemento-banda negra cuya opacidad salta a
+    los mismos marcos.
+
+
+AJUSTES FÁCILES
+---------------
+· Corte más largo: alarga el tramo 65%-76%.
+· Banda más alta: height 18% → 40%.
+· Sin temblor: borra los translateX de mx-desconexion.
+· Ciclo más corto: 4.2s → 2.8s.

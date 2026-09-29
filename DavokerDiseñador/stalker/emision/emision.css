@@ -1,0 +1,84 @@
+/* ================================================================
+   EFECTO 113: EMISIÓN - las letras cruje con el frente blanco (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-emision">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-emision, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son LA EMISIÓN: cian de agua turbia donde
+      el FRENTE BLANCO sube hasta la mitad de la palabra, la
+      CRESTA rompe con un golpe de espuma y la RESACA se
+      retira y vuelve. Fondo oscuro recomendado.
+
+   TÉCNICA: degradado vertical alto recortado en el texto con
+    background-position animado (el frente sube), cresta
+    ::before con translateY y scaleY y resaca ::after con
+    radial-gradient y opacidad cambiante.
+   ================================================================ */
+
+
+/* --- base: el frente blanco sube dentro de las letras --- */
+.efecto-emision {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(180deg, #062a38 0%, #1d6f8c 34%, #bfefff 52%,
+                #7fd8f7 60%, #0a3a4c 100%);
+    background-size: 100% 320%;
+    background-position: 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 .04em .18em rgba(127, 216, 247, .5));
+    animation: stk-emision-barrido 6.4s ease-in-out infinite;
+}
+/* --- la cresta rompe sobre la palabra --- */
+.efecto-emision::before {
+    content: "";
+    position: absolute;
+    left: -6%;
+    right: -6%;
+    bottom: -.2em;
+    height: .34em;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .95),
+                rgba(191, 239, 255, .2));
+    border-radius: 50% 50% 40% 40%;
+    filter: blur(.12em);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-emision-golpe 4.6s ease-in-out infinite;
+}
+/* --- la resaca se retira y vuelve --- */
+.efecto-emision::after {
+    content: "";
+    position: absolute;
+    inset: -.5em -.7em;
+    background: radial-gradient(ellipse at 50% 88%,
+                rgba(255, 255, 255, .55) 0%, rgba(127, 216, 247, .3) 46%,
+                transparent 76%);
+    filter: blur(.25em);
+    opacity: .3;
+    pointer-events: none;
+    animation: stk-emision-resaca 5.8s ease-in-out infinite;
+}
+@keyframes stk-emision-barrido {
+    0%, 100% { background-position: 0 100%; }
+    50%      { background-position: 0 0; }
+}
+@keyframes stk-emision-golpe {
+    0%, 62%   { opacity: 0; transform: translateY(40%) scaleY(.5); }
+    74%       { opacity: .9; transform: translateY(-6%) scaleY(1.2); }
+    86%       { opacity: .7; transform: translateY(0) scaleY(1); }
+    96%, 100% { opacity: 0; transform: translateY(10%) scaleY(.8); }
+}
+@keyframes stk-emision-resaca {
+    0%, 100% { opacity: .2; transform: translateY(8%); }
+    50%      { opacity: .55; transform: translateY(-4%); }
+}

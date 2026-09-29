@@ -7,6 +7,46 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [davoker: sus 119 efectos, su portada en la nav y ZIP MIT] — 2026-09-29
+
+Integra de una vez su repositorio entero, sin tocar su código.
+
+### Hecho — carpetas
+
+- `DavokerDiseñador/` recibe el árbol completo de `github.com/davoker/efectos_css_para_html` copiado byte a byte:
+  los **119 efectos** en 7 carpetas temáticas (`miscelanea` 21, `harry_potter` 20, `stalker` 20,
+  `monster_hunter` 18, `matrix` 14, `star_wars` 13, `the_division` 13), cada efecto con su `{efecto}.css`,
+  su showcase `index.html`, su `{efecto}.zip` y su `como-aplicar-{efecto}.txt`; más `transicion.html`,
+  `transicion.css`, la portada `davoker.html` (renombrada, antes `index.html`) y el `LICENSE` MIT de davoker.
+- Verificado antes de copiar: 0 referencias externas (`http://`) en sus páginas, así que la CSP de Vercel no
+  rompe nada; el catálogo pasa de **722 → 841** componentes (367 descargables).
+
+### Hecho — la portada no es una tarjeta
+
+- La portada de davoker enlaza los 119 CSS y `transicion.css`, y su id habría sido vacío, así que **no es una
+  tarjeta**: se renombró `index.html` → `davoker.html` (el `meta refresh` y el enlace «Todos los efectos» de
+  `transicion.html` apuntan ya al nombre nuevo) y solo se catalogan los `index.html`, con lo que
+  `generate-catalog.mjs` y `validate.mjs` vuelven a la regla simple de siempre.
+- La nav de las tres páginas **no** gana ningún enlace: el acceso es el filtro de autores. Al elegir
+  **davoker** sin categoría y sin búsqueda, la rejilla de `components.html` se sustituye por su portada dentro
+  de `#davoker-portal` con un `iframe` (cargado una sola vez); al cambiar de autor, de categoría o al buscar,
+  vuelve la lista normal de tarjetas.
+
+### Hecho — cómo entra en el catálogo
+
+- Las 7 carpetas son **temas**, no categorías funcionales: el root `DavokerDiseñador` las mapea todas a
+  `Effects`, y `getTags()` ahora usa `folderPath`, así que el tema viaja en los tags (`stalker`, `matrix`…).
+- `titleCleanup` por raíz: los títulos `Efecto GLITCH - Showcase` quedan como `GLITCH` en la tarjeta.
+- Descripción por defecto EN/ES declarada en el root, porque ninguno de sus efectos trae `meta description`.
+- Licencia de raíz (`root.license`, `root.licenseFile`, `root.source`, `root.redistributable`): el `LICENSE`
+  MIT se añade a los `files` de cada componente, con lo que sus 119 tarjetas salen con **ZIP habilitado**.
+
+### Documentación
+
+- `README.md`: 515 demos en cuatro colecciones, 367 descargables y el árbol actualizado.
+- `Web/README.md`: la cuarta colección, la regla del `index.html` de raíz y el reparto `Effects` + tags.
+- `THIRD_PARTY_NOTICES.md`: davoker (MIT, `github.com/davoker/efectos_css_para_html`) en la tabla.
+
 ## [Carpetas por autor y filtro de autor en la web] — 2026-09-29
 
 Separa la colección por autoría y añade el filtro que la muestra.

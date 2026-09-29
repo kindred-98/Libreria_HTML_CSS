@@ -1,0 +1,68 @@
+/* ================================================================
+   EFECTO 53: ESPEJO LÍQUIDO - espejo líquido por el que se entra con la mano (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-espejo">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-espejo, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son PLATA LÍQUIDA: un degradado cromado
+      fluye muy despacio por los glifos y, de vez en cuando,
+      una banda de luz vertical —la superficie del espejo—
+      las cruza entera, como una mano que la atraviesa.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: background-clip: text con degradado cromado de
+    background-size amplio y background-position en
+    bucle + pseudo-elemento-banda con box-shadow.
+   ================================================================ */
+
+
+.efecto-espejo {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(160deg, #f7fafc 0%, #b0bec5 26%,
+                      #ffffff 44%, #78909c 58%, #e2e8ec 74%,
+                      #90a4ae 100%);
+    background-size: 300% 100%;
+    background-position: 0% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: mx-espejo-flujo 7s linear infinite;
+}
+
+/* la superficie del espejo que se abre */
+.efecto-espejo::after {
+    content: "";
+    position: absolute;
+    left: -12%;
+    top: -14%;
+    bottom: -14%;
+    width: .2em;
+    background: linear-gradient(180deg, rgba(255,255,255,0),
+                #ffffff 30%, #ffffff 70%, rgba(255,255,255,0));
+    box-shadow: 0 0 16px rgba(255, 255, 255, .85),
+                0 0 34px rgba(176, 190, 197, .6);
+    opacity: 0;
+    animation: mx-espejo-banda 3.6s ease-in-out infinite;
+}
+
+@keyframes mx-espejo-flujo {
+    0%   { background-position: 0% 0; }
+    100% { background-position: 300% 0; }
+}
+@keyframes mx-espejo-banda {
+    0%, 12%  { opacity: 0; transform: translateX(0); }
+    18%      { opacity: 1; transform: translateX(60%); }
+    62%      { opacity: 1; transform: translateX(560%); }
+    66%,100% { opacity: 0; transform: translateX(620%); }
+}

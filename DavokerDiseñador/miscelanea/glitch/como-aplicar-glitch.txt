@@ -1,0 +1,51 @@
+================================================================
+EFECTO GLITCH - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "glitch.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/glitch.css">
+
+El archivo es 100% portable: no depende de ningún otro estilo,
+de librerías ni de JavaScript. Contiene:
+  · La clase .efecto-glitch
+  · Sus pseudo-elementos ::before y ::after
+  · 3 @keyframes: glitch-sacudida, glitch-capa-a, glitch-capa-b
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-glitch" data-text="Tu texto">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-glitch" data-text="Hola">Hola</span></h1>
+
+
+ATENCIÓN (lo más importante)
+----------------------------
+El atributo data-text es OBLIGATORIO y debe repetir EXACTAMENTE
+el texto visible. Los pseudo-elementos ::before y ::after usan
+    content: attr(data-text)
+para crear las dos capas de interferencia (roja y cian). Si no
+lo pones, no se verá nada.
+
+
+QUÉ HACE
+--------
+Bucle infinito de 4,5 segundos:
+  · 0-54%   → ráfagas de interferencia (bandas RGB cortadas)
+  · 55-62%  → ráfaga fuerte, muy exagerada
+  · 74-95%  → VIBRACIÓN constante del texto
+  · 95-100% → pausa breve y vuelve a empezar
+
+
+AJUSTES FÁCILES
+---------------
+· Más rápido: cambia 4.5s por 2.5s en las 3 líneas "animation".
+· Más fuerte: aumenta los valores de translate(-30px → -50px).
+· Otros colores: cambia #ff2a6d (rojo) y #05d9e8 (cian)
+  en las reglas ::before y ::after.

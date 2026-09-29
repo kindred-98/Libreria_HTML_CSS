@@ -1,0 +1,68 @@
+/* ================================================================
+   EFECTO 61: SENTINELA - ojo rojo de los centinelas buscándote (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-sentinela">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-sentinela, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Un CENTINELA te ha encontrado: un ojo rojo se
+      enciende y apaga en la esquina del texto mientras
+      las letras pasan de blanco frío a un rojo de aviso
+      que pulsa, con el halo de búsqueda subiendo y
+      bajando. Fondo oscuro recomendado.
+
+   TÉCNICA: color y text-shadow por tramos con steps(1) en la
+    clase + pseudo-elemento-ojo con degradados radiales
+    y box-shadow rojo que parpadea en el mismo compás.
+   ================================================================ */
+
+
+.efecto-sentinela {
+    display: inline-block;
+    position: relative;
+
+    color: #e0f7fa;
+    animation: mx-sentinela-busca 2.6s steps(1, end) infinite;
+}
+
+/* el ojo sensor */
+.efecto-sentinela::after {
+    content: "";
+    position: absolute;
+    right: -.66em;
+    top: -.26em;
+    width: .44em;
+    height: .44em;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0 16%, #ff1744 38%,
+                rgba(255, 23, 68, .45) 62%, rgba(255, 23, 68, 0) 74%);
+    box-shadow: 0 0 14px rgba(255, 23, 68, .95);
+    animation: mx-sentinela-ojo 2.6s steps(1, end) infinite;
+}
+
+@keyframes mx-sentinela-busca {
+    0%, 46%  { color: #e0f7fa;
+               text-shadow: 0 0 10px rgba(180, 240, 255, .3); }
+    47%, 60% { color: #ffd7de;
+               text-shadow: 0 0 14px rgba(255, 23, 68, .8); }
+    61%, 74% { color: #e0f7fa;
+               text-shadow: 0 0 8px rgba(180, 240, 255, .25); }
+    75%, 88% { color: #ffcccd;
+               text-shadow: 0 0 20px rgba(255, 23, 68, 1),
+                            0 0 44px rgba(255, 60, 90, .55); }
+    89%,100% { color: #e0f7fa;
+               text-shadow: 0 0 10px rgba(180, 240, 255, .3); }
+}
+@keyframes mx-sentinela-ojo {
+    0%, 46%  { opacity: .5; transform: scale(.92); }
+    47%, 60% { opacity: 1; transform: scale(1.1); }
+    61%, 74% { opacity: .55; transform: scale(.95); }
+    75%, 88% { opacity: 1; transform: scale(1.2); }
+    89%,100% { opacity: .5; transform: scale(.92); }
+}

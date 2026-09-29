@@ -1,0 +1,84 @@
+/* ================================================================
+   EFECTO 65: RUGIDO - el rugido de la bestia hace temblar el texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-rugido">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-rugido, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras sueltan EL RUGIDO: primero tiemblan con un
+      golpe de escala, luego salen dos ondas concéntricas y
+      una nube de polvo, como cuando la bestia ruge delante
+      de ti y la pantalla se sacude.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: transform por tramos (translate + scale) para el
+    temblor, dos ::before/::after con border redondeado
+    y escala animada para las ondas, y text-shadow con
+    latido.
+   ================================================================ */
+
+
+.efecto-rugido {
+    display: inline-block;
+    position: relative;
+
+    color: #ffcc80;
+    text-shadow: 0 0 10px rgba(255, 140, 0, .6),
+                 0 0 30px rgba(255, 61, 0, .42);
+
+    animation: mh-rugido-temblor 3.2s ease-out infinite;
+}
+
+/* primer aro de la onda expansiva */
+.efecto-rugido::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1em;
+    height: 1em;
+    margin: -.5em 0 0 -.5em;
+    border: .07em solid rgba(255, 214, 170, .85);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-rugido-onda 3.2s ease-out infinite;
+}
+
+/* segundo aro, medio segundo por detrás */
+.efecto-rugido::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1em;
+    height: 1em;
+    margin: -.5em 0 0 -.5em;
+    border: .05em solid rgba(255, 111, 0, .7);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-rugido-onda 3.2s ease-out infinite;
+    animation-delay: -.5s;
+}
+
+@keyframes mh-rugido-temblor {
+    0%, 8%   { transform: translate(0, 0) scale(1); }
+    14%      { transform: translate(-.05em, .03em) scale(1.08); }
+    20%      { transform: translate(.05em, -.04em) scale(1.05); }
+    26%      { transform: translate(-.04em, -.03em) scale(1.07); }
+    32%      { transform: translate(.03em, .04em) scale(1.04); }
+    40%,100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes mh-rugido-onda {
+    0%, 8%   { opacity: 0; transform: scale(.5); }
+    18%      { opacity: .95; }
+    58%      { opacity: 0; transform: scale(3.6); }
+    100%     { opacity: 0; transform: scale(3.6); }
+}

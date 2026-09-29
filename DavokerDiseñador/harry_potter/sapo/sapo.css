@@ -1,0 +1,96 @@
+/* ================================================================
+   EFECTO 94: SAPO - las letras dan saltos como el sapo de chocolate (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-sapo">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-sapo, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son el SAPO DE CHOCOLATE: se agachan,
+      saltan y caen con estirón y golpe, levantando un poco
+      de polvo bajo la palabra, mientras un destello de
+      oro titila en la esquina. Cangrejo de hojalata.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado violeta/oro con background-clip: text y
+    keyframes de transform sobre el propio elemento
+    (translateY + scaleX/scaleY de estirón), polvo
+    ::before sincronizado con la caída y destello
+    ::after en steps.
+   ================================================================ */
+
+
+.efecto-sapo {
+    display: inline-block;
+    position: relative;
+    transform-origin: 50% 100%;
+
+    background-image:
+        linear-gradient(160deg, #e1bee7 0%, #ba68c8 34%, #8e24aa 68%,
+                #ffd54f 96%, #e1bee7 100%);
+    background-size: 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(174, 100, 200, .5));
+
+    animation: hp-sapo-salto 2.6s ease-in-out infinite;
+}
+
+/* polvo al aterrizar */
+.efecto-sapo::before {
+    content: "";
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    bottom: -.3em;
+    height: .3em;
+    background: radial-gradient(ellipse at 50% 60%,
+            rgba(230, 190, 230, .9) 0%, rgba(190, 140, 190, 0) 70%);
+    filter: blur(.05em);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-sapo-polvo 2.6s ease-out infinite;
+}
+
+/* destello dorado en la esquina */
+.efecto-sapo::after {
+    content: "";
+    position: absolute;
+    right: -.4em;
+    top: -.3em;
+    width: .26em;
+    height: .26em;
+    background: radial-gradient(circle, #fffde7 0%, #ffd54f 45%,
+                rgba(255, 213, 79, 0) 76%);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-sapo-destello 2.6s steps(1, end) infinite;
+}
+
+@keyframes hp-sapo-salto {
+    0%, 46%  { transform: translateY(0) scale(1, 1); }
+    54%      { transform: translateY(0) scale(1.06, .9); }
+    64%      { transform: translateY(-.32em) scale(.96, 1.05); }
+    74%      { transform: translateY(-.34em) scale(.96, 1.05); }
+    84%      { transform: translateY(0) scale(1.08, .88); }
+    92%,100% { transform: translateY(0) scale(1, 1); }
+}
+@keyframes hp-sapo-polvo {
+    0%, 78%  { opacity: 0; transform: scaleX(.4); }
+    84%      { opacity: .95; transform: scaleX(1); }
+    94%,100% { opacity: 0; transform: scaleX(1.4); }
+}
+@keyframes hp-sapo-destello {
+    0%, 30%  { opacity: 0; transform: scale(.5); }
+    34%      { opacity: 1; transform: scale(1.2); }
+    44%      { opacity: 0; transform: scale(.7); }
+    50%      { opacity: .9; transform: scale(1.05); }
+    58%,100% { opacity: 0; transform: scale(.5); }
+}

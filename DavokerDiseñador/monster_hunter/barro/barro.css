@@ -1,0 +1,94 @@
+/* ================================================================
+   EFECTO 71: BARRO - las letras se revuelven en el barro (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-barro">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-barro, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son BARRO CHARCOSO: un manto ocre con
+      moteas oscuras que se revuelven dentro del texto, una
+      salpicadura de fango golpea el conjunto y una gota se
+      desprende del borde inferior. Tierra, fango y salto de
+      los monstruos terrestres, letra por letra.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: tres background-image con background-clip: text (dos
+    moteas radial-gradient en tile + degradado de fango)
+    con background-position animado, salpicadura ::before
+    con radial-gradient y gota ::after redondeada.
+   ================================================================ */
+
+
+.efecto-barro {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        radial-gradient(circle at 24% 38%, rgba(52, 30, 10, .6) 0 .17em,
+                rgba(52, 30, 10, 0) .26em),
+        radial-gradient(circle at 76% 70%, rgba(52, 30, 10, .5) 0 .2em,
+                rgba(52, 30, 10, 0) .3em),
+        linear-gradient(168deg, #e0b070 0%, #b07f36 36%, #7a4f1c 68%,
+                #45280c 100%);
+    background-size: 1.7em 1.7em, 2.3em 2.3em, 100% 100%;
+    background-position: 0 0, 0 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(190, 130, 60, .45));
+
+    animation: mh-barro-chapoteo 4s ease-in-out infinite;
+}
+
+/* salpicadura de fango que estalla contra las letras */
+.efecto-barro::before {
+    content: "";
+    position: absolute;
+    inset: -.45em -.6em;
+    background: radial-gradient(ellipse at 26% 62%,
+                rgba(122, 79, 28, .95) 0 26%,
+                rgba(122, 79, 28, .5) 46%,
+                rgba(122, 79, 28, 0) 68%);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-barro-salpicadura 4s ease-out infinite;
+}
+
+/* gota de barro que se desprende del borde inferior */
+.efecto-barro::after {
+    content: "";
+    position: absolute;
+    left: 22%;
+    bottom: -.5em;
+    width: .18em;
+    height: .3em;
+    border-radius: 999px 999px 55% 55%;
+    background: linear-gradient(180deg, #b07f36, #45280c);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-barro-gota 4s ease-in infinite;
+}
+
+@keyframes mh-barro-chapoteo {
+    0%   { background-position: 0 0, 0 0, 0 0; }
+    50%  { background-position: .85em -.85em, -1.15em 1.15em, 0 0; }
+    100% { background-position: 1.7em -1.7em, -2.3em 2.3em, 0 0; }
+}
+@keyframes mh-barro-salpicadura {
+    0%, 18%  { opacity: 0; transform: translateX(-6%) scale(.7); }
+    28%      { opacity: .95; transform: translateX(0) scale(1); }
+    46%      { opacity: .6; transform: translateX(7%) scale(1.12); }
+    62%,100% { opacity: 0; transform: translateX(16%) scale(1.3); }
+}
+@keyframes mh-barro-gota {
+    0%, 54%  { opacity: 0; transform: translateY(0) scaleY(.6); }
+    62%      { opacity: .95; transform: translateY(.12em) scaleY(1); }
+    88%,100% { opacity: 0; transform: translateY(.9em) scaleY(1.5); }
+}

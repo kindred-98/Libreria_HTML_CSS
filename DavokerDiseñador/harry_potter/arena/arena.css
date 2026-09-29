@@ -1,0 +1,93 @@
+/* ================================================================
+   EFECTO 89: ARENA - la arena cae dentro de las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-arena">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-arena, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un RELOJ DE ARENA: el grano fino cae sin
+      parar dentro del texto, un hilo de arena se derrama desde
+      arriba y el cristal destella con cada vuelta. El tiempo
+      de Hogwarts contado en granos.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: textura de grano con dos radial-gradient en tile y
+    degradado dorado, todo con background-clip: text y
+    background-position animado, hilo ::before caído y
+    destello de cristal ::after.
+   ================================================================ */
+
+
+.efecto-arena {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        radial-gradient(circle at 30% 40%, rgba(90, 52, 18, .8) 0 .05em,
+                rgba(90, 52, 18, 0) .11em),
+        radial-gradient(circle at 74% 66%, rgba(120, 74, 26, .7) 0 .04em,
+                rgba(120, 74, 26, 0) .1em),
+        linear-gradient(180deg, #ffe6c0 0%, #f0c070 46%, #d9a04f 78%,
+                #b07a34 100%);
+    background-size: .42em .42em, .58em .58em, 100% 200%;
+    background-position: 0 0, 0 0, 50% 30%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 1px 5px rgba(0, 0, 0, .55));
+
+    animation: hp-arena-fluye 6s linear infinite;
+}
+
+/* hilo de arena que se derrama desde arriba */
+.efecto-arena::before {
+    content: "";
+    position: absolute;
+    left: 48%;
+    top: -.55em;
+    width: .07em;
+    height: .55em;
+    background: linear-gradient(180deg, rgba(255, 230, 192, 0),
+                #f0c070 65%, #d9a04f);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-arena-hilo 6s ease-in-out infinite;
+}
+
+/* destello del cristal del reloj */
+.efecto-arena::after {
+    content: "";
+    position: absolute;
+    inset: -.2em -.35em;
+    background: linear-gradient(112deg,
+            rgba(255, 255, 255, 0) 44%, rgba(255, 255, 255, .75) 52%,
+            rgba(255, 255, 255, 0) 60%);
+    transform: translateX(-120%);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-arena-cristal 6s ease-in-out infinite;
+}
+
+@keyframes hp-arena-fluye {
+    0%   { background-position: 0 0, 0 0, 50% 30%; }
+    100% { background-position: 0 .42em, 0 .58em, 50% 76%; }
+}
+@keyframes hp-arena-hilo {
+    0%, 12%  { opacity: 0; }
+    22%      { opacity: .95; }
+    74%      { opacity: .9; }
+    88%,100% { opacity: 0; }
+}
+@keyframes hp-arena-cristal {
+    0%, 62%  { opacity: 0; transform: translateX(-120%); }
+    70%      { opacity: .85; }
+    86%      { opacity: .5; }
+    96%,100% { opacity: 0; transform: translateX(120%); }
+}

@@ -1,0 +1,100 @@
+/* ================================================================
+   EFECTO 77: SUEÑO - las letras se duermen y sueltan Z (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-sueno">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-sueno, sus pseudo-elementos y los 4 @keyframes).
+
+   QUÉ HACE:
+      Las letras SE DORMIDAN: se balancean despacio, se
+      inclinan cada vez más y sueltan una fila de Z que sube
+      girando; el halo violeta baja y sube como una
+      respiración lenta y una nube de somnolencia asoma por
+      abajo. El efecto de sueño, dentro del texto.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: transform por tramos (translateY + rotate) con ease-in-out
+    para el balanceo, halo animando text-shadow en una
+    segunda animación de la clase, ::before con content de
+    texto (Z) y ::after de nube con radial-gradient.
+   ================================================================ */
+
+
+.efecto-sueno {
+    display: inline-block;
+    position: relative;
+
+    color: #d1c4e9;
+    text-shadow: 0 0 10px rgba(125, 82, 224, .7),
+                 0 0 30px rgba(63, 38, 149, .5);
+
+    animation:
+        mh-sueno-balanceo 3.6s ease-in-out infinite,
+        mh-sueno-halo 3.6s ease-in-out infinite;
+}
+
+/* la fila de Z que sube girando */
+.efecto-sueno::before {
+    content: "Z Z Z";
+    position: absolute;
+    right: -.1em;
+    top: -.95em;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-weight: 700;
+    font-size: .6em;
+    letter-spacing: .12em;
+    color: #d1c4e9;
+    text-shadow: 0 0 .18em rgba(125, 82, 224, .9);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-sueno-zeta 3.6s ease-in infinite;
+}
+
+/* nube de somnolencia que asoma por abajo */
+.efecto-sueno::after {
+    content: "";
+    position: absolute;
+    left: 58%;
+    bottom: -.5em;
+    width: .8em;
+    height: .5em;
+    background: radial-gradient(ellipse, rgba(209, 196, 233, .9) 0%,
+                rgba(125, 82, 224, .5) 46%, rgba(125, 82, 224, 0) 74%);
+    filter: blur(.06em);
+    opacity: .7;
+    pointer-events: none;
+    animation: mh-sueno-nube 3.6s ease-in-out infinite;
+}
+
+@keyframes mh-sueno-balanceo {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    25%      { transform: translateY(-.08em) rotate(-4deg); }
+    50%      { transform: translateY(.05em) rotate(3deg); }
+    75%      { transform: translateY(-.04em) rotate(-6deg); }
+}
+@keyframes mh-sueno-halo {
+    0%, 100% { text-shadow: 0 0 10px rgba(125, 82, 224, .7),
+                             0 0 30px rgba(63, 38, 149, .5); }
+    50%      { text-shadow: 0 0 18px rgba(179, 157, 221, .95),
+                             0 0 46px rgba(103, 58, 183, .7); }
+}
+@keyframes mh-sueno-zeta {
+    0%, 30%  { opacity: 0;
+               transform: translateY(.3em) rotate(-8deg) scale(.7); }
+    42%      { opacity: .95;
+               transform: translateY(-.1em) rotate(4deg) scale(1); }
+    74%      { opacity: .55;
+               transform: translateY(-.7em) rotate(16deg) scale(1.15); }
+    86%,100% { opacity: 0;
+               transform: translateY(-1em) rotate(24deg) scale(1.25); }
+}
+@keyframes mh-sueno-nube {
+    0%, 54%  { opacity: 0; transform: translateY(0) scale(.7); }
+    66%      { opacity: .8; transform: translateY(-.3em) scale(1); }
+    88%,100% { opacity: 0; transform: translateY(-.9em) scale(1.3); }
+}

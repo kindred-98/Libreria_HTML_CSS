@@ -1,0 +1,99 @@
+/* ================================================================
+   EFECTO 83: SLYTHERIN - una serpiente plateada se desliza entre las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-slytherin">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-slytherin, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son el ESTANDARTE DE SLYTHERIN: metal de
+      esmeralda con vetas de PLATA y una serpiente plateada que
+      se desliza en onda por el texto, seguida de una niebla
+      verde que sube. Astucia de la casa de Salazar.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado esmeralda/plata con bandas metálicas en
+    background-clip: text, serpiente ::before dibujada con
+    un segmento redondeado movido por keyframes en zigzag y
+    bruma ::after con radial-gradient ascendente.
+   ================================================================ */
+
+
+.efecto-slytherin {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        repeating-linear-gradient(112deg,
+            rgba(240, 245, 248, .35) 0 .05em,
+            rgba(240, 245, 248, 0) .05em .52em),
+        linear-gradient(96deg, #0e6b41 0%, #1b8f5a 26%, #cfd8dc 47%,
+                #1b8f5a 62%, #0e6b41 84%, #cfd8dc 100%);
+    background-size: .58em .58em, 200% 100%;
+    background-position: 0 0, 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(61, 220, 132, .45));
+
+    animation: hp-slytherin-brillo 5.6s ease-in-out infinite;
+}
+
+/* la serpiente plateada deslizándose por la palabra */
+.efecto-slytherin::before {
+    content: "";
+    position: absolute;
+    left: -6%;
+    width: 34%;
+    top: 44%;
+    height: .14em;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(207, 216, 220, 0),
+                #eceff1 55%, rgba(207, 216, 220, .9) 82%,
+                rgba(207, 216, 220, 0));
+    box-shadow: 0 0 .34em rgba(236, 239, 241, .8);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-slytherin-serpiente 5.6s ease-in-out infinite;
+}
+
+/* bruma verde que asciende tras las letras */
+.efecto-slytherin::after {
+    content: "";
+    position: absolute;
+    left: -4%;
+    right: -4%;
+    bottom: -.3em;
+    height: .7em;
+    background: linear-gradient(0deg, rgba(61, 220, 132, .55),
+                rgba(61, 220, 132, 0));
+    filter: blur(.1em);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-slytherin-bruma 5.6s ease-out infinite;
+}
+
+@keyframes hp-slytherin-serpiente {
+    0%, 8%    { opacity: 0; transform: translate(0, .12em) rotate(3deg); }
+    16%       { opacity: 1; transform: translate(24%, -.1em) rotate(-4deg); }
+    34%       { opacity: 1; transform: translate(48%, .14em) rotate(4deg); }
+    52%       { opacity: 1; transform: translate(72%, -.12em) rotate(-3deg); }
+    70%       { opacity: 1; transform: translate(96%, .1em) rotate(2deg); }
+    84%,100%  { opacity: 0; transform: translate(124%, -.06em) rotate(0); }
+}
+@keyframes hp-slytherin-brillo {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(61, 220, 132, .4)); }
+    50%      { filter: drop-shadow(0 0 18px rgba(207, 216, 220, .85)); }
+}
+@keyframes hp-slytherin-bruma {
+    0%, 30%  { opacity: 0; transform: translateY(0); }
+    46%      { opacity: .85; }
+    84%      { opacity: .3; }
+    100%     { opacity: 0; transform: translateY(-.55em); }
+}

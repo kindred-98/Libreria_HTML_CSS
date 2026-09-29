@@ -1,0 +1,89 @@
+/* ================================================================
+   EFECTO 110: PECADO - las letras de ascua laten con el rezo (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-pecado">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-pecado, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son LA LUMBRE DEL PECADO: rojo de brasa
+      que respira dentro del texto, las BRASAS suben desde
+      la palabra y la CANDELA del rezo parpadea en la
+      penumbra. Fondo oscuro recomendado.
+
+   TÉCNICA: degradado de ascua recortado en el texto con
+    background-position animado (respiro), brasas ::before
+    con radial-gradient subidas por background-position y
+    candela ::after de opacidad intermitente.
+   ================================================================ */
+
+
+/* --- base: ascua de incienso respirando dentro de las letras --- */
+.efecto-pecado {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(160deg, #4a0f10 0%, #d32f2f 34%, #ff8a65 50%,
+                #a31517 68%, #38090a 100%);
+    background-size: 240% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 .3em rgba(211, 47, 47, .5));
+    animation: stk-pecado-respiro 6.2s ease-in-out infinite;
+}
+/* --- brasas subiendo desde la palabra --- */
+.efecto-pecado::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -.6em;
+    bottom: -.6em;
+    background-image:
+        radial-gradient(circle, rgba(255, 168, 100, .95) 0 .1em,
+                rgba(255, 111, 0, 0) .26em),
+        radial-gradient(circle, rgba(255, 205, 130, .8) 0 .07em,
+                rgba(255, 111, 0, 0) .2em);
+    background-size: 28% 44%, 46% 58%;
+    background-repeat: no-repeat;
+    opacity: .7;
+    pointer-events: none;
+    animation: stk-pecado-brasas 5s linear infinite;
+}
+/* --- candela: la luz del rezo parpadea --- */
+.efecto-pecado::after {
+    content: "";
+    position: absolute;
+    inset: -.5em -.7em;
+    border-radius: .5em;
+    background: radial-gradient(ellipse at 50% 50%,
+                rgba(255, 120, 80, .6) 0%, rgba(140, 20, 22, .3) 52%,
+                transparent 78%);
+    filter: blur(.35em);
+    opacity: .35;
+    pointer-events: none;
+    animation: stk-pecado-candela 2.6s ease-in-out infinite;
+}
+@keyframes stk-pecado-respiro {
+    0%, 100% { background-position: 100% 0; }
+    50%      { background-position: 0% 0; }
+}
+@keyframes stk-pecado-brasas {
+    0%   { background-position: 6% 116%, 62% 132%; opacity: .2; }
+    50%  { opacity: .8; }
+    100% { background-position: 18% -46%, 48% -60%; opacity: .2; }
+}
+@keyframes stk-pecado-candela {
+    0%, 100% { opacity: .3; }
+    12%      { opacity: .7; }
+    30%      { opacity: .34; }
+    54%      { opacity: .66; }
+}

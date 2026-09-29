@@ -1,0 +1,64 @@
+/* ================================================================
+   EFECTO 58: DESCONEXIÓN - desconexión de la Matriz: se cae la señal (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-desconexion">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-desconexion, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras SE DESCONECTAN: el verde se apaga a gris
+      por pasos, el texto tiembla a izquierda y derecha y
+      una banda negra —la caída de señal— cruza por el
+      medio tapando una franja antes de volver todo a la
+      normalidad. Fondo oscuro recomendado.
+
+   TÉCNICA: color, filter y transform por tramos con steps(1) +
+    pseudo-elemento-banda negra cuya opacidad salta a
+    los mismos marcos.
+   ================================================================ */
+
+
+.efecto-desconexion {
+    display: inline-block;
+    position: relative;
+
+    color: #7dffa8;
+    animation: mx-desconexion 4.2s steps(1, end) infinite;
+}
+
+/* la banda de caída de señal */
+.efecto-desconexion::after {
+    content: "";
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    top: 42%;
+    height: 18%;
+    background: #03070a;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, .12);
+    opacity: 0;
+    animation: mx-desconexion-banda 4.2s steps(1, end) infinite;
+}
+
+@keyframes mx-desconexion {
+    0%, 52%  { color: #7dffa8; filter: none; transform: translateX(0);
+               text-shadow: 0 0 12px rgba(0, 255, 110, .5); }
+    53%, 58% { color: #9aa79f; filter: grayscale(1) brightness(.85);
+               transform: translateX(-3px); text-shadow: none; }
+    59%, 64% { color: #9aa79f; filter: grayscale(1) brightness(.85);
+               transform: translateX(4px); text-shadow: none; }
+    65%, 76% { color: #6f7a74; filter: grayscale(1) brightness(.6);
+               transform: translateX(0); text-shadow: none; }
+    77%,100% { color: #7dffa8; filter: none; transform: translateX(0);
+               text-shadow: 0 0 12px rgba(0, 255, 110, .5); }
+}
+@keyframes mx-desconexion-banda {
+    0%, 58%  { opacity: 0; transform: translateX(-4%); }
+    59%, 76% { opacity: .94; transform: translateX(4%); }
+    77%,100% { opacity: 0; transform: translateX(4%); }
+}

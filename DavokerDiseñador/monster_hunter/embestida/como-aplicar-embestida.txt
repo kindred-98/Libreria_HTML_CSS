@@ -1,0 +1,56 @@
+================================================================
+EFECTO EMBESTIDA - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "embestida.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/embestida.css">
+
+Contenido del archivo:
+  · La clase .efecto-embestida
+  · Sus pseudo-elementos ::before y ::after
+    (estelas ::before y destello del impacto ::after)
+  ·   · mh-embestida-carga, mh-embestida-rayas,
+    mh-embestida-estela, mh-embestida-impacto
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-embestida">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-embestida">EMBESTIDA</span></h1>
+
+
+QUÉ HACE
+--------
+Cuatro animaciones en bucle infinito, con la misma duración:
+  · mh-embestida-carga (2,8 s) → la palabra avanza, se
+    inclina hacia delante (skewX) y retrocede al sitio.
+  · mh-embestida-rayas (2,8 s) → las rayas del metal corren
+    hacia atrás durante la carga; vuelven al punto de
+    partida justo al cerrar el bucle.
+  · mh-embestida-estela (2,8 s) → las estelas de aire se
+    abren detrás del texto en el instante del empuje.
+  · mh-embestida-impacto (2,8 s) → al final de la carga
+    salta el destello blanco y se apaga.
+La inclinación es skewX: por eso las letras parecen cortar
+el aire en vez de solo desplazarse.
+
+TÉCNICA: repeating-linear-gradient de rayas con background-clip:
+    text y su propio background-position animado, dos
+    animaciones en la clase (transform de carga + rayas),
+    estelas ::before con skewX y destello ::after con
+    radial-gradient.
+
+
+AJUSTES FÁCILES
+---------------
+· Carga más larga: sube el translateX a 1.4em.
+· Impacto antes: baja el 56% de mh-embestida-impacto a 46%.
+· Sin estelas: borra el ::before y mh-embestida-estela.
+· Más rápido: 2.8s → 1.8s en las cuatro.

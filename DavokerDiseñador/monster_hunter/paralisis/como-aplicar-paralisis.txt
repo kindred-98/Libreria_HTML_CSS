@@ -1,0 +1,49 @@
+================================================================
+EFECTO PARÁLISIS - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "paralisis.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/paralisis.css">
+
+Contenido del archivo:
+  · La clase .efecto-paralisis
+  · Sus pseudo-elementos ::before y ::after
+    (dos rayos con dientes arriba y abajo)
+  ·   · mh-paralisis-tiron, mh-paralisis-chispa
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-paralisis">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-paralisis">PARÁLISIS</span></h1>
+
+
+QUÉ HACE
+--------
+Dos animaciones en bucle infinito, ambas con steps(1):
+  · mh-paralisis-tiron (1,8 s) → el texto salta de una
+    posición a otra sin desplazamiento continuo: por eso
+    se lee como un calambre.
+  · mh-paralisis-chispa (1,8 s) → los dos rayos se
+    encienden por tramos y se apagan.
+El rayo no es una imagen: es un clip-path: polygon con
+20 vértices que forma los dientes del pulso.
+
+TÉCNICA: steps(1, end) tanto en el tiro del texto como en los
+    rayos: los valores saltan de golpe; clip-path con
+    polígono en dientes dibuja los dos rayos.
+
+
+AJUSTES FÁCILES
+---------------
+· Calambre más frecuente: 1.8s → 1s en mh-paralisis-tiron.
+· Tirones más largos: sube los .06em de translate.
+· Sin rayos: borra el ::before y el ::after.
+· Rayos más gruesos: sube la altura de .3em a .5em.

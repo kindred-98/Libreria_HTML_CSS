@@ -1,0 +1,90 @@
+/* ================================================================
+   EFECTO 102: LIBERTAD - las letras verdes se mecen con el humo de la hierba (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-libertad">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-libertad, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son la ВОЛЯ DE LIBERTAD: verde de sauce
+      que se mece con calma, humo que sube desde la palabra
+      y manchas de luz entre las hojas deslizándose sobre el
+      texto. Sin jerarquías ni permisos.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado verde recortado en el texto con rotate y
+    background-position en el mismo keyframe, humo
+    ::before escalado con blur y manchas de luz ::after
+    movidas por background-position.
+   ================================================================ */
+
+
+/* --- base: verde de sauce que se mece --- */
+.efecto-libertad {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(105deg, #33691e 0%, #7cb342 30%, #dcedc8 48%,
+                #7cb342 66%, #33691e 100%);
+    background-size: 220% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 .04em .18em rgba(102, 187, 106, .35));
+    transform-origin: 50% 90%;
+    animation: stk-libertad-balanceo 5.6s ease-in-out infinite;
+}
+/* --- espiral de humo subiendo desde la palabra --- */
+.efecto-libertad::before {
+    content: "";
+    position: absolute;
+    left: 30%;
+    bottom: -.2em;
+    width: .5em;
+    height: .9em;
+    border-radius: 50% 50% 40% 40%;
+    background: linear-gradient(180deg, rgba(220, 237, 200, .7),
+                rgba(124, 179, 66, 0));
+    filter: blur(.22em);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-libertad-humo 4.8s ease-out infinite;
+}
+/* --- manchas de luz entre las hojas --- */
+.efecto-libertad::after {
+    content: "";
+    position: absolute;
+    inset: -.4em -.6em;
+    background-image:
+        radial-gradient(circle, rgba(236, 244, 209, .55) 0 .18em,
+                rgba(236, 244, 209, 0) .4em),
+        radial-gradient(circle, rgba(165, 214, 116, .45) 0 .14em,
+                rgba(165, 214, 116, 0) .34em);
+    background-size: 32% 48%, 44% 60%;
+    opacity: .5;
+    filter: blur(.06em);
+    pointer-events: none;
+    animation: stk-libertad-trazo 6.2s linear infinite;
+}
+@keyframes stk-libertad-balanceo {
+    0%, 100% { transform: rotate(-1.6deg); background-position: 100% 0; }
+    50%      { transform: rotate(1.6deg); background-position: 0% 0; }
+}
+@keyframes stk-libertad-humo {
+    0%, 8%   { opacity: 0; transform: translate(0, 0) scale(.8); }
+    22%      { opacity: .7; }
+    62%      { opacity: .45; }
+    92%, 100% { opacity: 0; transform: translate(.7em, -1.5em) scale(1.6); }
+}
+@keyframes stk-libertad-trazo {
+    0%   { background-position: 0 0, 100% 100%; opacity: .4; }
+    50%  { opacity: .7; }
+    100% { background-position: 48% -30%, -44% 26%; opacity: .4; }
+}

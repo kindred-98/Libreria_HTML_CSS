@@ -1,0 +1,96 @@
+/* ================================================================
+   EFECTO 7: LAVA - roca volcánica con grietas incandescentes (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-lava">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-lava y los 2 @keyframes).
+
+   QUÉ HACE:
+     Las letras son un trozo de CORTEZA VOLCÁNICA: roca negra
+     con grietas naranjas y amarillas. Esas grietas se MUEVEN
+     lentamente (el magma fluye por debajo) y el conjunto
+     LATE con un resplandor de brasas que sube y baja de
+     intensidad de forma irregular. Fondo oscuro recomendado.
+
+   TÉCNICA: background-clip: text con repetición de grietas
+   (repeating-linear-gradient) + text-shadow animado.
+   ================================================================ */
+
+.efecto-lava {
+    display: inline-block;
+
+    background-image:
+        /* grieta incandescente: naranja con vena amarilla dentro */
+        repeating-linear-gradient(
+            65deg,
+            rgba(255, 60, 0, 0)   0 24px,
+            rgba(255, 109, 0, .95) 24px 27px,
+            rgba(255, 235, 59, .95) 27px 29px,
+            rgba(255, 60, 0, 0)   29px 48px
+        ),
+        /* roca: negra, porosa, con vetas más claras */
+        linear-gradient(
+            180deg,
+            #3d2817 0%,
+            #1c1108 45%,
+            #45290f 70%,
+            #170d06 100%
+        );
+
+    /* las letras contienen la roca y las grietas */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation:
+        lava-flujo 7s linear infinite,
+        lava-pulso 3.2s ease-in-out infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* El magma fluye por debajo de la corteza: la capa de grietas
+   se desplaza -106px en horizontal = 2 ciclos de 53px
+   (48px de mosaico / sen(65°) ≈ 53px) -> bucle invisible. */
+@keyframes lava-flujo {
+    0%   { background-position: 0 0, 0 0; }
+    100% { background-position: -106px 0, 0 0; }
+}
+
+/* Latido de brasas: la lava "respira" con chispazos */
+@keyframes lava-pulso {
+    0% {
+        text-shadow:
+            0 0 14px rgba(255, 87, 34, .55),
+            0 0 36px rgba(255, 152, 0, .3);
+    }
+    30% {
+        text-shadow:
+            0 0 22px rgba(255, 69, 0, .85),
+            0 0 55px rgba(255, 152, 0, .5);
+    }
+    55% {
+        text-shadow:
+            0 0 16px rgba(255, 111, 0, .65),
+            0 0 40px rgba(255, 193, 7, .35);
+    }
+    75% {
+        text-shadow:
+            0 0 26px rgba(255, 61, 0, .9),
+            0 0 60px rgba(255, 87, 34, .55);
+    }
+    100% {
+        text-shadow:
+            0 0 14px rgba(255, 87, 34, .55),
+            0 0 36px rgba(255, 152, 0, .3);
+    }
+}

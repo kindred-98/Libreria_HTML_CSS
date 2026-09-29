@@ -1,0 +1,79 @@
+/* ================================================================
+   EFECTO 66: GARRAS - tres tajos de garra barren el texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-garras">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-garras, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras reciben UN ZARPAZO: tres tajos diagonales
+      barren el texto con destello rojo y, en el mismo
+      instante, las letras se desalinean y se inclinan un
+      par de píxeles, como si las hubieran golpeado.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: ::before con repeating-linear-gradient en diagonal
+    (los tres cortes), ::after de resplandor radial y
+    transform por tramos en la propia clase.
+   ================================================================ */
+
+
+.efecto-garras {
+    display: inline-block;
+    position: relative;
+
+    color: #ffebee;
+    text-shadow: 0 0 8px rgba(244, 67, 54, .55),
+                 0 0 26px rgba(198, 40, 40, .4);
+
+    animation: mh-garras-golpe 3.4s cubic-bezier(.2, .8, .2, 1) infinite;
+}
+
+/* los tres cortes paralelos */
+.efecto-garras::before {
+    content: "";
+    position: absolute;
+    inset: -.18em -.3em;
+    background: repeating-linear-gradient(112deg,
+                rgba(255, 255, 255, 0) 0 .16em,
+                rgba(255, 235, 238, .95) .16em .23em,
+                rgba(255, 255, 255, 0) .23em .64em);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-garras-tajo 3.4s ease-out infinite;
+}
+
+/* resplandor rojo del impacto */
+.efecto-garras::after {
+    content: "";
+    position: absolute;
+    inset: -.4em -.55em;
+    background: radial-gradient(ellipse at 50% 50%,
+                rgba(255, 87, 34, .6), rgba(255, 87, 34, 0) 70%);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-garras-destello 3.4s ease-out infinite;
+}
+
+@keyframes mh-garras-golpe {
+    0%, 24%  { transform: translate(0, 0) skewX(0); }
+    30%      { transform: translate(-.05em, .03em) skewX(-6deg); }
+    36%      { transform: translate(.05em, -.02em) skewX(4deg); }
+    44%,100% { transform: translate(0, 0) skewX(0); }
+}
+@keyframes mh-garras-tajo {
+    0%, 26%  { opacity: 0; transform: translateX(-9%); }
+    32%      { opacity: 1; transform: translateX(0); }
+    58%      { opacity: .85; transform: translateX(7%); }
+    66%,100% { opacity: 0; transform: translateX(15%); }
+}
+@keyframes mh-garras-destello {
+    0%, 28%  { opacity: 0; }
+    34%      { opacity: .95; }
+    60%,100% { opacity: 0; }
+}

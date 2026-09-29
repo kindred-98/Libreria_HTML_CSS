@@ -1,0 +1,111 @@
+/* ================================================================
+   EFECTO 79: BESTIA - piel, cresta de púas y un ojo detrás (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-bestia">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-bestia, sus pseudo-elementos y los 4 @keyframes).
+
+   QUÉ HACE:
+      Las letras son LA BESTIA: una piel de pelo fino cruza
+      el texto en dos direcciones, una cresta de púas asoma
+      por el borde superior y, al lado, un ojo rojo se abre
+      y se cierra mientras el halo late con el corazón del
+      monstruo. Fondo oscuro recomendado.
+
+   TÉCNICA: tres background-image con background-clip: text (dos
+    tramas finísimas a 78 y -78 grados + degradado
+    carmesí) con background-position animado, cresta
+    ::before con clip-path en dientes de sierra y ojo
+    ::after con radial-gradient y scaleY.
+   ================================================================ */
+
+
+.efecto-bestia {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        repeating-linear-gradient(78deg,
+            rgba(0, 0, 0, .45) 0 .05em,
+            rgba(0, 0, 0, 0) .05em .28em),
+        repeating-linear-gradient(-78deg,
+            rgba(255, 190, 190, .3) 0 .05em,
+            rgba(255, 190, 190, 0) .05em .28em),
+        linear-gradient(180deg, #ff8a92 0%, #e5395a 36%, #a3162f 70%,
+                #4a0a17 100%);
+    background-size: .7em .7em, .7em .7em, 100% 100%;
+    background-position: 0 0, 0 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 12px rgba(239, 63, 84, .6));
+
+    animation:
+        mh-bestia-piel 4.4s linear infinite,
+        mh-bestia-latido 4.4s ease-in-out infinite;
+}
+
+/* cresta de púas sobre las letras */
+.efecto-bestia::before {
+    content: "";
+    position: absolute;
+    left: -.1em;
+    right: -.1em;
+    top: -.4em;
+    height: .36em;
+    background: linear-gradient(180deg, #ffe4e6 0%, #e5395a 70%, #a3162f 100%);
+    clip-path: polygon(0 100%, 0 70%, 5% 8%, 10% 70%, 15% 8%, 20% 70%,
+                       25% 8%, 30% 70%, 35% 8%, 40% 70%, 45% 8%, 50% 70%,
+                       55% 8%, 60% 70%, 65% 8%, 70% 70%, 75% 8%, 80% 70%,
+                       85% 8%, 90% 70%, 95% 8%, 100% 70%, 100% 100%);
+    opacity: .85;
+    pointer-events: none;
+    animation: mh-bestia-cresta 4.4s ease-in-out infinite;
+}
+
+/* el ojo rojo que se abre al lado del texto */
+.efecto-bestia::after {
+    content: "";
+    position: absolute;
+    left: -.72em;
+    top: 42%;
+    width: .8em;
+    height: .5em;
+    background: radial-gradient(ellipse at 50% 50%,
+                #ffffff 0 7%, #ff5252 26%, rgba(255, 23, 68, .75) 52%,
+                rgba(255, 23, 68, 0) 78%);
+    border-radius: 50%;
+    opacity: .7;
+    pointer-events: none;
+    animation: mh-bestia-ojo 4.4s ease-in-out infinite;
+}
+
+@keyframes mh-bestia-piel {
+    0%   { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: .7em -.35em, -.7em .35em, 0 0; }
+}
+@keyframes mh-bestia-latido {
+    0%, 100% { filter: drop-shadow(0 0 12px rgba(239, 63, 84, .6)); }
+    28%      { filter: drop-shadow(0 0 26px rgba(255, 82, 82, .95)); }
+    46%      { filter: drop-shadow(0 0 14px rgba(239, 63, 84, .65)); }
+    62%      { filter: drop-shadow(0 0 22px rgba(255, 82, 82, .9)); }
+    80%      { filter: drop-shadow(0 0 12px rgba(239, 63, 84, .6)); }
+}
+@keyframes mh-bestia-cresta {
+    0%, 100% { transform: translateY(0); opacity: .7; }
+    30%      { transform: translateY(-.06em); opacity: 1; }
+    58%      { transform: translateY(.03em); opacity: .75; }
+}
+@keyframes mh-bestia-ojo {
+    0%, 100% { opacity: .3; transform: scaleY(.25); }
+    26%      { opacity: .9; transform: scaleY(1); }
+    44%      { opacity: .95; transform: scaleY(1.1); }
+    60%      { opacity: .4; transform: scaleY(.45); }
+    74%      { opacity: .3; transform: scaleY(.25); }
+}

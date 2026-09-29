@@ -1,0 +1,107 @@
+/* ================================================================
+   EFECTO 96: POLVO - las letras se desmaterializan en polvo verde (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-polvo">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-polvo, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras se DESMATERIALIZAN en POLVO DE FLOO: se
+      apagan de golpe mientras una voluta verde estalla en su
+      sitio y, cuando vuelven, los rescoldos aún titilan.
+      Chimenea y destino, sin moverse de la palabra.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: intercalado de background-image con paradas en rgba()
+    dentro de @keyframes (se apagan las letras sin tocar
+    la opacidad del elemento, que apagaría los pseudos),
+    voluta ::before con radial-gradient que escala y
+    rescoldo ::after en steps.
+   ================================================================ */
+
+
+.efecto-polvo {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(168deg, rgba(185, 255, 232, 1) 0%,
+                rgba(100, 255, 210, 1) 32%, rgba(29, 233, 182, 1) 62%,
+                rgba(0, 191, 165, 1) 88%, rgba(185, 255, 232, 1) 100%);
+    background-size: 100% 160%;
+    background-position: 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 9px rgba(100, 255, 210, .55));
+
+    animation: hp-polvo-fantasma 4.2s ease-in-out infinite;
+}
+
+/* la voluta de polvo de Floo estallando */
+.efecto-polvo::before {
+    content: "";
+    position: absolute;
+    inset: -.5em -.7em;
+    background: radial-gradient(ellipse at 50% 50%,
+            rgba(160, 255, 220, .85) 0%, rgba(29, 233, 182, .5) 44%,
+            rgba(29, 233, 182, 0) 76%);
+    filter: blur(.1em);
+    opacity: 0;
+    transform: scale(.4);
+    pointer-events: none;
+    animation: hp-polvo-voluta 4.2s ease-out infinite;
+}
+
+/* rescoldos verdes que titilan */
+.efecto-polvo::after {
+    content: "";
+    position: absolute;
+    inset: -.3em -.45em;
+    background-image:
+        radial-gradient(circle at 12% 70%, rgba(185, 255, 232, .95) 0 .06em,
+                rgba(185, 255, 232, 0) .15em),
+        radial-gradient(circle at 88% 26%, rgba(185, 255, 232, .9) 0 .05em,
+                rgba(185, 255, 232, 0) .14em);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-polvo-rescoldo 4.2s steps(1, end) infinite;
+}
+
+@keyframes hp-polvo-fantasma {
+    0%, 38%  { background-image: linear-gradient(168deg,
+                rgba(185, 255, 232, 1) 0%, rgba(100, 255, 210, 1) 32%,
+                rgba(29, 233, 182, 1) 62%, rgba(0, 191, 165, 1) 88%,
+                rgba(185, 255, 232, 1) 100%); }
+    46%, 54% { background-image: linear-gradient(168deg,
+                rgba(185, 255, 232, 0) 0%, rgba(100, 255, 210, 0) 32%,
+                rgba(29, 233, 182, 0) 62%, rgba(0, 191, 165, 0) 88%,
+                rgba(185, 255, 232, 0) 100%); }
+    62%,100% { background-image: linear-gradient(168deg,
+                rgba(185, 255, 232, 1) 0%, rgba(100, 255, 210, 1) 32%,
+                rgba(29, 233, 182, 1) 62%, rgba(0, 191, 165, 1) 88%,
+                rgba(185, 255, 232, 1) 100%); }
+}
+@keyframes hp-polvo-voluta {
+    0%, 34%  { opacity: 0; transform: scale(.4); }
+    46%      { opacity: .95; transform: scale(1.1); }
+    58%      { opacity: .75; transform: scale(1.35); }
+    74%,100% { opacity: 0; transform: scale(1.55); }
+}
+@keyframes hp-polvo-rescoldo {
+    0%, 20%  { opacity: 0; }
+    24%      { opacity: .9; }
+    32%      { opacity: .2; }
+    40%      { opacity: .8; }
+    48%      { opacity: 0; }
+    76%      { opacity: 0; }
+    80%      { opacity: .85; }
+    88%      { opacity: .15; }
+    94%,100% { opacity: 0; }
+}

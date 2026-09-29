@@ -1,13 +1,13 @@
 # Biblioteca HTML y CSS
 
-Biblioteca estática y con búsqueda de demos independientes de interfaces hechos con HTML, CSS y JavaScript. El repositorio contiene actualmente **396 páginas de demos** repartidas en tres colecciones:
+Biblioteca estática y con búsqueda de demos independientes de interfaces hechos con HTML, CSS y JavaScript. El repositorio contiene actualmente **515 páginas de demos** repartidas en cuatro colecciones:
 
 - `GevendraAutorExterno/` — **116 demos** de terceros (botones, tarjetas, navegación, formularios, loaders, galerías, controles y efectos visuales). Ver *Procedencia y licencias*: su repositorio de origen no declara licencia, así que **no se pueden redistribuir**.
-- `DavokerDiseñador/` — creaciones de **davoker**: carpeta nueva, todavía vacía (0 demos).
+- `DavokerDiseñador/` — **119 efectos de texto** de **davoker** (7 temas: miscelánea, harry potter, stalker, monster hunter, star wars, matrix y the division), cada uno con su showcase, su `.zip` y sus instrucciones. Su repositorio es **MIT**, así que **ZIP habilitado**. La carpeta guarda también su **portada** (`davoker.html`, el showcase unificado de los 119), que se abre dentro de la rejilla al elegir a davoker en el filtro de autores, y fuera del catálogo.
 - `CreacionesNuevas/` — **248 demos** originales creados para este repositorio, cada uno con su propio archivo `LICENSE` MIT y **descarga ZIP habilitada**.
 - `creaciones-primium/` — **32 demos** organizados por categoría, en desarrollo. Sin `LICENSE` en la carpeta, todavía **sin descarga ZIP**.
 
-De los 396, **248 son descargables**. La aplicación web está separada en `Web/` y se divide en tres páginas —`index.html` (portada), `components.html` (listado y detalle) y `team-core.html` (equipo y donación)—; los demos originales se cargan directamente para mostrar vistas previas reales.
+De las 515, **367 son descargables**. La aplicación web está separada en `Web/` y se divide en tres páginas —`index.html` (portada), `components.html` (listado y detalle) y `team-core.html` (equipo y donación)—; los demos originales se cargan directamente para mostrar vistas previas reales.
 
 ## Características
 
@@ -48,7 +48,7 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 ```text
 .
 |-- GevendraAutorExterno/       # 116 demos de terceros (sin licencia: ZIP deshabilitado)
-|-- DavokerDiseñador/           # creaciones de davoker (vacía por ahora)
+|-- DavokerDiseñador/           # 119 efectos de texto de davoker (MIT, ZIP habilitado) + su portada davoker.html
 |-- CreacionesNuevas/           # 248 creaciones propias del autor (MIT, ZIP habilitado)
 |-- creaciones-primium/         # 32 creaciones en curso, por categorías
 |-- Web/

@@ -1,0 +1,72 @@
+/* ================================================================
+   EFECTO 62: FILO - la barra de filo del arma recorre las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-filo">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-filo, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son EL FILO DEL ARMA: un acero cepillado
+      sobre el que pasa una banda de colores (rojo, naranja,
+      amarillo, verde, azul y blanco), exactamente los
+      niveles de la barra de filo; al llegar al final, el
+      metal se apaga un instante y una chispa de afilado
+      salta en el borde. Fondo oscuro recomendado.
+
+   TÉCNICA: dos background-image con background-clip: text (acero
+    fijo + banda de colores con background-position
+    animado) y ::after de destello radial.
+   ================================================================ */
+
+
+.efecto-filo {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(94deg, rgba(255, 84, 71, 0) 0 26%,
+                #ff5252 33%, #ffb300 41%, #76ff03 49%,
+                #2979ff 57%, #f5f5f5 65%, rgba(245, 245, 245, 0) 74%),
+        linear-gradient(180deg, #f4f9fd 0%, #9fb2c2 38%,
+                #46586a 54%, #cfe0ec 76%, #798a98 100%);
+    background-size: 260% 100%, 100% 100%;
+    background-position: 100% 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 6px rgba(120, 190, 255, .35));
+
+    animation: mh-filo-borde 3.6s ease-in-out infinite;
+}
+
+/* chispa de afilado que salta en el borde derecho */
+.efecto-filo::after {
+    content: "";
+    position: absolute;
+    right: -.18em;
+    top: 4%;
+    width: .34em;
+    height: .34em;
+    background: radial-gradient(circle, #ffffff 0%, #ffe082 40%,
+                rgba(255, 224, 130, 0) 72%);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-filo-chispa 3.6s ease-out infinite;
+}
+
+@keyframes mh-filo-borde {
+    0%, 14%  { background-position: 100% 0, 0 0; }
+    58%, 70% { background-position: 0% 0, 0 0; }
+    100%     { background-position: 100% 0, 0 0; }
+}
+@keyframes mh-filo-chispa {
+    0%, 58%  { opacity: 0; transform: scale(.3); }
+    64%      { opacity: 1; transform: scale(1.1); }
+    78%,100% { opacity: 0; transform: scale(1.9); }
+}

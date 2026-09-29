@@ -1,0 +1,63 @@
+/* ================================================================
+   EFECTO 59: CONEJO BLANCO - un destello blanco salta sobre las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-conejo">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-conejo, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Sigue al CONEJO BLANCO: un punto de luz blanco
+      salta de una letra a otra en tres rebotes —como un
+      conejo— y, mientras pasa, las letras se encienden
+      más al reflejarlo. Fondo oscuro recomendado.
+
+   TÉCNICA: pseudo-elemento con degradado radial (el punto de
+    luz) cuyo left/translateY salta por tramos +
+    text-shadow sincronizado en la clase.
+   ================================================================ */
+
+
+.efecto-conejo {
+    display: inline-block;
+    position: relative;
+
+    color: #eceff1;
+    animation: mx-conejo-marca 4.4s ease-in-out infinite;
+}
+
+/* el punto de luz que salta */
+.efecto-conejo::after {
+    content: "";
+    position: absolute;
+    left: -18%;
+    top: 4%;
+    width: .6em;
+    height: .6em;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0 26%,
+                rgba(255, 255, 255, .6) 44%, rgba(255, 255, 255, 0) 72%);
+    filter: blur(.5px);
+    opacity: 0;
+    animation: mx-conejo 4.4s ease-out infinite;
+}
+
+@keyframes mx-conejo {
+    0%, 10%  { opacity: 0; left: -18%; transform: translateY(0) scale(.6); }
+    16%      { opacity: 1; left: -6%; transform: translateY(-34%) scale(1); }
+    34%      { opacity: 1; left: 28%; transform: translateY(28%) scale(.88); }
+    52%      { opacity: 1; left: 60%; transform: translateY(-26%) scale(1.06); }
+    70%      { opacity: 1; left: 94%; transform: translateY(18%) scale(.84); }
+    76%,100% { opacity: 0; left: 114%; transform: translateY(0) scale(.6); }
+}
+@keyframes mx-conejo-marca {
+    0%, 100% { text-shadow: 0 0 8px rgba(255, 255, 255, .22); }
+    34%      { text-shadow: 0 0 14px rgba(255, 255, 255, .5); }
+    52%      { text-shadow: 0 0 22px rgba(255, 255, 255, .9),
+                            0 0 46px rgba(210, 230, 255, .55); }
+    70%      { text-shadow: 0 0 12px rgba(255, 255, 255, .4); }
+}

@@ -1,0 +1,96 @@
+/* ================================================================
+   EFECTO 98: PROFECÍA - las letras se materializan del humo (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-profecia">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-profecia, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son la PROFECÍA: se materializan nítidas,
+      se disuelven en niebla ámbar y vuelven a enfocarse,
+      con una bruma que respira detrás y un humito que se
+      escapa por el borde. La habitación fría y el enjambre.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado ámbar con background-clip: text y blur +
+    opacidad animados juntos en el mismo keyframe,
+    bruma ::before con radial-gradient que respira y
+    humito ::after ascendente difuminado.
+   ================================================================ */
+
+
+.efecto-profecia {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(168deg, #fff3d6 0%, #ffd166 40%, #ffb300 70%,
+                #ffe0b2 100%);
+    background-size: 100% 160%;
+    background-position: 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 7px rgba(255, 209, 102, .55));
+
+    animation: hp-profecia-materializa 6s ease-in-out infinite;
+}
+
+/* bruma ámbar de la profecía */
+.efecto-profecia::before {
+    content: "";
+    position: absolute;
+    inset: -.5em -.7em;
+    background: radial-gradient(ellipse at 50% 55%,
+            rgba(255, 209, 102, .65) 0%, rgba(255, 179, 0, .35) 46%,
+            rgba(255, 179, 0, 0) 78%);
+    filter: blur(.12em);
+    pointer-events: none;
+    animation: hp-profecia-bruma 6s ease-in-out infinite;
+}
+
+/* el humito que se escapa por el borde */
+.efecto-profecia::after {
+    content: "";
+    position: absolute;
+    left: 30%;
+    bottom: -.3em;
+    width: .12em;
+    height: .6em;
+    background: linear-gradient(0deg, rgba(255, 243, 214, .85),
+            rgba(255, 243, 214, 0));
+    border-radius: 999px;
+    filter: blur(.06em);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-profecia-humito 6s ease-out infinite;
+}
+
+@keyframes hp-profecia-materializa {
+    0%, 30%  { filter: blur(0) drop-shadow(0 0 7px rgba(255, 209, 102, .55));
+               opacity: 1; }
+    44%      { filter: blur(.03em) drop-shadow(0 0 5px rgba(255, 209, 102, .4));
+               opacity: .82; }
+    58%      { filter: blur(.09em) drop-shadow(0 0 3px rgba(255, 209, 102, .3));
+               opacity: .5; }
+    74%      { filter: blur(.04em) drop-shadow(0 0 6px rgba(255, 209, 102, .5));
+               opacity: .85; }
+    90%,100% { filter: blur(0) drop-shadow(0 0 7px rgba(255, 209, 102, .55));
+               opacity: 1; }
+}
+@keyframes hp-profecia-bruma {
+    0%, 100% { opacity: .55; transform: scale(1); }
+    54%      { opacity: .95; transform: scale(1.1); }
+}
+@keyframes hp-profecia-humito {
+    0%, 46%  { opacity: 0; transform: translateY(0) translateX(0); }
+    56%      { opacity: .8; }
+    88%      { opacity: .2; }
+    100%     { opacity: 0; transform: translateY(-.5em) translateX(.3em); }
+}

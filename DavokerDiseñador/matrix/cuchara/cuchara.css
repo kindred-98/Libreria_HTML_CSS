@@ -1,0 +1,66 @@
+/* ================================================================
+   EFECTO 50: CUCHARA - la cuchara se dobla: no hay cuchara (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-cuchara">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-cuchara, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son una CUCHARA de plata: el bloque entero
+      se flexiona a un lado y a otro como si alguien la
+      doblara con la mente, mientras el brillo metálico
+      cambia de grosor y la línea de la mesa se arquea.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: background-clip: text (degradado metálico) +
+    transform con skewX/rotate en la clase y
+    pseudo-elemento de la línea arqueándose.
+   ================================================================ */
+
+
+.efecto-cuchara {
+    display: inline-block;
+    position: relative;
+    transform-origin: 50% 130%;
+
+    background-image: linear-gradient(180deg, #fbfdfe 0%, #cfd8dc 44%,
+                      #78909c 56%, #e0e7eb 78%, #90a4ae 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 12px rgba(176, 190, 197, .35);
+
+    animation: mx-cuchara 4s ease-in-out infinite;
+}
+
+/* la línea de la mesa se arquea con la cuchara */
+.efecto-cuchara::after {
+    content: "";
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    bottom: -.42em;
+    height: .1em;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(176,190,197,0),
+                #cfd8dc 22%, #ffffff 50%, #cfd8dc 78%,
+                rgba(176,190,197,0));
+    animation: mx-cuchara-mesa 4s ease-in-out infinite;
+}
+
+@keyframes mx-cuchara {
+    0%, 100% { transform: skewX(0) rotate(0); }
+    30%      { transform: skewX(-7deg) rotate(-3deg) scaleY(1.03); }
+    64%      { transform: skewX(6deg) rotate(2.5deg) scaleY(.97); }
+}
+@keyframes mx-cuchara-mesa {
+    0%, 100% { transform: scaleX(1) rotate(0); opacity: .75; }
+    30%      { transform: scaleX(.9) rotate(-1.4deg); opacity: 1; }
+    64%      { transform: scaleX(.93) rotate(1.2deg); opacity: .9; }
+}

@@ -1,0 +1,96 @@
+/* ================================================================
+   EFECTO 81: HUFFLEPUFF - las rayas de la casa de la miel se deslizan en el texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-hufflepuff">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-hufflepuff, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son la CORBATA DE HUFFLEPUFF: rayas negras y
+      amarillas que marchan lentas como avispa sobre oro miel,
+      un grano de polen da vueltas por el texto y una hebra de
+      MIEL se estira desde arriba y regresa. Paciencia y tierra.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: repeating-linear-gradient de rayas negras recortadas en
+    el texto con background-position animado, polen
+    ::before con radial-gradient y hebra de miel ::after
+    estirada con transform: scaleY.
+   ================================================================ */
+
+
+.efecto-hufflepuff {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        repeating-linear-gradient(180deg,
+            rgba(17, 14, 6, .92) 0 .34em, rgba(17, 14, 6, 0) .34em .78em),
+        linear-gradient(160deg, #ffe082 0%, #ffca28 45%, #f9a825 78%,
+                #ffca28 100%);
+    background-size: 100% .78em, 100% 100%;
+    background-position: 0 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(255, 202, 40, .4));
+
+    animation: hp-hufflepuff-cintas 5s linear infinite;
+}
+
+/* grano de polen que flota alrededor de la palabra */
+.efecto-hufflepuff::before {
+    content: "";
+    position: absolute;
+    left: 8%;
+    top: -30%;
+    width: .22em;
+    height: .22em;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff8e1 0%, #ffd54f 55%,
+                rgba(255, 213, 79, 0) 78%);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-hufflepuff-polen 5s ease-in-out infinite;
+}
+
+/* hebra de miel que se estira desde el borde superior */
+.efecto-hufflepuff::after {
+    content: "";
+    position: absolute;
+    left: 26%;
+    top: -.42em;
+    width: .13em;
+    height: .5em;
+    border-radius: 0 0 999px 999px;
+    background: linear-gradient(180deg, #ffd54f, #f9a825);
+    box-shadow: 0 .12em .1em -.05em rgba(249, 168, 37, .8);
+    transform: scaleY(0);
+    transform-origin: top center;
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-hufflepuff-miel 5s ease-in infinite;
+}
+
+@keyframes hp-hufflepuff-cintas {
+    0%   { background-position: 0 0, 0 0; }
+    100% { background-position: 0 .78em, 0 0; }
+}
+@keyframes hp-hufflepuff-polen {
+    0%, 6%    { opacity: 0; transform: translate(0, 0); }
+    18%       { opacity: .95; }
+    70%       { opacity: .8; }
+    86%,100%  { opacity: 0; transform: translate(4.2em, -1.1em); }
+}
+@keyframes hp-hufflepuff-miel {
+    0%, 40%   { opacity: 0; transform: scaleY(0); }
+    46%       { opacity: 1; transform: scaleY(.25); }
+    74%       { opacity: 1; transform: scaleY(1); }
+    90%,100%  { opacity: 0; transform: scaleY(.15); }
+}

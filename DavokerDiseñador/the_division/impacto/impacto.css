@@ -1,0 +1,70 @@
+/* ================================================================
+   EFECTO 24: IMPACTO - números de daño flotantes (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-impacto">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-impacto, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      El texto es un GOLPE CRÍTICO de The Division: cada
+      pocos segundos las letras se sacuden con un destello
+      brillante y, en ese instante, un número de daño
+      (-12.487) BROTA sobre el texto, asciende y se desvanece,
+      como los indicadores de daño del juego.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: background-clip: text + transform/filter del golpe y
+    ::after con el número flotante (content, opacity y
+    transform) con steps() y ease-out.
+   ================================================================ */
+
+
+.efecto-impacto {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(90deg, #fffde7, #ffd54f 50%, #ffab00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: impacto-golpe 2.8s steps(1, end) infinite;
+}
+
+/* el número de daño brota sobre el texto y asciende */
+.efecto-impacto::after {
+    content: "-12.487";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    font-size: .55em;
+    font-weight: 800;
+    white-space: nowrap;
+    color: #ffe082;
+    text-shadow: 0 0 8px rgba(255, 193, 7, .9);
+    opacity: 0;
+    animation: impacto-flota 2.8s ease-out infinite;
+}
+
+@keyframes impacto-golpe {
+    0%   { transform: translate(0, 0) scale(1); filter: brightness(1); }
+    4%   { transform: translate(-2px, 1px) scale(1.06);
+           filter: brightness(1.7); }
+    8%   { transform: translate(1px, -1px) scale(1.02);
+           filter: brightness(1.25); }
+    12%  { transform: translate(0, 0) scale(1); filter: brightness(1); }
+    100% { transform: translate(0, 0) scale(1); filter: brightness(1); }
+}
+@keyframes impacto-flota {
+    0%, 3% { opacity: 0; transform: translate(-50%, .3em); }
+    4%     { opacity: 1; transform: translate(-50%, .05em); }
+    25%    { opacity: 1; transform: translate(-50%, -.9em); }
+    32%    { opacity: 0; transform: translate(-50%, -1.2em); }
+    100%   { opacity: 0; transform: translate(-50%, -1.2em); }
+}

@@ -1,0 +1,109 @@
+/* ================================================================
+   EFECTO 20: GRIETA - la piedra se abre y late brasa (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-grieta">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-grieta y los 3 @keyframes).
+     No depende de ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:  tres animaciones simultáneas en bucle infinito
+     · grieta-grieta  → una grieta vertical (oscura, con brasa
+       naranja dentro) BARRA las letras de derecha a izquierda
+       y desaparece por el borde.
+     · grieta-brasa   → mientras la grieta cruza, las letras
+       laten con un resplandor de brasa por detrás.
+     · grieta-esquirla→ al abrirse del todo, un fragmento de
+       roca se desprende de una esquina y sale volando.
+
+   TÉCNICA: background-clip: text con dos capas (grieta con
+   background-size 300% que se desplaza + roca fija) y dos
+   pseudo-elementos (esquirla con clip-path, brasa radial).
+   Nada más.
+   ================================================================ */
+
+.efecto-grieta {
+    display: inline-block;
+    position: relative;
+    z-index: 0;                 /* la brasa queda tras las letras */
+
+    /* capa 1: la grieta (tierra oscura + veta de brasa) en un
+       degradado 105° = banda casi vertical; capa 2: la roca */
+    background-image:
+        linear-gradient(105deg,
+            transparent 0 45.5%,
+            rgba(20,14,10,.95) 46% 47.2%,
+            rgba(255,158,61,.9) 47.6% 48.3%,
+            rgba(20,14,10,.95) 48.7% 50%,
+            transparent 50.5%),
+        linear-gradient(180deg,
+            #bcaaa4 0%, #a1887f 30%, #795548 65%, #5d4037 100%);
+    background-size: 300% 100%, 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: grieta-grieta 5s ease-in-out infinite;
+}
+
+/* esquirla: fragmento de roca que se desprende */
+.efecto-grieta::before {
+    content: "";
+    position: absolute;
+    right: -.4em;
+    top: -.4em;
+    width: .55em;
+    height: .45em;
+    background: linear-gradient(135deg, #a1887f, #5d4037);
+    clip-path: polygon(0 0, 100% 0, 76% 58%, 28% 100%);
+    opacity: 0;
+    animation: grieta-esquirla 5s ease-in infinite;
+}
+
+/* brasa: resplandor caliente por detrás de la grieta */
+.efecto-grieta::after {
+    content: "";
+    position: absolute;
+    inset: -.35em;
+    background: radial-gradient(ellipse at 50% 55%,
+        rgba(255,111,0,.5) 0%, rgba(255,158,61,.22) 45%,
+        rgba(255,158,61,0) 72%);
+    z-index: -1;
+    opacity: 0;
+    animation: grieta-brasa 5s ease-in-out infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* La grieta entra por la derecha (pos 0% = fuera) y sale por la
+   izquierda (pos 100% = fuera): el cierre del bucle no se nota */
+@keyframes grieta-grieta {
+    0%, 14%  { background-position: 0% 0, 0 0; }
+    72%      { background-position: 100% 0, 0 0; }
+    100%     { background-position: 100% 0, 0 0; }
+}
+
+/* La esquirla espera a que la grieta termina de abrir */
+@keyframes grieta-esquirla {
+    0%, 56%   { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+    62%       { opacity: .95; transform: translate(.1em, -.3em) rotate(8deg); }
+    84%       { opacity: .75; transform: translate(.5em, -1.4em) rotate(46deg); }
+    94%, 100% { opacity: 0; transform: translate(.7em, -2em) rotate(64deg); }
+}
+
+/* La brasa late mientras la grieta cruza el texto */
+@keyframes grieta-brasa {
+    0%, 24% { opacity: 0; }
+    45%     { opacity: .95; }
+    62%     { opacity: .7; }
+    86%     { opacity: 0; }
+    100%    { opacity: 0; }
+}

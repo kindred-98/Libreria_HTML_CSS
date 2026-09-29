@@ -1,0 +1,91 @@
+/* ================================================================
+   EFECTO 104: BANDIDOS - las letras de la emboscada no dejan testigos (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-bandidos">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-bandidos, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son una EMBOSCADA DE BANDIDOS: acero sucio
+      que tiembla tenso, un fogonazo de escopeta estalla en
+      la esquina y un tajo rojo cruza la palabra. Sin
+      testimonios. Fondo oscuro recomendado.
+
+   TÉCNICA: degradado acero recortado en el texto con temblor
+    intermitente (translate en keyframes), fogonazo
+    radial ::before y tajo rojo ::after girado con
+    transform: scaleX.
+   ================================================================ */
+
+
+/* --- base: acero sucio que tiembla tenso --- */
+.efecto-bandidos {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(160deg, #3a3a3d 0%, #b8b5ad 34%, #eceae4 48%,
+                #8d8a83 62%, #2f2f31 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 .05em .12em rgba(0, 0, 0, .8));
+    animation: stk-bandidos-temblor 2.2s ease-in-out infinite;
+}
+/* --- fogonazo de escopeta en la esquina --- */
+.efecto-bandidos::before {
+    content: "";
+    position: absolute;
+    right: -.3em;
+    top: -.4em;
+    width: .8em;
+    height: .8em;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 246, 214, .95) 0%,
+                rgba(255, 196, 66, .7) 34%, rgba(255, 111, 0, 0) 70%);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-bandidos-fogonazo 3.6s ease-out infinite;
+}
+/* --- tajo rojo cruzando la palabra --- */
+.efecto-bandidos::after {
+    content: "";
+    position: absolute;
+    left: -8%;
+    top: 44%;
+    width: 116%;
+    height: .1em;
+    background: linear-gradient(90deg, rgba(211, 47, 47, 0),
+                #ff5252 22%, #ffebee 50%, #ff5252 78%,
+                rgba(211, 47, 47, 0));
+    transform: rotate(-14deg) scaleX(0);
+    transform-origin: left center;
+    filter: blur(.03em);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-bandidos-corte 3.6s ease-in infinite;
+}
+@keyframes stk-bandidos-temblor {
+    0%, 46%  { transform: translate(0, 0); }
+    50%      { transform: translate(-.05em, .03em); }
+    54%      { transform: translate(.04em, -.03em); }
+    58%      { transform: translate(-.03em, -.02em); }
+    62%, 100% { transform: translate(0, 0); }
+}
+@keyframes stk-bandidos-fogonazo {
+    0%, 58%  { opacity: 0; transform: scale(.4); }
+    62%      { opacity: .95; transform: scale(1.15); }
+    74%      { opacity: .5; transform: scale(1.35); }
+    86%, 100% { opacity: 0; transform: scale(1.5); }
+}
+@keyframes stk-bandidos-corte {
+    0%, 40%  { opacity: 0; transform: rotate(-14deg) scaleX(0); }
+    46%      { opacity: .9; transform: rotate(-14deg) scaleX(1); }
+    76%      { opacity: .9; transform: rotate(-14deg) scaleX(1); }
+    92%, 100% { opacity: 0; transform: rotate(-14deg) scaleX(1); }
+}

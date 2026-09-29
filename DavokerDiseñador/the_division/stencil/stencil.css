@@ -1,0 +1,87 @@
+/* ================================================================
+   EFECTO 34: STENCIL - estarcido militar con desgaste (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-stencil">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-stencil, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un ESTARCIDO MILITAR: pintura verde
+      ejército cortada por RANURAS verticales (como las
+      plantillas de munición) sobre un degradado que se
+      desplaza, un CAJÓN de estarcido que se dibuja por
+      etapas con saltos secos y una marca SHD-04 que
+      aparece junto a él.
+
+   TÉCNICA: background-clip: text sobre repeating-linear-gradient
+    con tramos transparentes (las ranuras de la
+    plantilla) y filter/background-position con saltos.
+   ================================================================ */
+
+
+.efecto-stencil {
+    display: inline-block;
+    position: relative;
+
+    /* la plantilla: pintura con RANURAS transparentes cada 1.3em */
+    background-image: repeating-linear-gradient(90deg,
+        #689f38 0 1.05em, rgba(104, 159, 56, 0) 1.05em 1.3em);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 5px rgba(165, 214, 167, .5);
+
+    animation: stencil-desgaste 5s linear infinite;
+}
+
+/* caja de estarcido que se dibuja por etapas */
+.efecto-stencil::before {
+    content: "";
+    position: absolute;
+    inset: -.3em -.55em;
+    border: 3px solid #689f38;
+    opacity: 0;
+    animation: stencil-cajon 5s steps(1, end) infinite;
+}
+
+/* marca de lote junto a la caja */
+.efecto-stencil::after {
+    content: "SHD-04";
+    position: absolute;
+    right: -.2em;
+    top: calc(100% + .25em);
+    font-size: .42em;
+    letter-spacing: .12em;
+    color: #9ccc65;
+    opacity: 0;
+    animation: stencil-marca 5s steps(1, end) infinite;
+}
+
+@keyframes stencil-desgaste {
+    0%   { background-position: 0 0; filter: brightness(1); }
+    46%  { background-position: -1.3em 0; filter: brightness(1); }
+    50%  { filter: brightness(1.55); }
+    54%  { filter: brightness(.85); }
+    58%  { filter: brightness(1.2); }
+    62%  { background-position: -1.3em 0; filter: brightness(1); }
+    100% { background-position: -1.3em 0; filter: brightness(1); }
+}
+@keyframes stencil-cajon {
+    0%, 8%    { opacity: 0; clip-path: inset(0 100% 100% 0); }
+    9%        { opacity: 1; clip-path: inset(0 100% 100% 0); }
+    25%       { opacity: 1; clip-path: inset(0 0 100% 0); }
+    50%       { opacity: 1; clip-path: inset(0 0 0 0); }
+    88%       { opacity: 1; clip-path: inset(0 0 0 0); }
+    89%, 100% { opacity: 0; clip-path: inset(0 0 0 0); }
+}
+@keyframes stencil-marca {
+    0%, 49%   { opacity: 0; }
+    50%, 88%  { opacity: .95; }
+    89%, 100% { opacity: 0; }
+}

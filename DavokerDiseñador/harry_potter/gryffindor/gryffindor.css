@@ -1,0 +1,77 @@
+/* ================================================================
+   EFECTO 80: GRYFFINDOR - las letras lucen el oro y el escarlata del león (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-gryffindor">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-gryffindor, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son el ESTANDARTE DE GRYFFINDOR: un degradado
+      escarlata y oro del león con un destello de ESPADA que
+      barre el texto de lado a lado y un halo de brasas que
+      respira detrás. Los colores de la casa del coraje.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado escarlata/oro con background-clip: text y
+    destello ::before en diagonal barrido, halo ::after
+    con radial-gradient difuminado.
+   ================================================================ */
+
+
+.efecto-gryffindor {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(118deg, #7f1010 0%, #d92b1f 28%, #ffcf4d 50%,
+                #d92b1f 72%, #7f1010 100%);
+    background-size: 220% 100%;
+    background-position: 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 .14em rgba(255, 190, 60, .55));
+}
+
+/* destello de la espada de Godric barriendo las letras */
+.efecto-gryffindor::before {
+    content: "";
+    position: absolute;
+    inset: -.1em -.4em;
+    background: linear-gradient(104deg,
+            rgba(255, 240, 190, 0) 40%, rgba(255, 248, 214, .95) 50%,
+            rgba(255, 213, 79, .55) 58%, rgba(255, 240, 190, 0) 66%);
+    transform: translateX(-150%);
+    pointer-events: none;
+    animation: hp-gryffindor-brillo 4.4s ease-in-out infinite;
+}
+
+/* halo de brasas del león alrededor del texto */
+.efecto-gryffindor::after {
+    content: "";
+    position: absolute;
+    inset: -.45em -.7em;
+    background: radial-gradient(ellipse at 50% 50%,
+            rgba(255, 205, 80, 0) 34%, rgba(255, 170, 50, .5) 58%,
+            rgba(217, 43, 31, .32) 74%, rgba(217, 43, 31, 0) 88%);
+    filter: blur(.12em);
+    pointer-events: none;
+    animation: hp-gryffindor-halo 4.4s ease-in-out infinite;
+}
+
+@keyframes hp-gryffindor-brillo {
+    0%, 56%  { transform: translateX(-150%); opacity: 0; }
+    64%      { opacity: 1; }
+    84%      { opacity: 1; }
+    92%,100% { transform: translateX(150%); opacity: 0; }
+}
+@keyframes hp-gryffindor-halo {
+    0%, 100% { opacity: .5; }
+    50%      { opacity: 1; }
+}

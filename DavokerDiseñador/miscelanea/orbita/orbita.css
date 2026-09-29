@@ -1,0 +1,116 @@
+/* ================================================================
+   EFECTO 12: ORBITA - planeta satélite girando alrededor del texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-orbita">Tu texto</span>
+
+   (Sin atributos extra: solo la clase. Se recomienda texto en
+   negrita y de 4 a 9 letras para que la órbita encaje bien.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-orbita y los 3 @keyframes).
+     No depende de ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:  tres animaciones simultáneas en bucle infinito
+     · orbita-giro    → un pequeño planeta anillado recorre una
+       órbita elíptica en 8 tramos: en la parte ALTA se esconde
+       por detrás de las letras (z-index: -1) y en la parte BAJA
+       pasa por delante.
+     · orbita-anillo  → el anillo de la órbita (elipse de borde
+       frío) late suavemente con un pulso de luz violeta.
+     · orbita-brillo  → un reflejo metálico cruza sin costuras el
+       degradado violeta-plateado de las letras.
+
+   TÉCNICA: background-clip: text con degradado de doble barrido
+   (bucle invisible) + dos pseudo-elementos (anillo con z-index -1
+   y planeta con z-index animado). Nada más.
+   ================================================================ */
+
+.efecto-orbita {
+    display: inline-block;
+    position: relative;
+    z-index: 0;                 /* ancla el anillo tras las letras */
+
+    /* metal frío teñido de violeta: espacio profundo. El degradado
+       repite su barrido dos veces para que el bucle del reflejo
+       sea invisible (background-repeat lo mosaica) */
+    background-image: linear-gradient(120deg,
+        #cfd4ff 0%, #8c9eff 14%, #eef0ff 25%, #8c9eff 36%,
+        #cfd4ff 50%,
+        #cfd4ff 50%, #8c9eff 64%, #eef0ff 75%, #8c9eff 86%,
+        #cfd4ff 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: orbita-brillo 6s linear infinite;
+}
+
+/* la elipse de la órbita: tamaño fijo en em (escala con la fuente)
+   y centrada en las letras; pasa SIEMPRE por detrás del texto */
+.efecto-orbita::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 7em;
+    height: 3em;
+    margin: -1.5em 0 0 -3.5em;
+    border: 2px solid rgba(140,158,255,.7);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(124,140,255,.45),
+                inset 0 0 8px rgba(124,140,255,.25);
+    z-index: -1;
+    animation: orbita-anillo 3s ease-in-out infinite;
+}
+
+/* el planeta: recorre la misma elipse (rx 3.5em, ry 1.5em) en
+   8 tramos exactos de la circunferencia paramétrica */
+.efecto-orbita::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: .58em;
+    height: .58em;
+    margin: -.29em 0 0 -.29em;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 30%,
+        #fff2c8 0%, #ffb347 42%, #c77800 78%, #6d4400 100%);
+    box-shadow: 0 0 9px rgba(255,179,71,.9);
+    animation: orbita-giro 3s linear infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* Reflejo: avanza un periodo exacto del mosaico en cada vuelta */
+@keyframes orbita-brillo {
+    0%   { background-position: 0 0; }
+    100% { background-position: 100% 0; }
+}
+
+/* El anillo respira con un pulso tenue */
+@keyframes orbita-anillo {
+    0%, 100% { opacity: .55; transform: scale(1) rotate(0deg); }
+    50%      { opacity: 1;   transform: scale(1.045) rotate(3deg); }
+}
+
+/* Órbita elíptica: el z-index cambia en las "laterales" para que
+   arriba pase por detrás y abajo por delante de las letras */
+@keyframes orbita-giro {
+    0%     { transform: translate(0, -1.5em)       scale(.9);   z-index: -1; }
+    12.5%  { transform: translate(2.47em, -1.06em) scale(.95);  z-index: -1; }
+    25%    { transform: translate(3.5em, 0)        scale(1);    z-index: -1; }
+    37.5%  { transform: translate(2.47em, 1.06em)  scale(1.05); z-index: -1; }
+    50%    { transform: translate(0, 1.5em)        scale(1.1);  z-index: 1; }
+    62.5%  { transform: translate(-2.47em, 1.06em) scale(1.05); z-index: 1; }
+    75%    { transform: translate(-3.5em, 0)       scale(1);    z-index: 1; }
+    87.5%  { transform: translate(-2.47em, -1.06em) scale(.95); z-index: 1; }
+    100%   { transform: translate(0, -1.5em)       scale(.9);   z-index: -1; }
+}

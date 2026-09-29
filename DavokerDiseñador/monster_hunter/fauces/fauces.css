@@ -1,0 +1,89 @@
+/* ================================================================
+   EFECTO 70: FAUCES - unas fauces cierran los dientes sobre el texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-fauces">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-fauces, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras están entre LAS FAUCES: dos filas de
+      dientes afilados entran desde arriba y desde abajo y
+      muerden el texto, que se encoge con el golpe. Después
+      se abren otra vez y empieza el ciclo.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: clip-path: polygon con dientes alternos para las dos
+    filas (una mirando abajo y otra arriba) y dos
+    keyframes de mordida en sentido opuesto sobre
+    ::before y ::after.
+   ================================================================ */
+
+
+.efecto-fauces {
+    display: inline-block;
+    position: relative;
+
+    color: #ffccbc;
+    text-shadow: 0 0 8px rgba(239, 83, 80, .5),
+                 0 0 24px rgba(183, 28, 28, .45);
+
+    animation: mh-fauces-temblor 3s ease-in-out infinite;
+}
+
+/* fila de dientes de arriba (muerde hacia abajo) */
+.efecto-fauces::before {
+    content: "";
+    position: absolute;
+    left: -.3em;
+    right: -.3em;
+    top: -.44em;
+    height: .44em;
+    background: linear-gradient(180deg, #eceff1, #90a4ae);
+    clip-path: polygon(0 0, 100% 0, 100% 0, 95% 100%, 90% 0, 85% 100%,
+                       80% 0, 75% 100%, 70% 0, 65% 100%, 60% 0, 55% 100%,
+                       50% 0, 45% 100%, 40% 0, 35% 100%, 30% 0, 25% 100%,
+                       20% 0, 15% 100%, 10% 0, 5% 100%, 0 0);
+    opacity: .9;
+    pointer-events: none;
+    animation: mh-fauces-arriba 3s ease-in-out infinite;
+}
+
+/* fila de dientes de abajo (muerde hacia arriba) */
+.efecto-fauces::after {
+    content: "";
+    position: absolute;
+    left: -.3em;
+    right: -.3em;
+    bottom: -.44em;
+    height: .44em;
+    background: linear-gradient(180deg, #90a4ae, #eceff1);
+    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 95% 0, 90% 100%,
+                       85% 0, 80% 100%, 75% 0, 70% 100%, 65% 0, 60% 100%,
+                       55% 0, 50% 100%, 45% 0, 40% 100%, 35% 0, 30% 100%,
+                       25% 0, 20% 100%, 15% 0, 10% 100%, 5% 0, 0 100%);
+    opacity: .9;
+    pointer-events: none;
+    animation: mh-fauces-abajo 3s ease-in-out infinite;
+}
+
+@keyframes mh-fauces-temblor {
+    0%, 44%  { transform: scale(1); }
+    52%      { transform: scale(.94); }
+    66%      { transform: scale(.96); }
+    84%,100% { transform: scale(1); }
+}
+@keyframes mh-fauces-arriba {
+    0%, 44%  { transform: translateY(0); }
+    52%, 66% { transform: translateY(.26em); }
+    84%,100% { transform: translateY(0); }
+}
+@keyframes mh-fauces-abajo {
+    0%, 44%  { transform: translateY(0); }
+    52%, 66% { transform: translateY(-.26em); }
+    84%,100% { transform: translateY(0); }
+}

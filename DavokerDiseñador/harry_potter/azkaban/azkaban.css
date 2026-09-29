@@ -1,0 +1,87 @@
+/* ================================================================
+   EFECTO 97: AZKABAN - las letras entre rejas frías de calabozo (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-azkaban">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-azkaban, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras están en CALABOZO: un banco de rejas frías
+      cruza el texto muy despacio, la luz de la celda baja y
+      sube sin llegarlo a recuperar del todo y un aliento
+      helado asciende entre las barras.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado pizarra con background-clip: text y
+    brightness animado, rejas ::before con repeating-
+    linear-gradient en tile de una barra y background-
+    position, aliento ::after ascendente difuminado.
+   ================================================================ */
+
+
+.efecto-azkaban {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(168deg, #90a4ae 0%, #607d8b 38%, #455a64 66%,
+                #78909c 100%);
+    background-size: 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .6));
+
+    animation: hp-azkaban-luz 7s ease-in-out infinite;
+}
+
+/* las rejas del calabozo pasando delante de la ventana */
+.efecto-azkaban::before {
+    content: "";
+    position: absolute;
+    inset: -.25em -.3em;
+    background-image: repeating-linear-gradient(90deg,
+            rgba(8, 10, 12, .88) 0 .17em,
+            rgba(8, 10, 12, 0) .17em .66em);
+    background-size: .66em 100%;
+    pointer-events: none;
+    animation: hp-azkaban-rejas 7s linear infinite;
+}
+
+/* aliento helado subiendo entre las barras */
+.efecto-azkaban::after {
+    content: "";
+    position: absolute;
+    left: 12%;
+    bottom: -.35em;
+    width: 34%;
+    height: .5em;
+    background: linear-gradient(0deg, rgba(226, 240, 247, .7),
+            rgba(226, 240, 247, 0));
+    filter: blur(.08em);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-azkaban-aliento 7s ease-out infinite;
+}
+
+@keyframes hp-azkaban-luz {
+    0%, 100% { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .6)) brightness(1); }
+    44%      { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .6)) brightness(.62); }
+    70%      { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .6)) brightness(.9); }
+}
+@keyframes hp-azkaban-rejas {
+    0%   { background-position: 0 0; }
+    100% { background-position: .66em 0; }
+}
+@keyframes hp-azkaban-aliento {
+    0%, 40%  { opacity: 0; transform: translateY(0) translateX(0); }
+    52%      { opacity: .75; }
+    86%      { opacity: .15; }
+    100%     { opacity: 0; transform: translateY(-.55em) translateX(.4em); }
+}

@@ -1,0 +1,116 @@
+/* ================================================================
+   EFECTO 16: MAREA - la línea de agua sube y baja por el texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-marea">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-marea y los 3 @keyframes).
+     No depende de ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:  tres animaciones simultáneas en bucle infinito
+     · marea-marea   → el texto está "seco" (arena clara) y el
+       agua azul SUBE por las letras con su espuma blanca hasta
+       sumergirlas por completo; luego la marea baja otra vez.
+     · marea-espuma  → una franja de espuma acompaña el nivel
+       del agua con exactitud (los mismos stops de keyframes).
+     · marea-burbujas→ burbujas suben por las letras mientras
+       están sumergidas (bucle sin costuras, de un periodo).
+
+   TÉCNICA: background-clip: text con degradado vertical grande
+   (background-position = marea) + pseudo de espuma + burbujas
+   en repeating-radial-gradient. Nada más.
+   ================================================================ */
+
+.efecto-marea {
+    display: inline-block;
+    position: relative;
+
+    /* arena clara arriba, espuma, agua azul abajo (180deg: el
+       primer stop queda en la parte alta de las letras) */
+    background-image: linear-gradient(180deg,
+        #efebe9 0 30%, #ffffff 33%, #4fc3f7 36%,
+        #0277bd 66%, #01579b 100%);
+    background-size: 100% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: marea-marea 6s ease-in-out infinite;
+}
+
+/* espuma: fina franja blanca que se apoya sobre la orilla */
+.efecto-marea::before {
+    content: "";
+    position: absolute;
+    left: -6%;
+    right: -6%;
+    top: 104%;
+    height: .3em;
+    background: linear-gradient(90deg,
+        transparent 0%, rgba(255,255,255,.95) 18%,
+        rgba(255,255,255,.9) 55%, rgba(255,255,255,.55) 78%,
+        transparent 100%);
+    border-radius: 50%;
+    filter: blur(.4px);
+    opacity: 0;
+    animation: marea-espuma 6s ease-in-out infinite;
+}
+
+/* burbujas: dos columnas de puntos que suben un periodo por
+   vuelta (la animación de transform la hace invisible el corte) */
+.efecto-marea::after {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 0;
+    bottom: -1em;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,.85) 0 1.6px,
+            rgba(255,255,255,0) 2.6px),
+        radial-gradient(circle, rgba(214,248,255,.7) 0 1.2px,
+            rgba(214,248,255,0) 2.2px);
+    background-size: 2.7em 1.1em, 1.6em 1.1em;
+    opacity: 0;
+    transform: translateY(0);
+    animation: marea-burbujas 6s ease-in-out infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* La marea: sube (0→40%), reposa (40→70%) y baja (70→100%);
+   el estado final ES el inicial, el bucle no corta nada */
+@keyframes marea-marea {
+    0%   { background-position: 0 0; }
+    40%  { background-position: 0 45%; }
+    70%  { background-position: 0 45%; }
+    100% { background-position: 0 0; }
+}
+
+/* La espuma va y viene con la orilla (mismos stops que arriba) */
+@keyframes marea-espuma {
+    0%    { top: 104%; opacity: 0; }
+    8%    { opacity: .95; }
+    40%   { top: 14%; opacity: .95; }
+    70%   { top: 14%; opacity: .95; }
+    92%   { opacity: .95; }
+    100%  { top: 104%; opacity: 0; }
+}
+
+/* Burbujas: suben un periodo exacto mientras hay agua; el
+   salto de vuelta ocurre con opacidad 0 */
+@keyframes marea-burbujas {
+    0%    { opacity: 0; transform: translateY(0); }
+    20%   { opacity: .9; }
+    70%   { opacity: .9; }
+    96%   { opacity: 0; }
+    100%  { opacity: 0; transform: translateY(-1.1em); }
+}

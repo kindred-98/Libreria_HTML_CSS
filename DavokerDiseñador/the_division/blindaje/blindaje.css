@@ -1,0 +1,80 @@
+/* ================================================================
+   EFECTO 30: BLINDAJE - placas de blindaje con cinta (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-blindaje">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-blindaje, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son PLACAS DE BLINDAJE: acero metálico con
+      una malla de trama que se desliza sobre los glifos,
+      destellos de CIERRE SECO cada cierto tiempo (como una
+      placa encajando) y una CINTA DE PRECAUCIÓN amarilla y
+      negra que barre el texto en diagonal.
+      Fondo oscuro o gris humo recomendado.
+
+   TÉCNICA: background-clip: text con tres capas (malla diagonal +
+    metal) y background-position/filter animados;
+    ::before es la cinta con rayas propias.
+   ================================================================ */
+
+
+.efecto-blindaje {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        /* trama diagonal del acero */
+        repeating-linear-gradient(60deg, rgba(255, 255, 255, .16) 0 3px,
+                          rgba(255, 255, 255, 0) 3px 9px),
+        repeating-linear-gradient(-60deg, rgba(0, 0, 0, .22) 0 3px,
+                          rgba(0, 0, 0, 0) 3px 9px),
+        /* metal gris */
+        linear-gradient(180deg, #eceff1, #90a4ae 55%, #546e7a);
+    background-size: auto, auto, 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .45);
+
+    animation: blindaje-malla 6s linear infinite,
+               blindaje-cierre 4.4s steps(1, end) infinite;
+}
+
+/* cinta de precaución que cruza el texto en diagonal */
+.efecto-blindaje::before {
+    content: "";
+    position: absolute;
+    left: -.3em;
+    right: -.3em;
+    top: 34%;
+    height: .34em;
+    background: repeating-linear-gradient(-45deg, #ffd600 0 8px,
+                #212121 8px 16px);
+    transform: skewY(-4deg);
+    opacity: .9;
+    animation: blindaje-cinta 3.2s linear infinite;
+}
+
+@keyframes blindaje-malla {
+    0%   { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 10.3923px 0, -10.3923px 0, 0 0; }
+}
+@keyframes blindaje-cierre {
+    0%   { filter: brightness(1); }
+    88%  { filter: brightness(1); }
+    90%  { filter: brightness(1.9); }
+    93%  { filter: brightness(1.45); }
+    96%  { filter: brightness(1.75); }
+    100% { filter: brightness(1); }
+}
+@keyframes blindaje-cinta {
+    0%   { background-position: 0 0; }
+    100% { background-position: -22.627px 0; }
+}

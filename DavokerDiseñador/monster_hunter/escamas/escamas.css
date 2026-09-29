@@ -1,0 +1,74 @@
+/* ================================================================
+   EFECTO 67: ESCAMAS - malla de escamas metálicas sobre las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-escamas">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-escamas, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son UNA CORAZA: dos tramas diagonales en
+      cruz dibujan una malla de escamas dentro del texto y
+      una luz la recorre, como la armadura de un monstruo
+      cuando gira en la luz del campamento.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: tres background-image con background-clip: text (dos
+    tramas a 58 y -58 grados con background-size fijo y
+    un degradado base) y background-position animado en
+    bucle cerrado.
+   ================================================================ */
+
+
+.efecto-escamas {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        repeating-linear-gradient(58deg,
+            rgba(255, 255, 255, .17) 0 .12em,
+            rgba(255, 255, 255, 0) .12em .44em),
+        repeating-linear-gradient(-58deg,
+            rgba(0, 0, 0, .34) 0 .12em,
+            rgba(0, 0, 0, 0) .12em .44em),
+        linear-gradient(180deg, #4db6ac 0%, #00897b 44%, #004d40 100%);
+    background-size: 1.2em 1.2em, 1.2em 1.2em, 100% 100%;
+    background-position: 0 0, 0 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 7px rgba(0, 230, 180, .45));
+
+    animation: mh-escamas-malla 5s linear infinite;
+}
+
+/* destello que recorre la coraza */
+.efecto-escamas::after {
+    content: "";
+    position: absolute;
+    left: -22%;
+    top: 38%;
+    width: 42%;
+    height: 28%;
+    background: linear-gradient(90deg, transparent,
+                rgba(255, 255, 255, .8) 50%, transparent);
+    filter: blur(.1em);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-escamas-brillo 5s ease-in-out infinite;
+}
+
+@keyframes mh-escamas-malla {
+    0%   { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 1.2em .6em, -1.2em -.6em, 0 0; }
+}
+@keyframes mh-escamas-brillo {
+    0%, 58%  { opacity: 0; transform: translateX(0); }
+    66%      { opacity: .95; transform: translateX(170%); }
+    86%,100% { opacity: 0; transform: translateX(340%); }
+}

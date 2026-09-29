@@ -1,0 +1,66 @@
+/* ================================================================
+   EFECTO 10: GELATINA - gominola que rebota (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-gelatina">Tu texto</span>
+
+   (Sin atributos extra: solo la clase. Recomendado: negrita
+   y tamaño medio/grande.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-gelatina y el
+     @keyframes gelatina-bote).
+
+   QUÉ HACE:
+     El texto se comporta como una GOMINOLA recién sacada
+     del paquete: se aplasta al caer, se estira al rebotar
+     y va amortiguando el movimiento sobre su línea de
+     base, en bucle infinito. Usa un relleno de caramelo
+     (rosa → naranja) con brillo.
+
+   TÉCNICA: transform: scale() con transform-origin abajo
+   + background-clip: text para el relleno de caramelo.
+   ================================================================ */
+
+.efecto-gelatina {
+    display: inline-block;      /* imprescindible: el bote es un transform */
+
+    /* el anclaje está abajo: se aplasta contra la línea base */
+    transform-origin: 50% 100%;
+
+    /* relleno de caramelo */
+    background-image: linear-gradient(
+        180deg,
+        #ffd1e3 0%,
+        #ff80ab 45%,
+        #ff6d3d 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    /* brillo dulce */
+    text-shadow: 0 4px 14px rgba(255, 105, 135, .45);
+
+    animation: gelatina-bote 1.4s ease-in-out infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* Rebote amortiguado: fuerte al principio y cada vez más suave,
+   como si la gominola estuviera asentándose. */
+@keyframes gelatina-bote {
+    0%, 100% { transform: scale(1, 1); }         /* reposo */
+    12%      { transform: scale(1.12, 0.86); }   /* aplasta al caer */
+    24%      { transform: scale(0.92, 1.14); }   /* se estira al subir */
+    36%      { transform: scale(1.06, 0.94); }   /* aplasta 2 */
+    48%      { transform: scale(0.97, 1.05); }   /* estira 2 */
+    60%      { transform: scale(1.02, 0.98); }   /* aplasta 3 */
+    74%      { transform: scale(0.995, 1.01); }  /* casi quieto */
+    88%      { transform: scale(1.005, 0.995); } /* micro-rebote */
+}

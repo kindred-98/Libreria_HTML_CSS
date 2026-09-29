@@ -1,0 +1,87 @@
+/* ================================================================
+   EFECTO 69: PARÁLISIS - tirones eléctricos congelan el texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-paralisis">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-paralisis, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras se PARALIZAN: el texto da tirones a saltos
+      (steps, sin interpolar) mientras dos rayos con dientes
+      se encienden y apagan por encima y por debajo. La
+      descarga se ve seca, como un calambre.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: steps(1, end) tanto en el tiro del texto como en los
+    rayos: los valores saltan de golpe; clip-path con
+    polígono en dientes dibuja los dos rayos.
+   ================================================================ */
+
+
+.efecto-paralisis {
+    display: inline-block;
+    position: relative;
+
+    color: #fff9c4;
+    text-shadow: 0 0 8px rgba(255, 235, 59, .75),
+                 0 0 24px rgba(255, 193, 7, .5);
+
+    animation: mh-paralisis-tiron 1.8s steps(1, end) infinite;
+}
+
+/* rayo de arriba (los dientes apuntan hacia abajo) */
+.efecto-paralisis::before {
+    content: "";
+    position: absolute;
+    left: -.32em;
+    right: -.32em;
+    top: -.36em;
+    height: .3em;
+    background: linear-gradient(180deg, #fffde7, #ffca28);
+    clip-path: polygon(0 0, 100% 0, 100% 0, 95% 100%, 90% 0, 85% 100%,
+                       80% 0, 75% 100%, 70% 0, 65% 100%, 60% 0, 55% 100%,
+                       50% 0, 45% 100%, 40% 0, 35% 100%, 30% 0, 25% 100%,
+                       20% 0, 15% 100%, 10% 0, 5% 100%, 0 0);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-paralisis-chispa 1.8s steps(1, end) infinite;
+}
+
+/* rayo de abajo (los dientes apuntan hacia arriba) */
+.efecto-paralisis::after {
+    content: "";
+    position: absolute;
+    left: -.32em;
+    right: -.32em;
+    bottom: -.36em;
+    height: .3em;
+    background: linear-gradient(180deg, #ffca28, #fffde7);
+    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 95% 0, 90% 100%,
+                       85% 0, 80% 100%, 75% 0, 70% 100%, 65% 0, 60% 100%,
+                       55% 0, 50% 100%, 45% 0, 40% 100%, 35% 0, 30% 100%,
+                       25% 0, 20% 100%, 15% 0, 10% 100%, 5% 0, 0 100%);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-paralisis-chispa 1.8s steps(1, end) infinite;
+    animation-delay: -.9s;
+}
+
+@keyframes mh-paralisis-tiron {
+    0%, 100% { transform: translate(0, 0); }
+    14%      { transform: translate(-.07em, .03em); }
+    28%      { transform: translate(.06em, -.04em); }
+    42%      { transform: translate(-.04em, -.03em); }
+    56%      { transform: translate(.05em, .04em); }
+    70%      { transform: translate(0, 0); }
+}
+@keyframes mh-paralisis-chispa {
+    0%, 42%  { opacity: 0; }
+    46%, 64% { opacity: 1; }
+    68%, 76% { opacity: .35; }
+    80%,100% { opacity: 0; }
+}

@@ -1,0 +1,102 @@
+/* ================================================================
+   EFECTO 78: EMBESTIDA - las letras se lanzan y golpean (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-embestida">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-embestida, sus pseudo-elementos y los 4 @keyframes).
+
+   QUÉ HACE:
+      Las letras PREPARAN LA CARGA: se lanzan hacia delante
+      inclinándose, dejan estelas horizontales detrás y, al
+      impactar, un destello blanco se abre por el borde
+      mientras las rayas del metal siguen corriendo. El golpe
+      de la embestida, letra por letra.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: repeating-linear-gradient de rayas con background-clip:
+    text y su propio background-position animado, dos
+    animaciones en la clase (transform de carga + rayas),
+    estelas ::before con skewX y destello ::after con
+    radial-gradient.
+   ================================================================ */
+
+
+.efecto-embestida {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        repeating-linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0 .34em,
+            rgba(255, 235, 230, .7) .34em .44em),
+        linear-gradient(96deg, #ffcdd2 0%, #ef5350 32%, #c62828 64%,
+                #5d1010 100%);
+    background-size: 2em 100%, 100% 100%;
+    background-position: 0 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 9px rgba(239, 83, 80, .6));
+
+    animation:
+        mh-embestida-carga 2.8s cubic-bezier(.2, .9, .2, 1) infinite,
+        mh-embestida-rayas 2.8s linear infinite;
+}
+
+/* estelas de aire que quedan atrás */
+.efecto-embestida::before {
+    content: "";
+    position: absolute;
+    left: -46%;
+    top: 12%;
+    width: 54%;
+    height: 76%;
+    background: repeating-linear-gradient(90deg,
+                rgba(255, 138, 128, 0) 0 .18em,
+                rgba(255, 235, 230, .8) .18em .3em);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-embestida-estela 2.8s ease-out infinite;
+}
+
+/* destello del impacto */
+.efecto-embestida::after {
+    content: "";
+    position: absolute;
+    inset: -.5em -.7em;
+    background: radial-gradient(ellipse at 74% 50%,
+                rgba(255, 255, 255, .95) 0%, rgba(255, 87, 71, .6) 34%,
+                rgba(198, 40, 40, 0) 72%);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-embestida-impacto 2.8s ease-out infinite;
+}
+
+@keyframes mh-embestida-carga {
+    0%, 26%  { transform: translateX(0) skewX(0); }
+    46%      { transform: translateX(1.1em) skewX(-9deg); }
+    58%      { transform: translateX(.9em) skewX(-6deg); }
+    76%,100% { transform: translateX(0) skewX(0); }
+}
+@keyframes mh-embestida-rayas {
+    0%, 26%  { background-position: 0 0, 0 0; }
+    58%      { background-position: -2em 0, 0 0; }
+    100%     { background-position: -4em 0, 0 0; }
+}
+@keyframes mh-embestida-estela {
+    0%, 28%  { opacity: 0; transform: translateX(6%) skewX(-16deg); }
+    40%      { opacity: .95; transform: translateX(0) skewX(-16deg); }
+    64%      { opacity: .6; transform: translateX(-14%) skewX(-16deg); }
+    80%,100% { opacity: 0; transform: translateX(-26%) skewX(-16deg); }
+}
+@keyframes mh-embestida-impacto {
+    0%, 46%  { opacity: 0; transform: scale(.6); }
+    56%      { opacity: 1; transform: scale(1); }
+    78%,100% { opacity: 0; transform: scale(1.7); }
+}

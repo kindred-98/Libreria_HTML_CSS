@@ -1,0 +1,85 @@
+/* ================================================================
+   EFECTO 116: TORMENTA PSI - las letras psi parpadean con el zumbido (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-tormenta">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-tormenta, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son LA TORMENTA PSI: violeta rayado que
+      PARPADEA a saltos fijos como una pantalla averiada, la
+      AURA psi respira detrás del texto y el RUIDO salta sin
+      avisar. Fondo oscuro recomendado.
+
+   TÉCNICA: rayas diagonales recortadas en el texto con
+    animation steps(1, end) para cortar el parpadeo, aura
+    ::before con radial-gradient y ruido ::after que
+    salta de sitio también a saltos fijos.
+   ================================================================ */
+
+
+/* --- base: rayas psi que parpadean a saltos fijos --- */
+.efecto-tormenta {
+    display: inline-block;
+    position: relative;
+    background-image:
+        repeating-linear-gradient(112deg, rgba(20, 10, 30, .6) 0 .24em,
+                rgba(20, 10, 30, 0) .24em .62em),
+        linear-gradient(160deg, #4a2a68 0%, #ce93d8 36%, #f8e7fb 52%,
+                #8e5bb5 70%, #2a1440 100%);
+    background-size: .62em 100%, 100% 100%;
+    background-position: 0 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 .4em rgba(206, 147, 216, .55));
+    animation: stk-tormenta-parpadeo 1.8s steps(1, end) infinite;
+}
+/* --- aura psi respirando tras las letras --- */
+.efecto-tormenta::before {
+    content: "";
+    position: absolute;
+    inset: -.45em -.7em;
+    border-radius: .5em;
+    background: radial-gradient(ellipse at 50% 50%,
+                rgba(206, 147, 216, .6) 0%, rgba(90, 40, 130, .35) 55%,
+                transparent 80%);
+    filter: blur(.35em);
+    opacity: .35;
+    pointer-events: none;
+    animation: stk-tormenta-aura 3.2s ease-in-out infinite;
+}
+/* --- ruido de la tormenta: salta sin transición --- */
+.efecto-tormenta::after {
+    content: "";
+    position: absolute;
+    inset: -.3em -.5em;
+    background-image:
+        repeating-linear-gradient(90deg, rgba(248, 231, 251, .55) 0 .05em,
+                rgba(248, 231, 251, 0) .05em .16em),
+        repeating-linear-gradient(180deg, rgba(206, 147, 216, .4) 0 .04em,
+                rgba(206, 147, 216, 0) .04em .13em);
+    background-size: 100% 40%, 100% 100%;
+    background-position: 0 20%, 0 0;
+    opacity: .3;
+    pointer-events: none;
+    animation: stk-tormenta-ruido 1.8s steps(1, end) infinite;
+}
+@keyframes stk-tormenta-parpadeo {
+    0%, 49%   { opacity: 1; }
+    50%, 100% { opacity: .55; }
+}
+@keyframes stk-tormenta-aura {
+    0%, 100% { opacity: .3; transform: scale(.98); }
+    50%      { opacity: .7; transform: scale(1.06); }
+}
+@keyframes stk-tormenta-ruido {
+    0%, 49%   { background-position: 0 20%, 0 0; opacity: .3; }
+    50%, 100% { background-position: 40% 60%, 0 3%; opacity: .55; }
+}

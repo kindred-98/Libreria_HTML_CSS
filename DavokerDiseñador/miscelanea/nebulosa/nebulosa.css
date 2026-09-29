@@ -1,0 +1,239 @@
+/* ================================================================
+   EFECTO 11: NEBULOSA - ventana al espacio profundo (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-nebulosa">Tu texto</span>
+
+   (Sin atributos extra: solo la clase. Recomendado texto en
+   negrita y fondo oscuro para apreciar bien las estrellas.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-nebulosa y los 2
+     @keyframes). No depende de ningún otro estilo ni de
+     librerías externas.
+
+   QUÉ HACE:  dos animaciones simultáneas en bucle infinito
+     · nebulosa-viaje (16 s) →
+       1. tres capas de gas (magenta, cian y violeta) fluyen
+          hacia la derecha a distinta velocidad. Cada gas es
+          un mosaico de 640 / 560 / 480 px y se desplaza
+          exactamente un mosaico: así el corte del bucle no
+          se nota.
+       2. el doble campo de estrellas (rejillas de 36px y
+          47px) se mueve mucho más despacio = parallax de
+          fondo, como si la nave flotara.
+       3. a los 3,2 s de cada vuelta una ESTRELLA FUGAZ
+          cruza el texto en diagonal hacia arriba y a la
+          derecha (0,48 s de recorrido, ~0,24 s visible).
+          Su estela está pintada en el centro de una tesela
+          del 300% y, en reposo, aparcada en una esquina
+          fuera del área visible: por eso se ve con cualquier
+          tamaño de texto y el bucle no se nota.
+     · nebulosa-titileo (4,4 s) → las dos rejillas de
+          estrellas suben y bajan de brillo de forma
+          ALTERNADA e irregular (cada una titila con su
+          propio ritmo, como las estrellas de verdad).
+
+   TÉCNICA: background-clip: text + listas de background-position
+   (7 capas, una entrada por capa) y background-image animadas.
+   ================================================================ */
+
+.efecto-nebulosa {
+    display: inline-block;
+
+    background-image:
+        /* 1 · estela de la estrella fugaz (tesela del 300%) */
+        radial-gradient(ellipse 110px 4px at 50% 50%,
+            rgba(255, 255, 255, .95)  0%,
+            rgba(174, 216, 255, .70) 38%,
+            rgba(120, 160, 255, .22) 62%,
+            rgba(120, 160, 255, 0)   80%),
+        /* 2 · gas MAGENTA (mosaico de 640px) */
+        radial-gradient(ellipse 240px 42% at 300px 38%,
+            rgba(255, 70, 190, .75)  0%,
+            rgba(255, 70, 190, .40) 45%,
+            rgba(255, 70, 190, 0)   76%),
+        /* 3 · gas CIAN (mosaico de 560px) */
+        radial-gradient(ellipse 220px 40% at 340px 66%,
+            rgba(0, 215, 255, .70)   0%,
+            rgba(0, 215, 255, .38)  45%,
+            rgba(0, 215, 255, 0)    76%),
+        /* 4 · gas VIOLETA (mosaico de 480px) */
+        radial-gradient(ellipse 260px 45% at 240px 45%,
+            rgba(130, 70, 255, .80)  0%,
+            rgba(130, 70, 255, .42) 45%,
+            rgba(130, 70, 255, 0)   78%),
+        /* 5 · estrellas FINAS (rejilla de 36px) */
+        radial-gradient(circle 1.7px at 50% 50%,
+            rgba(255, 255, 255, 1)    0%,
+            rgba(255, 255, 255, .85) 45%,
+            rgba(255, 255, 255, 0)   75%),
+        /* 6 · estrellas BRILLANTES (rejilla de 47px) */
+        radial-gradient(circle 2.8px at 45% 55%,
+            rgba(255, 255, 255, 1)    0%,
+            rgba(226, 240, 255, .9)  45%,
+            rgba(226, 240, 255, 0)   78%),
+        /* 7 · vacío profundo */
+        linear-gradient(180deg,
+            #0e0a3c 0%,
+            #1d1563 55%,
+            #100b44 100%);
+
+    background-size:
+        300% 300%,        /* tesela de la estela    */
+        640px 100%,       /* gas magenta            */
+        560px 100%,       /* gas cian               */
+        480px 100%,       /* gas violeta            */
+        36px 36px,        /* estrellas finas        */
+        47px 47px,        /* estrellas brillantes   */
+        100% 100%;        /* vacío                  */
+
+    /* solo el gas y las estrellas repiten; la estela y el
+       vacío ocupan exactamente su tesela */
+    background-repeat: no-repeat, repeat, repeat, repeat, repeat, repeat, no-repeat;
+
+    /* posición inicial = fotograma 0% de nebulosa-viaje */
+    background-position: 100% 0%, 0 0, 0 0, 0 0, 0 0, 13px 7px, 0 0;
+
+    /* las capas se pintan SOLO dentro de las letras */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    /* halo fijo de luz estelar alrededor del texto */
+    text-shadow:
+        0 0 12px rgba(110, 160, 255, .35),
+        0 0 30px rgba(130, 90, 255, .25);
+
+    animation:
+        nebulosa-viaje 16s linear infinite,
+        nebulosa-titileo 4.4s linear infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES · VIAJE (gas + parallax + estrella fugaz)
+   Una línea por capa, en el MISMO orden que background-image:
+     1 estela · 2 magenta · 3 cian · 4 violeta ·
+     5 estrellas finas · 6 estrellas brillantes · 7 vacío
+   ================================================================ */
+
+@keyframes nebulosa-viaje {
+    /* gas y estrellas en el origen; estela aparcada arriba-dcha */
+    0% {
+        background-position:
+            100% 0%,
+            0 0, 0 0, 0 0,
+            0 0,
+            13px 7px,
+            0 0;
+    }
+    /* 20% = 3,2 s: la estela sigue aparcada, el gas avanza */
+    20% {
+        background-position:
+            100% 0%,
+            128px 0, 112px 0, 96px 0,
+            36px 0,
+            22.4px -2.4px,
+            0 0;
+    }
+    /* 23% = 3,68 s: la estela acaba de cruzar (20% → 23%:
+       sube a la derecha y queda aparcada abajo-izda) */
+    23% {
+        background-position:
+            0% 100%,
+            147.2px 0, 128.8px 0, 110.4px 0,
+            41.4px 0,
+            23.81px -3.81px,
+            0 0;
+    }
+    /* cierre exacto del bucle:
+       · magenta  640px = 1 mosaico
+       · cian     560px = 1 mosaico
+       · violeta  480px = 1 mosaico
+       · finas    180px = 5 mosaicos de 36px
+       · brillantes (60-13, -40-7) = (47, -47) = 1 mosaico
+       · estela   0% 100% → 100% 0%: aparcada en los dos
+         extremos, así que el salto no se ve */
+    100% {
+        background-position:
+            0% 100%,
+            640px 0, 560px 0, 480px 0,
+            180px 0,
+            60px -40px,
+            0 0;
+    }
+}
+
+
+/* ================================================================
+   KEYFRAMES · TITILEO (brillo de las dos rejillas de estrellas)
+   Se anima background-image ENTERA (una lista por capa): las capas
+   1-4 y 7 son idénticas en todos los fotogramas y solo cambian
+   los alpha de las capas 5 y 6, que alternan su brillo.
+   ================================================================ */
+
+@keyframes nebulosa-titileo {
+    0% {
+        background-image:
+            radial-gradient(ellipse 110px 4px at 50% 50%, rgba(255,255,255,.95) 0%, rgba(174,216,255,.70) 38%, rgba(120,160,255,.22) 62%, rgba(120,160,255,0) 80%),
+            radial-gradient(ellipse 240px 42% at 300px 38%, rgba(255,70,190,.75) 0%, rgba(255,70,190,.40) 45%, rgba(255,70,190,0) 76%),
+            radial-gradient(ellipse 220px 40% at 340px 66%, rgba(0,215,255,.70) 0%, rgba(0,215,255,.38) 45%, rgba(0,215,255,0) 76%),
+            radial-gradient(ellipse 260px 45% at 240px 45%, rgba(130,70,255,.80) 0%, rgba(130,70,255,.42) 45%, rgba(130,70,255,0) 78%),
+            radial-gradient(circle 1.7px at 50% 50%, rgba(255,255,255,1) 0%, rgba(255,255,255,.85) 45%, rgba(255,255,255,0) 75%),
+            radial-gradient(circle 2.8px at 45% 55%, rgba(255,255,255,.5) 0%, rgba(226,240,255,.4) 45%, rgba(226,240,255,0) 78%),
+            linear-gradient(180deg, #0e0a3c 0%, #1d1563 55%, #100b44 100%);
+    }
+    19% {
+        background-image:
+            radial-gradient(ellipse 110px 4px at 50% 50%, rgba(255,255,255,.95) 0%, rgba(174,216,255,.70) 38%, rgba(120,160,255,.22) 62%, rgba(120,160,255,0) 80%),
+            radial-gradient(ellipse 240px 42% at 300px 38%, rgba(255,70,190,.75) 0%, rgba(255,70,190,.40) 45%, rgba(255,70,190,0) 76%),
+            radial-gradient(ellipse 220px 40% at 340px 66%, rgba(0,215,255,.70) 0%, rgba(0,215,255,.38) 45%, rgba(0,215,255,0) 76%),
+            radial-gradient(ellipse 260px 45% at 240px 45%, rgba(130,70,255,.80) 0%, rgba(130,70,255,.42) 45%, rgba(130,70,255,0) 78%),
+            radial-gradient(circle 1.7px at 50% 50%, rgba(255,255,255,.45) 0%, rgba(255,255,255,.35) 45%, rgba(255,255,255,0) 75%),
+            radial-gradient(circle 2.8px at 45% 55%, rgba(255,255,255,1) 0%, rgba(226,240,255,.9) 45%, rgba(226,240,255,0) 78%),
+            linear-gradient(180deg, #0e0a3c 0%, #1d1563 55%, #100b44 100%);
+    }
+    41% {
+        background-image:
+            radial-gradient(ellipse 110px 4px at 50% 50%, rgba(255,255,255,.95) 0%, rgba(174,216,255,.70) 38%, rgba(120,160,255,.22) 62%, rgba(120,160,255,0) 80%),
+            radial-gradient(ellipse 240px 42% at 300px 38%, rgba(255,70,190,.75) 0%, rgba(255,70,190,.40) 45%, rgba(255,70,190,0) 76%),
+            radial-gradient(ellipse 220px 40% at 340px 66%, rgba(0,215,255,.70) 0%, rgba(0,215,255,.38) 45%, rgba(0,215,255,0) 76%),
+            radial-gradient(ellipse 260px 45% at 240px 45%, rgba(130,70,255,.80) 0%, rgba(130,70,255,.42) 45%, rgba(130,70,255,0) 78%),
+            radial-gradient(circle 1.7px at 50% 50%, rgba(255,255,255,.95) 0%, rgba(255,255,255,.8) 45%, rgba(255,255,255,0) 75%),
+            radial-gradient(circle 2.8px at 45% 55%, rgba(255,255,255,.55) 0%, rgba(226,240,255,.45) 45%, rgba(226,240,255,0) 78%),
+            linear-gradient(180deg, #0e0a3c 0%, #1d1563 55%, #100b44 100%);
+    }
+    62% {
+        background-image:
+            radial-gradient(ellipse 110px 4px at 50% 50%, rgba(255,255,255,.95) 0%, rgba(174,216,255,.70) 38%, rgba(120,160,255,.22) 62%, rgba(120,160,255,0) 80%),
+            radial-gradient(ellipse 240px 42% at 300px 38%, rgba(255,70,190,.75) 0%, rgba(255,70,190,.40) 45%, rgba(255,70,190,0) 76%),
+            radial-gradient(ellipse 220px 40% at 340px 66%, rgba(0,215,255,.70) 0%, rgba(0,215,255,.38) 45%, rgba(0,215,255,0) 76%),
+            radial-gradient(ellipse 260px 45% at 240px 45%, rgba(130,70,255,.80) 0%, rgba(130,70,255,.42) 45%, rgba(130,70,255,0) 78%),
+            radial-gradient(circle 1.7px at 50% 50%, rgba(255,255,255,.5) 0%, rgba(255,255,255,.4) 45%, rgba(255,255,255,0) 75%),
+            radial-gradient(circle 2.8px at 45% 55%, rgba(255,255,255,1) 0%, rgba(226,240,255,.9) 45%, rgba(226,240,255,0) 78%),
+            linear-gradient(180deg, #0e0a3c 0%, #1d1563 55%, #100b44 100%);
+    }
+    80% {
+        background-image:
+            radial-gradient(ellipse 110px 4px at 50% 50%, rgba(255,255,255,.95) 0%, rgba(174,216,255,.70) 38%, rgba(120,160,255,.22) 62%, rgba(120,160,255,0) 80%),
+            radial-gradient(ellipse 240px 42% at 300px 38%, rgba(255,70,190,.75) 0%, rgba(255,70,190,.40) 45%, rgba(255,70,190,0) 76%),
+            radial-gradient(ellipse 220px 40% at 340px 66%, rgba(0,215,255,.70) 0%, rgba(0,215,255,.38) 45%, rgba(0,215,255,0) 76%),
+            radial-gradient(ellipse 260px 45% at 240px 45%, rgba(130,70,255,.80) 0%, rgba(130,70,255,.42) 45%, rgba(130,70,255,0) 78%),
+            radial-gradient(circle 1.7px at 50% 50%, rgba(255,255,255,1) 0%, rgba(255,255,255,.85) 45%, rgba(255,255,255,0) 75%),
+            radial-gradient(circle 2.8px at 45% 55%, rgba(255,255,255,.45) 0%, rgba(226,240,255,.35) 45%, rgba(226,240,255,0) 78%),
+            linear-gradient(180deg, #0e0a3c 0%, #1d1563 55%, #100b44 100%);
+    }
+    100% {
+        background-image:
+            radial-gradient(ellipse 110px 4px at 50% 50%, rgba(255,255,255,.95) 0%, rgba(174,216,255,.70) 38%, rgba(120,160,255,.22) 62%, rgba(120,160,255,0) 80%),
+            radial-gradient(ellipse 240px 42% at 300px 38%, rgba(255,70,190,.75) 0%, rgba(255,70,190,.40) 45%, rgba(255,70,190,0) 76%),
+            radial-gradient(ellipse 220px 40% at 340px 66%, rgba(0,215,255,.70) 0%, rgba(0,215,255,.38) 45%, rgba(0,215,255,0) 76%),
+            radial-gradient(ellipse 260px 45% at 240px 45%, rgba(130,70,255,.80) 0%, rgba(130,70,255,.42) 45%, rgba(130,70,255,0) 78%),
+            radial-gradient(circle 1.7px at 50% 50%, rgba(255,255,255,1) 0%, rgba(255,255,255,.85) 45%, rgba(255,255,255,0) 75%),
+            radial-gradient(circle 2.8px at 45% 55%, rgba(255,255,255,.5) 0%, rgba(226,240,255,.4) 45%, rgba(226,240,255,0) 78%),
+            linear-gradient(180deg, #0e0a3c 0%, #1d1563 55%, #100b44 100%);
+    }
+}

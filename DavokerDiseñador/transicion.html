@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<!-- =================================================================
+     TRANSICIÓN · página de paso a la portada (SIN JavaScript)
+     -----------------------------------------------------------------
+     La abren los botones "Todos los efectos" de cada showcase, y cada
+     botón trae su FRAGMENTO: transicion.html#radiacion,
+     transicion.html#hielo, etc. Ese fragmento activa vía :target la
+     escena TEMÁTICA del propio efecto de la página de origen (una
+     explosión de fuego en fuego, cristal de hielo en hielo, símbolo
+     radiactivo en radiación…), y tras ~1,6 s el
+     <meta http-equiv="refresh"> nos lleva a davoker.html, la portada.
+     Si alguien abre la página SIN fragmento, se ve la escena por
+     defecto: la clásica seta de la bomba nuclear.
+     El "retraso" es el meta refresh: HTML + CSS puros, cero JS.
+     Las escenas viven en transicion.css, compartido con la portada,
+     donde el botón "Descargar efecto" de cada tarjeta reproduce la
+     MISMA escena del efecto mientras se baja el .zip.
+     ================================================================= -->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="1.6;url=davoker.html">
+    <title>Transición… · Efectos de texto CSS</title>
+
+    <!-- Escenas temáticas (compartidas con la portada) -->
+    <link rel="stylesheet" href="transicion.css">
+
+    <style>
+        /* Maquetación de ESTA página (no forma parte de ningún efecto):
+           fondo, la seta por defecto y el enlace de reserva. Las
+           escenas (incluida la seta) se estilan en transicion.css. */
+        * { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; }
+        body {
+            background-color: #05030a;
+            overflow: hidden;            /* la explosión no crea scroll */
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* ============ ELEMENTOS DE LA SETA POR DEFECTO ============ */
+        /* 1) Resplandor ambiental del cielo */
+        .fondo {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 72%,
+                        rgba(255,120,20,.55) 0%, rgba(120,30,0,.35) 35%,
+                        rgba(5,3,10,0) 70%);
+            opacity: 0;
+            animation: fondo 1.6s linear both;
+        }
+
+        /* 2) Onda de choque recorriendo el suelo */
+        .onda {
+            position: absolute;
+            left: 50%;
+            top: 74%;
+            width: 74vmin;
+            height: 17vmin;
+            margin-left: -37vmin;
+            border-radius: 50%;
+            border: .7vmin solid rgba(255,224,160,.95);
+            box-shadow: 0 0 5vmin rgba(255,170,60,.85),
+                        inset 0 0 4vmin rgba(255,170,60,.7);
+            opacity: 0;
+            transform: scale(.05);
+            animation: onda 1.15s ease-out .22s both;
+        }
+
+        /* 3) Anillo de condensación que barre el capuchón */
+        .anillo {
+            position: absolute;
+            left: 50%;
+            top: 33%;
+            width: 44vmin;
+            height: 11vmin;
+            margin-left: -22vmin;
+            border-radius: 50%;
+            border: .55vmin solid rgba(255,232,185,.9);
+            opacity: 0;
+            transform: scale(.3);
+            animation: anillo 1.05s ease-out .45s both;
+        }
+
+        /* 4) Tallo: sube desde el suelo y se ensancha abajo */
+        .tallo {
+            position: absolute;
+            left: 50%;
+            top: 40%;
+            width: 15vmin;
+            height: 36vmin;
+            margin-left: -7.5vmin;
+            background:
+                repeating-linear-gradient(90deg,
+                    rgba(255,255,255,.25) 0 2px, rgba(255,255,255,0) 2px 8px),
+                linear-gradient(180deg, #ffe07a 0%, #ffa024 45%, #d9430a 100%);
+            clip-path: polygon(32% 0, 68% 0, 86% 100%, 14% 100%);
+            filter: blur(.6px);
+            transform-origin: 50% 100%;
+            animation: tallo .85s cubic-bezier(.2,.8,.3,1) .3s both;
+        }
+
+        /* 5) El capuchón: la "seta" propiamente dicha */
+        .tapon {
+            position: absolute;
+            left: 50%;
+            top: 17%;
+            width: 54vmin;
+            height: 31vmin;
+            margin-left: -27vmin;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 30% 38%, rgba(255,255,255,.95) 0 5%, rgba(255,255,255,0) 15%),
+                radial-gradient(circle at 66% 30%, rgba(255,255,255,.9) 0 4%, rgba(255,255,255,0) 13%),
+                radial-gradient(circle at 52% 62%, rgba(255,238,170,.95) 0 6%, rgba(255,238,170,0) 18%),
+                radial-gradient(ellipse at 50% 55%, #fff2b0 0%, #ffbe38 38%, #ff7300 66%, #b12a00 100%);
+            box-shadow: 0 0 9vmin rgba(255,140,30,.8);
+            filter: blur(1.4px);
+            transform-origin: 50% 85%;
+            animation: tapon 1.05s cubic-bezier(.16,.84,.34,1) .36s both;
+        }
+
+        /* 6) Chispas radiando en todas direcciones */
+        .chispas {
+            position: absolute;
+            left: 50%;
+            top: 38%;
+            width: 78vmin;
+            height: 78vmin;
+            margin: -39vmin 0 0 -39vmin;
+            border-radius: 50%;          /* recorta los rayos a un círculo */
+            background:
+                radial-gradient(circle, rgba(255,255,255,.9) 0%, rgba(255,255,255,0) 42%),
+                repeating-conic-gradient(from 0deg,
+                    rgba(255,244,200,.95) 0 1.4deg, rgba(255,244,200,0) 1.4deg 26deg);
+            opacity: 0;
+            animation: chispas 1s ease-out .3s both;
+        }
+
+        /* ---- Enlace de reserva (por si no hay meta refresh) ---- */
+        .volver {
+            position: absolute;
+            left: 50%;
+            bottom: 5%;
+            margin: 0;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation: volver .4s ease-out 1.05s both;
+        }
+        .volver a {
+            display: inline-block;
+            padding: .5rem 1.2rem;
+            background-color: rgba(10,8,16,.72);
+            border: 1px solid #2c3a4d;
+            border-radius: 999px;
+            color: #8ec8ff;
+            font-size: .9rem;
+            text-decoration: none;
+        }
+        .volver a:hover { background-color: #151a21; color: #ffffff; }
+
+        /* ---- Animaciones de la seta y del enlace (tiempo: 1,6 s) ---- */
+        @keyframes fondo {
+            0%   { opacity: .15; }
+            18%  { opacity: 1; }
+            100% { opacity: .55; }
+        }
+        @keyframes onda {
+            0%   { opacity: 0; transform: scale(.05); }
+            16%  { opacity: 1; }
+            100% { opacity: 0; transform: scale(1); }
+        }
+        @keyframes anillo {
+            0%   { opacity: 0; transform: scale(.3); }
+            25%  { opacity: .9; }
+            100% { opacity: 0; transform: scale(2.2); }
+        }
+        @keyframes tallo {
+            0%   { opacity: 0; transform: scaleY(.06) scaleX(.55); }
+            22%  { opacity: 1; }
+            100% { opacity: 1; transform: scaleY(1) scaleX(1); }
+        }
+        @keyframes tapon {
+            0%   { opacity: 0; transform: translateY(5vmin) scale(.12); }
+            30%  { opacity: 1; }
+            100% { opacity: 1; transform: translateY(-1.5vmin) scale(1); }
+        }
+        @keyframes chispas {
+            0%   { opacity: 0; transform: scale(.2) rotate(0deg); }
+            20%  { opacity: .95; }
+            100% { opacity: 0; transform: scale(1.7) rotate(14deg); }
+        }
+        @keyframes volver {
+            0%   { opacity: 0; transform: translateX(-50%) translateY(6px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== ESCENAS TEMÁTICAS (el fragmento elige cuál se ve) ===== -->
+    <div class="escena tema-glitch" id="glitch">
+        <div class="gl-banda gl-banda-1"></div>
+        <div class="gl-texto">GLITCH</div>
+        <div class="gl-banda gl-banda-2"></div>
+    </div>
+
+    <div class="escena tema-arcoiris" id="arcoiris">
+        <div class="ar-onda ar-onda-1"></div>
+        <div class="ar-onda ar-onda-2"></div>
+    </div>
+
+    <div class="escena tema-fuego" id="fuego">
+        <div class="fu-bola"></div>
+        <div class="fu-llamas"></div>
+        <div class="fu-ascuas"></div>
+    </div>
+
+    <div class="escena tema-radiacion" id="radiacion">
+        <div class="ra-simbolo"></div>
+        <div class="ra-anillo ra-anillo-1"></div>
+        <div class="ra-anillo ra-anillo-2"></div>
+    </div>
+
+    <div class="escena tema-nubes" id="nubes">
+        <div class="nu-mini-a"></div>
+        <div class="nu-nube"></div>
+        <div class="nu-mini-b"></div>
+    </div>
+
+    <div class="escena tema-hielo" id="hielo">
+        <div class="hi-copo"></div>
+        <div class="hi-escarcha"></div>
+    </div>
+
+    <div class="escena tema-lava" id="lava">
+        <div class="la-magma"></div>
+        <div class="la-chispas"></div>
+    </div>
+
+    <div class="escena tema-holograma" id="holograma">
+        <div class="ho-rejilla"></div>
+        <div class="ho-barrido"></div>
+        <div class="ho-anillo"></div>
+    </div>
+
+    <div class="escena tema-vhs" id="vhs">
+        <div class="vh-banda vh-banda-1"></div>
+        <div class="vh-texto">PLAY ▶</div>
+        <div class="vh-banda vh-banda-2"></div>
+    </div>
+
+    <div class="escena tema-gelatina" id="gelatina">
+        <div class="ge-onda ge-onda-1"></div>
+        <div class="ge-bola"></div>
+        <div class="ge-onda ge-onda-2"></div>
+    </div>
+
+    <div class="escena tema-nebulosa" id="nebulosa">
+        <div class="ne-humo"></div>
+        <div class="ne-estrellas"></div>
+        <div class="ne-nucleo"></div>
+    </div>
+
+    <div class="escena tema-orbita" id="orbita">
+        <div class="or-estrellas"></div>
+        <div class="or-anillo"></div>
+        <div class="or-planeta"></div>
+    </div>
+
+    <div class="escena tema-eclipse" id="eclipse">
+        <div class="ec-corona"></div>
+        <div class="ec-disco"></div>
+        <div class="ec-diamante"></div>
+    </div>
+
+    <div class="escena tema-brote" id="brote">
+        <div class="br-tierra"></div>
+        <div class="br-tallo"></div>
+        <div class="br-hojas"></div>
+    </div>
+
+    <div class="escena tema-viento" id="viento">
+        <div class="vi-racha vi-racha-1"></div>
+        <div class="vi-racha vi-racha-2"></div>
+        <div class="vi-hoja"></div>
+    </div>
+
+    <div class="escena tema-marea" id="marea">
+        <div class="ma-ola"></div>
+        <div class="ma-espuma"></div>
+        <div class="ma-burbujas"></div>
+    </div>
+
+    <div class="escena tema-corriente" id="corriente">
+        <div class="co-rayos"></div>
+        <div class="co-caustica"></div>
+        <div class="co-luz"></div>
+    </div>
+
+    <div class="escena tema-rayo" id="rayo">
+        <div class="ry-rayo"></div>
+        <div class="ry-rayo2"></div>
+        <div class="ry-suelo"></div>
+    </div>
+
+    <div class="escena tema-chispa" id="chispa">
+        <div class="ch-estallido ch-estallido-1"></div>
+        <div class="ch-estallido ch-estallido-2"></div>
+        <div class="ch-arco"></div>
+    </div>
+
+    <div class="escena tema-grieta" id="grieta">
+        <div class="gr-hendidura"></div>
+        <div class="gr-esquirlas"></div>
+        <div class="gr-brasas"></div>
+    </div>
+
+    <div class="escena tema-gotica" id="gotica">
+        <div class="go-sombra go-sombra-1"></div>
+        <div class="go-resplandor"></div>
+        <div class="go-sombra go-sombra-2"></div>
+    </div>
+
+    <div class="escena tema-hud" id="hud">
+        <div class="hu-brillo"></div>
+        <div class="hu-anel hu-anel-1"></div>
+        <div class="hu-anel hu-anel-2"></div>
+        <div class="hu-linea"></div>
+    </div>
+
+    <div class="escena tema-rogue" id="rogue">
+        <div class="rg-faro"></div>
+        <div class="rg-alerta"></div>
+        <div class="rg-suelo"></div>
+    </div>
+
+    <div class="escena tema-impacto" id="impacto">
+        <div class="im-floater im-floater-1"></div>
+        <div class="im-floater im-floater-2"></div>
+        <div class="im-golpe"></div>
+    </div>
+
+    <div class="escena tema-botin" id="botin">
+        <div class="bt-haz"></div>
+        <div class="bt-oro"></div>
+        <div class="bt-estrella"></div>
+    </div>
+
+    <div class="escena tema-apagon" id="apagon">
+        <div class="ap-luz"></div>
+        <div class="ap-sirena"></div>
+        <div class="ap-linea"></div>
+    </div>
+
+    <div class="escena tema-abatido" id="abatido">
+        <div class="ab-corazon"></div>
+        <div class="ab-pulso"></div>
+        <div class="ab-rojo"></div>
+    </div>
+
+    <div class="escena tema-nevada" id="nevada">
+        <div class="nv-capa nv-capa-1"></div>
+        <div class="nv-capa nv-capa-2"></div>
+        <div class="nv-suelo"></div>
+    </div>
+
+    <div class="escena tema-neon" id="neon">
+        <div class="nn-letrero"></div>
+        <div class="nn-reflejo"></div>
+        <div class="nn-chispa"></div>
+    </div>
+
+    <div class="escena tema-blindaje" id="blindaje">
+        <div class="bl-malla"></div>
+        <div class="bl-barrido"></div>
+        <div class="bl-cinta"></div>
+    </div>
+
+    <div class="escena tema-pulso" id="pulso">
+        <div class="pl-anillo pl-anillo-1"></div>
+        <div class="pl-anillo pl-anillo-2"></div>
+        <div class="pl-rejilla"></div>
+    </div>
+
+    <div class="escena tema-bengala" id="bengala">
+        <div class="bg-humo"></div>
+        <div class="bg-nucleo"></div>
+        <div class="bg-chispas"></div>
+    </div>
+
+    <div class="escena tema-graffiti" id="graffiti">
+        <div class="gf-salpicadura gf-salpicadura-1"></div>
+        <div class="gf-salpicadura gf-salpicadura-2"></div>
+        <div class="gf-goteo"></div>
+    </div>
+
+    <div class="escena tema-stencil" id="stencil">
+        <div class="st-cajon"></div>
+        <div class="st-polvo"></div>
+        <div class="st-barrido"></div>
+    </div>
+
+    <div class="escena tema-sable" id="sable">
+        <div class="sa-hoja sa-hoja-1"></div>
+        <div class="sa-hoja sa-hoja-2"></div>
+        <div class="sa-resplandor"></div>
+    </div>
+
+    <div class="escena tema-fuerza" id="fuerza">
+        <div class="fu-anillo fu-anillo-1"></div>
+        <div class="fu-anillo fu-anillo-2"></div>
+        <div class="fu-motas"></div>
+    </div>
+
+    <div class="escena tema-hiperespacio" id="hiperespacio">
+        <div class="hi-estelas"></div>
+        <div class="hi-rastro"></div>
+        <div class="hi-flash"></div>
+    </div>
+
+    <div class="escena tema-estrellas" id="estrellas">
+        <div class="es-campo es-campo-1"></div>
+        <div class="es-campo es-campo-2"></div>
+        <div class="es-via"></div>
+    </div>
+
+    <div class="escena tema-torpedo" id="torpedo">
+        <div class="to-rayo to-rayo-1"></div>
+        <div class="to-rayo to-rayo-2"></div>
+        <div class="to-impacto"></div>
+    </div>
+
+    <div class="escena tema-respiracion" id="respiracion">
+        <div class="rs-latido"></div>
+        <div class="rs-slit"></div>
+        <div class="rs-polvo"></div>
+    </div>
+
+    <div class="escena tema-dunas" id="dunas">
+        <div class="du-soles"></div>
+        <div class="du-arena"></div>
+        <div class="du-espejismo"></div>
+    </div>
+
+    <div class="escena tema-carbono" id="carbono">
+        <div class="ca-placa"></div>
+        <div class="ca-brillo"></div>
+        <div class="ca-vapor"></div>
+    </div>
+
+    <div class="escena tema-superlaser" id="superlaser">
+        <div class="sl-haz"></div>
+        <div class="sl-carga"></div>
+        <div class="sl-anillo"></div>
+    </div>
+
+    <div class="escena tema-clon" id="clon">
+        <div class="cl-marca cl-marca-1"></div>
+        <div class="cl-marca cl-marca-2"></div>
+        <div class="cl-rejilla"></div>
+    </div>
+
+    <div class="escena tema-apuntar" id="apuntar">
+        <div class="ap-marca"></div>
+        <div class="ap-punto"></div>
+        <div class="ap-barrido"></div>
+    </div>
+
+    <div class="escena tema-espiritu" id="espiritu">
+        <div class="es-aura"></div>
+        <div class="es-motas"></div>
+        <div class="es-hazo"></div>
+    </div>
+
+    <div class="escena tema-rebelion" id="rebelion">
+        <div class="rb-banda"></div>
+        <div class="rb-estrella rb-estrella-1"></div>
+        <div class="rb-estrella rb-estrella-2"></div>
+        <div class="rb-luz"></div>
+    </div>
+
+    <div class="escena tema-codigo" id="codigo">
+        <div class="cg-lluvia cg-lluvia-1"></div>
+        <div class="cg-lluvia cg-lluvia-2"></div>
+        <div class="cg-marco"></div>
+    </div>
+
+    <div class="escena tema-pildora" id="pildora">
+        <div class="pd-roja"></div>
+        <div class="pd-azul"></div>
+        <div class="pd-eleccion"></div>
+    </div>
+
+    <div class="escena tema-cuchara" id="cuchara">
+        <div class="cu-acero"></div>
+        <div class="cu-mesa"></div>
+        <div class="cu-reflejo"></div>
+    </div>
+
+    <div class="escena tema-dejavu" id="dejavu">
+        <div class="dv-eco"></div>
+        <div class="dv-ojos"></div>
+        <div class="dv-rasgo"></div>
+    </div>
+
+    <div class="escena tema-agente" id="agente">
+        <div class="ae-gris"></div>
+        <div class="ae-reflejo"></div>
+        <div class="ae-marca"></div>
+    </div>
+
+    <div class="escena tema-espejo" id="espejo">
+        <div class="ep-onda"></div>
+        <div class="ep-plata"></div>
+        <div class="ep-banda"></div>
+    </div>
+
+    <div class="escena tema-tiempo" id="tiempo">
+        <div class="tp-rastro"></div>
+        <div class="tp-bala"></div>
+        <div class="tp-foco"></div>
+    </div>
+
+    <div class="escena tema-dodge" id="dodge">
+        <div class="dg-estela"></div>
+        <div class="dg-marca"></div>
+        <div class="dg-resalto"></div>
+    </div>
+
+    <div class="escena tema-mundo" id="mundo">
+        <div class="mo-rejilla"></div>
+        <div class="mo-rojo"></div>
+        <div class="mo-azul"></div>
+    </div>
+
+    <div class="escena tema-oracle" id="oracle">
+        <div class="oc-luz"></div>
+        <div class="oc-humo"></div>
+        <div class="oc-migajas"></div>
+    </div>
+
+    <div class="escena tema-desconexion" id="desconexion">
+        <div class="ds-linea"></div>
+        <div class="ds-ruido"></div>
+        <div class="ds-caida"></div>
+    </div>
+
+    <div class="escena tema-conejo" id="conejo">
+        <div class="cj-ruta"></div>
+        <div class="cj-destello"></div>
+        <div class="cj-huellas"></div>
+    </div>
+
+    <div class="escena tema-poder" id="poder">
+        <div class="pw-hazo"></div>
+        <div class="pw-anillo"></div>
+        <div class="pw-motas"></div>
+    </div>
+
+    <div class="escena tema-sentinela" id="sentinela">
+        <div class="sn-ojo"></div>
+        <div class="sn-barrido"></div>
+        <div class="sn-rejilla"></div>
+    </div>
+
+    <div class="escena tema-filo" id="filo">
+        <div class="fl-filo"></div>
+        <div class="fl-chispa"></div>
+        <div class="fl-borde"></div>
+    </div>
+
+    <div class="escena tema-emblema" id="emblema">
+        <div class="em-marco"></div>
+        <div class="em-laurel"></div>
+        <div class="em-brillo"></div>
+    </div>
+
+    <div class="escena tema-salud" id="salud">
+        <div class="sd-barra"></div>
+        <div class="sd-latido"></div>
+        <div class="sd-gotas"></div>
+    </div>
+
+    <div class="escena tema-rugido" id="rugido">
+        <div class="ru-onda ru-onda-1"></div>
+        <div class="ru-onda ru-onda-2"></div>
+        <div class="ru-polvo"></div>
+    </div>
+
+    <div class="escena tema-garras" id="garras">
+        <div class="ga-tajos"></div>
+        <div class="ga-golpe"></div>
+        <div class="ga-humo"></div>
+    </div>
+
+    <div class="escena tema-escamas" id="escamas">
+        <div class="sc-malla"></div>
+        <div class="sc-brillo"></div>
+        <div class="sc-borde"></div>
+    </div>
+
+    <div class="escena tema-veneno" id="veneno">
+        <div class="vn-burbujas"></div>
+        <div class="vn-nube"></div>
+        <div class="vn-gota"></div>
+    </div>
+
+    <div class="escena tema-paralisis" id="paralisis">
+        <div class="pa-chispa"></div>
+        <div class="pa-destello"></div>
+        <div class="pa-rejilla"></div>
+    </div>
+
+    <div class="escena tema-fauces" id="fauces">
+        <div class="fc-fauces"></div>
+        <div class="fc-osamenta"></div>
+        <div class="fc-golpe"></div>
+    </div>
+
+    <div class="escena tema-barro" id="barro">
+        <div class="bo-charco"></div>
+        <div class="bo-copos"></div>
+        <div class="bo-humedad"></div>
+    </div>
+
+    <div class="escena tema-wirebug" id="wirebug">
+        <div class="wb-hilo"></div>
+        <div class="wb-luz"></div>
+        <div class="wb-malla"></div>
+    </div>
+
+    <div class="escena tema-palico" id="palico">
+        <div class="pc-manos"></div>
+        <div class="pc-garras"></div>
+        <div class="pc-cascabel"></div>
+    </div>
+
+    <div class="escena tema-forja" id="forja">
+        <div class="fj-brasa"></div>
+        <div class="fj-chispas"></div>
+        <div class="fj-golpe"></div>
+    </div>
+
+    <div class="escena tema-caza" id="caza">
+        <div class="cz-reticula"></div>
+        <div class="cz-barrido"></div>
+        <div class="cz-marcas"></div>
+    </div>
+
+    <div class="escena tema-sigilo" id="sigilo">
+        <div class="sg-sombra"></div>
+        <div class="sg-ojo"></div>
+        <div class="sg-rejilla"></div>
+    </div>
+
+    <div class="escena tema-sueno" id="sueno">
+        <div class="so-zetas"></div>
+        <div class="so-nube"></div>
+        <div class="so-luna"></div>
+    </div>
+
+    <div class="escena tema-embestida" id="embestida">
+        <div class="eb-estelas"></div>
+        <div class="eb-impacto"></div>
+        <div class="eb-rastro"></div>
+    </div>
+
+    <div class="escena tema-bestia" id="bestia">
+        <div class="bs-ojo"></div>
+        <div class="bs-piel"></div>
+        <div class="bs-polvillo"></div>
+    </div>
+
+    <div class="escena tema-gryffindor" id="gryffindor">
+        <div class="hp-gry-destello"></div>
+        <div class="hp-gry-motas"></div>
+        <div class="hp-gry-halo"></div>
+    </div>
+
+    <div class="escena tema-hufflepuff" id="hufflepuff">
+        <div class="hp-huf-panal"></div>
+        <div class="hp-huf-polvo"></div>
+        <div class="hp-huf-gota"></div>
+    </div>
+
+    <div class="escena tema-ravenclaw" id="ravenclaw">
+        <div class="hp-rav-estela hp-rav-estela-1"></div>
+        <div class="hp-rav-estela hp-rav-estela-2"></div>
+        <div class="hp-rav-lumen"></div>
+    </div>
+
+    <div class="escena tema-slytherin" id="slytherin">
+        <div class="hp-sly-serpiente"></div>
+        <div class="hp-sly-brillo"></div>
+        <div class="hp-sly-bruma"></div>
+    </div>
+
+    <div class="escena tema-patronus" id="patronus">
+        <div class="hp-pat-niebla"></div>
+        <div class="hp-pat-destello"></div>
+        <div class="hp-pat-onda"></div>
+    </div>
+
+    <div class="escena tema-plataforma" id="plataforma">
+        <div class="hp-pla-vapor"></div>
+        <div class="hp-pla-tren"></div>
+        <div class="hp-pla-farol"></div>
+    </div>
+
+    <div class="escena tema-snitch" id="snitch">
+        <div class="hp-sni-estela"></div>
+        <div class="hp-sni-centella"></div>
+        <div class="hp-sni-anillo"></div>
+    </div>
+
+    <div class="escena tema-varita" id="varita">
+        <div class="hp-var-chispa"></div>
+        <div class="hp-var-rastro"></div>
+        <div class="hp-var-destello"></div>
+    </div>
+
+    <div class="escena tema-pocion" id="pocion">
+        <div class="hp-poc-burbuja"></div>
+        <div class="hp-poc-espuma"></div>
+        <div class="hp-poc-vaho"></div>
+    </div>
+
+    <div class="escena tema-arena" id="arena">
+        <div class="hp-are-hilo"></div>
+        <div class="hp-are-grano"></div>
+        <div class="hp-are-fulgor"></div>
+    </div>
+
+    <div class="escena tema-capa" id="capa">
+        <div class="hp-cap-pliegue"></div>
+        <div class="hp-cap-mota"></div>
+        <div class="hp-cap-borde"></div>
+    </div>
+
+    <div class="escena tema-pluma" id="pluma">
+        <div class="hp-plu-trazo"></div>
+        <div class="hp-plu-gota"></div>
+        <div class="hp-plu-fibra"></div>
+    </div>
+
+    <div class="escena tema-habas" id="habas">
+        <div class="hp-hab-grano"></div>
+        <div class="hp-hab-azucar"></div>
+        <div class="hp-hab-arco"></div>
+    </div>
+
+    <div class="escena tema-sello" id="sello">
+        <div class="hp-sel-lacre"></div>
+        <div class="hp-sel-anillo"></div>
+        <div class="hp-sel-brillo"></div>
+    </div>
+
+    <div class="escena tema-sapo" id="sapo">
+        <div class="hp-sap-polvo"></div>
+        <div class="hp-sap-sombra"></div>
+        <div class="hp-sap-destello"></div>
+    </div>
+
+    <div class="escena tema-boggart" id="boggart">
+        <div class="hp-bog-sombra"></div>
+        <div class="hp-bog-ojos"></div>
+        <div class="hp-bog-velo"></div>
+    </div>
+
+    <div class="escena tema-polvo" id="polvo">
+        <div class="hp-pol-voluta"></div>
+        <div class="hp-pol-chispa"></div>
+        <div class="hp-pol-anillo"></div>
+    </div>
+
+    <div class="escena tema-azkaban" id="azkaban">
+        <div class="hp-azk-reja"></div>
+        <div class="hp-azk-niebla"></div>
+        <div class="hp-azk-latido"></div>
+    </div>
+
+    <div class="escena tema-profecia" id="profecia">
+        <div class="hp-pro-bruma"></div>
+        <div class="hp-pro-eco"></div>
+        <div class="hp-pro-mota"></div>
+    </div>
+
+    <div class="escena tema-pensieve" id="pensieve">
+        <div class="hp-pen-onda"></div>
+        <div class="hp-pen-hilo"></div>
+        <div class="hp-pen-destello"></div>
+    </div>
+
+    <div class="escena tema-solitarios" id="solitarios">
+        <div class="stk-sol-linterna"></div>
+        <div class="stk-sol-motas"></div>
+        <div class="stk-sol-surco"></div>
+    </div>
+
+    <div class="escena tema-deber" id="deber">
+        <div class="stk-deb-guardia"></div>
+        <div class="stk-deb-latido"></div>
+        <div class="stk-deb-aviso"></div>
+    </div>
+
+    <div class="escena tema-libertad" id="libertad">
+        <div class="stk-lib-humo"></div>
+        <div class="stk-lib-mota"></div>
+        <div class="stk-lib-brisa"></div>
+    </div>
+
+    <div class="escena tema-cielodespejado" id="cielodespejado">
+        <div class="stk-cie-nube"></div>
+        <div class="stk-cie-estela"></div>
+        <div class="stk-cie-alba"></div>
+    </div>
+
+    <div class="escena tema-bandidos" id="bandidos">
+        <div class="stk-ban-temblo"></div>
+        <div class="stk-ban-humo"></div>
+        <div class="stk-ban-marcas"></div>
+    </div>
+
+    <div class="escena tema-mercenarios" id="mercenarios">
+        <div class="stk-mer-reticula"></div>
+        <div class="stk-mer-trazadora"></div>
+        <div class="stk-mer-punto"></div>
+    </div>
+
+    <div class="escena tema-militares" id="militares">
+        <div class="stk-mil-faro"></div>
+        <div class="stk-mil-camo"></div>
+        <div class="stk-mil-laser"></div>
+    </div>
+
+    <div class="escena tema-ecologistas" id="ecologistas">
+        <div class="stk-eco-barrido"></div>
+        <div class="stk-eco-gota"></div>
+        <div class="stk-eco-led"></div>
+    </div>
+
+    <div class="escena tema-monolito" id="monolito">
+        <div class="stk-mon-halo"></div>
+        <div class="stk-mon-anillo"></div>
+        <div class="stk-mon-bruma"></div>
+    </div>
+
+    <div class="escena tema-renegados" id="renegados">
+        <div class="stk-ren-goteo"></div>
+        <div class="stk-ren-pintura"></div>
+        <div class="stk-ren-fisura"></div>
+    </div>
+
+    <div class="escena tema-pecado" id="pecado">
+        <div class="stk-pec-velo"></div>
+        <div class="stk-pec-brasa"></div>
+        <div class="stk-pec-runa"></div>
+    </div>
+
+    <div class="escena tema-unisg" id="unisg">
+        <div class="stk-uni-marco"></div>
+        <div class="stk-uni-linea"></div>
+        <div class="stk-uni-seguro"></div>
+    </div>
+
+    <div class="escena tema-ultimodia" id="ultimodia">
+        <div class="stk-ult-cuenta"></div>
+        <div class="stk-ult-arena"></div>
+        <div class="stk-ult-vela"></div>
+    </div>
+
+    <div class="escena tema-emision" id="emision">
+        <div class="stk-emi-frente"></div>
+        <div class="stk-emi-golpe"></div>
+        <div class="stk-emi-ceniza"></div>
+    </div>
+
+    <div class="escena tema-anomalia" id="anomalia">
+        <div class="stk-ano-anillo"></div>
+        <div class="stk-ano-chispa"></div>
+        <div class="stk-ano-bruma"></div>
+    </div>
+
+    <div class="escena tema-artefacto" id="artefacto">
+        <div class="stk-art-resplandor"></div>
+        <div class="stk-art-destello"></div>
+        <div class="stk-art-rastro"></div>
+    </div>
+
+    <div class="escena tema-tormenta" id="tormenta">
+        <div class="stk-tor-raya"></div>
+        <div class="stk-tor-zumbido"></div>
+        <div class="stk-tor-centella"></div>
+    </div>
+
+    <div class="escena tema-detector" id="detector">
+        <div class="stk-det-aguja"></div>
+        <div class="stk-det-tic"></div>
+        <div class="stk-det-testigo"></div>
+    </div>
+
+    <div class="escena tema-fauna" id="fauna">
+        <div class="stk-fau-esporas"></div>
+        <div class="stk-fau-colmillo"></div>
+        <div class="stk-fau-temblor"></div>
+    </div>
+
+    <div class="escena tema-lazona" id="lazona">
+        <div class="stk-laz-cinta"></div>
+        <div class="stk-laz-pulso"></div>
+        <div class="stk-laz-alambre"></div>
+    </div>
+
+    <!-- ===== ESCENA POR DEFECTO (sin fragmento): la seta ===== -->
+    <div class="escena escena-seta">
+        <div class="fondo"></div>
+        <div class="chispas"></div>
+        <div class="tallo"></div>
+        <div class="tapon"></div>
+        <div class="anillo"></div>
+        <div class="onda"></div>
+    </div>
+
+    <p class="volver"><a href="davoker.html">Todos los efectos →</a></p>
+</body>
+</html>

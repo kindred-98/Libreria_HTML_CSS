@@ -1,0 +1,96 @@
+/* ================================================================
+   EFECTO 5: NUBES - letras con cielo y nubes pasando (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-nubes">Tu texto</span>
+
+   (Sin atributos extra: solo la clase. Recomendado negrita y
+   tamaño medio/grande para ver bien las nubes dentro.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-nubes y los 2 @keyframes).
+
+   QUÉ HACE:
+     Las letras son un TROZO DE CIELO: fondo azul degradado con
+     4 capas de nubes blancas (2 grandes cercanas y 2 pequeñas
+     lejanas) que atraviesan el texto a DISTINTA VELOCIDAD
+     (parallax) en bucle infinito, mientras el conjunto flota
+     suavemente como suspendido.
+
+   TÉCNICA: background-clip: text con 5 capas de fondo +
+   transform. Nada más.
+   ================================================================ */
+
+.efecto-nubes {
+    display: inline-block;      /* imprescindible para que flote */
+
+    background-image:
+        /* nube grande cercana 1 */
+        radial-gradient(ellipse 60px 28px at 80px 62%,
+            rgba(255, 255, 255, 0.98) 0%,
+            rgba(255, 255, 255, 0.92) 40%,
+            rgba(255, 255, 255, 0) 72%),
+        /* nube grande cercana 2 */
+        radial-gradient(ellipse 48px 22px at 250px 40%,
+            rgba(255, 255, 255, 0.96) 0%,
+            rgba(255, 255, 255, 0.88) 42%,
+            rgba(255, 255, 255, 0) 74%),
+        /* nube pequeña lejana 1 */
+        radial-gradient(ellipse 32px 14px at 60px 25%,
+            rgba(255, 255, 255, 0.72) 0%,
+            rgba(255, 255, 255, 0) 75%),
+        /* nube pequeña lejana 2 */
+        radial-gradient(ellipse 26px 12px at 190px 70%,
+            rgba(255, 255, 255, 0.65) 0%,
+            rgba(255, 255, 255, 0) 75%),
+        /* el cielo */
+        linear-gradient(180deg,
+            #3f9fe0 0%,
+            #7fc4f2 55%,
+            #c9ebff 100%);
+
+    /* tamaño de cada capa (las nubes se repiten en mosaico) */
+    background-size: 340px 100%, 420px 100%, 220px 100%, 260px 100%, auto;
+
+    /* el cielo se pinta SOLO dentro de las letras */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    /* sombra suave: las letras "flotan" sobre la página */
+    text-shadow: 0 3px 12px rgba(40, 110, 170, 0.45);
+
+    animation:
+        nubes-viento 18s linear infinite,
+        nubes-flotar 6s ease-in-out infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* Viento: las nubes cruzan el texto a distintas velocidades
+   (parallax). Cada desplazamiento es múltiplo de su mosaico,
+   así que el bucle es invisible. */
+@keyframes nubes-viento {
+    0% {
+        background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+    }
+    100% {
+        background-position:
+            -680px 0,    /* cercana 1: 2 mosaicos de 340px */
+            -840px 0,    /* cercana 2: 2 mosaicos de 420px */
+            -440px 0,    /* lejana 1:  2 mosaicos de 220px */
+            -520px 0,    /* lejana 2:  2 mosaicos de 260px */
+            0 0;         /* el cielo no se mueve */
+    }
+}
+
+/* El texto flota como una nube */
+@keyframes nubes-flotar {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}

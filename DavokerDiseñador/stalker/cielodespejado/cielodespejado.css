@@ -1,0 +1,88 @@
+/* ================================================================
+   EFECTO 103: CIELO DESPEJADO - las letras de cielo cruzan una mañana limpia (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-cielodespejado">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-cielodespejado, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un CIELO DESPEJADO: celeste que gira
+      hacia el ámbar del horizonte, una nube de tarde cruza
+      blanco el texto y una estela de avión dibuja su raya
+      fina sobre la palabra. Fondo oscuro recomendado.
+
+   TÉCNICA: degradado vertical de cielo recortado en el texto con
+    background-position animado (ciclo del día), nube
+    ::before difuminada barrida y estela ::after creada
+    con width animado.
+   ================================================================ */
+
+
+/* --- base: cielo del amanecer al horizonte --- */
+.efecto-cielodespejado {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(180deg, #e1f5fe 0%, #81d4fa 34%, #4fc3f7 56%,
+                #fff59d 84%, #ffb74d 100%);
+    background-size: 100% 260%;
+    background-position: 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 .05em .2em rgba(79, 195, 247, .4));
+    animation: stk-cielodespejado-alba 8s ease-in-out infinite;
+}
+/* --- nube de tarde cruzando el texto --- */
+.efecto-cielodespejado::before {
+    content: "";
+    position: absolute;
+    top: -.25em;
+    bottom: -.25em;
+    left: -48%;
+    width: 46%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0),
+                rgba(255, 255, 255, .85) 40%, rgba(227, 242, 253, .9) 60%,
+                rgba(255, 255, 255, 0));
+    filter: blur(.24em);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-cielodespejado-nube 6.4s linear infinite;
+}
+/* --- estela del avión dibujando su raya --- */
+.efecto-cielodespejado::after {
+    content: "";
+    position: absolute;
+    left: 4%;
+    top: 44%;
+    height: .09em;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, .95),
+                rgba(255, 255, 255, .2));
+    filter: blur(.04em);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-cielodespejado-trazo 6.4s ease-in-out infinite;
+}
+@keyframes stk-cielodespejado-alba {
+    0%, 100% { background-position: 0 0; }
+    50%      { background-position: 0 62%; }
+}
+@keyframes stk-cielodespejado-nube {
+    0%   { left: -54%; opacity: 0; }
+    14%  { opacity: .75; }
+    80%  { opacity: .75; }
+    100% { left: 106%; opacity: 0; }
+}
+@keyframes stk-cielodespejado-trazo {
+    0%, 18%  { width: 0; opacity: 0; }
+    26%      { opacity: .9; }
+    66%      { width: 92%; opacity: .9; }
+    88%, 100% { width: 92%; opacity: 0; }
+}

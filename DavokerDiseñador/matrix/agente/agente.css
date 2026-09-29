@@ -1,0 +1,64 @@
+/* ================================================================
+   EFECTO 52: AGENTE - un agente toma el control de las letras (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-agente">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-agente, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Un AGENTE toma el control: el texto pasa de verde
+      Matrix a gris metálico seco (grayscale + contraste)
+      de golpe, y mientras dura el control una línea blanca
+      —el reflejo de las gafas de sol— barre las letras.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: filter: grayscale/contrast por pasos en los keyframes
+    + pseudo-elemento de reflejo que cruza el texto con
+    transform y opacity animados.
+   ================================================================ */
+
+
+.efecto-agente {
+    display: inline-block;
+    position: relative;
+
+    color: #12e06a;
+    animation: mx-agente-toma 5.2s steps(1, end) infinite;
+}
+
+/* el reflejo blanco de las gafas de sol */
+.efecto-agente::after {
+    content: "";
+    position: absolute;
+    left: -24%;
+    top: 8%;
+    bottom: 8%;
+    width: .3em;
+    background: linear-gradient(180deg, rgba(255,255,255,0),
+                #ffffff 42%, #ffffff 58%, rgba(255,255,255,0));
+    transform: rotate(16deg);
+    opacity: 0;
+    animation: mx-agente-reflejo 5.2s ease-in-out infinite;
+}
+
+@keyframes mx-agente-toma {
+    0%, 52%  { color: #12e06a;
+               text-shadow: 0 0 12px rgba(0, 255, 105, .55); }
+    53%, 82% { color: #cdd6da;
+               text-shadow: 0 0 10px rgba(200, 215, 220, .35);
+               filter: grayscale(1) brightness(.72) contrast(1.5); }
+    83%,100% { color: #12e06a;
+               text-shadow: 0 0 12px rgba(0, 255, 105, .55);
+               filter: none; }
+}
+@keyframes mx-agente-reflejo {
+    0%, 53%  { opacity: 0; transform: translateX(0) rotate(16deg); }
+    55%      { opacity: .95; transform: translateX(30%) rotate(16deg); }
+    74%      { opacity: .95; transform: translateX(340%) rotate(16deg); }
+    76%,100% { opacity: 0; transform: translateX(370%) rotate(16deg); }
+}

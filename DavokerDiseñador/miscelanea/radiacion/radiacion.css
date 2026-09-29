@@ -1,0 +1,181 @@
+/* ================================================================
+   EFECTO 4: RADIACIÓN - texto irradiado estilo S.T.A.L.K.E.R.
+   (efecto original, CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-radiacion">Tu texto</span>
+
+   (Sin atributos extra: solo la clase. Recomendado texto en
+   negrita y fondo oscuro para apreciar bien el resplandor.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-radiacion y los 2
+     @keyframes). No depende de ningún otro estilo ni de
+     librerías externas.
+
+   QUÉ HACE (tres capas de significado):
+     1. CINTAS DE PELIGRO → bandas diagonales negras (sombra
+        de cinta aviso ☢) estáticas sobre las letras.
+     2. ENERGÍA TÓXICA  → degradado verde luminoso que fluye
+        SIN PARAR dentro de los caracteres (background-clip).
+     3. CONTADOR GEIGER  → destellos IRREGULARES de brillo y
+        micro-temblor de 1px: cada pico = una "medida" de
+        radiación. Irregular a propósito, como un Geiger real.
+
+   TÉCNICA: background-clip: text (2 capas de fondo) +
+   text-shadow + filter: brightness + transform. Nada más.
+   ================================================================ */
+
+.efecto-radiacion {
+    display: inline-block;      /* imprescindible para el micro-temblor */
+    background-image:
+        /* capa SUPERIOR: cintas de peligro diagonales (estáticas) */
+        repeating-linear-gradient(
+            45deg,
+            rgba(0, 0, 0, 0) 0 20px,
+            rgba(0, 0, 0, 0.55) 20px 50px
+        ),
+        /* capa INFERIOR: energía tóxica que se mueve */
+        linear-gradient(
+            90deg,
+            #3f5a00,
+            #8fc000,
+            #d6ff45,
+            #7ea600,
+            #3f5a00
+        );
+    background-size: auto, 300% 100%;
+    background-repeat: repeat, no-repeat;
+
+    /* el degradado se pinta SOLO dentro de las letras */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;                 /* respaldo estándar */
+    -webkit-text-fill-color: transparent;  /* Chrome/Safari/Edge */
+
+    animation:
+        radiacion-energia 4s linear infinite,
+        radiacion-geiger 2.4s steps(1, end) infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* Energía tóxica fluyendo dentro del texto (las cintas no se
+   mueven: su posición se mantiene en 0 0 de los dos fotogramas) */
+@keyframes radiacion-energia {
+    0%   { background-position: 0 0, 0% 50%; }
+    100% { background-position: 0 0, 150% 50%; }
+}
+
+/* Contador Geiger: picos irregulares de brillo, resplandor
+   y un micro-temblor de 1px en los golpes fuertes */
+@keyframes radiacion-geiger {
+    0% {
+        text-shadow:
+            0 0 10px rgba(154, 255, 0, 0.45),
+            0 0 26px rgba(90, 200, 0, 0.30);
+        filter: brightness(1);
+        transform: translate(0, 0);
+    }
+    6% {
+        text-shadow:
+            0 0 14px rgba(180, 255, 30, 0.65),
+            0 0 36px rgba(120, 230, 0, 0.45),
+            0 0 60px rgba(70, 180, 0, 0.25);
+        filter: brightness(1.15);
+        transform: translate(0, 0);
+    }
+    11% {
+        text-shadow:
+            0 0 10px rgba(154, 255, 0, 0.45),
+            0 0 26px rgba(90, 200, 0, 0.30);
+        filter: brightness(1);
+        transform: translate(0, 0);
+    }
+    24% {
+        text-shadow:
+            0 0 16px rgba(210, 255, 80, 0.9),
+            0 0 44px rgba(150, 255, 0, 0.6),
+            0 0 80px rgba(90, 210, 0, 0.35);
+        filter: brightness(1.55);
+        transform: translate(1px, -1px);
+    }
+    29% {
+        text-shadow:
+            0 0 10px rgba(154, 255, 0, 0.45),
+            0 0 26px rgba(90, 200, 0, 0.30);
+        filter: brightness(1);
+        transform: translate(0, 0);
+    }
+    40% {
+        text-shadow:
+            0 0 14px rgba(180, 255, 30, 0.65),
+            0 0 36px rgba(120, 230, 0, 0.45),
+            0 0 60px rgba(70, 180, 0, 0.25);
+        filter: brightness(1.08);
+        transform: translate(0, 0);
+    }
+    45% {
+        text-shadow:
+            0 0 10px rgba(154, 255, 0, 0.45),
+            0 0 26px rgba(90, 200, 0, 0.30);
+        filter: brightness(1);
+        transform: translate(0, 0);
+    }
+    55% {
+        text-shadow:
+            0 0 16px rgba(210, 255, 80, 0.9),
+            0 0 44px rgba(150, 255, 0, 0.6),
+            0 0 80px rgba(90, 210, 0, 0.35);
+        filter: brightness(1.45);
+        transform: translate(-1px, 1px);
+    }
+    60% {
+        text-shadow:
+            0 0 10px rgba(154, 255, 0, 0.45),
+            0 0 26px rgba(90, 200, 0, 0.30);
+        filter: brightness(1);
+        transform: translate(0, 0);
+    }
+    70% {
+        text-shadow:
+            0 0 14px rgba(180, 255, 30, 0.65),
+            0 0 36px rgba(120, 230, 0, 0.45),
+            0 0 60px rgba(70, 180, 0, 0.25);
+        filter: brightness(1.2);
+        transform: translate(0, 0);
+    }
+    75% {
+        text-shadow:
+            0 0 10px rgba(154, 255, 0, 0.45),
+            0 0 26px rgba(90, 200, 0, 0.30);
+        filter: brightness(1);
+        transform: translate(0, 0);
+    }
+    86% {
+        text-shadow:
+            0 0 16px rgba(210, 255, 80, 0.9),
+            0 0 44px rgba(150, 255, 0, 0.6),
+            0 0 80px rgba(90, 210, 0, 0.35);
+        filter: brightness(1.6);
+        transform: translate(1px, 1px);
+    }
+    91% {
+        text-shadow:
+            0 0 10px rgba(154, 255, 0, 0.45),
+            0 0 26px rgba(90, 200, 0, 0.30);
+        filter: brightness(1);
+        transform: translate(0, 0);
+    }
+    100% {
+        text-shadow:
+            0 0 10px rgba(154, 255, 0, 0.45),
+            0 0 26px rgba(90, 200, 0, 0.30);
+        filter: brightness(1);
+        transform: translate(0, 0);
+    }
+}

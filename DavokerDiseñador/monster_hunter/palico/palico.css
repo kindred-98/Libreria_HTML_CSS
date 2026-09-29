@@ -1,0 +1,104 @@
+/* ================================================================
+   EFECTO 73: PALICO - el palico raya el texto y suena su cascabel (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-palico">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-palico, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son EL PALICO: rayas de gato cruzan el
+      texto, toda la palabra da un rebote juguetón, una
+      huella de manita se estampa en el centro y el brillo
+      del cascabel repunta abajo a la derecha. El compañero
+      felino, dentro de las letras.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: repeating-linear-gradient de rayas con background-clip:
+    text, transform por tramos para el rebote, huella
+    ::before dibujada con tres radial-gradient de dedos y
+    uno de almohadilla, cascabel ::after con resplandor.
+   ================================================================ */
+
+
+.efecto-palico {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        repeating-linear-gradient(104deg,
+            rgba(70, 30, 6, .45) 0 .17em,
+            rgba(70, 30, 6, 0) .17em .6em),
+        linear-gradient(180deg, #ffd9a0 0%, #ff9d3f 42%, #e2661a 74%,
+                #8a3608 100%);
+    background-size: 1.5em 1.5em, 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(255, 157, 63, .55));
+
+    animation: mh-palico-rebote 2.6s ease-in-out infinite;
+}
+
+/* huella de manita que se estampa sobre el texto */
+.efecto-palico::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: .9em;
+    height: .9em;
+    margin: -.45em 0 0 -.45em;
+    background-image:
+        radial-gradient(circle at 24% 32%, #fff3e0 0 .1em,
+                rgba(255, 243, 224, 0) .14em),
+        radial-gradient(circle at 50% 20%, #fff3e0 0 .1em,
+                rgba(255, 243, 224, 0) .14em),
+        radial-gradient(circle at 76% 32%, #fff3e0 0 .1em,
+                rgba(255, 243, 224, 0) .14em),
+        radial-gradient(ellipse at 50% 74%, #fff3e0 0 .22em,
+                rgba(255, 243, 224, 0) .3em);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-palico-huella 2.6s ease-out infinite;
+}
+
+/* destello del cascabel */
+.efecto-palico::after {
+    content: "";
+    position: absolute;
+    left: 76%;
+    bottom: -.3em;
+    width: .3em;
+    height: .3em;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, #ffe082 42%,
+                rgba(255, 193, 7, .4) 66%, rgba(255, 193, 7, 0) 82%);
+    opacity: .8;
+    pointer-events: none;
+    animation: mh-palico-cascabel 2.6s ease-in-out infinite;
+}
+
+@keyframes mh-palico-rebote {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    22%      { transform: translateY(-.1em) rotate(-3deg); }
+    44%      { transform: translateY(.04em) rotate(2deg); }
+    66%      { transform: translateY(-.06em) rotate(-2deg); }
+    84%      { transform: translateY(0) rotate(0); }
+}
+@keyframes mh-palico-huella {
+    0%, 34%  { opacity: 0; transform: scale(.5) rotate(-14deg); }
+    44%      { opacity: .95; transform: scale(1) rotate(-8deg); }
+    58%      { opacity: .8; transform: scale(1.02) rotate(-8deg); }
+    74%,100% { opacity: 0; transform: scale(1.2) rotate(-6deg); }
+}
+@keyframes mh-palico-cascabel {
+    0%, 100% { opacity: .5; transform: scale(.85); }
+    30%      { opacity: 1; transform: scale(1.15); }
+    60%      { opacity: .6; transform: scale(.95); }
+}

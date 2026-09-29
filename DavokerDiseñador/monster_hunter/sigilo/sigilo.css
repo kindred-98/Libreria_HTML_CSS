@@ -1,0 +1,99 @@
+/* ================================================================
+   EFECTO 76: SIGILO - las letras se funden con la sombra (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-sigilo">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-sigilo, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras SE FUNDEN CON LA SOMBRA: una banda oscura
+      las recorre, las apaga un instante y sigue de largo,
+      mientras una rendija de ojo se abre y se cierra en el
+      borde como si alguien vigilara el paso. Moverte sin
+      ser visto, dentro del texto.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: dos linear-gradient con background-clip: text (banda de
+    sombra de 240% de ancho con background-position
+    animado + degradado base), rendija ::before con
+    radial-gradient y scaleY, estela ::after con
+    translateX y rotate.
+   ================================================================ */
+
+
+.efecto-sigilo {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(104deg, rgba(6, 10, 20, 0) 0 36%,
+                rgba(6, 10, 20, .93) 48%,
+                rgba(6, 10, 20, 0) 60%),
+        linear-gradient(180deg, #eceff1 0%, #b0bec5 44%, #546e7a 78%,
+                #263238 100%);
+    background-size: 240% 100%, 100% 100%;
+    background-position: 100% 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(120, 160, 200, .4));
+
+    animation: mh-sigilo-sombra 5s ease-in-out infinite;
+}
+
+/* rendija de ojo que se abre en el borde de las letras */
+.efecto-sigilo::before {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 50%;
+    height: .3em;
+    margin-top: -.15em;
+    background: radial-gradient(ellipse at 50% 50%,
+                #ffffff 0 6%, #b3e5fc 22%, rgba(3, 169, 244, .6) 48%,
+                rgba(3, 169, 244, 0) 76%);
+    border-radius: 50%;
+    opacity: .7;
+    pointer-events: none;
+    animation: mh-sigilo-ojo 5s ease-in-out infinite;
+}
+
+/* estela diagonal que pasa de largo */
+.efecto-sigilo::after {
+    content: "";
+    position: absolute;
+    left: -30%;
+    top: -20%;
+    width: 26%;
+    height: 140%;
+    background: linear-gradient(96deg, rgba(236, 239, 241, 0),
+                rgba(236, 239, 241, .75) 50%, rgba(236, 239, 241, 0));
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-sigilo-estela 5s ease-in infinite;
+}
+
+@keyframes mh-sigilo-sombra {
+    0%   { background-position: 100% 0, 0 0; }
+    50%  { background-position: 0% 0, 0 0; }
+    100% { background-position: 100% 0, 0 0; }
+}
+@keyframes mh-sigilo-ojo {
+    0%, 100% { opacity: 0; transform: scaleY(.12); }
+    24%      { opacity: .55; transform: scaleY(.7); }
+    44%      { opacity: 1; transform: scaleY(1.15); }
+    62%      { opacity: .6; transform: scaleY(.6); }
+    78%      { opacity: 0; transform: scaleY(.12); }
+}
+@keyframes mh-sigilo-estela {
+    0%, 56%  { opacity: 0; transform: translateX(0) rotate(14deg); }
+    66%      { opacity: .85; transform: translateX(320%) rotate(14deg); }
+    88%,100% { opacity: 0; transform: translateX(700%) rotate(14deg); }
+}

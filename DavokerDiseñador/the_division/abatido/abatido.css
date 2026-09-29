@@ -1,0 +1,89 @@
+/* ================================================================
+   EFECTO 27: ABATIDO - electrocardiograma de agente abatido (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-abatido">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-abatido, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras laten con un ELECTROCARDIOGRAMA: una línea
+      con su pico cruza el texto de izquierda a derecha y
+      deja un trazo plano (línea de base) en el que el texto
+      se apaga a gris durante unos segundos… y vuelve a
+      latir. Como un monitor de signos vitales.
+      Fondo casi negro recomendado.
+
+   TÉCNICA: background-clip: text + ::before (línea de base) y
+    ::after recortado con clip-path (el pico) viajando
+    con left animado; filter grayscale en el paro.
+   ================================================================ */
+
+
+.efecto-abatido {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(90deg, #ff8a80, #f44336 55%, #7f0000);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: abatido-estado 3.2s ease-in-out infinite;
+}
+
+/* línea de base: solo se ve durante la fase de paro */
+.efecto-abatido::before {
+    content: "";
+    position: absolute;
+    left: -.4em;
+    right: -.4em;
+    top: 50%;
+    height: 2px;
+    background: #ff5252;
+    opacity: 0;
+    animation: abatido-linea 3.2s ease-in-out infinite;
+}
+
+/* el pico del ECG: una barra recortada en forma de latido */
+.efecto-abatido::after {
+    content: "";
+    position: absolute;
+    top: 20%;
+    bottom: 20%;
+    left: -10%;
+    width: .5em;
+    background: #ffea00;
+    box-shadow: 0 0 6px rgba(255, 234, 0, .8);
+    clip-path: polygon(
+        0% 49%, 44% 49%, 50% 5%, 56% 49%, 76% 49%, 80% 96%, 84% 49%,
+        100% 49%, 100% 53%, 84% 53%, 80% 99%, 76% 53%, 56% 53%,
+        50% 8%, 44% 53%, 0% 53%);
+    opacity: 0;
+    animation: abatido-trazo 3.2s linear infinite;
+}
+
+@keyframes abatido-estado {
+    0%, 50%  { filter: grayscale(0) brightness(1); }
+    55%      { filter: grayscale(0) brightness(1.4); }
+    60%      { filter: grayscale(.85) brightness(.7); }
+    95%      { filter: grayscale(.85) brightness(.7); }
+    100%     { filter: grayscale(0) brightness(1); }
+}
+@keyframes abatido-linea {
+    0%, 44%  { opacity: 0; }
+    46%, 92% { opacity: .9; }
+    100%     { opacity: 0; }
+}
+@keyframes abatido-trazo {
+    0%    { left: -10%; opacity: 0; }
+    4%    { opacity: 1; }
+    40%   { left: 105%; opacity: 1; }
+    44%   { left: 105%; opacity: 0; }
+    100%  { left: 105%; opacity: 0; }
+}

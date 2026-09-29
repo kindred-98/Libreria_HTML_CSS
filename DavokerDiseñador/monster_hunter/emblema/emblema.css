@@ -1,0 +1,86 @@
+/* ================================================================
+   EFECTO 63: EMBLEMA - blasón con su tipografía e iconografía del juego (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-emblema">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-emblema, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      El texto adopta EL ESTILO GRÁFICO DE LA SERIE: caja
+      alta, tipografía con seriras y tracking muy abierto,
+      oro bruñido en degradado, marco heráldico con esquinas
+      cortadas, remaches y tres tajos de garra que lo cruzan.
+      Es el mismo lenguaje de emblema de las armas y de los
+      iconos de estado del juego. Fondo oscuro recomendado.
+
+   TÉCNICA: background-clip: text con degradado de oro animado,
+    text-transform + letter-spacing para la voz de la
+    casa, marco ::before recortado con clip-path y
+    tajos ::after con repeating-linear-gradient.
+   ================================================================ */
+
+
+.efecto-emblema {
+    display: inline-block;
+    position: relative;
+
+    padding: .2em .5em;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-weight: 700;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    background-image: linear-gradient(180deg, #fff8e1 0%, #ffd54f 30%,
+                      #b8860b 54%, #ffe082 72%, #8a6516 100%);
+    background-size: 100% 240%;
+    background-position: 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 6px rgba(255, 193, 7, .45));
+
+    animation: mh-emblema-oro 4.2s ease-in-out infinite;
+}
+
+/* marco heráldico con las cuatro esquinas cortadas y doble filete */
+.efecto-emblema::before {
+    content: "";
+    position: absolute;
+    inset: -.24em -.4em;
+    border: .07em solid rgba(255, 213, 79, .9);
+    box-shadow: inset 0 0 0 .06em rgba(255, 193, 7, .35),
+                0 0 8px rgba(255, 193, 7, .3);
+    clip-path: polygon(0 14%, 7% 0, 93% 0, 100% 14%,
+                       100% 86%, 93% 100%, 7% 100%, 0 86%);
+    pointer-events: none;
+}
+
+/* tres tajos de garra que barren el blasón */
+.efecto-emblema::after {
+    content: "";
+    position: absolute;
+    inset: -.3em -.55em;
+    background: repeating-linear-gradient(116deg,
+                rgba(255, 255, 255, 0) 0 .46em,
+                rgba(255, 246, 220, .8) .46em .56em,
+                rgba(255, 255, 255, 0) .56em 1.5em);
+    opacity: 0;
+    pointer-events: none;
+    animation: mh-emblema-tajo 4.2s ease-out infinite;
+}
+
+@keyframes mh-emblema-oro {
+    0%, 100% { background-position: 0 0; }
+    50%      { background-position: 0 100%; }
+}
+@keyframes mh-emblema-tajo {
+    0%, 64%  { opacity: 0; transform: translateX(-7%); }
+    72%      { opacity: .95; transform: translateX(2%); }
+    88%,100% { opacity: 0; transform: translateX(12%); }
+}

@@ -1,0 +1,93 @@
+/* ================================================================
+   EFECTO 8: HOLOGRAMA - proyección con scanlines (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-holograma">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-holograma y los 2 @keyframes).
+
+   QUÉ HACE:
+     Las letras parecen una PROYECCIÓN HOLOGRÁFICA cyan:
+     · Líneas de barrido (scanlines) que ruedan hacia arriba
+       sin parar, como una pantalla de ciencia ficción.
+     · Parpadeos con caídas de señal: cada pocos segundos el
+       holograma "parpadea" y un instante parece apagarse
+       antes de recupararse.
+     Fondo casi negro recomendado.
+
+   TÉCNICA: background-clip: text (scanlines + degradado
+   cian) + filter/opacity/transform animados con steps(1).
+   ================================================================ */
+
+.efecto-holograma {
+    display: inline-block;
+
+    background-image:
+        /* scanlines finas que ruedan sobre el texto */
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 20, 30, .55)   0 2px,
+            rgba(0, 0, 0, 0)       2px 5px
+        ),
+        /* tonos cian del proyector */
+        linear-gradient(
+            90deg,
+            #00e5ff,
+            #18ffff,
+            #00b0f9,
+            #80f8ff,
+            #00e5ff
+        );
+
+    background-size: auto, 300% 100%;
+
+    /* la proyección se pinta SOLO dentro de las letras */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    /* halo fijo del proyector (lo mantiene el base;
+       las animaciones no tocan text-shadow) */
+    text-shadow:
+        0 0 12px rgba(0, 229, 255, .55),
+        0 0 34px rgba(0, 180, 255, .35);
+
+    animation:
+        holo-movimiento 1s linear infinite,
+        holo-flicker 3.4s steps(1, end) infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* Las scanlines suben -50px por vuelta = 10 ciclos de 5px:
+   barrido continuo sin saltos. El degradado cian no se mueve. */
+@keyframes holo-movimiento {
+    0%   { background-position: 0 0, 0% 50%; }
+    100% { background-position: 0 -50px, 0% 50%; }
+}
+
+/* Interferencias del proyector: brillos, temblor y caídas
+   de señal. Usa steps(1): cada fotograma se MANTIENE hasta
+   el siguiente (parpadeo seco, de máquina). */
+@keyframes holo-flicker {
+    0%   { filter: brightness(1.1);  opacity: 1;    transform: translate(0, 0); }
+    14%  { filter: brightness(1.35); opacity: 1;    transform: translate(0, 0); }
+    18%  { filter: brightness(1.05); opacity: 1;    transform: translate(0, 0); }
+    40%  { filter: brightness(1.2);  opacity: 1;    transform: translate(0, 0); }
+    44%  { filter: brightness(1.05); opacity: 1;    transform: translate(0, 0); }
+    62%  { filter: brightness(.7);   opacity: .35;  transform: translate(0, 1px); }
+    66%  { filter: brightness(1.25); opacity: 1;    transform: translate(0, 0); }
+    80%  { filter: brightness(1.15); opacity: 1;    transform: translate(0, 0); }
+    84%  { filter: brightness(1.05); opacity: 1;    transform: translate(0, 0); }
+    95%  { filter: brightness(.85);  opacity: .5;   transform: translate(0, 0); }
+    97%  { filter: brightness(1.15); opacity: 1;    transform: translate(0, 0); }
+    100% { filter: brightness(1.1);  opacity: 1;    transform: translate(0, 0); }
+}

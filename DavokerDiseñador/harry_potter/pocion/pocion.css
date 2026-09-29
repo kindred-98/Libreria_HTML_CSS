@@ -1,0 +1,100 @@
+/* ================================================================
+   EFECTO 88: POCIÓN - las letras hierven como un brebaje verde (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-pocion">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-pocion, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son un BREBAJE EN EBULLICIÓN: burbujas verdes
+      suben dentro del texto, el nivel del caldero sube y baja,
+      un vaho de color sube por encima y una burbuja grande
+      crece y revienta en la parte superior. Herbolario.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: dos radial-gradient de burbujas y degradado de brebaje
+    con background-clip: text y background-position
+    animado, vaho ::before ascendente y burbuja ::after
+    que revienta con transform: scale.
+   ================================================================ */
+
+
+.efecto-pocion {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        radial-gradient(circle at 22% 74%, rgba(230, 255, 240, .85) 0 .11em,
+                rgba(230, 255, 240, 0) .2em),
+        radial-gradient(circle at 68% 88%, rgba(230, 255, 240, .7) 0 .08em,
+                rgba(230, 255, 240, 0) .16em),
+        linear-gradient(180deg, #1de9b6 0%, #7cff9e 44%, #35c96f 78%,
+                #0e7a4a 100%);
+    background-size: .58em .58em, .44em .44em, 100% 190%;
+    background-position: 0 0, 0 0, 50% 70%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 9px rgba(45, 226, 160, .5));
+
+    animation: hp-pocion-hierve 4.6s linear infinite;
+}
+
+/* vaho del caldero subiendo por encima de la palabra */
+.efecto-pocion::before {
+    content: "";
+    position: absolute;
+    left: -2%;
+    right: -2%;
+    top: -.5em;
+    height: .6em;
+    background: linear-gradient(0deg, rgba(180, 255, 220, .55),
+                rgba(180, 255, 220, 0));
+    filter: blur(.1em);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-pocion-vaho 4.6s ease-out infinite;
+}
+
+/* burbuja grande que sube y revienta */
+.efecto-pocion::after {
+    content: "";
+    position: absolute;
+    right: 12%;
+    top: -.34em;
+    width: .3em;
+    height: .3em;
+    border-radius: 50%;
+    border: .045em solid rgba(230, 255, 240, .9);
+    background: radial-gradient(circle at 34% 30%,
+                rgba(255, 255, 255, .95) 0%, rgba(180, 255, 220, .3) 46%,
+                rgba(180, 255, 220, 0) 78%);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-pocion-burbuja 4.6s ease-in infinite;
+}
+
+@keyframes hp-pocion-hierve {
+    0%   { background-position: 0 0, 0 0, 50% 70%; }
+    100% { background-position: 0 -.58em, 0 -.44em, 50% 56%; }
+}
+@keyframes hp-pocion-vaho {
+    0%, 34%  { opacity: 0; transform: translateY(0); }
+    50%      { opacity: .9; }
+    86%      { opacity: .25; }
+    100%     { opacity: 0; transform: translateY(-.45em); }
+}
+@keyframes hp-pocion-burbuja {
+    0%, 46%  { opacity: 0; transform: translateY(0) scale(.4); }
+    56%      { opacity: .95; transform: translateY(-.18em) scale(1); }
+    74%      { opacity: .95; transform: translateY(-.3em) scale(1.35); }
+    82%      { opacity: .9; transform: translateY(-.34em) scale(.25); }
+    86%      { opacity: .7; transform: translateY(-.34em) scale(1.7); }
+    94%,100% { opacity: 0; transform: translateY(-.34em) scale(1.9); }
+}

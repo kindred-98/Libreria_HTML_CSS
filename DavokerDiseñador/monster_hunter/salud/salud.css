@@ -1,0 +1,68 @@
+/* ================================================================
+   EFECTO 64: SALUD - la barra de vida se vacía y vuelve a llenarse (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-salud">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-salud, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras llevan LA BARRA DE VIDA: el texto se tiñe
+      con el degradado verde-amarillo-rojo de la barra y un
+      filete inferior se vacía hasta el rojo (peligro) y
+      vuelve a llenarse, mientras el corazón late. Toda la
+      vida de la barra, dentro del texto.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: background-clip: text con degradado de vida y
+    background-position animado + filete ::after con
+    transform: scaleX y transform-origin a la izquierda.
+   ================================================================ */
+
+
+.efecto-salud {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(90deg, #2e7d32 0%, #66bb6a 16%,
+                      #ffd54f 44%, #ff8a3d 64%, #e53935 82%, #7f1d1d 100%);
+    background-size: 230% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(76, 175, 80, .4));
+
+    animation: mh-salud-relleno 4.8s ease-in-out infinite;
+}
+
+/* filete de vida que se vacía bajo las letras */
+.efecto-salud::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -.2em;
+    height: .13em;
+    background: linear-gradient(90deg, #e53935, #ffb300 55%, #43a047);
+    transform-origin: 0 50%;
+    opacity: .85;
+    pointer-events: none;
+    animation: mh-salud-peligro 4.8s ease-in-out infinite;
+}
+
+@keyframes mh-salud-relleno {
+    0%, 16%  { background-position: 100% 0; }
+    60%, 74% { background-position: 0% 0; }
+    100%     { background-position: 100% 0; }
+}
+@keyframes mh-salud-peligro {
+    0%, 16%  { transform: scaleX(.14); }
+    60%, 74% { transform: scaleX(1); }
+    100%     { transform: scaleX(.14); }
+}

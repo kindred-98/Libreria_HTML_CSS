@@ -1,0 +1,53 @@
+================================================================
+EFECTO SAPO - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "sapo.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/sapo.css">
+
+Contenido del archivo:
+  · La clase .efecto-sapo
+  · Sus pseudo-elementos ::before y ::after
+    (polvo ::before y destello ::after)
+  ·   · hp-sapo-salto, hp-sapo-polvo, hp-sapo-destello
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-sapo">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-sapo">SAPO</span></h1>
+
+
+QUÉ HACE
+--------
+Tres animaciones en bucle infinito (2,6 s):
+  · hp-sapo-salto → el salto completo: agachón (scaleY .9),
+    impulso hacia arriba, vuelo, aterrizaje con estirón
+    (scaleX 1.08 / scaleY .88) y recuperación.
+  · hp-sapo-polvo → el polvo salta exactamente en el
+    aterrizaje, cuando el transform ya está en cero.
+  · hp-sapo-destello → doble titileo del destello dorado
+    en steps, en el hueco del vuelo.
+Como el saltar es transform, la palabra no mueve nada a su
+alrededor: cabe en cualquier línea.
+
+TÉCNICA: degradado violeta/oro con background-clip: text y
+    keyframes de transform sobre el propio elemento
+    (translateY + scaleX/scaleY de estirón), polvo
+    ::before sincronizado con la caída y destello
+    ::after en steps.
+
+
+AJUSTES FÁCILES
+---------------
+· Salto más alto: -.32em → -.5em en hp-sapo-salto.
+· Caída más blanda: 2.6s → 3.4s en los tres keyframes.
+· Sin polvo: borra el ::before y hp-sapo-polvo.
+· Violeta uva: #ab47bc → #7b1fa2 en el degradado.

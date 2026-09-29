@@ -1,0 +1,56 @@
+================================================================
+EFECTO BESTIA - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "bestia.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/bestia.css">
+
+Contenido del archivo:
+  · La clase .efecto-bestia
+  · Sus pseudo-elementos ::before y ::after
+    (cresta de púas ::before y ojo rojo ::after)
+  ·   · mh-bestia-piel, mh-bestia-latido, mh-bestia-cresta,
+    mh-bestia-ojo
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-bestia">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-bestia">BESTIA</span></h1>
+
+
+QUÉ HACE
+--------
+Cuatro animaciones en bucle infinito:
+  · mh-bestia-piel (4,4 s) → las dos tramas de pelo se
+    desplazan en sentido contrario dentro de las letras; el
+    salto es igual al tamaño del patrón, así que no se ve.
+  · mh-bestia-latido (4,4 s) → el halo carmesí del texto
+    late a dos tiempos: se anima el drop-shadow entero.
+  · mh-bestia-cresta (4,4 s) → la fila de púas del borde
+    superior sube y baja con la respiración.
+  · mh-bestia-ojo (4,4 s) → el ojo rojo que hay al lado se
+    abre, mira y vuelve a cerrarse (scaleY desde el centro).
+La piel no es una imagen: son dos repeating-linear-gradient
+a 78 y -78 grados con background-size en em.
+
+TÉCNICA: tres background-image con background-clip: text (dos
+    tramas finísimas a 78 y -78 grados + degradado
+    carmesí) con background-position animado, cresta
+    ::before con clip-path en dientes de sierra y ojo
+    ::after con radial-gradient y scaleY.
+
+
+AJUSTES FÁCILES
+---------------
+· Piel más cerrada: sube el .45 del alfa de las tramas.
+· Ojo más cruel: cambia el #ff5252 por #d50000.
+· Sin cresta: borra el ::before y mh-bestia-cresta.
+· Latido más fuerte: sube el 26px del halo a 40px.

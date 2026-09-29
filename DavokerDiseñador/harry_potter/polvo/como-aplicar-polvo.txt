@@ -1,0 +1,53 @@
+================================================================
+EFECTO POLVO - CÓMO APLICARLO A CUALQUIER ARCHIVO .CSS
+================================================================
+
+PASO 1 - COPIA EL CSS
+---------------------
+Copia TODO el archivo "polvo.css" dentro de tu hoja de estilos
+(o enlázalo desde tu HTML con):
+
+    <link rel="stylesheet" href="ruta/polvo.css">
+
+Contenido del archivo:
+  · La clase .efecto-polvo
+  · Sus pseudo-elementos ::before y ::after
+    (voluta ::before y rescoldo ::after)
+  ·   · hp-polvo-fantasma, hp-polvo-voluta, hp-polvo-rescoldo
+
+
+PASO 2 - AÑADE EL TEXTO EN TU HTML
+-----------------------------------
+    <span class="efecto-polvo">Tu texto</span>
+
+Ejemplo real:
+
+    <h1><span class="efecto-polvo">POLVO</span></h1>
+
+
+QUÉ HACE
+--------
+Tres animaciones en bucle infinito (4,2 s):
+  · hp-polvo-fantasma → las paradas del degradado pasan de
+    alpha 1 a 0: las letras se van y vuelven. NO se anima
+    opacity (los pseudos se irían con ellas).
+  · hp-polvo-voluta → la voluta verde estalla justo en la
+    ventana del apagado y se desvanece al abrirse.
+  · hp-polvo-rescoldo → chispas verdes parpadeando en
+    steps, antes y después del salto.
+La causa y el efecto comparten ventana: al desaparecer el
+texto, la voluta está en su pico.
+
+TÉCNICA: intercalado de background-image con paradas en rgba()
+    dentro de @keyframes (se apagan las letras sin tocar
+    la opacidad del elemento, que apagaría los pseudos),
+    voluta ::before con radial-gradient que escala y
+    rescoldo ::after en steps.
+
+
+AJUSTES FÁCILES
+---------------
+· Verde más menta: #64ffd2 → #b9ffe8 en el degradado.
+· Voluta más grande: escala final 1.55 → 1.9.
+· Sin rescoldos: borra el ::after y hp-polvo-rescoldo.
+· Ventana más corta: 44%/56% → 46%/52%.

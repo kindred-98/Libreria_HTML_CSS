@@ -1,0 +1,128 @@
+/* ================================================================
+   EFECTO 3: FUEGO / TEXTO EN LLAMAS (CSS puro) — efecto original
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-fuego">Tu texto</span>
+
+   (Sin atributos extra: solo la clase. Se recomienda que el
+   texto sea en negrita para que las llamas tengan volumen.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-fuego y los 2 @keyframes).
+     No depende de ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:  dos animaciones simultáneas en bucle infinito
+     · fuego-llamas → 4 capas de text-shadow (núcleo blanco-
+       amarillo, lengüeta naranja, resplandor rojo y brillo
+       inferior) que cambian cada 0,9 s en salto seco = fuego
+       que chisporrotea SIN PARAR.
+     · fuego-calor  → skew + scale suaves: las letras ondulan
+       como temblor por el calor.
+
+   TÉCNICA: animación de text-shadow + transform. Nada más.
+   ================================================================ */
+
+.efecto-fuego {
+    display: inline-block;      /* imprescindible para poder aplicar transform */
+    position: relative;
+    color: #fff3c4;             /* núcleo de la llama */
+    text-shadow:
+        0 0 8px rgba(255, 245, 157, 0.95),
+        0 -8px 16px rgba(255, 152, 0, 0.9),
+        0 -18px 34px rgba(255, 61, 0, 0.7),
+        0 10px 22px rgba(211, 47, 47, 0.5);
+    animation:
+        fuego-llamas 0.9s steps(1, end) infinite,
+        fuego-calor 1.6s ease-in-out infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* Lengüetas: 8 fotogramas en bucle (el fuego "chisporrotea") */
+@keyframes fuego-llamas {
+    0% {
+        color: #fff3c4;
+        text-shadow:
+            0 0 8px rgba(255, 245, 157, 0.95),
+            0 -8px 16px rgba(255, 152, 0, 0.9),
+            0 -18px 34px rgba(255, 61, 0, 0.7),
+            0 10px 22px rgba(211, 47, 47, 0.5);
+    }
+    12% {
+        color: #ffe082;
+        text-shadow:
+            0 0 6px rgba(255, 245, 157, 0.95),
+            0 -15px 18px rgba(255, 111, 0, 0.95),
+            0 -28px 42px rgba(244, 67, 54, 0.7),
+            0 8px 20px rgba(211, 47, 47, 0.45);
+    }
+    25% {
+        color: #fff8e1;
+        text-shadow:
+            0 0 10px rgba(255, 245, 157, 1),
+            0 -6px 14px rgba(255, 193, 7, 0.9),
+            4px -22px 36px rgba(255, 87, 34, 0.75),
+            0 12px 24px rgba(211, 47, 47, 0.5);
+    }
+    37% {
+        color: #ffe082;
+        text-shadow:
+            0 0 7px rgba(255, 245, 157, 0.95),
+            0 -18px 20px rgba(255, 87, 34, 0.95),
+            -5px -30px 44px rgba(244, 67, 54, 0.7),
+            0 7px 18px rgba(211, 47, 47, 0.4);
+    }
+    50% {
+        color: #fff3c4;
+        text-shadow:
+            0 0 9px rgba(255, 245, 157, 1),
+            0 -10px 15px rgba(255, 152, 0, 0.9),
+            0 -24px 38px rgba(255, 61, 0, 0.75),
+            5px 11px 23px rgba(211, 47, 47, 0.5);
+    }
+    62% {
+        color: #ffe082;
+        text-shadow:
+            0 0 6px rgba(255, 245, 157, 0.9),
+            -4px -16px 19px rgba(255, 111, 0, 0.95),
+            0 -32px 46px rgba(244, 67, 54, 0.7),
+            0 9px 21px rgba(211, 47, 47, 0.45);
+    }
+    75% {
+        color: #fff8e1;
+        text-shadow:
+            0 0 11px rgba(255, 245, 157, 1),
+            0 -7px 13px rgba(255, 193, 7, 0.9),
+            3px -20px 32px rgba(255, 87, 34, 0.8),
+            0 13px 25px rgba(211, 47, 47, 0.5);
+    }
+    87% {
+        color: #ffe082;
+        text-shadow:
+            0 0 7px rgba(255, 245, 157, 0.95),
+            0 -13px 17px rgba(255, 152, 0, 0.9),
+            -3px -26px 40px rgba(244, 67, 54, 0.75),
+            0 8px 19px rgba(211, 47, 47, 0.45);
+    }
+    100% {
+        color: #fff3c4;
+        text-shadow:
+            0 0 8px rgba(255, 245, 157, 0.95),
+            0 -8px 16px rgba(255, 152, 0, 0.9),
+            0 -18px 34px rgba(255, 61, 0, 0.7),
+            0 10px 22px rgba(211, 47, 47, 0.5);
+    }
+}
+
+/* Temblor por el calor: ondulación continua de las letras */
+@keyframes fuego-calor {
+    0%, 100% { transform: skewX(0deg) scale(1); }
+    20%      { transform: skewX(-1.2deg) scaleY(1.015); }
+    40%      { transform: skewX(0.8deg) scaleY(0.99); }
+    60%      { transform: skewX(-0.6deg) scaleY(1.02); }
+    80%      { transform: skewX(1.2deg) scaleY(0.995); }
+}

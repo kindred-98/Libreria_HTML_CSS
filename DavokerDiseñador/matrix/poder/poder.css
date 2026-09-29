@@ -1,0 +1,65 @@
+/* ================================================================
+   EFECTO 60: PODER - despierta el poder: el texto crece en luz (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-poder">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-poder, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras DESPIERTAN EL PODER: el bloque crece con
+      un fogonazo verde que lo aclara y ensancha, un haz
+      de luz sube desde abajo por detrás del texto y todo
+      vuelve a encogerse con suavidad.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: transform: scale + filter: brightness y text-shadow
+    en la clase + pseudo-elemento-hazo de luz que se
+    estira con scaleY desde abajo.
+   ================================================================ */
+
+
+.efecto-poder {
+    display: inline-block;
+    position: relative;
+
+    color: #b9f6ca;
+    text-shadow: 0 0 12px rgba(0, 255, 140, .5);
+
+    animation: mx-poder 5s ease-out infinite;
+}
+
+/* el haz de luz que sube desde abajo */
+.efecto-poder::after {
+    content: "";
+    position: absolute;
+    left: 44%;
+    right: 44%;
+    bottom: -46%;
+    height: 130%;
+    background: linear-gradient(0deg, rgba(0, 255, 150, .6),
+                rgba(0, 255, 150, .12) 55%, transparent);
+    filter: blur(5px);
+    opacity: 0;
+    transform-origin: 50% 100%;
+    animation: mx-poder-hazo 5s ease-out infinite;
+}
+
+@keyframes mx-poder {
+    0%, 12%  { transform: scale(1); filter: brightness(1);
+               text-shadow: 0 0 12px rgba(0, 255, 140, .5); }
+    46%      { transform: scale(1.16); filter: brightness(1.9);
+               text-shadow: 0 0 28px rgba(0, 255, 150, .95),
+                            0 0 64px rgba(0, 230, 130, .6); }
+    100%     { transform: scale(1); filter: brightness(1);
+               text-shadow: 0 0 12px rgba(0, 255, 140, .5); }
+}
+@keyframes mx-poder-hazo {
+    0%, 14%  { opacity: 0; transform: scaleY(.35); }
+    46%      { opacity: .95; transform: scaleY(1); }
+    86%,100% { opacity: 0; transform: scaleY(1.15); }
+}

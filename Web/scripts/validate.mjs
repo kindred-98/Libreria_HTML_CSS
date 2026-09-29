@@ -121,7 +121,8 @@ for (const [id, references] of brokenReferences) {
 }
 
 // 5. Todo demo del disco tiene que estar en el catalogo. Este es el aviso que
-//    evita que un demo nuevo no aparezca nunca en la web.
+//    evita que un demo nuevo no aparezca nunca en la web. Solo cuentan los
+//    index.html: la portada de davoker (davoker.html) no es un componente.
 const libraryRoots = [...new Set(catalog.map((component) => component.root))];
 for (const root of libraryRoots) {
   const rootDirectory = path.join(repositoryDirectory, root);

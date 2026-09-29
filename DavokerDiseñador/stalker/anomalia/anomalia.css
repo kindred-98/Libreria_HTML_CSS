@@ -1,0 +1,89 @@
+/* ================================================================
+   EFECTO 114: ANOMALÍA - las letras se retuercen en el torbellino (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-anomalia">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-anomalia, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son UNA ANOMALÍA VIVA: violeta que se
+      retuerce con translate y skew dentro de la palabra, un
+      TORBELLINO gira detrás del texto y las CHISPAS saltan
+      a saltos fijos sobre las letras.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado violeta recortado en el texto con translate y
+    skewX animados (la palabra se deforma), torbellino
+    ::before con conic-gradient girando y chispas ::after
+    con steps para que salten sin interpolación.
+   ================================================================ */
+
+
+/* --- base: la palabra se retuerce con translate y skew --- */
+.efecto-anomalia {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(126deg, #31185c 0%, #b388ff 34%, #f3e5ff 50%,
+                #7c4dff 66%, #24114a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 .35em rgba(179, 136, 255, .55));
+    animation: stk-anomalia-deformacion 3.6s ease-in-out infinite;
+}
+/* --- torbellino girando detrás del texto --- */
+.efecto-anomalia::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 3em;
+    height: 3em;
+    margin: -1.5em 0 0 -1.5em;
+    border-radius: 50%;
+    background: conic-gradient(rgba(179, 136, 255, 0) 0 40deg,
+                rgba(179, 136, 255, .55) 70deg, rgba(124, 77, 255, 0) 130deg,
+                rgba(243, 229, 255, .4) 200deg, rgba(124, 77, 255, 0) 260deg,
+                rgba(179, 136, 255, .5) 320deg, rgba(179, 136, 255, 0) 360deg);
+    filter: blur(.24em);
+    opacity: .35;
+    pointer-events: none;
+    animation: stk-anomalia-torbellino 7s linear infinite;
+}
+/* --- chispas saltando a saltos fijos --- */
+.efecto-anomalia::after {
+    content: "";
+    position: absolute;
+    inset: -.6em -.8em;
+    background-image:
+        radial-gradient(circle, rgba(243, 229, 255, .95) 0 .1em,
+                rgba(179, 136, 255, 0) .28em),
+        radial-gradient(circle, rgba(206, 166, 255, .8) 0 .08em,
+                rgba(179, 136, 255, 0) .22em);
+    background-size: 30% 46%, 48% 62%;
+    background-repeat: no-repeat;
+    opacity: .6;
+    pointer-events: none;
+    animation: stk-anomalia-chispa 2.8s steps(1, end) infinite;
+}
+@keyframes stk-anomalia-deformacion {
+    0%, 100% { transform: translate(0, 0) skewX(0deg); }
+    22%      { transform: translate(-.06em, .03em) skewX(-5deg); }
+    52%      { transform: translate(.05em, -.03em) skewX(4deg); }
+    76%      { transform: translate(-.03em, -.02em) skewX(-2deg); }
+}
+@keyframes stk-anomalia-torbellino {
+    to       { transform: rotate(360deg); }
+}
+@keyframes stk-anomalia-chispa {
+    0%   { background-position: 16% 24%, 78% 62%; opacity: .2; }
+    50%  { background-position: 62% 70%, 24% 30%; opacity: .85; }
+    100% { background-position: 16% 24%, 78% 62%; opacity: .2; }
+}

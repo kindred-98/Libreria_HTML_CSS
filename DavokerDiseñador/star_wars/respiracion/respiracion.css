@@ -1,0 +1,73 @@
+/* ================================================================
+   EFECTO 40: RESPIRACIÓN - respiración del lado oscuro (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-respiracion">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-respiracion, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras RESPIRAN como Darth Vader: casi negras,
+      se encienden en rojo profundo con halo al INHALAR
+      (4 s de subida), sostienen el aliento y se apagan
+      lentamente al EXHALAR, mientras las ranuras del
+      casco laten a los lados. Fondo negro absoluto
+      recomendado.
+
+   TÉCNICA: color/text-shadow lentos (ciclo de respiración de
+    6 s) + pseudo-elementos de ranuras del casco con
+    opacity sincronizada.
+   ================================================================ */
+
+
+.efecto-respiracion {
+    display: inline-block;
+    position: relative;
+
+    color: #3a0a0e;                /* casi apagada: el aliento la enciende */
+    text-shadow: none;
+
+    animation: respiracion-ciclo 6s ease-in-out infinite;
+}
+
+/* ranuras rojas del casco (fases con el aliento) */
+.efecto-respiracion::before,
+.efecto-respiracion::after {
+    content: "";
+    position: absolute;
+    top: 6%;
+    bottom: 6%;
+    width: .14em;
+    background: linear-gradient(180deg, #b71c1c, rgba(183, 28, 28, 0));
+    opacity: .1;
+    animation: respiracion-borde 6s ease-in-out infinite;
+}
+.efecto-respiracion::before { left: -.55em; }
+.efecto-respiracion::after  {
+    right: -.55em;
+    transform: scaleY(-1);
+}
+
+@keyframes respiracion-ciclo {
+    0%    { color: #3a0a0e; text-shadow: none; }
+    18%   { color: #3a0a0e; text-shadow: none; }
+    40%   { color: #ff1744;
+            text-shadow: 0 0 18px rgba(255, 23, 68, .95),
+                         0 0 44px rgba(183, 28, 28, .6); }
+    44%   { color: #ff1744;
+            text-shadow: 0 0 18px rgba(255, 23, 68, .95),
+                         0 0 44px rgba(183, 28, 28, .6); }
+    62%   { color: #6a0d15; text-shadow: 0 0 8px rgba(255, 23, 68, .4); }
+    86%   { color: #3a0a0e; text-shadow: none; }
+    100%  { color: #3a0a0e; text-shadow: none; }
+}
+@keyframes respiracion-borde {
+    0%, 20%   { opacity: .1; }
+    40%, 46%  { opacity: .9; }
+    70%       { opacity: .35; }
+    90%, 100% { opacity: .1; }
+}

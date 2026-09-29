@@ -1,0 +1,69 @@
+/* ================================================================
+   EFECTO 38: ESTRELLAS - campo de estrellas titilando (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-estrellas">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-estrellas, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son títulos de GUERRA DE LAS GALAXIAS:
+      plata pálida con resplandor que titila, mientras un
+      CAMPO DE ESTRELLAS —dos capas de puntos muy
+      dispersos— cruza lentamente el texto por delante,
+      como polvo cósmico. Fondo azul espacio recomendado.
+
+   TÉCNICA: background-clip: text (plata) + pseudo-elementos con
+    radial-gradient de estrellas en dos capas con
+    distinta velocidad, y text-shadow del titilar.
+   ================================================================ */
+
+
+.efecto-estrellas {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(90deg, #c5cae9, #e8eaf6 45%, #9fa8da);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 12px rgba(165, 175, 240, .6);
+
+    animation: estrellas-latido 3.4s ease-in-out infinite;
+}
+
+/* campo de estrellas: dos capas con distinta velocidad */
+.efecto-estrellas::before,
+.efecto-estrellas::after {
+    content: "";
+    position: absolute;
+    inset: -.5em -.8em;
+    background-image:
+        radial-gradient(circle 1.6px at 14px 18px, #ffffff 96%, transparent),
+        radial-gradient(circle 2.4px at 52px 60px, #e3f2fd 96%, transparent);
+    background-size: 70px 80px, 130px 150px;
+    animation: estrellas-campo 14s linear infinite;
+}
+.efecto-estrellas::after {
+    background-size: 90px 100px, 160px 180px;
+    opacity: .7;
+    animation: estrellas-campo2 9s linear infinite;
+}
+
+@keyframes estrellas-latido {
+    0%, 100% { text-shadow: 0 0 8px rgba(165, 175, 240, .4); }
+    50%      { text-shadow: 0 0 20px rgba(200, 210, 255, .9); }
+}
+@keyframes estrellas-campo {
+    0%   { background-position: 0 0, 0 0; }
+    100% { background-position: -70px 40px, -130px 75px; }
+}
+@keyframes estrellas-campo2 {
+    0%   { background-position: 0 0, 0 0; }
+    100% { background-position: 90px -50px, 160px -90px; }
+}

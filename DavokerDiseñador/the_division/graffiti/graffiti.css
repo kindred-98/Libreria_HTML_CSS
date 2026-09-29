@@ -1,0 +1,82 @@
+/* ================================================================
+   EFECTO 33: GRAFFITI - goteo de aerosol en el muro (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-graffiti">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-graffiti, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son PINTURA DE AEROSOL: textura de grano
+      vibrante con halo de pulverización y DOS GOTEOS que se
+      alargan lentamente desde las letras hasta que la gota
+      cae y vuelve a empezar. Un mural vivo en la pared.
+      Fondo ladrillo o gris urbano recomendado.
+
+   TÉCNICA: background-clip: text con capa de grano
+    (radial-gradient de puntos) cuyo background-position
+    vibra con steps, y pseudo-elementos goteando con
+    transform-origin: top.
+   ================================================================ */
+
+
+.efecto-graffiti {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        /* grano de pulverización (dos capas de puntos) */
+        radial-gradient(circle at 30% 30%,
+                rgba(255, 255, 255, .25) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 70% 60%,
+                rgba(0, 0, 0, .3) 0 1px, transparent 1.5px),
+        /* pintura del mural */
+        linear-gradient(90deg, #e040fb, #7c4dff 55%, #651fff);
+    background-size: 7px 7px, 9px 9px, 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 6px rgba(224, 64, 251, .8);   /* halo de spray */
+
+    animation: graffiti-grano 1.2s steps(1, end) infinite;
+}
+
+/* goteos de pintura que nacen de las letras */
+.efecto-graffiti::before,
+.efecto-graffiti::after {
+    content: "";
+    position: absolute;
+    top: 72%;
+    width: .16em;
+    height: .9em;
+    border-radius: 0 0 .12em .12em;
+    background: linear-gradient(180deg, #7c4dff, #651fff);
+    transform-origin: top;
+    transform: scaleY(0);
+    opacity: .9;
+    animation: graffiti-goteo 4.5s ease-in infinite;
+}
+.efecto-graffiti::before { left: 26%; }
+.efecto-graffiti::after  {
+    left: 64%;
+    animation-delay: 2.2s;          /* gota desfasada */
+}
+
+@keyframes graffiti-grano {
+    0%   { background-position: 0 0, 0 0, 0 0; }
+    50%  { background-position: 3px 2px, -2px 3px, 0 0; }
+    100% { background-position: -2px 3px, 3px -2px, 0 0; }
+}
+@keyframes graffiti-goteo {
+    0%    { transform: scaleY(0); opacity: .9; }
+    45%   { transform: scaleY(1); opacity: .9; }
+    46%   { opacity: 1; }
+    75%   { transform: scaleY(1); opacity: .9; }
+    95%   { transform: scaleY(.1); opacity: .5; }
+    100%  { transform: scaleY(0); opacity: 0; }
+}

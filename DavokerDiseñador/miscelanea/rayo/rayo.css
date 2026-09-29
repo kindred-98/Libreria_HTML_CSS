@@ -1,0 +1,133 @@
+/* ================================================================
+   EFECTO 18: RAYO - descargas eléctricas que sacuden el texto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-rayo">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-rayo y los 3 @keyframes).
+     No depende de ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:  tres animaciones simultáneas en bucle infinito,
+   todas en SALTO SECO (steps) para que la chispa sea seca:
+     · rayo-descarga → el texto está apagado (azul acero) y en
+       tres momentos (0%, 38% y 74%) ESTALLA en blanco con
+       text-shadow eléctrico y una sacudida de 2-3 px.
+     · rayo-rayo     → un rayo con clip-path zigzag cruza las
+       letras justo en esos tres momentos (el doble del 38%).
+     · rayo-destello → un destello redondo acompaña cada golpe.
+
+   TÉCNICA: color + text-shadow + transform en salto seco y
+   pseudo-elementos (clip-path del rayo, radial del destello).
+   Nada más.
+   ================================================================ */
+
+.efecto-rayo {
+    display: inline-block;
+    position: relative;
+
+    color: #1c2540;             /* metal apagado: sin carga */
+    text-shadow: 0 1px 0 rgba(255,255,255,.12);
+
+    animation: rayo-descarga 2.8s steps(1, end) infinite;
+}
+
+/* el rayo: un zigzag blanco-azul (clip-path) que cruza las
+   letras solo durante las descargas */
+.efecto-rayo::before {
+    content: "";
+    position: absolute;
+    left: -14%;
+    right: -14%;
+    top: -50%;
+    bottom: -50%;
+    background: linear-gradient(180deg,
+        #ffffff 0%, #b3e5fc 50%, #2979ff 100%);
+    clip-path: polygon(42% 0%, 56% 0%, 50% 38%, 63% 34%,
+                       38% 100%, 46% 54%, 33% 58%, 49% 20%);
+    filter: drop-shadow(0 0 6px #40c4ff);
+    opacity: 0;
+    animation: rayo-rayo 2.8s steps(1, end) infinite;
+}
+
+/* destello del impacto sobre las letras */
+.efecto-rayo::after {
+    content: "";
+    position: absolute;
+    left: 42%;
+    top: 28%;
+    width: 2.4em;
+    height: 2.4em;
+    margin: -1.2em 0 0 -1.2em;
+    background: radial-gradient(circle,
+        rgba(255,255,255,.95) 0%, rgba(64,196,255,.55) 40%,
+        rgba(41,121,255,0) 70%);
+    opacity: 0;
+    animation: rayo-destello 2.8s steps(1, end) infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* Tres golpes por vuelta (el segundo, doble) con steps(1,end):
+   cada tramo se SOSTIENE hasta el siguiente stop */
+@keyframes rayo-descarga {
+    0%  { color: #e3f2fd;
+          text-shadow: 0 0 14px #40c4ff, 0 0 34px rgba(41,121,255,.8);
+          transform: translate(2px, -1px); }
+    4%  { color: #1c2540;
+          text-shadow: 0 1px 0 rgba(255,255,255,.12);
+          transform: none; }
+    38% { color: #ffffff;
+          text-shadow: 0 0 18px #80d8ff, 0 0 40px rgba(41,121,255,.9);
+          transform: translate(-3px, 2px); }
+    41% { color: #1c2540;
+          text-shadow: 0 1px 0 rgba(255,255,255,.12);
+          transform: none; }
+    45% { color: #b3e5fc;
+          text-shadow: 0 0 12px #2979ff;
+          transform: translate(3px, 0); }
+    48% { color: #1c2540;
+          text-shadow: 0 1px 0 rgba(255,255,255,.12);
+          transform: none; }
+    74% { color: #ffffff;
+          text-shadow: 0 0 16px #80d8ff, 0 0 36px rgba(41,121,255,.85);
+          transform: translate(-2px, -2px); }
+    77% { color: #1c2540;
+          text-shadow: 0 1px 0 rgba(255,255,255,.12);
+          transform: none; }
+    100%{ color: #1c2540;
+          text-shadow: 0 1px 0 rgba(255,255,255,.12);
+          transform: none; }
+}
+
+/* El zigzag aparece y desaparece a saco; cada golpe, en un sitio */
+@keyframes rayo-rayo {
+    0%   { opacity: .95; transform: translate(0, 0); }
+    3%   { opacity: 0;   transform: translate(0, 0); }
+    38%  { opacity: 1;   transform: translate(-.5em, 0); }
+    41%  { opacity: 0;   transform: translate(-.5em, 0); }
+    45%  { opacity: .9;  transform: translate(-.5em, 0); }
+    48%  { opacity: 0;   transform: translate(-.5em, 0); }
+    74%  { opacity: 1;   transform: translate(.4em, 0); }
+    77%  { opacity: 0;   transform: translate(.4em, 0); }
+    100% { opacity: 0;   transform: translate(.4em, 0); }
+}
+
+/* El destello un pelín más largo que el rayo */
+@keyframes rayo-destello {
+    0%   { opacity: .9; }
+    5%   { opacity: 0; }
+    38%  { opacity: .8; }
+    43%  { opacity: 0; }
+    45%  { opacity: .7; }
+    50%  { opacity: 0; }
+    74%  { opacity: .9; }
+    80%  { opacity: 0; }
+    100% { opacity: 0; }
+}

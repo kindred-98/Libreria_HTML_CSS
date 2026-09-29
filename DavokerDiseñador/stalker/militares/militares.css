@@ -1,0 +1,100 @@
+/* ================================================================
+   EFECTO 106: MILITARES - las letras de camuflaje bajo el foco de búsqueda (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-militares">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-militares, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son el UNIFORME MILITAR: manchas de
+      camuflaje que se reordena despacio, el FOCO de
+      búsqueda barre la palabra en diagonal y el punto rojo
+      del LÁSER busca su objetivo entre las letras.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: cuatro capas de manchas de camuflaje recortadas en el
+    texto con background-position animado, haz de foco
+    ::before inclinado con skewX y láser ::after en
+    linear-gradient con parpadeo.
+   ================================================================ */
+
+
+/* --- base: manchas de camuflaje que se reordena --- */
+.efecto-militares {
+    display: inline-block;
+    position: relative;
+    background-image:
+        radial-gradient(ellipse at 18% 26%, rgba(55, 74, 30, .9) 0 24%,
+                rgba(55, 74, 30, 0) 52%),
+        radial-gradient(ellipse at 68% 74%, rgba(88, 91, 44, .75) 0 28%,
+                rgba(88, 91, 44, 0) 56%),
+        radial-gradient(ellipse at 92% 18%, rgba(38, 52, 24, .85) 0 22%,
+                rgba(38, 52, 24, 0) 50%),
+        linear-gradient(150deg, #8d9b67 0%, #6b7a45 45%, #47512d 100%);
+    background-size: 120% 140%, 140% 120%, 130% 130%, 100% 100%;
+    background-position: 0 0, 100% 100%, 50% 0, 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 .05em .14em rgba(0, 0, 0, .7));
+    animation: stk-militares-camo 11s linear infinite;
+}
+/* --- haz de búsqueda inclinado barre la palabra --- */
+.efecto-militares::before {
+    content: "";
+    position: absolute;
+    top: -60%;
+    bottom: -60%;
+    left: -40%;
+    width: 34%;
+    background: linear-gradient(90deg, rgba(255, 249, 196, 0),
+                rgba(255, 249, 196, .55) 45%, rgba(255, 249, 196, .75) 55%,
+                rgba(255, 249, 196, 0));
+    transform: skewX(-18deg);
+    filter: blur(.3em);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-militares-faro 5.4s linear infinite;
+}
+/* --- punto y raya del láser rojo --- */
+.efecto-militares::after {
+    content: "";
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    top: 50%;
+    height: .07em;
+    margin-top: -.035em;
+    background: linear-gradient(90deg, rgba(255, 23, 68, 0),
+                rgba(255, 23, 68, .9) 20%, rgba(255, 23, 68, .9) 80%,
+                rgba(255, 23, 68, 0));
+    box-shadow: 0 0 .5em rgba(255, 23, 68, .8);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-militares-laser 2.6s ease-in-out infinite;
+}
+@keyframes stk-militares-camo {
+    0%   { background-position: 0 0, 100% 100%, 50% 0, 0 0; }
+    50%  { background-position: 34% -18%, 66% 74%, 30% 22%, 0 0; }
+    100% { background-position: 0 0, 100% 100%, 50% 0, 0 0; }
+}
+@keyframes stk-militares-faro {
+    0%, 8%   { opacity: 0; left: -40%; }
+    22%      { opacity: .8; }
+    74%      { opacity: .8; }
+    92%, 100% { opacity: 0; left: 106%; }
+}
+@keyframes stk-militares-laser {
+    0%, 34%  { opacity: 0; }
+    38%      { opacity: .95; }
+    52%      { opacity: .95; }
+    56%      { opacity: .2; }
+    64%      { opacity: .9; }
+    78%, 100% { opacity: 0; }
+}

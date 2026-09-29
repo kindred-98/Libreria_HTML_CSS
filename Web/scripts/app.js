@@ -68,13 +68,6 @@ const translations = {
     donationsText: "If this library saves you time, a small contribution keeps the demos maintained, documented, and free for everyone.",
     donateNow: "Donate",
     donationsNetwork: "Network: BNB Smart Chain (BEP20)",
-    depositTitle: "Deposit USDT on Binance",
-    depositQrAlt: "QR code with the wallet address to deposit USDT on BNB Smart Chain",
-    depositNetworkLabel: "Network",
-    depositNetworkValue: "BNB Smart Chain (BEP20)",
-    depositAddressLabel: "Wallet address",
-    depositWarning: "Do not send NFTs to this address.",
-    depositBrand: "BINANCE",
     switchToLight: "Switch to light theme",
     switchToDark: "Switch to dark theme",
     switchTheme: "Switch theme",
@@ -108,7 +101,7 @@ const translations = {
     previousPage: "Previous page",
     nextPage: "Next page",
     goToPage: "Go to page {page}",
-    pageOf: "Page {current} of {total} · {size} per page",
+    pageOf: "Page {current} of {total}.",
     findStartingPoint: "FIND A STARTING POINT",
     categoriesNote: "Grouped from the component names and folders.",
     footerDonate: "Donate USDT through BNB Smart Chain (BEP20)",
@@ -118,6 +111,7 @@ const translations = {
     footerBuilt: "Open source code library, open to contributions.\nGot a creative idea? OPEN A PR.",
     component: "component",
     components: "components",
+    davokerShowcase: "davoker's showcase",
     browseCategory: "Browse {category} components",
     viewComponent: "View component",
     liveDemo: "Live demo",
@@ -211,13 +205,6 @@ const translations = {
     donationsText: "Si esta biblioteca te ahorra tiempo, una pequeña aportación mantiene los demos actualizados, documentados y disponibles para todos.",
     donateNow: "Donar",
     donationsNetwork: "Red: BNB Smart Chain (BEP20)",
-    depositTitle: "Depositar USDT en Binance",
-    depositQrAlt: "Código QR con la dirección de la billetera para depositar USDT en BNB Smart Chain",
-    depositNetworkLabel: "Red",
-    depositNetworkValue: "BNB Smart Chain (BEP20)",
-    depositAddressLabel: "Dirección de la billetera",
-    depositWarning: "No envíes NFT a esta dirección.",
-    depositBrand: "BINANCE",
     switchToLight: "Cambiar al tema claro",
     switchToDark: "Cambiar al tema oscuro",
     switchTheme: "Cambiar tema",
@@ -251,7 +238,7 @@ const translations = {
     previousPage: "Página anterior",
     nextPage: "Página siguiente",
     goToPage: "Ir a la página {page}",
-    pageOf: "Página {current} de {total} · {size} por página",
+    pageOf: "Página {current} de {total}.",
     findStartingPoint: "ENCUENTRA UN PUNTO DE PARTIDA",
     categoriesNote: "Agrupados según los nombres de los componentes y sus carpetas.",
     footerDonate: "Puedes donar USDT a través de BNB Smart Chain (BEP20)",
@@ -261,6 +248,7 @@ const translations = {
     footerBuilt: "Librería de código abierto, abierta a contribuciones.\nSi tiene una idea creativa de nuevo componente, HAS UNA PR.",
     component: "componente",
     components: "componentes",
+    davokerShowcase: "showcase de davoker",
     browseCategory: "Explorar componentes de {category}",
     viewComponent: "Ver componente",
     liveDemo: "Demo en vivo",
@@ -326,6 +314,8 @@ const elements = {
   filters: document.querySelector("#category-filters"),
   authorFilters: document.querySelector("#author-filters"),
   grid: document.querySelector("#component-grid"),
+  davokerPortal: document.querySelector("#davoker-portal"),
+  davokerFrame: document.querySelector("#davoker-frame"),
   resultsCount: document.querySelector("#results-count"),
   emptyState: document.querySelector("#empty-state"),
   pagination: document.querySelector("#pagination"),
@@ -826,6 +816,29 @@ function scrollToGrid(grid) {
 
 function renderComponents() {
   if (!elements.grid) return;
+  // Con el autor davoker elegido, sin categoria ni busqueda, la rejilla se
+  // sustituye por su portada (davoker.html) dentro del mismo hueco: la cabecera,
+  // el buscador y los filtros siguen siendo nuestros. En cuanto cambias de
+  // autor, de categoria o buscas algo, vuelve la lista normal de tarjetas.
+  const showDavokerPortal = state.author === "Davoker"
+    && state.category === "All"
+    && !state.query
+    && Boolean(elements.davokerPortal && elements.davokerFrame);
+  if (showDavokerPortal) {
+    // El iframe se carga una sola vez, al primer acceso: asi no descarga sus
+    // 218 KB mientras el visitante sigue en las tarjetas.
+    if (!elements.davokerFrame.getAttribute("src")) {
+      elements.davokerFrame.src = elements.davokerFrame.dataset.src;
+    }
+    elements.davokerPortal.hidden = false;
+    elements.grid.hidden = true;
+    elements.emptyState.hidden = true;
+    elements.pagination.hidden = true;
+    elements.resultsCount.textContent = t("davokerShowcase");
+    return;
+  }
+  if (elements.davokerPortal) elements.davokerPortal.hidden = true;
+  elements.grid.hidden = false;
   const filteredComponents = getFilteredComponents();
   const totalPages = Math.max(1, Math.ceil(filteredComponents.length / pageSize));
   // Si el filtro deja menos paginas que la actual, se recorta en vez de dejar

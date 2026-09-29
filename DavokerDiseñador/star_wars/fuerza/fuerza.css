@@ -1,0 +1,75 @@
+/* ================================================================
+   EFECTO 36: FUERZA - onda de distorsión de la Fuerza (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-fuerza">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-fuerza, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son LA FUERZA: una onda de distorsión
+      recorre el texto (se desenfoca, se separa y flota
+      con desplazamiento cromático azul/rojo) y dos ondas
+      lentas salen del centro mientras el texto respira.
+      Fondo azul noche casi negro recomendado.
+
+   TÉCNICA: background-clip: text + filter blur, letter-spacing,
+    transform y text-shadow cromático animados en la
+    misma onda; ::before/::after como anillos lentos.
+   ================================================================ */
+
+
+.efecto-fuerza {
+    display: inline-block;
+    position: relative;
+
+    background-image: linear-gradient(90deg, #e3f2fd, #90caf9 55%, #64b5f6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 14px rgba(144, 202, 249, .6);
+
+    animation: fuerza-onda 4.4s ease-in-out infinite;
+}
+
+/* ondas lentas que salen del centro */
+.efecto-fuerza::before,
+.efecto-fuerza::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 3.4em;
+    height: 2.4em;
+    margin: -1.2em 0 0 -1.7em;
+    border: .1em solid rgba(227, 242, 253, .7);
+    border-radius: 50%;
+    opacity: 0;
+    animation: fuerza-anillo 4.4s ease-out infinite;
+}
+.efecto-fuerza::after {
+    animation-delay: 2.2s;
+}
+
+@keyframes fuerza-onda {
+    0%   { filter: blur(0); letter-spacing: 0; transform: translateY(0);
+           text-shadow: 0 0 14px rgba(144, 202, 249, .6); }
+    30%  { filter: blur(2.4px); letter-spacing: .14em;
+           transform: translateY(-.06em);
+           text-shadow: -4px 0 8px rgba(66, 165, 245, .75),
+                        4px 0 8px rgba(255, 82, 82, .45); }
+    55%  { filter: blur(0); letter-spacing: 0; transform: translateY(0);
+           text-shadow: 0 0 14px rgba(144, 202, 249, .6); }
+    100% { filter: blur(0); letter-spacing: 0; transform: translateY(0);
+           text-shadow: 0 0 14px rgba(144, 202, 249, .6); }
+}
+@keyframes fuerza-anillo {
+    0%   { opacity: .8; transform: scale(.3); }
+    70%  { opacity: .2; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.2); }
+}

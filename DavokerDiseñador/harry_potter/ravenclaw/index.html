@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     SHOWCASE DEL EFECTO RAVENCLAW
+     Abre este archivo con doble clic para ver el efecto en vivo.
+     · ravenclaw.css     → el efecto (portable a cualquier CSS)
+     · <style> de abajo → solo la maquetación de ESTA página
+     ============================================================ -->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efecto RAVENCLAW - Showcase</title>
+
+    <!-- EL EFECTO (este archivo es el que copias a tu proyecto) -->
+    <link rel="stylesheet" href="ravenclaw.css">
+
+    <style>
+        /* Maquetación del showcase (NO forma parte del efecto) */
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #07152e;
+            color: #dce9ff;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+        }
+        h1 { font-size: 2.6rem; margin-top: 0; color: #5c93ff; }
+        h2 {
+            color: #5c93ff;
+            border-bottom: 2px solid #12315e;
+            padding-bottom: .4rem;
+            margin-top: 2.5rem;
+        }
+        .demo {
+            background-color: #0a1b38;
+            border: 1px dashed #12315e;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .grande { font-size: 3rem; font-weight: 800; }
+        .mediano { font-size: 1.6rem; font-weight: 800; }
+        .peq { font-size: 1rem; font-weight: bold; }
+        pre {
+            background-color: #0a1b38;
+            border: 1px solid #12315e;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            color: #90caf9;
+            font-size: .95rem;
+        }
+        code { color: #90caf9; }
+        .nota { color: #5c93ff; font-weight: bold; }
+
+        /* --- BOTÓN "TODOS LOS EFECTOS" (centrado arriba) ---
+           Clicable y con estado pulsado; mientras se mantiene sale el
+           destello TEMÁTICO de este efecto y, al soltar, salta a
+           transicion.html#ravenclaw: allí estalla la escena del propio
+           efecto (la elige :target) y, tras ~1,6 s de retardo (meta
+           refresh), se llega a la portada. --- */
+        nav.barra-volver {
+            text-align: center;
+            margin: 0 0 1.4rem;
+        }
+        .btn-volver {
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+            padding: .65rem 1.7rem;
+            background-color: #161b24;
+            border: 1px solid #2c3a4d;
+            border-radius: 999px;
+            color: #cfd8dc;
+            font-size: 1rem;
+            text-decoration: none;
+            box-shadow: 0 3px 0 #07090e, 0 6px 14px rgba(0,0,0,.45);
+            transition: transform .1s, background-color .15s, box-shadow .1s;
+        }
+        .btn-volver:hover {
+            background-color: #1d2430;
+            color: #ffffff;
+        }
+        .btn-volver:active {
+            transform: translateY(3px) scale(.97);
+            background-color: #10141b;
+            box-shadow: 0 0 0 #07090e, inset 0 3px 8px rgba(0,0,0,.75);
+        }
+        .btn-volver::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 220px;
+            height: 46px;
+            margin: -23px 0 0 -110px;
+            border-radius: 3px;
+            opacity: 0;
+            pointer-events: none;
+            background: linear-gradient(90deg, rgba(92,147,255,0), rgba(92,147,255,.55) 20%, rgba(255,255,255,.85) 50%, rgba(92,147,255,.55) 80%, rgba(92,147,255,0));
+            transform: scale(.4) translateX(0);
+        }
+        .btn-volver:active::after {
+            animation: btn-ravenclaw .3s steps(4, end) infinite;
+        }
+        @keyframes btn-ravenclaw {
+            0%   { opacity: 0;   transform: scale(.4) translateX(0); }
+            25%  { opacity: .9;  transform: scale(.85) translateX(-8px); }
+            55%  { transform: scale(.85) translateX(7px); }
+            100% { opacity: 0;   transform: scale(.9) translateX(-3px); }
+        }
+        /* --- INTERACCION DE RATON (solo la pagina; el efecto de arriba
+           sigue siendo CSS puro y no se toca) ---
+           A REPOSO NO SE VE NADA NUEVO: las dos capas arrancan con
+           opacity 0 y solo aparecen cuando mueves el puntero. La luz
+           lleva el color del titulo del efecto y el fondo hace un
+           paralaje suave. */
+        .capa-fondo, .luz-raton {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .5s ease;
+        }
+        .capa-fondo {
+            z-index: -2;
+            background:
+                radial-gradient(48% 42% at 16% 10%,
+                                rgba(120, 90, 255, .14), transparent 66%),
+                radial-gradient(44% 38% at 86% 76%,
+                                rgba(255, 90, 170, .12), transparent 66%),
+                radial-gradient(40% 36% at 62% 34%,
+                                rgba(60, 200, 255, .10), transparent 66%);
+            transform: translate3d(var(--px, 0px), var(--py, 0px), 0)
+                       scale(1.1);
+        }
+        .luz-raton {
+            z-index: -1;
+            background: radial-gradient(
+                    330px 330px at var(--rx, 50%) var(--ry, 50%),
+                    rgba(var(--luz, 150, 185, 255), .22),
+                    rgba(var(--luz, 150, 185, 255), 0) 72%);
+        }
+        .moviendo .capa-fondo,
+        .moviendo .luz-raton {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="barra-volver">
+        <a class="btn-volver" href="../../transicion.html#ravenclaw">← Todos los efectos</a>
+    </nav>
+
+    <h1>EFECTO RAVENCLAW</h1>
+    <p>
+        Las letras visten <strong>el azul y el bronce de
+        Ravenclaw</strong> y dos <strong>destellos de ala</strong> se
+        abren desde el centro hacia los extremos.
+    </p>
+
+    <h2>1. Demo grande</h2>
+    <div class="demo">
+        <span class="efecto-ravenclaw grande">RAVENCLAW</span>
+    </div>
+
+    <h2>2. Título de página</h2>
+    <div class="demo">
+        <span class="efecto-ravenclaw mediano">mente de águila</span>
+    </div>
+
+    <h2>3. Texto pequeño</h2>
+    <div class="demo">
+        <span class="efecto-ravenclaw peq">sabiduría en azul</span>
+    </div>
+
+    <h2>4. Varias palabras en la misma línea</h2>
+    <div class="demo">
+        <span class="efecto-ravenclaw mediano">ÁGUILA</span>
+        <span class="efecto-ravenclaw mediano">MENTE</span>
+        <span class="efecto-ravenclaw mediano">BRONCE</span>
+    </div>
+
+    <h2>Cómo aplicarlo a cualquier archivo .css</h2>
+    <p>
+        <strong>Paso 1:</strong> copia <strong>todo</strong> el contenido de
+        <code>ravenclaw.css</code> dentro de tu hoja de estilos
+        (o guárdalo como archivo y enlázalo con <code>&lt;link&gt;</code>).
+    </p>
+    <p><strong>Paso 2:</strong> en tu HTML, envuelve el texto en esta etiqueta:</p>
+    <pre><code>&lt;span class="efecto-ravenclaw"&gt;Tu texto&lt;/span&gt;</code></pre>
+    <p class="nota">
+        ✓ No necesita ningún atributo extra: basta con la clase.
+        Recomendado: negrita y fondo oscuro.
+    </p>
+    <p>
+        También tienes las instrucciones en el archivo
+        <code>como-aplicar-ravenclaw.txt</code> de esta misma carpeta.
+    </p>
+
+    <script>
+        // Interaccion de raton de ESTE showcase: una luz con el color
+        // del titulo sigue al puntero y el fondo hace un paralaje
+        // suave. El efecto no se toca (sigue siendo CSS puro) y a
+        // REPOSO las dos capas estan invisibles, asi que la pagina se
+        // ve igual que sin este guion.
+        (function () {
+            var raiz = document.documentElement;
+            var mx = 50, my = 50, lx = 50, ly = 50;
+            var px = 0, py = 0, corriendo = false, ult = 0;
+            var capa = document.createElement("div");
+            var luz = document.createElement("div");
+            capa.className = "capa-fondo";
+            luz.className = "luz-raton";
+            capa.setAttribute("aria-hidden", "true");
+            luz.setAttribute("aria-hidden", "true");
+            document.body.appendChild(capa);
+            document.body.appendChild(luz);
+
+            // la luz toma el color del titulo del efecto
+            var h1 = document.querySelector("h1");
+            if (h1) {
+                var c = getComputedStyle(h1).color;
+                var n = c.slice(c.indexOf("(") + 1, c.indexOf(")")).split(",");
+                if (n.length >= 3
+                        && (n.length < 4 || parseFloat(n[3]) > .2)) {
+                    raiz.style.setProperty("--luz",
+                                           n[0] + "," + n[1] + "," + n[2]);
+                }
+            }
+
+            function paso(ts) {
+                var dt = ult ? Math.min(64, ts - ult) : 16;
+                ult = ts;
+                var k = Math.min(1, dt / 170);
+                lx += (mx - lx) * k;
+                ly += (my - ly) * k;
+                px += ((mx - 50) * -0.34 - px) * k;
+                py += ((my - 50) * -0.26 - py) * k;
+                raiz.style.setProperty("--rx", lx.toFixed(1) + "%");
+                raiz.style.setProperty("--ry", ly.toFixed(1) + "%");
+                raiz.style.setProperty("--px", px.toFixed(1) + "px");
+                raiz.style.setProperty("--py", py.toFixed(1) + "px");
+                if (Math.abs(mx - lx) < .05 && Math.abs(my - ly) < .05
+                        && Math.abs(px) < .1 && Math.abs(py) < .1) {
+                    corriendo = false;
+                    ult = 0;
+                    return;
+                }
+                requestAnimationFrame(paso);
+            }
+
+            document.addEventListener("mousemove", function (e) {
+                mx = e.clientX * 100 / Math.max(1, raiz.clientWidth);
+                my = e.clientY * 100 / Math.max(1, raiz.clientHeight);
+                document.body.classList.add("moviendo");
+                if (!corriendo) {
+                    corriendo = true;
+                    requestAnimationFrame(paso);
+                }
+            }, { passive: true });
+        })();
+    </script>
+</body>
+</html>

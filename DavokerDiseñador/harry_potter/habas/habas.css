@@ -1,0 +1,110 @@
+/* ================================================================
+   EFECTO 92: HABAS - las letras cambian de sabor con cada bocado (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-habas">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-habas, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son las HABAS DE BERTIE BOTT: el color salta
+      de golpe (steps) por seis sabores sin transición, con
+      un pequeño estirón en cada bocado, mientras una haba
+      bota al lado y el azúcar titila. Cada color un sabor.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado vivo con background-clip: text y
+    hue-rotate + scale en steps(1, end) sobre el propio
+    elemento, haba ::before con degradado bicolor que
+    salta y azúcar ::after con dos radial-gradient.
+   ================================================================ */
+
+
+.efecto-habas {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        linear-gradient(160deg, #ff80ab 0%, #ff4081 30%, #e040fb 58%,
+                #7c4dff 82%, #448aff 100%);
+    background-size: 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(255, 64, 129, .5));
+
+    animation: hp-habas-sabor 2.4s steps(1, end) infinite;
+}
+
+/* la haba de cada color saltando junto a la palabra */
+.efecto-habas::before {
+    content: "";
+    position: absolute;
+    left: -.46em;
+    bottom: -.1em;
+    width: .3em;
+    height: .22em;
+    border-radius: 50% 50% 55% 55%;
+    background: linear-gradient(110deg, #ffffff 0 44%, #f48fb1 46% 100%);
+    box-shadow: 0 0 .3em rgba(255, 128, 171, .8);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-habas-bote 2.4s ease-in-out infinite;
+}
+
+/* azúcar que titila al morder */
+.efecto-habas::after {
+    content: "";
+    position: absolute;
+    inset: -.25em -.4em;
+    background-image:
+        radial-gradient(circle at 14% 30%, rgba(255, 255, 255, .95) 0 .06em,
+                rgba(255, 255, 255, 0) .14em),
+        radial-gradient(circle at 86% 64%, rgba(255, 255, 255, .85) 0 .05em,
+                rgba(255, 255, 255, 0) .13em);
+    opacity: 0;
+    pointer-events: none;
+    animation: hp-habas-azucar 2.4s steps(1, end) infinite;
+}
+
+@keyframes hp-habas-sabor {
+    0%    { filter: drop-shadow(0 0 8px rgba(255, 64, 129, .5));
+            transform: scale(1); }
+    16.6% { filter: hue-rotate(70deg)
+                drop-shadow(0 0 8px rgba(255, 213, 79, .5));
+            transform: scale(1.05); }
+    33.3% { filter: hue-rotate(150deg)
+                drop-shadow(0 0 8px rgba(105, 240, 174, .5));
+            transform: scale(1); }
+    50%   { filter: hue-rotate(230deg)
+                drop-shadow(0 0 8px rgba(100, 181, 246, .5));
+            transform: scale(1.05); }
+    66.6% { filter: hue-rotate(310deg)
+                drop-shadow(0 0 8px rgba(206, 147, 216, .5));
+            transform: scale(1); }
+    83.3% { filter: hue-rotate(360deg)
+                drop-shadow(0 0 8px rgba(255, 138, 101, .5));
+            transform: scale(1.05); }
+    100%  { filter: drop-shadow(0 0 8px rgba(255, 64, 129, .5));
+            transform: scale(1); }
+}
+@keyframes hp-habas-bote {
+    0%, 8%   { opacity: 0; transform: translateY(.1em); }
+    16%      { opacity: 1; transform: translateY(0); }
+    34%      { opacity: 1; transform: translateY(-.5em); }
+    52%      { opacity: 1; transform: translateY(.06em) scaleY(.8); }
+    62%      { opacity: 1; transform: translateY(0); }
+    74%,100% { opacity: 0; transform: translateY(.5em); }
+}
+@keyframes hp-habas-azucar {
+    0%, 26%  { opacity: 0; }
+    30%      { opacity: 1; }
+    38%      { opacity: .2; }
+    46%      { opacity: .9; }
+    54%,100% { opacity: 0; }
+}

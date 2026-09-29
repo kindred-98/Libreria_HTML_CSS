@@ -1,0 +1,75 @@
+/* ================================================================
+   EFECTO 47: REBELIÓN - franja de la Alianza Rebelde (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-rebelion">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-rebelion, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son la ALIANZA REBELDE: blanco de
+      insurgentes con una FRANJA NARANJA-ÁMBAR que les
+      cruza en diagonal y barre el texto en bucle, con
+      destellos de estrella ✦ en las esquinas y un halo
+      cálido. Fondo casi negro recomendado.
+
+   TÉCNICA: background-clip: text con la franja en una segunda
+    capa de background que se desplaza + destellos ✦
+    con steps(1) en ::before/::after.
+   ================================================================ */
+
+
+.efecto-rebelion {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        /* franja diagonal de la Rebelión que barre */
+        linear-gradient(115deg, rgba(255, 109, 0, 0) 40%,
+                          rgba(255, 109, 0, .95) 47%,
+                          rgba(255, 213, 79, .95) 52%,
+                          rgba(255, 109, 0, 0) 60%),
+        /* blanco de la Alianza */
+        linear-gradient(90deg, #fafafa, #eceff1 55%, #b0bec5);
+    background-size: 260% 100%, 100% 100%;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 12px rgba(255, 160, 80, .45);
+
+    animation: rebelion-banda 4.2s linear infinite;
+}
+
+/* destellos de estrella en las esquinas */
+.efecto-rebelion::before,
+.efecto-rebelion::after {
+    content: "\2726";
+    position: absolute;
+    top: -.4em;
+    font-size: .6em;
+    color: #ffd54f;
+    text-shadow: 0 0 8px rgba(255, 213, 79, .9);
+    opacity: 0;
+    animation: rebelion-estrella 4.2s steps(1, end) infinite;
+}
+.efecto-rebelion::before { left: -.55em; }
+.efecto-rebelion::after  {
+    right: -.55em;
+    animation-delay: 2.1s;
+}
+
+@keyframes rebelion-banda {
+    0%   { background-position: 150% 0, 0 0; }
+    100% { background-position: -150% 0, 0 0; }
+}
+@keyframes rebelion-estrella {
+    0%, 46%   { opacity: 0; transform: scale(.4) rotate(0deg); }
+    47%, 52%  { opacity: 1; transform: scale(1.15) rotate(90deg); }
+    53%, 100% { opacity: 0; transform: scale(.4) rotate(120deg); }
+}

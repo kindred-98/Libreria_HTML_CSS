@@ -1,0 +1,88 @@
+/* ================================================================
+   EFECTO 115: ARTEFACTO - las letras relumbran como un artefacto (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-artefacto">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-artefacto, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son UN ARTEFACTO: turquesa de mineral que
+      late con un pulso de luz, los RAYOS de la reliquia
+      giran alrededor de la palabra durante 12 segundos y el
+      FULGOR estalla cuando menos lo esperas.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: degradado turquesa recortado en el texto con filter y
+    transform animados (pulso), rayos ::before con
+    conic-gradient girando 360° en 12 s y fulgor ::after
+    de opacidad intermitente.
+   ================================================================ */
+
+
+/* --- base: mineral que late con su propia luz --- */
+.efecto-artefacto {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(140deg, #063b3a 0%, #2bb3a4 34%, #eafffb 50%,
+                #38d7c6 64%, #04302f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: stk-artefacto-pulso 4.2s ease-in-out infinite;
+}
+/* --- rayos de la reliquia girando alrededor de la palabra --- */
+.efecto-artefacto::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 3.2em;
+    height: 3.2em;
+    margin: -1.6em 0 0 -1.6em;
+    border-radius: 50%;
+    background: conic-gradient(rgba(110, 240, 224, 0) 0 30deg,
+                rgba(110, 240, 224, .5) 54deg, rgba(110, 240, 224, 0) 96deg,
+                rgba(110, 240, 224, 0) 174deg,
+                rgba(217, 255, 251, .45) 198deg,
+                rgba(110, 240, 224, 0) 240deg, rgba(110, 240, 224, 0) 360deg);
+    filter: blur(.2em);
+    opacity: .4;
+    pointer-events: none;
+    animation: stk-artefacto-rayos 12s linear infinite;
+}
+/* --- fulgor: el destello de la reliquia --- */
+.efecto-artefacto::after {
+    content: "";
+    position: absolute;
+    inset: -.35em -.45em;
+    background: radial-gradient(ellipse at 50% 50%,
+                rgba(234, 255, 251, .8) 0%, rgba(45, 179, 164, .35) 45%,
+                transparent 76%);
+    filter: blur(.2em);
+    opacity: 0;
+    pointer-events: none;
+    animation: stk-artefacto-fulgor 3.4s ease-out infinite;
+}
+@keyframes stk-artefacto-pulso {
+    0%, 100% { filter: drop-shadow(0 0 .3em rgba(110, 240, 224, .45));
+               transform: scale(1); }
+    50%      { filter: drop-shadow(0 0 .8em rgba(110, 240, 224, .9));
+               transform: scale(1.03); }
+}
+@keyframes stk-artefacto-rayos {
+    to       { transform: rotate(360deg); }
+}
+@keyframes stk-artefacto-fulgor {
+    0%, 66%  { opacity: 0; transform: scale(.85); }
+    74%      { opacity: .9; transform: scale(1.06); }
+    84%      { opacity: .35; }
+    92%      { opacity: .75; transform: scale(1.02); }
+    100%     { opacity: 0; transform: scale(.9); }
+}

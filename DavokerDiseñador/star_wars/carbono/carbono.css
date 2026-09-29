@@ -1,0 +1,88 @@
+/* ================================================================
+   EFECTO 42: CARBONO - congelación en carbonita (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-carbono">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-carbono, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      Las letras son metal congelado en CARBONITA: un
+      brillo frío las barre muy despacio y, de vez en
+      cuando, un MOLDE de bloque se dibuja por etapas con
+      saltos secos y la condensación aparece con él.
+      Fondo gris humo recomendado.
+
+   TÉCNICA: background-clip: text (chapa fría) con
+    background-position lento + ::before/::after
+    con clip-path por etapas en steps(1).
+   ================================================================ */
+
+
+.efecto-carbono {
+    display: inline-block;
+    position: relative;
+
+    background-image:
+        /* brillo de metal congelado que barre muy lento */
+        linear-gradient(115deg, rgba(255, 255, 255, 0) 42%,
+                          rgba(255, 255, 255, .75) 50%,
+                          rgba(255, 255, 255, 0) 58%),
+        /* chapa fría */
+        linear-gradient(180deg, #cfd8dc, #90a4ae 45%, #455a64);
+    background-size: 280% 100%, 100% 100%;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .55);
+
+    animation: carbono-lentitud 9s linear infinite;
+}
+
+/* molde del bloque de carbonita (se dibuja por etapas) */
+.efecto-carbono::before {
+    content: "";
+    position: absolute;
+    inset: -.28em -.5em;
+    border: 3px solid #546e7a;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, .5);
+    opacity: 0;
+    animation: carbono-molde 9s steps(1, end) infinite;
+}
+
+/* condensación helada en la esquina (solo con el molde cerrado) */
+.efecto-carbono::after {
+    content: "";
+    position: absolute;
+    right: -.4em;
+    top: -.4em;
+    width: .5em;
+    height: .5em;
+    background: radial-gradient(circle, rgba(236, 239, 241, .9) 0 20%,
+                transparent 60%);
+    opacity: 0;
+    animation: carbono-molde 9s steps(1, end) infinite;
+}
+
+@keyframes carbono-lentitud {
+    0%   { background-position: 160% 0, 0 0; filter: brightness(1); }
+    45%  { background-position: -160% 0, 0 0; filter: brightness(1); }
+    46%  { filter: brightness(.82); }
+    52%  { filter: brightness(1.05); }
+    58%  { filter: brightness(.95); }
+    100% { background-position: -160% 0, 0 0; filter: brightness(1); }
+}
+@keyframes carbono-molde {
+    0%, 4%    { opacity: 0; clip-path: inset(0 100% 100% 0); }
+    5%        { opacity: 1; clip-path: inset(0 100% 100% 0); }
+    15%       { opacity: 1; clip-path: inset(0 0 100% 0); }
+    30%       { opacity: 1; clip-path: inset(0 0 0 0); }
+    88%       { opacity: 1; clip-path: inset(0 0 0 0); }
+    90%, 100% { opacity: 0; clip-path: inset(0 0 0 0); }
+}

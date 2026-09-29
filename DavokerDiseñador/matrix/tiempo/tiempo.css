@@ -1,0 +1,63 @@
+/* ================================================================
+   EFECTO 54: TIEMPO BALA - tiempo bala con estela de bala lenta (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-tiempo">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-tiempo, sus pseudo-elementos y los 2 @keyframes).
+
+   QUÉ HACE:
+      El texto vive en TIEMPO BALA: respira muy despacio
+      con un ligero desenfoque y una estela azulada que se
+      estira a un lado, mientras una bala plateada cruza
+      el rectángulo a cámara lenta, dejando su rastro.
+      Fondo oscuro recomendado.
+
+   TÉCNICA: transform + filter: blur y text-shadow de estela en
+    la clase + pseudo-elemento-bala cuyo left y scaleX
+    avanzan lentamente en los keyframes.
+   ================================================================ */
+
+
+.efecto-tiempo {
+    display: inline-block;
+    position: relative;
+
+    color: #dff3ff;
+    text-shadow: -5px 0 rgba(128, 216, 255, .42),
+                 -12px 0 rgba(128, 216, 255, .22);
+
+    animation: mx-tiempo-lento 6s ease-in-out infinite;
+}
+
+/* la bala que cruza el texto a cámara lenta */
+.efecto-tiempo::after {
+    content: "";
+    position: absolute;
+    left: -34%;
+    top: 44%;
+    width: .75em;
+    height: .13em;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255,255,255,0), #ffffff 70%,
+                #ffffff);
+    box-shadow: 0 0 14px rgba(255, 255, 255, .85);
+    opacity: 0;
+    animation: mx-tiempo-bala 6s ease-in-out infinite;
+}
+
+@keyframes mx-tiempo-lento {
+    0%, 100% { transform: scale(1) rotate(0); filter: blur(0); }
+    38%      { transform: scale(1.05) rotate(-1.4deg); filter: blur(1.7px); }
+    74%      { transform: scale(.985) rotate(1deg); filter: blur(.5px); }
+}
+@keyframes mx-tiempo-bala {
+    0%, 8%   { opacity: 0; left: -34%; transform: scaleX(.7); }
+    14%      { opacity: 1; left: -12%; transform: scaleX(1); }
+    56%      { opacity: 1; left: 78%; transform: scaleX(1.5); }
+    62%,100% { opacity: 0; left: 104%; transform: scaleX(1.9); }
+}

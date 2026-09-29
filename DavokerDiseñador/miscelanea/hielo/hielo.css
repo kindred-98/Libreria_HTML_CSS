@@ -1,0 +1,76 @@
+/* ================================================================
+   EFECTO 6: HIELO - escarcha y frío condestado (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-hielo">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-hielo y los 2 @keyframes).
+
+   QUÉ HACE:
+     · Un DESTELLO DE ESCARCHA blanco sube lentamente por las
+       letras cada 5 s (como la luz rebotando en el hielo).
+     · Un resplandor azul FRÍO respira de forma constante.
+     Ambos en bucle infinito.
+
+   TÉCNICA: background-clip: text (degradado vertical) +
+   text-shadow animado. Nada más.
+   ================================================================ */
+
+.efecto-hielo {
+    display: inline-block;
+
+    /* hielo: azules glaciares con banda blanca de destello
+       (background-repeat genera el mosaico vertical para que
+       el bucle del destello sea invisible) */
+    background-image: linear-gradient(
+        180deg,
+        #dff6ff 0%,
+        #a7e4ff 22%,
+        #ffffff 45%,
+        #ffffff 55%,
+        #8fdcff 78%,
+        #e8fbff 100%
+    );
+    background-size: 100% 300%;
+
+    /* el degradado se pinta SOLO dentro de las letras */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation:
+        hielo-escarcha 5s linear infinite,
+        hielo-frio 2.5s ease-in-out infinite alternate;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* La banda blanca de destello sube por el texto.
+   background-size 100% 300% + mosaico vertical:
+   0% → 150% = exactamente un ciclo, sin salto. */
+@keyframes hielo-escarcha {
+    0%   { background-position: 50% 0%; }
+    100% { background-position: 50% 150%; }
+}
+
+/* Resplandor del frío: el azul helado "respira" */
+@keyframes hielo-frio {
+    0% {
+        text-shadow:
+            0 0 12px rgba(120, 220, 255, 0.5),
+            0 0 30px rgba(70, 180, 255, 0.3);
+    }
+    100% {
+        text-shadow:
+            0 0 20px rgba(190, 240, 255, 0.9),
+            0 0 48px rgba(100, 200, 255, 0.55);
+    }
+}

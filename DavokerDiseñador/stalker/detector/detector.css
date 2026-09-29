@@ -1,0 +1,89 @@
+/* ================================================================
+   EFECTO 117: DETECTOR - las letras del detector siguen el pico de sonido (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-detector">Tu texto</span>
+
+   (Sin atributos extra: solo la clase.)
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-detector, sus pseudo-elementos y los 3 @keyframes).
+
+   QUÉ HACE:
+      Las letras son EL DETECTOR: fósforo amarillo que se
+      recorre de lado a lado, el PICO de sonido se dibuja
+      bajo la palabra y la AGUJA del dial oscila a cada
+      pitido. Fondo oscuro recomendado.
+
+   TÉCNICA: degradado de fósforo recortado en el texto con
+    background-position animado (barrido), pico ::before
+    dibujado con transform: scaleX y dial ::after con
+    transform-origin abajo y rotación ±40°.
+   ================================================================ */
+
+
+/* --- base: la luz del display recorre las letras --- */
+.efecto-detector {
+    display: inline-block;
+    position: relative;
+    background-image:
+        linear-gradient(104deg, #4a4426 0%, #dcd28a 34%, #fdfbe4 50%,
+                #c9bf6c 66%, #3a351c 100%);
+    background-size: 240% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 .3em rgba(220, 210, 138, .45));
+    animation: stk-detector-recorrido 6.6s ease-in-out infinite;
+}
+/* --- pico de sonido dibujándose bajo la palabra --- */
+.efecto-detector::before {
+    content: "";
+    position: absolute;
+    left: 4%;
+    bottom: -.3em;
+    width: 92%;
+    height: .16em;
+    background: linear-gradient(90deg, transparent 0 8%,
+                rgba(174, 255, 92, .95) 10% 12%, transparent 14% 38%,
+                rgba(174, 255, 92, .85) 40% 44%, transparent 46% 70%,
+                rgba(174, 255, 92, .9) 72% 73%, transparent 75%);
+    transform-origin: left center;
+    transform: scaleX(0);
+    opacity: .9;
+    pointer-events: none;
+    animation: stk-detector-pico 4.8s ease-in-out infinite;
+}
+/* --- la aguja del dial oscila con cada pitido --- */
+.efecto-detector::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: .08em;
+    height: .95em;
+    margin-left: -.04em;
+    background: linear-gradient(180deg, #ff8f00, rgba(255, 143, 0, .15));
+    transform-origin: 50% 100%;
+    filter: drop-shadow(0 0 .18em rgba(255, 143, 0, .9));
+    opacity: .8;
+    pointer-events: none;
+    animation: stk-detector-dial 3.2s ease-in-out infinite;
+}
+@keyframes stk-detector-recorrido {
+    0%, 100% { background-position: 100% 0; }
+    50%      { background-position: 0% 0; }
+}
+@keyframes stk-detector-pico {
+    0%, 10%   { transform: scaleX(0); opacity: .2; }
+    44%       { transform: scaleX(1); opacity: .95; }
+    74%       { transform: scaleX(1); opacity: .95; }
+    92%, 100% { transform: scaleX(1); opacity: 0; }
+}
+@keyframes stk-detector-dial {
+    0%, 100% { transform: rotate(-40deg); }
+    50%      { transform: rotate(40deg); }
+}

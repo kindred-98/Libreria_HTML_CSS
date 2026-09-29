@@ -1,0 +1,175 @@
+/* ================================================================
+   EFECTO 1: GLITCH CON INTERFERENCIA Y VIBRACIÓN (CSS puro)
+   ----------------------------------------------------------------
+   CÓMO USARLO EN CUALQUIER HTML:
+     <span class="efecto-glitch" data-text="Tu texto">Tu texto</span>
+
+   ⚠ EL ATRIBUTO data-text ES OBLIGATORIO y debe repetir el texto
+     visible: los pseudo-elementos ::before y ::after lo copian
+     para crear las capas de interferencia roja y cian.
+
+   CÓMO APLICARLO A OTRO ARCHIVO .CSS:
+     Copia TODO este archivo dentro de tu hoja de estilos
+     (o como mínimo: la clase .efecto-glitch, sus dos
+     pseudo-elementos y los 3 @keyframes). No depende de
+     ningún otro estilo ni de librerías externas.
+
+   QUÉ HACE:  ciclo infinito de 4,5 segundos
+     · 0-54%  → ráfagas de interferencia (bandas RGB cortadas)
+     · 55-62% → ráfaga fuerte (interferencia exagerada)
+     · 74-95% → VIBRACIÓN constante del texto
+     · 95-100%→ pausa breve y vuelve a empezar
+   ================================================================ */
+
+/* --- TEXTO BASE (la sacudida y la vibración) --- */
+.efecto-glitch {
+    position: relative;
+    display: inline-block;
+    color: #eceff1;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    animation: glitch-sacudida 4.5s steps(1, end) infinite;
+}
+
+/* --- CAPAS DE INTERFERENCIA (comparten el texto con data-text) --- */
+.efecto-glitch::before,
+.efecto-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Capa roja */
+.efecto-glitch::before {
+    color: #ff2a6d;
+    text-shadow: -2px 0 #ff2a6d;
+    animation: glitch-capa-a 4.5s steps(1, end) infinite;
+}
+
+/* Capa cian */
+.efecto-glitch::after {
+    color: #05d9e8;
+    text-shadow: 2px 0 #05d9e8;
+    animation: glitch-capa-b 4.5s steps(1, end) infinite;
+}
+
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+/* Sacudidas del texto base + vibración final */
+@keyframes glitch-sacudida {
+    0%, 3%    { transform: translate(0, 0); }
+    4%        { transform: translate(4px, -2px) skewX(-4deg); }
+    5%, 12%   { transform: translate(0, 0); }
+    13%       { transform: translate(-5px, 2px) skewX(5deg); }
+    14%, 22%  { transform: translate(0, 0); }
+    23%       { transform: translate(6px, -3px); }
+    24%, 38%  { transform: translate(0, 0); }
+    39%       { transform: translate(-4px, 3px) skewX(-3deg); }
+    40%, 54%  { transform: translate(0, 0); }
+
+    /* ráfaga fuerte de interferencia */
+    55%       { transform: translate(8px, -3px) skewX(-8deg); }
+    56%       { transform: translate(-7px, 2px); }
+    57%       { transform: translate(6px, 3px) skewX(6deg); }
+    58%       { transform: translate(-8px, -2px); }
+    59%       { transform: translate(7px, 0) skewX(-5deg); }
+    60%       { transform: translate(-6px, -3px); }
+    61%       { transform: translate(5px, 2px) skewX(4deg); }
+    62%, 73%  { transform: translate(0, 0); }
+
+    /* VIBRACIÓN AL FINAL */
+    74%  { transform: translate(-3px, 1px); }
+    76%  { transform: translate(3px, -1px); }
+    78%  { transform: translate(-3px, -1px); }
+    80%  { transform: translate(3px, 1px); }
+    82%  { transform: translate(-2px, 1px); }
+    84%  { transform: translate(2px, -1px); }
+    86%  { transform: translate(-3px, 0); }
+    88%  { transform: translate(3px, 0); }
+    90%  { transform: translate(-2px, -1px); }
+    92%  { transform: translate(2px, 1px); }
+    94%  { transform: translate(-1px, 0); }
+    95%, 100% { transform: translate(0, 0); }
+}
+
+/* Bandas de interferencia de la capa ROJA */
+@keyframes glitch-capa-a {
+    0%, 3%    { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    4%        { clip-path: inset(18% 0 62% 0); transform: translate(-16px, -2px); }
+    5%, 12%   { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    13%       { clip-path: inset(55% 0 25% 0); transform: translate(14px, 3px) skewX(-8deg); }
+    14%, 22%  { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    23%       { clip-path: inset(6% 0 68% 0); transform: translate(-22px, -3px); }
+    24%, 38%  { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    39%       { clip-path: inset(38% 0 42% 0); transform: translate(-12px, 4px) skewX(6deg); }
+    40%, 54%  { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+
+    /* ráfaga fuerte */
+    55%       { clip-path: inset(10% 0 70% 0); transform: translate(-26px, -4px); }
+    56%       { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    57%       { clip-path: inset(60% 0 15% 0); transform: translate(20px, 3px); }
+    58%       { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    59%       { clip-path: inset(32% 0 48% 0); transform: translate(-30px, 0) skewX(-10deg); }
+    60%       { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    61%       { clip-path: inset(75% 0 5% 0); transform: translate(16px, -3px); }
+    62%, 73%  { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+
+    /* vibración */
+    74%  { clip-path: inset(0 0 55% 0); transform: translate(-5px, 0); }
+    76%  { clip-path: inset(30% 0 30% 0); transform: translate(5px, 2px); }
+    78%  { clip-path: inset(0 0 55% 0); transform: translate(-4px, -1px); }
+    80%  { clip-path: inset(30% 0 30% 0); transform: translate(4px, 1px); }
+    82%  { clip-path: inset(0 0 55% 0); transform: translate(-5px, 1px); }
+    84%  { clip-path: inset(30% 0 30% 0); transform: translate(5px, -2px); }
+    86%  { clip-path: inset(0 0 55% 0); transform: translate(-4px, 0); }
+    88%  { clip-path: inset(30% 0 30% 0); transform: translate(4px, 2px); }
+    90%  { clip-path: inset(0 0 55% 0); transform: translate(-3px, -1px); }
+    92%  { clip-path: inset(30% 0 30% 0); transform: translate(3px, 1px); }
+    94%  { clip-path: inset(0 0 55% 0); transform: translate(-2px, 0); }
+    95%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+}
+
+/* Bandas de interferencia de la capa CIAN (complementaria) */
+@keyframes glitch-capa-b {
+    0%, 3%    { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    4%        { clip-path: inset(65% 0 15% 0); transform: translate(15px, 3px); }
+    5%, 12%   { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    13%       { clip-path: inset(8% 0 70% 0); transform: translate(-13px, -3px) skewX(7deg); }
+    14%, 22%  { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    23%       { clip-path: inset(45% 0 35% 0); transform: translate(21px, 2px); }
+    24%, 38%  { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    39%       { clip-path: inset(70% 0 8% 0); transform: translate(14px, -4px) skewX(-6deg); }
+    40%, 54%  { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+
+    /* ráfaga fuerte */
+    55%       { clip-path: inset(48% 0 32% 0); transform: translate(24px, 4px); }
+    56%       { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    57%       { clip-path: inset(15% 0 60% 0); transform: translate(-18px, -3px) skewX(8deg); }
+    58%       { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    59%       { clip-path: inset(68% 0 12% 0); transform: translate(28px, 2px); }
+    60%       { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    61%       { clip-path: inset(4% 0 78% 0); transform: translate(-20px, 3px) skewX(-7deg); }
+    62%, 73%  { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+
+    /* vibración */
+    74%  { clip-path: inset(35% 0 25% 0); transform: translate(5px, -1px); }
+    76%  { clip-path: inset(5% 0 60% 0); transform: translate(-5px, 2px); }
+    78%  { clip-path: inset(35% 0 25% 0); transform: translate(4px, 2px); }
+    80%  { clip-path: inset(5% 0 60% 0); transform: translate(-4px, -2px); }
+    82%  { clip-path: inset(35% 0 25% 0); transform: translate(5px, 1px); }
+    84%  { clip-path: inset(5% 0 60% 0); transform: translate(-5px, -1px); }
+    86%  { clip-path: inset(35% 0 25% 0); transform: translate(4px, 0); }
+    88%  { clip-path: inset(5% 0 60% 0); transform: translate(-4px, 1px); }
+    90%  { clip-path: inset(35% 0 25% 0); transform: translate(3px, -1px); }
+    92%  { clip-path: inset(5% 0 60% 0); transform: translate(-3px, 1px); }
+    94%  { clip-path: inset(35% 0 25% 0); transform: translate(2px, 0); }
+    95%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+}
