@@ -63,7 +63,7 @@ El bloque `permissions:` del workflow (`contents: read`, `pages: write`, `id-tok
 
 Arreglarlo era posible con un clic en **Settings → Pages → Source → GitHub Actions**. No se hizo por una razón de fondo.
 
-`build-site.mjs` filtraba por `downloadable === true`, así que el artefacto de Pages llevaba **248 de 396** componentes. Excluía los 116 de `BibliotecaDeHtml_CSS` (sin licencia en su repositorio de origen) y los de `creaciones-primium` (sin `LICENSE` en la carpeta).
+`build-site.mjs` filtraba por `downloadable === true`, así que el artefacto de Pages llevaba **248 de 396** componentes. Excluía los 116 de `GevendraAutorExterno` (sin licencia en su repositorio de origen) y los de `creaciones-primium` (sin `LICENSE` en la carpeta).
 
 Habilitar Pages habría producido **dos sitios distintos**: Vercel con los 396 componentes y Pages con 248. Más una URL que mantener, su propio canonical, su propio sitemap y un segundo sitio que se pudriría con cada cambio. Y un artefacto de publicación que se puede filtrar por error es un riesgo de licencia, no solo de mantenimiento.
 
@@ -278,7 +278,7 @@ exit=0
 | Colección | Componentes | Descargables |
 | --- | --- | --- |
 | `CreacionesNuevas/` | 248 | **248** (MIT propia) |
-| `BibliotecaDeHtml_CSS/` | 116 | 0 (sin licencia en el repo de origen) |
+| `GevendraAutorExterno/` | 116 | 0 (sin licencia en el repo de origen) |
 | `creaciones-primium/` | 109 | 0 (sin `LICENSE` en la carpeta) |
 | **Total** | **473** | **248** |
 
@@ -289,7 +289,7 @@ exit=0
 | Métrica | Antes de la 1.ª auditoría | Ahora |
 | --- | --- | --- |
 | Repo sin `.git` | 39,28 MB | 32,17 MB |
-| `BibliotecaDeHtml_CSS/` | 32,33 MB | 22,69 MB |
+| `GevendraAutorExterno/` | 32,33 MB | 22,69 MB |
 | `Web/` | 3,23 MB | ~5,7 MB |
 | `Web/data/catalog.js` (no se despliega) | 2,03 MB | 4,16 MB |
 | `Web/data/sources/` | 379 ficheros | 473 ficheros, 1,15 MB |

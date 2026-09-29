@@ -5,12 +5,29 @@ import { toIndexEntry, writeSources } from "./catalog-format.mjs";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "../..");
+// Cada raiz declara su autor: es el dato del filtro de autores de la web.
+// GevendraAutorExterno agrupa los 116 demos de terceros de gevendra2004/gevstack
+// y DavokerDiseñador los futuros demos de davoker.
 const libraryRoots = [
-  { name: "BibliotecaDeHtml_CSS", directory: path.join(repositoryDirectory, "BibliotecaDeHtml_CSS") },
-  { name: "CreacionesNuevas", directory: path.join(repositoryDirectory, "CreacionesNuevas") },
+  {
+    name: "GevendraAutorExterno",
+    directory: path.join(repositoryDirectory, "GevendraAutorExterno"),
+    author: "Gevendra",
+  },
+  {
+    name: "DavokerDiseñador",
+    directory: path.join(repositoryDirectory, "DavokerDiseñador"),
+    author: "Davoker",
+  },
+  {
+    name: "CreacionesNuevas",
+    directory: path.join(repositoryDirectory, "CreacionesNuevas"),
+    author: "kindred-98",
+  },
   {
     name: "creaciones-primium",
     directory: path.join(repositoryDirectory, "creaciones-primium"),
+    author: "kindred-98",
     // La carpeta superior ya declara la categoría, en castellano.
     categories: {
       animaciones: "Animations",
@@ -254,6 +271,7 @@ async function createComponent(root, pagePath) {
     id,
     name,
     category,
+    author: override.author ?? root.author ?? "kindred-98",
     featured: override.featured === true,
     description,
     ...(descriptionEs ? { descriptionEs } : {}),

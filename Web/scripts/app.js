@@ -23,6 +23,9 @@ const translations = {
       All: "All", Animations: "Animations", Buttons: "Buttons", Cards: "Cards", Controls: "Controls",
       Effects: "Effects", Forms: "Forms", Galleries: "Galleries", Loaders: "Loaders", Navigation: "Navigation", Other: "Other",
     },
+    authors: {
+      All: "All authors", Gevendra: "Gevendra", Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
+    },
     brandHome: "HTML and CSS Library home",
     mainNavigation: "Main navigation",
     languageLabel: "Language",
@@ -99,6 +102,7 @@ const translations = {
     searchPlaceholder: "Search buttons, cards, effects...",
     loadingCollection: "Loading collection...",
     filterByCategory: "Filter by category",
+    filterByAuthor: "Filter by author",
     noComponents: "No components found",
     noComponentsHint: "Try another search or choose a different category.",
     previousPage: "Previous page",
@@ -161,6 +165,9 @@ const translations = {
     categories: {
       All: "Todas", Animations: "Animaciones", Buttons: "Botones", Cards: "Tarjetas", Controls: "Controles",
       Effects: "Efectos", Forms: "Formularios", Galleries: "Galerías", Loaders: "Indicadores de carga", Navigation: "Navegación", Other: "Otros",
+    },
+    authors: {
+      All: "Todos los autores", Gevendra: "Gevendra", Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
     },
     brandHome: "Inicio de la biblioteca HTML y CSS",
     mainNavigation: "Navegación principal",
@@ -238,6 +245,7 @@ const translations = {
     searchPlaceholder: "Buscar botones, tarjetas, efectos...",
     loadingCollection: "Cargando colección...",
     filterByCategory: "Filtrar por categoría",
+    filterByAuthor: "Filtrar por autor",
     noComponents: "No se encontraron componentes",
     noComponentsHint: "Prueba otra búsqueda o elige una categoría diferente.",
     previousPage: "Página anterior",
@@ -303,6 +311,7 @@ const state = {
   catalogLoaded: false,
   language: "en",
   category: "All",
+  author: "All",
   query: "",
   currentPage: 1,
   featuredPage: 1,
@@ -315,6 +324,7 @@ const elements = {
   featuredGrid: document.querySelector("#featured-grid"),
   search: document.querySelector("#component-search"),
   filters: document.querySelector("#category-filters"),
+  authorFilters: document.querySelector("#author-filters"),
   grid: document.querySelector("#component-grid"),
   resultsCount: document.querySelector("#results-count"),
   emptyState: document.querySelector("#empty-state"),
@@ -341,6 +351,10 @@ function t(key, values = {}) {
 
 function getCategoryLabel(category) {
   return translations[state.language]?.categories[category] ?? category;
+}
+
+function getAuthorLabel(author) {
+  return translations[state.language]?.authors?.[author] ?? author;
 }
 
 // Maquina de escribir (CSS Typewriter Line). El original lleva el numero de
@@ -559,17 +573,40 @@ function getCategories() {
   return [...new Set(state.components.map((component) => component.category))].sort((first, second) => first.localeCompare(second));
 }
 
+// Autores fijos: Gevendra, davoker, kindred-98 y fatmaerm salen siempre, aunque
+// ahora mismo davoker y fatmaerm no tengan ningun demo (una carpeta vacia a la
+// espera y, de momento, ninguna señal suya en el catalogo).
+const preferredAuthors = ["All", "Gevendra", "Davoker", "kindred-98", "fatmaerm"];
+
+// Animacion propia de cada boton de autor (styles/site.css).
+const authorButtonFx = {
+  Gevendra: "filter-button--underglow",
+  Davoker: "filter-button--liquid",
+  "kindred-98": "filter-button--datamosh",
+  fatmaerm: "filter-button--pulse",
+};
+
+function getAuthors() {
+  const present = new Set(state.components.map((component) => component.author).filter(Boolean));
+  const extras = [...present]
+    .filter((author) => !preferredAuthors.includes(author))
+    .sort((first, second) => first.localeCompare(second));
+  return [...preferredAuthors, ...extras];
+}
+
 function getFilteredComponents() {
   const query = normalizeText(state.query);
   return state.components.filter((component) => {
     const matchesCategory = state.category === "All" || component.category === state.category;
+    const matchesAuthor = state.author === "All" || component.author === state.author;
     const searchableText = normalizeText([
       component.name,
       component.category,
+      component.author,
       component.description,
       ...(component.tags ?? []),
     ].join(" "));
-    return matchesCategory && (!query || searchableText.includes(query));
+    return matchesCategory && matchesAuthor && (!query || searchableText.includes(query));
   });
 }
 
@@ -587,6 +624,27 @@ function renderFilters() {
       renderComponents();
     });
     elements.filters.append(button);
+  }
+}
+
+// Cada boton de autor lleva su animacion: davoker la de Liquid Fill Button,
+// Gevendra la de Animated Gradient Underglow, kindred-98 la de Datamosh Decode y
+// fatmaerm la de Neutron Star Pulse.
+function renderAuthorFilters() {
+  if (!elements.authorFilters) return;
+  elements.authorFilters.replaceChildren();
+  for (const author of getAuthors()) {
+    const fx = authorButtonFx[author];
+    const button = createElement("button", fx ? `filter-button ${fx}` : "filter-button", getAuthorLabel(author));
+    button.type = "button";
+    button.setAttribute("aria-pressed", String(state.author === author));
+    button.addEventListener("click", () => {
+      state.author = author;
+      state.currentPage = 1;
+      renderAuthorFilters();
+      renderComponents();
+    });
+    elements.authorFilters.append(button);
   }
 }
 
@@ -1197,6 +1255,7 @@ function applyLanguage(language, rerender = true) {
     renderMarquee();
     renderFeaturedComponents();
     renderFilters();
+    renderAuthorFilters();
     renderRoute();
   }
 }
@@ -1355,6 +1414,7 @@ async function initializeApp() {
     renderMarquee();
     renderFeaturedComponents();
     renderFilters();
+    renderAuthorFilters();
     renderRoute();
   } catch (error) {
     if (elements.resultsCount) elements.resultsCount.textContent = t("catalogUnavailable");

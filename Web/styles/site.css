@@ -1277,6 +1277,334 @@ input:focus-visible {
   color: var(--text);
 }
 
+/* El filtro de autores va justo encima del de categorias. */
+.author-filters {
+  margin: 18px 0 10px;
+}
+
+/* Liquid Fill Button (CreacionesNuevas/liquid-fill-button): una ola que sube al
+   pasar el cursor y se queda llena mientras el autor esta seleccionado. Solo la
+   lleva el boton de davoker. */
+.filter-button--liquid {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.filter-button--liquid::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: -120%;
+  width: 220%;
+  height: 220%;
+  background: var(--accent);
+  border-radius: 42%;
+  transform: translateX(-50%);
+  transition: bottom 0.55s ease;
+  animation: filter-button-slosh 4s linear infinite;
+}
+
+.filter-button--liquid:hover::before,
+.filter-button--liquid:focus-visible::before,
+.filter-button--liquid[aria-pressed="true"]::before {
+  bottom: -35%;
+}
+
+.filter-button--liquid:hover,
+.filter-button--liquid:focus-visible,
+.filter-button--liquid[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+@keyframes filter-button-slosh {
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-button--liquid::before {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Animated Gradient Underglow (GevendraAutorExterno/animated-gradient-underglow):
+   el mismo degradado rosa-violeta de la demo, desenfocado y moviendose por
+   debajo del boton. Solo lo lleva el boton de Gevendra. */
+.filter-button--underglow {
+  position: relative;
+  isolation: isolate;
+  border-radius: 999px;
+}
+
+.filter-button--underglow::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 7%;
+  right: 7%;
+  bottom: -9px;
+  height: 74%;
+  border-radius: 999px;
+  background: linear-gradient(
+    to left,
+    #ff5770,
+    #e4428d,
+    #c42da8,
+    #9e16c3,
+    #6501de,
+    #9e16c3,
+    #c42da8,
+    #e4428d,
+    #ff5770
+  );
+  background-size: 200% 200%;
+  filter: blur(14px);
+  transform: scale(0.9);
+  opacity: 0.5;
+  transition: opacity 220ms ease, transform 220ms ease;
+  animation: filter-button-underglow 1.25s linear infinite;
+}
+
+.filter-button--underglow:hover::after,
+.filter-button--underglow:focus-visible::after,
+.filter-button--underglow[aria-pressed="true"]::after {
+  opacity: 0.95;
+  transform: scale(1);
+}
+
+@keyframes filter-button-underglow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+/* Datamosh Decode Button (creaciones-primium/botones/datamosh-decode-button):
+   el rotulo sale con la aberracion cromatica y una capa de macrobloques corrupta
+   que se descodifican al pasar el cursor. Solo lo lleva el boton de kindred-98. */
+.filter-button--datamosh {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 999px;
+  color: var(--text);
+  animation: filter-button-datamosh-label 2.6s steps(1, end) infinite;
+  text-shadow: 1px 0 rgba(255, 60, 110, 0.75), -1px 0 rgba(0, 220, 255, 0.7);
+}
+
+.filter-button--datamosh::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -3px;
+  background:
+    repeating-linear-gradient(90deg, rgba(63, 224, 255, 0.3) 0 7px, transparent 7px 16px),
+    repeating-linear-gradient(0deg, rgba(255, 72, 120, 0.22) 0 5px, transparent 5px 11px),
+    linear-gradient(90deg, rgba(101, 1, 222, 0.4), rgba(63, 224, 255, 0.25));
+  background-size: 47px 100%, 100% 31px, 200% 100%;
+  opacity: 0.85;
+  transition: opacity 300ms ease;
+  animation: filter-button-datamosh-cells 0.55s steps(1, end) infinite;
+}
+
+.filter-button--datamosh::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(63, 224, 255, 0.6), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-100%);
+}
+
+.filter-button--datamosh:hover,
+.filter-button--datamosh:focus-visible,
+.filter-button--datamosh[aria-pressed="true"] {
+  animation: none;
+  text-shadow: none;
+}
+
+.filter-button--datamosh:hover::before,
+.filter-button--datamosh:focus-visible::before,
+.filter-button--datamosh[aria-pressed="true"]::before {
+  opacity: 0;
+  animation-play-state: paused;
+}
+
+.filter-button--datamosh:hover::after,
+.filter-button--datamosh:focus-visible::after {
+  animation: filter-button-datamosh-scan 0.5s ease-out;
+}
+
+@keyframes filter-button-datamosh-label {
+  0%,
+  100% {
+    text-shadow: 1px 0 rgba(255, 60, 110, 0.75), -1px 0 rgba(0, 220, 255, 0.7);
+  }
+
+  33% {
+    text-shadow: -2px 1px rgba(255, 60, 110, 0.75), 2px -1px rgba(0, 220, 255, 0.7);
+  }
+
+  66% {
+    text-shadow: 2px -1px rgba(255, 60, 110, 0.75), -2px 1px rgba(0, 220, 255, 0.7);
+  }
+}
+
+@keyframes filter-button-datamosh-cells {
+  0% {
+    background-position: 0 0, 0 0, 0 50%;
+  }
+
+  25% {
+    background-position: -14px 3px, 7px -5px, 40% 50%;
+  }
+
+  50% {
+    background-position: 9px -4px, -6px 6px, 70% 50%;
+  }
+
+  75% {
+    background-position: -7px 5px, 12px 4px, 30% 50%;
+  }
+}
+
+@keyframes filter-button-datamosh-scan {
+  0% {
+    opacity: 0.75;
+    transform: translateX(-100%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Neutron Star Pulse Button (creaciones-primium/botones/neutron-star-pulse-button):
+   el boton late con el reloj de los pulsares (1,42 Hz), con una onda que sale del
+   nucleo y dos chorros bipolares al seleccionarlo. Solo lo lleva fatmaerm. */
+.filter-button--pulse {
+  position: relative;
+  isolation: isolate;
+  border-radius: 999px;
+}
+
+.filter-button--pulse::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -2px;
+  border: 1px solid var(--accent);
+  border-radius: inherit;
+  opacity: 0;
+  animation: filter-button-pulse-wave 1.42s cubic-bezier(0.2, 0.6, 0.25, 1) infinite;
+}
+
+.filter-button--pulse::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -8px;
+  border-radius: inherit;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 60%, transparent), transparent 78%);
+  filter: blur(7px);
+  opacity: 0.55;
+  animation: filter-button-pulse-core 1.42s cubic-bezier(0.4, 0, 0.3, 1) infinite;
+}
+
+.filter-button--pulse:hover::before,
+.filter-button--pulse:focus-visible::before {
+  animation-duration: 0.65s;
+}
+
+.filter-button--pulse:hover::after,
+.filter-button--pulse:focus-visible::after {
+  animation-duration: 0.64s;
+  opacity: 0.8;
+}
+
+.filter-button--pulse[aria-pressed="true"] {
+  border-color: var(--accent);
+  box-shadow:
+    0 -11px 13px -8px var(--accent),
+    0 11px 13px -8px var(--accent),
+    0 0 14px -6px var(--accent);
+}
+
+.filter-button--pulse:active {
+  animation: filter-button-pulse-jet 0.58s cubic-bezier(0.1, 0.75, 0.2, 1);
+}
+
+@keyframes filter-button-pulse-wave {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+
+  35% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+@keyframes filter-button-pulse-core {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes filter-button-pulse-jet {
+  0% {
+    box-shadow: 0 -2px 8px -5px var(--accent), 0 2px 8px -5px var(--accent);
+  }
+
+  45% {
+    box-shadow: 0 -18px 15px -7px var(--accent), 0 18px 15px -7px var(--accent);
+  }
+
+  100% {
+    box-shadow: 0 -2px 8px -5px var(--accent), 0 2px 8px -5px var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-button--underglow::after,
+  .filter-button--datamosh,
+  .filter-button--datamosh::before,
+  .filter-button--datamosh::after,
+  .filter-button--pulse::before,
+  .filter-button--pulse::after,
+  .filter-button--pulse:active {
+    animation: none;
+    transition: none;
+  }
+
+  .filter-button--datamosh::before {
+    opacity: 0.4;
+  }
+}
+
 .component-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

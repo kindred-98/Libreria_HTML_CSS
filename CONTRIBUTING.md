@@ -12,7 +12,7 @@ No todas las carpetas son iguales. Cuál eliges determina si el componente puede
 | --- | --- | --- |
 | `CreacionesNuevas/` | Creaciones del autor, con `LICENSE` MIT propia | **Habilitado** |
 | `creaciones-primium/` | Creaciones en curso, agrupadas por categoría (`botones/`, `animaciones/`, …) | Deshabilitado mientras no lleven `LICENSE` |
-| `BibliotecaDeHtml_CSS/` | Demos de terceros, sin licencia de redistribución | Deshabilitado, y no se tocan |
+| `GevendraAutorExterno/` | Demos de terceros, sin licencia de redistribución | Deshabilitado, y no se tocan |
 
 **Al añadir un componente, la opción correcta es `creaciones-primium/`**, dentro de la categoría que le toque. `CreacionesNuevas/` es el archivo histórico de lo ya publicado.
 
@@ -152,7 +152,7 @@ La decisión de integrar o no es siempre de quien mantiene el repositorio. No ha
 
 ```text
 .
-|-- BibliotecaDeHtml_CSS/       # demos de terceros, no se modifican
+|-- GevendraAutorExterno/       # demos de terceros, no se modifican
 |-- CreacionesNuevas/           # creaciones propias ya publicadas
 |-- creaciones-primium/         # creaciones en curso, por categoría
 |-- Web/                        # la aplicación

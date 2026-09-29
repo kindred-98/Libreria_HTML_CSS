@@ -2,21 +2,21 @@
 
 ## Estado de distribución
 
-La `LICENSE` de la raíz se aplica al código original de la aplicación y a la documentación creados para este repositorio por `kindred-98`, **y también a los demos originales de `CreacionesNuevas/`**, cada uno de los cuales incluye además su propio archivo `LICENSE`. No concede derechos sobre los demos de terceros de `BibliotecaDeHtml_CSS/` ni sobre recursos de terceros.
+La `LICENSE` de la raíz se aplica al código original de la aplicación y a la documentación creados para este repositorio por `kindred-98`, **y también a los demos originales de `CreacionesNuevas/`**, cada uno de los cuales incluye además su propio archivo `LICENSE`. No concede derechos sobre los demos de terceros de `GevendraAutorExterno/` ni sobre recursos de terceros.
 
 ## Las dos colecciones
 
 | Carpeta | Componentes | Autoría | Licencia | ZIP |
 |---|---:|---|---|---|
 | `CreacionesNuevas/` | **248** | `kindred-98`, creations originales | MIT (archivo `LICENSE` en cada carpeta) | **Habilitado** |
-| `BibliotecaDeHtml_CSS/` | **116** | Gevendra Sahu (`gevendra2004`) | **Ninguna declarada** | Deshabilitado |
+| `GevendraAutorExterno/` | **116** | Gevendra Sahu (`gevendra2004`) | **Ninguna declarada** | Deshabilitado |
 | **Total** | **364** | | | 248 de 364 |
 
 ## Estado de distribución
 
 Los 248 componentes de `CreacionesNuevas/` están autorizados: el catálogo los marca con `license: "MIT"`, `redistributable: true`, `licenseFile: "LICENSE"` y `source` apuntando a este repositorio. Sus descargas ZIP incluyen el `LICENSE` del componente y un `ATTRIBUTION.txt` generado en el momento de la descarga.
 
-Sobre los 116 componentes de `BibliotecaDeHtml_CSS/`, ver la investigación completa que sigue.
+Sobre los 116 componentes de `GevendraAutorExterno/`, ver la investigación completa que sigue.
 
 ## Resultado de la investigación de procedencia (2026-09-26)
 
@@ -64,7 +64,7 @@ Los archivos locales, como `Movie-Card-UI/pngwing.png`, y las imágenes, fuentes
 ## Consecuencias asumidas en el proyecto
 
 - El botón **ZIP está deshabilitado en los 116 componentes de terceros** y **habilitado en los 248 propios**. No es un bug pendiente: es el estado correcto según los derechos de cada grupo.
-- El sitio se despliega en **Vercel sirviendo la raíz del repositorio**, que muestra los 396 componentes y evita que las previews de `BibliotecaDeHtml_CSS/` den 404. No existe un artefacto de publicación alternativo: el constructor que filtraba por licencias se eliminó junto con el despliegue en GitHub Pages, para que solo haya una copia del sitio y no se puedan publicar por error los componentes sin permiso de redistribución.
+- El sitio se despliega en **Vercel sirviendo la raíz del repositorio**, que muestra los 396 componentes y evita que las previews de `GevendraAutorExterno/` den 404. No existe un artefacto de publicación alternativo: el constructor que filtraba por licencias se eliminó junto con el despliegue en GitHub Pages, para que solo haya una copia del sitio y no se puedan publicar por error los componentes sin permiso de redistribución.
 - La atribución de origen se muestra en el detalle de cada componente («Source: …»), tanto si está verificado como si no.
 
 ## Autorizar un componente

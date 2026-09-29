@@ -1,6 +1,6 @@
 # Aplicación web Component/Field
 
-Catálogo estático y sin dependencias para los demos independientes de `../BibliotecaDeHtml_CSS/`. Los demos originales permanecen separados; la aplicación los indexa sin reescribir su HTML, CSS ni JavaScript.
+Catálogo estático y sin dependencias para los demos independientes de `../GevendraAutorExterno/`. Los demos originales permanecen separados; la aplicación los indexa sin reescribir su HTML, CSS ni JavaScript.
 
 ## Ejecución local
 
@@ -33,8 +33,8 @@ El generador requiere Node.js 18 o posterior. La aplicación usa HTML, CSS, mód
 ## Funcionamiento
 
 - `scripts/generate-catalog.mjs` busca cada `index.html`, incluidos los demos anidados, lee el título y las referencias locales a CSS/JavaScript, y genera tres artefactos: `data/catalog.json` (índice ligero, sin código), `data/sources/<id>.json` (el código de cada componente, que la web pide solo al abrir su detalle) y `data/catalog.js` (catálogo completo para el modo `file://`).
-- `data/component-overrides.json` permite añadir nombres, categorías, descripciones, descripciones en español, etiquetas, destacados, fuentes y licencias revisados para cada ID. `license` mantiene el valor predeterminado `Unverified`; no marques una licencia como verificada sin comprobarla.
-- `scripts/app.js` muestra la búsqueda, los filtros, las vistas previas reales, los controles para copiar el código y los botones ZIP sujetos a la verificación de derechos.
+- `data/component-overrides.json` permite añadir nombres, categorías, autores (`author`), descripciones, descripciones en español, etiquetas, destacados, fuentes y licencias revisados para cada ID. `license` mantiene el valor predeterminado `Unverified`; no marques una licencia como verificada sin comprobarla.
+- `scripts/app.js` muestra la búsqueda, los filtros por categoría y por autor, las vistas previas reales, los controles para copiar el código y los botones ZIP sujetos a la verificación de derechos.
 - La web se reparte en tres páginas que comparten `scripts/app.js`: `index.html` (hero, destacados y categorías), `components.html` (la colección con buscador y filtros, además del detalle de cada componente) y `team-core.html` (equipo y donaciones). Cada una declara su propia canonical; el detalle vive en `components.html?component=<id>`.
 - `scripts/zip.js` crea archivos ZIP en el navegador sin paquetes externos.
 - `scripts/serve.mjs` sirve el repositorio por HTTP para probar en local: `node Web/scripts/serve.mjs` y abre <http://localhost:8000/>. No acepta rutas que salgan de la raíz del repositorio.
@@ -43,11 +43,11 @@ El generador requiere Node.js 18 o posterior. La aplicación usa HTML, CSS, mód
 - La interfaz ofrece inglés y español; guarda el idioma en `localStorage` con la clave `component-field-language`, separada de `component-field-theme`.
 - Las vistas previas cargan el `index.html` original en un `iframe`. El detalle muestra ese HTML y lee los archivos CSS y JavaScript locales para poder copiarlos.
 
-El catálogo local detecta actualmente 396 páginas de demos en tres colecciones: los 248 de `CreacionesNuevas/` (creaciones del autor, con `LICENSE` MIT propia y **ZIP habilitado**), los 116 de `BibliotecaDeHtml_CSS/` (terceros, trazados a `gevendra2004/gevstack`, que **no declara licencia**, por lo que su ZIP sigue deshabilitado) y los 32 de `creaciones-primium/` (en desarrollo, sin `LICENSE` en la carpeta, también sin ZIP). Las categorías se infieren de los nombres de carpetas y páginas. Las referencias locales faltantes se muestran en el detalle. Consulta [`../Docs/Legalizacion/THIRD_PARTY_NOTICES.md`](../Docs/Legalizacion/THIRD_PARTY_NOTICES.md).
+El catálogo local detecta actualmente 396 páginas de demos en tres colecciones: los 248 de `CreacionesNuevas/` (creaciones del autor, con `LICENSE` MIT propia y **ZIP habilitado**), los 116 de `GevendraAutorExterno/` (terceros, trazados a `gevendra2004/gevstack`, que **no declara licencia**, por lo que su ZIP sigue deshabilitado) y los 32 de `creaciones-primium/` (en desarrollo, sin `LICENSE` en la carpeta, también sin ZIP). La cuarta carpeta raíz, `DavokerDiseñador/`, está vacía a la espera de los demos de davoker. Las categorías se infieren de los nombres de carpetas y páginas, y el **autor** (`author`) viene de la carpeta raíz: `Gevendra` para `GevendraAutorExterno/`, `Davoker` para `DavokerDiseñador/` y `kindred-98` para las dos colecciones propias. Las referencias locales faltantes se muestran en el detalle. Consulta [`../Docs/Legalizacion/THIRD_PARTY_NOTICES.md`](../Docs/Legalizacion/THIRD_PARTY_NOTICES.md).
 
 ## Añadir un componente
 
-1. Crea una carpeta independiente dentro de `BibliotecaDeHtml_CSS/` con un `index.html` y los recursos locales necesarios. Usa `kebab-case` en minúsculas y un nombre que describa el componente.
+1. Crea una carpeta independiente dentro de `GevendraAutorExterno/` con un `index.html` y los recursos locales necesarios. Usa `kebab-case` en minúsculas y un nombre que describa el componente.
 2. Enlaza el CSS y JavaScript locales mediante etiquetas `<link rel="stylesheet">` y `<script src="...">`.
 3. Regenera el catálogo con `node Web/scripts/generate-catalog.mjs`.
 4. Escribe el `<title>` con el nombre funcional del componente, sin añadir marcas como `GevStack`.

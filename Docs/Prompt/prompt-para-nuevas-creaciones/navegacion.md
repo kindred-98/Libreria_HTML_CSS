@@ -6,7 +6,7 @@ Crea componentes hasta que esta carpeta tenga **exactamente 100 navegaciones**. 
 
 ## 1. ANTES DE EMPEZAR
 1. Lista los slugs que ya existen en `creaciones-primium/navegacion/` y en el resto de carpetas de
-   `creaciones-primium/`, y también en `CreacionesNuevas/` y `BibliotecaDeHtml_CSS/`. No repitas ninguno.
+   `creaciones-primium/`, y también en `CreacionesNuevas/` y `GevendraAutorExterno/`. No repitas ninguno.
 2. Anota los slugs que vas a crear en una lista y mantenla al día, para que los 100 sean distintos.
 
 ## 2. REGLA DE ORO: LA PRESENTACIÓN ES PARTE DEL DISEÑO

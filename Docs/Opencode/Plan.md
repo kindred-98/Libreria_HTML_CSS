@@ -28,7 +28,7 @@ licencia, y eso es intencionado.
 
 ## Contexto
 
-Sitio estático (`Web/`) que indexa 116 demos de `BibliotecaDeHtml_CSS/`. Sin frameworks,
+Sitio estático (`Web/`) que indexa 116 demos de `GevendraAutorExterno/`. Sin frameworks,
 sin backend, sin `node_modules`. Objetivo: **desplegar en Vercel** con la colección
 completa visible y la descarga de código funcionando, sin necesitar base de datos.
 
@@ -36,7 +36,7 @@ completa visible y la descarga de código funcionando, sin necesitar base de dat
 
 | # | Hallazgo | Severidad |
 |---|---|---|
-| 1 | `build-site.mjs` copia solo `downloadable === true` → **0 de 116** componentes; el artefacto quedaría vacío y las previews (`../BibliotecaDeHtml_CSS/…`) darían 404 | 🔴 Bloqueante |
+| 1 | `build-site.mjs` copia solo `downloadable === true` → **0 de 116** componentes; el artefacto quedaría vacío y las previews (`../GevendraAutorExterno/…`) darían 404 | 🔴 Bloqueante |
 | 2 | No hay `vercel.json` ni instrucciones correctas para Vercel | 🔴 Bloqueante |
 | 3 | ZIP deshabilitado en 116/116 componentes | 🔴 Producto |
 | 4 | Catálogo: 774 KB `catalog.json` + 733 KB `catalog.js` (~1.5 MB servidos) | 🟠 Rendimiento |
@@ -80,7 +80,7 @@ completa visible y la descarga de código funcionando, sin necesitar base de dat
 
 ### Fase 2 — Bugs y correcciones de código ✅ (2026-09-26)
 
-- [x] `BibliotecaDeHtml_CSS/Flipping-Loader/styles.css`: eliminada la línea
+- [x] `GevendraAutorExterno/Flipping-Loader/styles.css`: eliminada la línea
       `background-image: url("http://…")` (host muerto + mixed content en HTTPS).
       La demo conserva `background-color: #012501`.
 - [x] `Web/scripts/app.js`: texto hardcodeado `"No local source file found."` → `t("noLocalSource")`.
@@ -276,7 +276,7 @@ falla ✅. `git status` sin artefactos ✅. README sin contradicciones ✅.
 ### Fase 10 — Clasificación y previews en producción ✅ (2026-09-27)
 
 - [x] **Previews rotas en el despliegue.** 93 de las 114 carpetas de
-      `BibliotecaDeHtml_CSS/` tenían distinta capitalización en git que en disco.
+      `GevendraAutorExterno/` tenían distinta capitalización en git que en disco.
       El catálogo usa la ruta del disco, así que en Linux/Vercel la preview no
       encontraba el archivo. `core.ignorecase=false` + 93 renombrados en el índice.
 - [x] **Barras de scroll** dentro de las previews: `scrolling="no"` en los iframes.
@@ -293,12 +293,12 @@ previews se ven igual en local que en producción. ✅
 ### Fase 9 — `CreacionesNuevas/` integrada ✅ (2026-09-26)
 
 - [x] `generate-catalog.mjs` recorre **varias raíces**
-      (`BibliotecaDeHtml_CSS` y `CreacionesNuevas`) en vez de una sola, y cada
+      (`GevendraAutorExterno` y `CreacionesNuevas`) en vez de una sola, y cada
       componente incluye un campo `root` con la carpeta de la que procede.
 - [x] Las comprobaciones de referencias locales (`getLocalReferences` y
       `getMissingReferences`) usan **la raíz del propio componente**, no una
       constante global: si no, las hojas de estilo y scripts de los demos
-      nuevos se habrían descartado por estar fuera de `BibliotecaDeHtml_CSS/`.
+      nuevos se habrían descartado por estar fuera de `GevendraAutorExterno/`.
 - [x] `build-site.mjs` localiza y copia cada demo desde `component.root` y falla
       con un error claro si la raíz no existe. El artefacto conserva el nombre de
       la raíz para que las previews sigan resolviendo.

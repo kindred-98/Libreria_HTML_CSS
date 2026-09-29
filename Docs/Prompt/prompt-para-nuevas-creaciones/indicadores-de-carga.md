@@ -6,7 +6,7 @@ Crea componentes hasta que esta carpeta tenga **exactamente 100 indicadores**. S
 
 ## 1. ANTES DE EMPEZAR
 1. Lista los slugs que ya existen en `creaciones-primium/indicadores-de-carga/` y en el resto de carpetas
-   de `creaciones-primium/`, y también en `CreacionesNuevas/` y `BibliotecaDeHtml_CSS/`. No repitas
+   de `creaciones-primium/`, y también en `CreacionesNuevas/` y `GevendraAutorExterno/`. No repitas
    ninguno. Ojo: ya hay muchos loaders en el repo (`aurora-wave-loader`, `quantum-spin-loader`,
    `orbital-dot-ring`, `tesseract`, `morphing-shape-animation`, `staircase-blocks-loader`, etc.), así que
    revisa con detalle y busca efectos que no existan ya.

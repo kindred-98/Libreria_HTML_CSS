@@ -3,13 +3,13 @@
 Crea componentes hasta que esta carpeta tenga **86 galerías**. Si ya hay N, crea 86 - N.
 
 Las imágenes se sirven **por URL externa**, como en el componente de referencia
-`BibliotecaDeHtml_CSS/rounded-image-gallery` (que usa `<img src="https://images.pexels.com/...">`).
+`GevendraAutorExterno/rounded-image-gallery` (que usa `<img src="https://images.pexels.com/...">`).
 
 ---
 
 ## 1. ANTES DE EMPEZAR
 1. Lista los slugs que ya existen en `creaciones-primium/galerias/`, en el resto de carpetas de
-   `creaciones-primium/` y en `CreacionesNuevas/` y `BibliotecaDeHtml_CSS/`. No repitas ninguno.
+   `creaciones-primium/` y en `CreacionesNuevas/` y `GevendraAutorExterno/`. No repitas ninguno.
 2. **NO inventes URLs de imagen.** Usa el manifiesto ya recopilado y verificado:
    `Docs/Prompt/prompt-para-nuevas-creaciones/imagenes-galerias.json`
    Tiene 40 temas y 12 imágenes por tema. Estructura:

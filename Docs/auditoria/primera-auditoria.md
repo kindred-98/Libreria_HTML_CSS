@@ -18,7 +18,7 @@
 
 **Resultado:** no se rompió ninguna referencia. La búsqueda de los nombres de todos los ficheros eliminados en el código (`.html`, `.css`, `.js`, `.mjs`) no devuelve ninguna coincidencia.
 
-El peso restante (22,69 MB) está casi todo en `BibliotecaDeHtml_CSS/` y corresponde a **material que sí se usa**: las 116 demos de terceros se muestran en vista previa dentro de un `iframe`.
+El peso restante (22,69 MB) está casi todo en `GevendraAutorExterno/` y corresponde a **material que sí se usa**: las 116 demos de terceros se muestran en vista previa dentro de un `iframe`.
 
 ---
 
@@ -29,11 +29,11 @@ El peso restante (22,69 MB) está casi todo en `BibliotecaDeHtml_CSS/` y corresp
 | Fichero | Tamaño | Motivo |
 | --- | --- | --- |
 | `Web/data/catalog.js` | 2,03 MB | Catálogo completo con el código fuente de los 384 componentes. Solo se carga al abrir con `file://` (`Web/scripts/app.js:536`) o si falla la petición de `catalog.json` (`app.js:547`). **En Vercel nunca se carga.** Es un artefacto generado por `generate-catalog.mjs`. |
-| `BibliotecaDeHtml_CSS/trick-and-treat-toggle/cover-2.jpg` | 7,15 MB | La demo es 100 % CSS: `index.html` y `style.css` dibujan el pulley y el caramelo con `radial-gradient` / `linear-gradient`. No hay ninguna etiqueta `<img>` ni regla `url()`. Resto del repositorio de origen. |
-| `BibliotecaDeHtml_CSS/trick-and-treat-toggle/reel-45.png` | 1,12 MB | Ídem, mismo componente. |
-| `BibliotecaDeHtml_CSS/trick-and-treat-toggle/main-reel.jpg` | 747 KB | Ídem, mismo componente. |
-| `BibliotecaDeHtml_CSS/profile-card-02/assets/profile.png` | 640 KB | El `index.html` solo carga `assets/peakpx-removebg-preview.png` (301 KB) como imagen de fondo. |
-| `BibliotecaDeHtml_CSS/modern-contact-card/logo.jpg` | 11,6 KB | El `index.html` solo carga `moshed-2023-10-17-13-58-25.gif`; el CSS importa únicamente la fuente `font/creation-demo.otf`. |
+| `GevendraAutorExterno/trick-and-treat-toggle/cover-2.jpg` | 7,15 MB | La demo es 100 % CSS: `index.html` y `style.css` dibujan el pulley y el caramelo con `radial-gradient` / `linear-gradient`. No hay ninguna etiqueta `<img>` ni regla `url()`. Resto del repositorio de origen. |
+| `GevendraAutorExterno/trick-and-treat-toggle/reel-45.png` | 1,12 MB | Ídem, mismo componente. |
+| `GevendraAutorExterno/trick-and-treat-toggle/main-reel.jpg` | 747 KB | Ídem, mismo componente. |
+| `GevendraAutorExterno/profile-card-02/assets/profile.png` | 640 KB | El `index.html` solo carga `assets/peakpx-removebg-preview.png` (301 KB) como imagen de fondo. |
+| `GevendraAutorExterno/modern-contact-card/logo.jpg` | 11,6 KB | El `index.html` solo carga `moshed-2023-10-17-13-58-25.gif`; el CSS importa únicamente la fuente `font/creation-demo.otf`. |
 
 **Total recuperado con `git rm`: 11,70 MB.**
 
@@ -131,7 +131,7 @@ Las vacías no se detectan con `generate-catalog.mjs` (busca `index.html`) y las
 `Web/scripts/build-site.mjs:9` declara solo dos raíces:
 
 ```js
-const libraryRoots = ["BibliotecaDeHtml_CSS", "CreacionesNuevas"].map((name) => ({ ... }));
+const libraryRoots = ["GevendraAutorExterno", "CreacionesNuevas"].map((name) => ({ ... }));
 ```
 
 `generate-catalog.mjs:8-28` sí declara las tres. Hoy no provoca error porque los componentes de `creaciones-primium` no tienen fichero `LICENSE` en su carpeta, así que `downloadable` es `false` y el constructor los filtra antes de buscar la raíz. **Pero en cuanto uno gane `redistributable: true` en `component-overrides.json`, `build-site.mjs` abortará con `Unknown library root`.** Añadir la raíz o documentar la decisión.
@@ -142,7 +142,7 @@ const libraryRoots = ["BibliotecaDeHtml_CSS", "CreacionesNuevas"].map((name) => 
 
 | Raíz | Componentes | ZIP |
 | --- | --- | --- |
-| `BibliotecaDeHtml_CSS/` | 116 | Deshabilitado (sin licencia en el repo de origen) |
+| `GevendraAutorExterno/` | 116 | Deshabilitado (sin licencia en el repo de origen) |
 | `CreacionesNuevas/` | 248 | Habilitado (MIT propia) |
 | `creaciones-primium/` | 20 | Deshabilitado (sin `LICENSE` en la carpeta) |
 | **Total** | **384** | **248 descargables** |
@@ -155,7 +155,7 @@ Lo que Vercel sube tras aplicar `.vercelignore`:
 
 | Carpeta | Tamaño | Comentario |
 | --- | --- | --- |
-| `BibliotecaDeHtml_CSS/` | 22,69 MB | 116 demos de terceros. Las vistas previas cargan `../BibliotecaDeHtml_CSS/...`, así que **esta carpeta tiene que publicarse** (lo dice `README.md:132`). |
+| `GevendraAutorExterno/` | 22,69 MB | 116 demos de terceros. Las vistas previas cargan `../GevendraAutorExterno/...`, así que **esta carpeta tiene que publicarse** (lo dice `README.md:132`). |
 | `CreacionesNuevas/` | 0,83 MB | 248 demos propias. |
 | `creaciones-primium/` | 0,69 MB | 20 demos en curso. |
 | `Web/` | 1,34 MB | La aplicación. Antes eran 3,37 MB. |

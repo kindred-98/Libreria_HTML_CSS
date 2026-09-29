@@ -2,7 +2,7 @@ Quiero que trabajes sobre mi repositorio existente:
 
 https://github.com/kindred-98/Libreria_HTML_CSS
 
-El proyecto es una biblioteca personal de componentes HTML/CSS. Ya existe una carpeta `BibliotecaDeHtml_CSS` que contiene numerosos componentes independientes, efectos, botones, animaciones, cards, navbars, loaders, etc.
+El proyecto es una biblioteca personal de componentes HTML/CSS. Ya existe una carpeta `GevendraAutorExterno` que contiene numerosos componentes independientes, efectos, botones, animaciones, cards, navbars, loaders, etc.
 
 Quiero convertir este repositorio en una **web moderna, profesional, responsive e interactiva que funcione como una biblioteca/galería de componentes HTML y CSS**.
 

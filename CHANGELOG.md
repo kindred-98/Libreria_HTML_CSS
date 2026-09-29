@@ -7,6 +7,65 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Carpetas por autor y filtro de autor en la web] — 2026-09-29
+
+Separa la colección por autoría y añade el filtro que la muestra.
+
+### Hecho — carpetas por autor
+
+- `BibliotecaDeHtml_CSS/` pasa a llamarse **`GevendraAutorExterno/`**: sus 116 demos son de Gevendra Sahu
+  (`gevendra2004/gevstack`). Se comprobó comparando las 114 carpetas locales con el árbol del repositorio de
+  origen: **106 coincidencias exactas y 8 con las erratas del propio origen** (`color-changing-navigation`,
+  `facebook-emoji-reactions`, `order-confirm-animation`, `shopping-cart-preloader`, `spotlight-text-animation`,
+  `tic-tac-toe`, `trick-and-treat-toggle`, `webgl-liquid-masking`).
+- Nueva carpeta raíz **`DavokerDiseñador/`** para los demos de davoker; de momento vacía.
+- **No se mueve nada a `CreacionesNuevas/`**: no hay ni un solo demo ajeno a Gevendra en esa carpeta.
+- Las referencias al nombre antiguo quedan actualizadas en 19 ficheros (`README.md`, `LICENSE`, `SECURITY.md`,
+  `CONTRIBUTING.md`, `Web/README.md` y `Docs/…`) además de `package.json` y
+  `Web/scripts/generate-catalog.mjs`.
+
+### Hecho — campo `author` en el catálogo
+
+`generate-catalog.mjs` declara el autor de cada raíz y lo escribe en cada entrada: `Gevendra` (116 demos),
+`Davoker` (0, carpeta recién creada) y `kindred-98` (606 de `CreacionesNuevas/` y `creaciones-primium/`).
+Se puede corregir por ID con `author` en `Web/data/component-overrides.json`.
+
+### Hecho — filtro de autor en la web
+
+- `components.html` añade un segundo `fieldset` (`#author-filters`) encima del de categorías. El de categorías
+  no se toca: el agrupamiento funcional (Animations, Buttons, Forms…) sigue intacto.
+- `app.js`: `state.author`, `getAuthors()`, `renderAuthorFilters()` y el filtro en `getFilteredComponents()`.
+  El autor entra también en el texto buscable. Nuevas claves `filterByAuthor` y `authors` en inglés y español.
+- Botones: *Todos los autores* · *Gevendra* · *davoker* · *kindred-98* · *fatmaerm*. `fatmaerm` entra en
+  `preferredAuthors` aunque todavía no tenga ningún demo (como davoker).
+- `authorButtonFx` asigna la animación de cada botón y `renderAuthorFilters()` la pone en la clase CSS.
+
+### Hecho — una animación propia por botón de autor
+
+`styles/site.css` replica la animación de la demo de cada autor, **una por botón**:
+
+| Botón | Animación | Demo de origen |
+| --- | --- | --- |
+| Gevendra | *Animated Gradient Underglow* (`.filter-button--underglow`) | `GevendraAutorExterno/animated-gradient-underglow` |
+| davoker | *Liquid Fill Button* (`.filter-button--liquid`) | `CreacionesNuevas/liquid-fill-button` |
+| kindred-98 | *Datamosh Decode Button* (`.filter-button--datamosh`) | `creaciones-primium/botones/datamosh-decode-button` |
+| fatmaerm | *Neutron Star Pulse Button* (`.filter-button--pulse`) | `creaciones-primium/botones/neutron-star-pulse-button` |
+
+- **Underglow**: el degradado rosa-violeta (`#ff5770` → `#6501de` → `#ff5770`) desenfocado con `blur(14px)` y
+  `background-size: 200%` recorriendo `0% → 200%` en `1.25s linear infinite`, como en la demo original.
+- **Datamosh**: aberración cromática en el rótulo (`text-shadow` rojo/cian con `steps(1, end)`), capa de
+  macrobloques que salta de posición y un barrido de descodificación al pasar el cursor: al hover el texto
+  queda limpio.
+- **Pulse**: núcleo con `radial-gradient` que late a `1.42s` (1,42 Hz, el ritmo de los pulsares de la demo),
+  onda que se expande desde el borde, se acelera al pasar el cursor y dos chorros bipolares
+  (`box-shadow` arriba y abajo) al activarlo.
+- Las cuatro animaciones se desactivan con `prefers-reduced-motion: reduce`.
+
+### Documentación
+
+- `README.md`: la colección de davoker en el listado y en el árbol, y el filtro de autor en *Características*.
+- `Web/README.md`: origen del campo `author` y la cuarta carpeta raíz.
+
 ## [El catálogo se genera en el despliegue] — 2026-09-27
 
 Continuidad de la [segunda auditoría](./Docs/auditoria/segunda-auditoria.md). Resuelve
@@ -159,7 +218,7 @@ La causa era una discrepancia de **mayúsculas entre el disco y el índice de gi
 | Among us | `among-us-button` | `Among-us-button` |
 | Gradient | `animated-gradient-underglow` | `Animated-Gradient-Underglow` |
 
-**93 de las 114 carpetas** de `BibliotecaDeHtml_CSS/` tenían la capitalización
+**93 de las 114 carpetas** de `GevendraAutorExterno/` tenían la capitalización
 distinta. El catálogo construye la ruta de la preview desde el disco, así que
 buscaba `animated-gradient-underglow/`; al desplegar, Linux crea las carpetas
 con la capitalización de git y la preview no encontraba nada. En Windows no se
@@ -225,7 +284,7 @@ notaba porque el sistema de archivos no distingue mayúsculas.
 ### Contexto
 
 `CreacionesNuevas/` contenía **248 demos** del autor que el catálogo ignoraba:
-`generate-catalog.mjs` solo recorría `BibliotecaDeHtml_CSS/`. Pasan a formar
+`generate-catalog.mjs` solo recorría `GevendraAutorExterno/`. Pasan a formar
 parte de la biblioteca, con sus descripciones en los dos idiomas y con descarga
 ZIP habilitada por ser creaciones originales con licencia propia.
 
@@ -233,7 +292,7 @@ ZIP habilitada por ser creaciones originales con licencia propia.
 
 - `Web/scripts/generate-catalog.mjs`:
   - `libraryRoots` sustituye a la constante `libraryDirectory`: ahora son
-    `BibliotecaDeHtml_CSS` y `CreacionesNuevas`.
+    `GevendraAutorExterno` y `CreacionesNuevas`.
   - Cada componente incluye un campo nuevo **`root`** con la carpeta de la que
     procede, y `folder` sigue siendo la ruta relativa **dentro** de ella. No
     cambia ningún `id`, así que las URLs `?component=` existentes no se rompen.
@@ -241,7 +300,7 @@ ZIP habilitada por ser creaciones originales con licencia propia.
     componente. **Este era el punto delicado**: ambas filtraban por
     `libraryDirectory`, así que sin este cambio las hojas de estilo y los scripts
     de los 248 demos nuevos se habrían descartado por estar fuera de
-    `BibliotecaDeHtml_CSS/`. Verificado: los 248 detectan su CSS y sus scripts.
+    `GevendraAutorExterno/`. Verificado: los 248 detectan su CSS y sus scripts.
   - `build-site.mjs` localiza y copia cada demo desde `component.root` y lanza un
     error explícito si la raíz no existe; el artefacto conserva el nombre de la
     raíz para que las previews sigan resolviendo.
@@ -253,7 +312,7 @@ ZIP habilitada por ser creaciones originales con licencia propia.
 - **`LICENSE` MIT creada en las 248 carpetas** de `CreacionesNuevas/`, con una
   cláusula de alcance que excluye los recursos de terceros que la demo referencie.
 - **`LICENSE` raíz ampliada**: su alcance ahora cubre también los demos
-  originales de `CreacionesNuevas/`, y sigue excluyendo `BibliotecaDeHtml_CSS/`.
+  originales de `CreacionesNuevas/`, y sigue excluyendo `GevendraAutorExterno/`.
 - **`Web/data/component-overrides.json`**: 248 entradas nuevas (364 en total) con
   `description`, `descriptionEs`, `source` (este repositorio), `license: "MIT"`,
   `licenseFile: "LICENSE"` y `redistributable: true`.
@@ -359,7 +418,7 @@ ZIP habilitada por ser creaciones originales con licencia propia.
 ### Pendiente / limitaciones
 
 - `CreacionesNuevas/` contiene **248 demos nuevos** del autor que el catálogo
-  **no recoge**: `generate-catalog.mjs` solo recorre `BibliotecaDeHtml_CSS/`.
+  **no recoge**: `generate-catalog.mjs` solo recorre `GevendraAutorExterno/`.
   Integrarlos es una fase aparte (movimiento o referencia de la carpeta,
   248 descripciones EN/ES y decisión de licencia; al ser creaciones propias sí
   podrían autorizarse para ZIP). **No se ha tocado esa carpeta.**
@@ -694,7 +753,7 @@ todas las tarjetas mostraban la misma frase
 
 ### Hecho
 
-- **Mixed content eliminado.** `BibliotecaDeHtml_CSS/Flipping-Loader/styles.css`
+- **Mixed content eliminado.** `GevendraAutorExterno/Flipping-Loader/styles.css`
   (la carpeta real es `Flipping-Loader`, con mayúsculas) dejaba de cargar
   `http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/kindajean.png`:
   host muerto *y* `http://` bloqueado en HTTPS. Se elimina la línea y se conserva
@@ -757,7 +816,7 @@ todas las tarjetas mostraban la misma frase
     `Referrer-Policy: strict-origin-when-cross-origin`.
 - `.vercelignore` nuevo: excluye `Docs/`, `.qodo/`, `.github/`, `.vercel/`,
   `CHANGELOG.md` y `.github-pages-*`. **No** excluye `Web/` ni
-  `BibliotecaDeHtml_CSS/`, que son imprescindibles para las previews.
+  `GevendraAutorExterno/`, que son imprescindibles para las previews.
 - `README.md`: la sección *Despliegue* pasa a tener **Vercel / GitHub Pages /
   Netlify** por separado, con tabla de configuración y una advertencia explícita
   de que `node Web/scripts/build-site.mjs` **no** debe usarse como build command
@@ -765,9 +824,9 @@ todas las tarjetas mostraban la misma frase
 - `Web/README.md`: sección *Despliegue* reescrita con el mismo criterio.
 - Verificación local (`py -m http.server 8123` sobre la raíz del repositorio):
   `/`, `/Web/`, `/Web/index.html`, `/Web/data/catalog.js`, `/Web/scripts/app.js`,
-  `/BibliotecaDeHtml_CSS/among-us-button/index.html` y su `style.css`
+  `/GevendraAutorExterno/among-us-button/index.html` y su `style.css`
   → **todos 200 OK**. Confirma que desplegar la raíz hace funcionar la cadena
-  `Web/ → BibliotecaDeHtml_CSS/`.
+  `Web/ → GevendraAutorExterno/`.
 - `node Web/scripts/generate-catalog.mjs` ejecutado sin diffs: el catálogo
   versionado sigue estando actualizado.
 
