@@ -141,27 +141,53 @@ async function traer(url, destino, desde) {
   }
 }
 
-/** Dentro de un css ya descargado: las url() externas del mismo css. */
-async function traerDeCss(cssPath) {
+/**
+ * Dentro de un css ya descargado: las url() y los @import que necesite.
+ *
+ * Las url() pueden ser absolutas (https://...) o relativas a la hoja de origen
+ * (../webfonts/fa-solid-900.woff2). Las dos son peticiones reales, y las
+ * relativas hay que resolverlas contra la URL original: al mover la hoja a
+ * vendor/, un ../webfonts/ pasaria a apuntar a una carpeta que no existe y la
+ * fuente no se cargaria nunca.
+ */
+async function traerDeCss(cssPath, urlCss) {
   let css = await readFile(cssPath, "utf8");
   let tocado = false;
-  for (const m of [...css.matchAll(/url\(\s*['"]?(https?:\/\/[^'")\s]+)['"]?\s*\)/gi)]) {
-    const url = m[1];
-    const destino = path.join(path.dirname(cssPath), "fuentes");
-    const r = await traer(url, destino, cssPath);
+  const base = urlCss ?? `file:///${cssPath.split(path.sep).join("/")}`;
+
+  const resolver = (bruto) => {
+    try {
+      return new URL(bruto, base).href;
+    } catch {
+      return null;
+    }
+  };
+
+  for (const m of [...css.matchAll(/url\(\s*(['"]?)([^'")]+)\1\s*\)/gi)]) {
+    const bruto = m[2].trim();
+    if (!bruto || bruto.startsWith("data:") || bruto.startsWith("#")) continue;
+    const absoluta = resolver(bruto);
+    if (!absoluta) continue;
+    const r = await traer(absoluta, path.join(path.dirname(cssPath), "fuentes"), cssPath);
     if (r) {
-      css = css.split(m[0]).join(`url("${path.relative(path.dirname(cssPath), r.fichero).split(path.sep).join("/")}")`);
+      const rel = path.relative(path.dirname(cssPath), r.fichero).split(path.sep).join("/");
+      css = css.split(m[0]).join(`url("${rel}")`);
       tocado = true;
-      cambios.push({ tipo: "recurso interno", url, a: r.rel, en: path.relative(repositoryDirectory, cssPath) });
+      cambios.push({ tipo: "recurso interno", url: absoluta, a: rel, en: path.relative(repositoryDirectory, cssPath) });
     }
   }
-  // tambien @import externos
-  for (const m of [...css.matchAll(/@import\s+(?:url\()?\s*['"]?(https?:\/\/[^'");\s]+)['"]?\s*\)?/gi)]) {
-    const r = await traer(m[1], path.dirname(cssPath), cssPath);
+
+  // tambien los @import, absolutos o relativos
+  for (const m of [...css.matchAll(/@import\s+(?:url\(\s*)?['"]?([^'");\s]+)['"]?\s*\)?/gi)]) {
+    const bruto = m[1].trim();
+    if (!bruto || bruto.startsWith("data:")) continue;
+    const absoluta = resolver(bruto);
+    if (!absoluta) continue;
+    const r = await traer(absoluta, path.dirname(cssPath), cssPath);
     if (r) {
       css = css.split(m[0]).join(`@import url("${r.rel}")`);
       tocado = true;
-      cambios.push({ tipo: "@import", url: m[1], a: r.rel, en: path.relative(repositoryDirectory, cssPath) });
+      cambios.push({ tipo: "@import", url: absoluta, a: r.rel, en: path.relative(repositoryDirectory, cssPath) });
     }
   }
   if (tocado) await writeFile(cssPath, css, "utf8");
@@ -219,7 +245,7 @@ async function main() {
 
       texto = texto.split(h.crudo).join(r.rel);
       cambios.push({ tipo: esCss ? "css" : "recurso", url: h.url, a: r.rel, en: relFile });
-      if (esCss) pendientesCss.push(r.fichero);
+      if (esCss) pendientesCss.push({ fichero: r.fichero, url: h.url });
     }
 
     if (texto !== original) {
@@ -230,8 +256,8 @@ async function main() {
 
   // Lo que referencian los css descargados (fuentes de iconos, woff2 de Google).
   for (const css of pendientesCss) {
-    if (ESCRIBIR) await traerDeCss(css);
-    else console.log(`(dry-run) bajaria las fuentes de ${path.relative(repositoryDirectory, css)}`);
+    if (ESCRIBIR) await traerDeCss(css.fichero, css.url);
+    else console.log(`(dry-run) bajaria las fuentes de ${path.relative(repositoryDirectory, css.fichero)}`);
   }
 
   console.log(`\n=== ${cambios.length} referencias cambiadas${ESCRIBIR ? "" : " (dry-run, no escrito)"} ===`);
