@@ -1,4 +1,4 @@
-import { GUI } from 'https://cdn.skypack.dev/dat.gui';
+import { GUI } from './vendor/dat.gui';
 
 const canTrig = CSS.supports('(top: calc(sin(1) * 1px))');
 const HEADING = document.querySelector('h1');
