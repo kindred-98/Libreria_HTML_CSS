@@ -7,6 +7,21 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [ZIP MIT para los demos de gevendra y fatmaerm] — 2026-09-29
+
+- Dos `LICENSE` MIT nuevos: `GevendraAutorExterno/LICENSE` (los 116 demos de
+  `gevendra2004/gevstack`, cuyo repositorio de origen sigue sin licencia) y
+  `creaciones-primium/LICENSE` (sólo las dos carpetas de `fatmaerm`:
+  `indicadores-de-carga/` y `navegacion/`, 160 demos).
+- `generate-catalog.mjs` gana `licenses` por carpeta, el gemelo de `authors`:
+  `license`, `licenseFile`, `source` y `redistributable` se resuelven por
+  carpeta antes que por raíz, así que el MIT de fatmaerm no se cuela en los 358
+  demos de `kindred-98` de la misma colección.
+- Descargables: **367 → 643 de 1001** componentes (Gevendra 116 y fatmaerm 160
+  entran; los 358 de `creaciones-primium/` de kindred siguen sin ZIP).
+- Docs: `THIRD_PARTY_NOTICES.md` (tabla, estado y pendiente de la autorización
+  escrita de Gevendra), `LICENSE` de raíz, README y Web/README.
+
 ## [davoker: sus 119 efectos, su portada en la nav y ZIP MIT] — 2026-09-29
 
 Integra de una vez su repositorio entero, sin tocar su código.

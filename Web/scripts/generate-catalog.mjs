@@ -15,6 +15,12 @@ const libraryRoots = [
     name: "GevendraAutorExterno",
     directory: path.join(repositoryDirectory, "GevendraAutorExterno"),
     author: "Gevendra",
+    // MIT declarado en la raiz para sus 116 demos: el LICENSE de la carpeta
+    // entra en cada ZIP, igual que el de davoker.
+    license: "MIT",
+    licenseFile: "LICENSE",
+    source: "https://github.com/gevendra2004/gevstack",
+    redistributable: true,
   },
   {
     name: "DavokerDiseñador",
@@ -69,6 +75,13 @@ const libraryRoots = [
     authors: {
       "indicadores-de-carga": "fatmaerm",
       navegacion: "fatmaerm",
+    },
+    // Y solo esas dos carpetas llevan licencia: el MIT de fatmaerm, declarado en
+    // el LICENSE de la raiz de la coleccion. Las carpetas de kindred-98 de esta
+    // misma raiz siguen sin licencia y sin ZIP, como hasta ahora.
+    licenses: {
+      "indicadores-de-carga": { license: "MIT", licenseFile: "LICENSE", source: "https://github.com/kindred-98/Libreria_HTML_CSS", redistributable: true },
+      navegacion: { license: "MIT", licenseFile: "LICENSE", source: "https://github.com/kindred-98/Libreria_HTML_CSS", redistributable: true },
     },
   },
 ];
@@ -274,6 +287,8 @@ async function createComponent(root, pagePath) {
   const category = override.category ?? folderCategory ?? getCategory(`${directoryName} ${name}`);
   // Algunas carpetas cambian de autor sin cambiar de raiz (las de fatmaerm).
   const folderAuthor = root.authors?.[folderPath.split("/")[0]];
+  // ...y otras cambian de licencia (otra vez las de fatmaerm).
+  const folderLicense = root.licenses?.[folderPath.split("/")[0]] ?? {};
   const descriptionMatch = html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description["'])[^>]*>/i);
   const descriptionType = category === "Other" ? "HTML and CSS" : category.toLowerCase();
   const description = override.description ?? (descriptionMatch
@@ -288,9 +303,9 @@ async function createComponent(root, pagePath) {
   const previewPath = path.relative(repositoryDirectory, pagePath).split(path.sep).join("/");
   const missingReferences = await getMissingReferences(html, pageDirectory, root.directory);
   const files = await collectComponentFiles(pageDirectory, id);
-  const license = override.license ?? root.license ?? "Unverified";
-  const source = override.source ?? root.source ?? "Unverified";
-  const rawLicenseFile = String(override.licenseFile ?? root.licenseFile ?? "").replaceAll("\\", "/");
+  const license = override.license ?? folderLicense.license ?? root.license ?? "Unverified";
+  const source = override.source ?? folderLicense.source ?? root.source ?? "Unverified";
+  const rawLicenseFile = String(override.licenseFile ?? folderLicense.licenseFile ?? root.licenseFile ?? "").replaceAll("\\", "/");
   const licenseFile = rawLicenseFile.startsWith("./") ? rawLicenseFile.slice(2) : rawLicenseFile;
   // La licencia de la raiz entra en el ZIP de cada componente: si no, la descarga
   // saldria sin el texto que la ampara.
@@ -310,7 +325,7 @@ async function createComponent(root, pagePath) {
     }
   }
   const includesLicenseFile = files.some((file) => file.relativePath === licenseFile);
-  const redistributable = (override.redistributable ?? root.redistributable) === true;
+  const redistributable = (override.redistributable ?? folderLicense.redistributable ?? root.redistributable) === true;
   const downloadable = redistributable
     && source !== "Unverified"
     && license !== "Unverified"
