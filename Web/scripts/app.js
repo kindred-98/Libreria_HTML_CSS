@@ -114,6 +114,7 @@ const translations = {
     authorGevendra: "Gevendra component - {count}",
     authorDavoker: "Davoker design - {count}",
     authorFatmaerm: "Fatmaerm component - {count}",
+    authorKindred: "Kindred component - {count}",
     browseCategory: "Browse {category} components",
     viewComponent: "View component",
     liveDemo: "Live demo",
@@ -253,6 +254,7 @@ const translations = {
     authorGevendra: "Componente de gevendra - {count}",
     authorDavoker: "Diseños de davoker - {count}",
     authorFatmaerm: "Componente de fatmaerm - {count}",
+    authorKindred: "Componente de kindred - {count}",
     browseCategory: "Explorar componentes de {category}",
     viewComponent: "Ver componente",
     liveDemo: "Demo en vivo",
@@ -586,6 +588,7 @@ const authorSummaryKey = {
   Gevendra: "authorGevendra",
   Davoker: "authorDavoker",
   fatmaerm: "authorFatmaerm",
+  "kindred-98": "authorKindred",
 };
 
 function getAuthors() {
