@@ -1,19 +1,20 @@
 # Biblioteca HTML y CSS
 
-Biblioteca estática y con búsqueda de demos independientes de interfaces hechos con HTML, CSS y JavaScript. El repositorio contiene actualmente **515 páginas de demos** repartidas en cuatro colecciones:
+Biblioteca estática y con búsqueda de demos independientes de interfaces hechos con HTML, CSS y JavaScript. El repositorio contiene actualmente **885 páginas de demos** repartidas en tres colecciones:
 
-- `GevendraAutorExterno/` — **116 demos** de terceros (botones, tarjetas, navegación, formularios, loaders, galerías, controles y efectos visuales). Ver *Procedencia y licencias*: proceden de `gevendra2004/gevstack`, cuyo repositorio no declara licencia, y se distribuyen con el **`LICENSE` MIT de la propia carpeta**, así que **ZIP habilitado**.
 - `DavokerDiseñador/` — **119 efectos de texto** de **davoker** (7 temas: miscelánea, harry potter, stalker, monster hunter, star wars, matrix y the division), cada uno con su showcase, su `.zip` y sus instrucciones. Su repositorio es **MIT**, así que **ZIP habilitado**. La carpeta guarda también su **portada** (`davoker.html`, el showcase unificado de los 119), que se abre dentro de la rejilla al elegir a davoker en el filtro de autores, y fuera del catálogo.
 - `CreacionesNuevas/` — **248 demos** originales creados para este repositorio, cada uno con su propio archivo `LICENSE` MIT y **descarga ZIP habilitada**.
 - `creaciones-primium/` — demos organizados por categoría, en desarrollo. Toda la colección (518 demos: los 160 de **fatmaerm** en `indicadores-de-carga/` y `navegacion/`, y los 358 de kindred-98) comparte el `LICENSE` MIT de la raíz, que nombra a las dos autoras, así que el **ZIP está habilitado en todos**.
 
-De las 515, **367 son descargables**. La aplicación web está separada en `Web/` y se divide en tres páginas —`index.html` (portada), `components.html` (listado y detalle) y `team-core.html` (equipo y donación)—; los demos originales se cargan directamente para mostrar vistas previas reales.
+Los **885 son descargables**. La aplicación web está separada en `Web/` y se divide en tres páginas —`index.html` (portada), `components.html` (listado y detalle) y `team-core.html` (equipo y donación)—; los demos originales se cargan directamente para mostrar vistas previas reales.
+
+> `GevendraAutorExterno/` sigue en el repositorio con los 116 demos que Proveen de un tercero, pero **no se catalogan, no se publican y no se sirven**: su material no tiene licencia declarada. Ver *Material retirado*.
 
 ## Características
 
 - Búsqueda por nombre, categoría, descripción y etiquetas.
 - Filtros por categorías inferidas de los nombres de los demos.
-- Filtro por autor (Todos, Gevendra, davoker, kindred-98 y fatmaerm). Cada botón lleva su animación: Gevendra *Animated Gradient Underglow*, davoker *Liquid Fill Button*, kindred-98 *Datamosh Decode Button* y fatmaerm *Neutron Star Pulse Button*.
+- Filtro por autor (Todos, davoker, kindred-98 y fatmaerm). Cada botón lleva su animación: davoker *Liquid Fill Button*, kindred-98 *Datamosh Decode Button* y fatmaerm *Neutron Star Pulse Button*.
 - Sección de destacados con demos existentes.
 - Vistas previas interactivas que cargan el HTML original.
 - Inspección y copia del HTML, CSS y JavaScript local de cada demo.
@@ -47,10 +48,9 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 
 ```text
 .
-|-- GevendraAutorExterno/       # 116 demos de terceros (MIT propio: ZIP habilitado)
 |-- DavokerDiseñador/           # 119 efectos de texto de davoker (MIT, ZIP habilitado) + su portada davoker.html
 |-- CreacionesNuevas/           # 248 creaciones propias del autor (MIT, ZIP habilitado)
-|-- creaciones-primium/         # 32 creaciones en curso, por categorías
+|-- creaciones-primium/         # 518 creaciones en curso, por categorías (MIT, ZIP habilitado)
 |-- Web/
 |   |-- data/
 |   |   |-- catalog.json        # Índice ligero generado (sin código fuente)
@@ -86,7 +86,7 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 
 ## Añadir un demo
 
-1. Crea una carpeta dentro de `GevendraAutorExterno/` con un `index.html` y sus recursos locales. Usa `kebab-case` en minúsculas y un nombre que describa el componente, por ejemplo `image-gallery/`.
+1. Crea una carpeta dentro de `CreacionesNuevas/` con un `index.html` y sus recursos locales. Usa `kebab-case` en minúsculas y un nombre que describa el componente, por ejemplo `image-gallery/`.
 2. Enlaza el CSS y JavaScript locales desde ese HTML con `<link rel="stylesheet">` y `<script src="...">`.
 3. Ejecuta `node Web/scripts/generate-catalog.mjs`. El generador busca también en carpetas anidadas, lee títulos y referencias locales a CSS/JS, y actualiza `Web/data/catalog.json`.
 4. Si hace falta, añade metadatos revisados a `Web/data/component-overrides.json`. El ID del demo se forma con la ruta de su carpeta en minúsculas y guiones como separadores.
@@ -122,12 +122,15 @@ Se repararon las cinco referencias locales que estaban rotas: se eliminaron o re
 
 La MIT de la raíz se limita al código original de la aplicación y a la documentación de `kindred-98`; no cubre los demos ni recursos de terceros.
 
-Hay dos situaciones distintas en la colección:
+Hay una situación distinta en la colección:
 
 - **`CreacionesNuevas/` (248 demos del autor).** Son creaciones originales de este repositorio, cada una con un `LICENSE` MIT propio. El catálogo los marca con `license: "MIT"`, `redistributable: true` y `source` apuntando a este repositorio, así que **el botón ZIP está activo** y el ZIP incluye el `LICENSE` y un `ATTRIBUTION.txt` con la fuente y la licencia.
-- **`GevendraAutorExterno/` (116 demos de terceros).** Su procedencia **sí está investigada**: los 116 proceden del repositorio público [`gevendra2004/gevstack`](https://github.com/gevendra2004/gevstack) (106 coincidencias exactas de carpeta y 8 por erratas del propio repositorio de origen). Ese repositorio **no tiene licencia** —`LICENSE` devuelve 404, la API de GitHub responde `"license": null` y el `README.md` no incluye términos—, así que la distribución se ampara en el **`LICENSE` MIT que lleva la propia carpeta** desde 2026-09-29: el catálogo los marca con `license: "MIT"`, `licenseFile: "LICENSE"` y `redistributable: true`, y **el botón ZIP está activo**.
 
-El inventario completo está en [Docs/Legalizacion/THIRD_PARTY_NOTICES.md](Docs/Legalizacion/THIRD_PARTY_NOTICES.md). Para desbloquear las descargas de los 116 de terceros hace falta una **autorización escrita** del autor o que añada una licencia a su repositorio; una URL de origen o un repositorio público no constituyen por sí mismos una licencia de redistribución.
+El inventario completo está en [Docs/Legalizacion/THIRD_PARTY_NOTICES.md](Docs/Legalizacion/THIRD_PARTY_NOTICES.md).
+
+### Material retirado
+
+`GevendraAutorExterno/` sigue en el repositorio con los 116 demos de un tercero, pero **quedó fuera del catálogo, del sitio y de las descargas** el 2026-09-30. Los 116 proceden del repositorio público [`gevendra2004/gevstack`](https://github.com/gevendra2004/gevstack), que **no declara licencia** —`LICENSE` devuelve 404, la API de GitHub responde `"license": null` y el `README.md` no incluye términos— y el autor **no respondió** a los contactos hechos para pedirle permiso. Sin licencia no hay permiso de redistribución, ni siquiera sin botón de descarga, así que la opción correcta era no publicar su código: se retiraron también el `LICENSE` MIT que esta carpeta llegó a llevar y el CSS de sus demos que se había copiado a `Web/styles/site.css`. Volver a publicarlos exige su **autorización escrita** o que añada una licencia a su repositorio.
 
 Antes de publicar o distribuir un demo, verifica su procedencia y las condiciones de su código, imágenes, fuentes, iconos y dependencias. Conserva los avisos necesarios, solicita permiso cuando corresponda o excluye el material cuyos derechos no estén claros.
 
@@ -139,7 +142,7 @@ La aplicación es estática y no necesita backend ni base de datos.
 
 El repositorio incluye [`vercel.json`](./vercel.json) y [`.vercelignore`](./.vercelignore). Configura el proyecto con **Framework Preset: Other** y **Output Directory: `.`** (la raíz del repositorio). El **Build Command no va vacío**: `vercel.json` ya lo fija como `node Web/scripts/generate-catalog.mjs`. Si en el panel lo dejas en blanco, sobrescribes el valor del fichero y el catálogo no se generará.
 
-Se despliega **la raíz del repositorio**, no un subdirectorio: las vistas previas cargan `../GevendraAutorExterno/...`, así que esa carpeta tiene que publicarse también. `vercel.json` redirige `/` → `/Web/` y `/Web` → `/Web/` (sin barra final rompería las rutas relativas) y añade las cabeceras de seguridad: `Content-Security-Policy`, `Strict-Transport-Security`, `Permissions-Policy`, `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy`.
+Se despliega **la raíz del repositorio**, no un subdirectorio: las vistas previas cargan `../CreacionesNuevas/...` y `../creaciones-primium/...`, así que esas carpetas tienen que publicarse también. `vercel.json` redirige `/` → `/Web/` y `/Web` → `/Web/` (sin barra final rompería las rutas relativas), bloquea `/GevendraAutorExterno/...` con una redirección permanente para que su material retirado no se sirva, y añade las cabeceras de seguridad: `Content-Security-Policy`, `Strict-Transport-Security`, `Permissions-Policy`, `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy`.
 
 La CSP usa `frame-src 'self'`, así que las vistas previas siguen cargando porque viven en el mismo origen. Los demos de terceros van dentro de un `iframe` y **no** quedan sujetos a esta CSP: cada documento aplica la suya. Por eso añadirla no afecta a los demos que cargan recursos remotos.
 

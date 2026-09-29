@@ -24,7 +24,7 @@ const translations = {
       Effects: "Effects", Forms: "Forms", Galleries: "Galleries", Loaders: "Loaders", Navigation: "Navigation", Other: "Other",
     },
     authors: {
-      All: "All authors", Gevendra: "Gevendra", Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
+      All: "All authors", Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
     },
     brandHome: "HTML and CSS Library home",
     mainNavigation: "Main navigation",
@@ -44,23 +44,26 @@ const translations = {
     pcbChipLabel: "NEXO",
     storyEyebrow: "HOW IT STARTED",
     storyNote: "Where the idea came from, told properly.",
-    storyP1: "It started at 10 in the morning, in an analysis and programming course on Java. We had an HTML and CSS practice session, and our teacher showed us how far you can push those two languages, using a few examples from gevendra2004's repository. What was in there looked far too good to just look at.",
+    // El parrafo va partido en tres trozos porque el nombre del repositorio de
+    // origen es un enlace: applyStaticTranslations() escribe con textContent, y
+    // el <a> se queda en el HTML con su href fijo. El texto del enlace si se
+    // traduce (data-i18n="storyP1Link" va en el propio <a>).
+    storyP1a: "It started at 10 in the morning, in an analysis and programming course on Java. We had an HTML and CSS practice session, and our teacher showed us how far you can push those two languages, using a few examples from ",
+    storyP1Link: "gevendra2004's repository",
+    storyP1b: ". What was in there looked far too good to just look at.",
     storyP2: "davoker started practising on his computer. Twenty minutes later, he called me to show me what he had built: it was something else. So I asked him: why don't we set up a library? Building components is his thing, and that is where he stands out: obsessive about every detail, with ideas nobody else comes up with.",
     storyP3: "fatmaerm saw it from the start: he told us there are already plenty of HTML and CSS libraries, but for anyone just beginning that is not the same thing. I'm in: it is real practice, and it settles the foundations of both languages.",
     storyP4: "davoker signed up with one sentence: \"I'm in, this thing is fascinating.\" And just like that, almost without noticing, a library started.",
     fromVenezuela: "Venezuela",
     fromAlgeria: "Algeria",
     fromSpain: "Spain",
-    fromIndia: "India",
     teamNoteClassmate: "Classmate from the course",
-    teamNotePermission: "We have permission to use his work",
     teamRosterEyebrow: "THE ROSTER",
     teamRosterTitle: "Who maintains it",
-    teamRosterNote: "Four accounts, one library.",
+    teamRosterNote: "Three accounts, one library.",
     roleFounder: "Founder & Lead Developer",
     roleCoreContributor: "Core Contributor",
     roleMaintainer: "Maintainer & Designer",
-    roleExternalContributor: "External Contributor",
     teamViewProfile: "View profile ↗",
     donationsEyebrow: "DONATIONS",
     donationsTitle: "Support the library",
@@ -111,7 +114,6 @@ const translations = {
     footerBuilt: "Open source code library, open to contributions.\nGot a creative idea? OPEN A PR.",
     component: "component",
     components: "components",
-    authorGevendra: "Gevendra component - {count}",
     authorDavoker: "Davoker design - {count}",
     authorFatmaerm: "Fatmaerm component - {count}",
     authorKindred: "Kindred component - {count}",
@@ -164,7 +166,7 @@ const translations = {
       Effects: "Efectos", Forms: "Formularios", Galleries: "Galerías", Loaders: "Indicadores de carga", Navigation: "Navegación", Other: "Otros",
     },
     authors: {
-      All: "Todos los autores", Gevendra: "Gevendra", Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
+      All: "Todos los autores", Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
     },
     brandHome: "Inicio de la biblioteca HTML y CSS",
     mainNavigation: "Navegación principal",
@@ -184,23 +186,26 @@ const translations = {
     pcbChipLabel: "NEXO",
     storyEyebrow: "CÓMO NACIÓ",
     storyNote: "De dónde salió la idea, contado como fue.",
-    storyP1: "Todo empezó a las 10 de la mañana, en una clase de análisis y programación en Java. Teníamos práctica de HTML y CSS y la profesora nos mostró hasta dónde se puede llegar con esos dos lenguajes, enseñándonos algunos ejemplos del repositorio de gevendra2004. Lo que había dentro nos pareció demasiado bueno como para quedarnos solo mirándolo.",
+    // El parrafo va partido en tres trozos porque el nombre del repositorio de
+    // origen es un enlace: applyStaticTranslations() escribe con textContent, y
+    // el <a> se queda en el HTML con su href fijo. El texto del enlace si se
+    // traduce (data-i18n="storyP1Link" va en el propio <a>).
+    storyP1a: "Todo empezó a las 10 de la mañana, en una clase de análisis y programación en Java. Teníamos práctica de HTML y CSS y la profesora nos mostró hasta dónde se puede llegar con esos dos lenguajes, enseñándonos algunos ejemplos del ",
+    storyP1Link: "repositorio de gevendra2004",
+    storyP1b: ". Lo que había dentro nos pareció demasiado bueno como para quedarnos solo mirándolo.",
     storyP2: "davoker empezó a practicar en su ordenador. A los veinte minutos, me llamó para enseñarme lo que había hecho: era una chulada. Le dije: ¿por qué no montábamos una biblioteca? Crear componentes es lo suyo, y en eso se distingue: maniático con cada detalle y con ideas que no se le ocurren a nadie más.",
     storyP3: "fatmaerm lo vio claro desde el principio: nos dijo que ya existían un montón de bibliotecas de HTML y CSS, pero para quien está empezando eso no vale igual. Me apunto sirve para practicar de verdad y para asentar la base de los dos lenguajes.",
     storyP4: "davoker se apuntó con una frase: \u00abMe apunto, esta mierda me fascina\u00bb. Y así, casi sin querer, empezó una biblioteca.",
     fromVenezuela: "Venezuela",
     fromAlgeria: "Argelia",
     fromSpain: "España",
-    fromIndia: "India",
     teamNoteClassmate: "Compañero del curso",
-    teamNotePermission: "Tenemos autorización para usar su trabajo",
     teamRosterEyebrow: "LA PLANTILLA",
     teamRosterTitle: "Quién lo mantiene",
-    teamRosterNote: "Cuatro cuentas, una biblioteca.",
+    teamRosterNote: "Tres cuentas, una biblioteca.",
     roleFounder: "Fundador y desarrollador principal",
     roleCoreContributor: "Contribuidor del núcleo",
     roleMaintainer: "Mantenedor y diseñador",
-    roleExternalContributor: "Contribuidor externo",
     teamViewProfile: "Ver perfil ↗",
     donationsEyebrow: "DONACIONES",
     donationsTitle: "Apoya la biblioteca",
@@ -251,7 +256,6 @@ const translations = {
     footerBuilt: "Librería de código abierto, abierta a contribuciones.\nSi tiene una idea creativa de nuevo componente, HAS UNA PR.",
     component: "componente",
     components: "componentes",
-    authorGevendra: "Componente de gevendra - {count}",
     authorDavoker: "Diseños de davoker - {count}",
     authorFatmaerm: "Componente de fatmaerm - {count}",
     authorKindred: "Componente de kindred - {count}",
@@ -569,14 +573,12 @@ function getCategories() {
   return [...new Set(state.components.map((component) => component.category))].sort((first, second) => first.localeCompare(second));
 }
 
-// Autores fijos: Gevendra, davoker, kindred-98 y fatmaerm salen siempre, aunque
-// ahora mismo davoker y fatmaerm no tengan ningun demo (una carpeta vacia a la
-// espera y, de momento, ninguna señal suya en el catalogo).
-const preferredAuthors = ["All", "Gevendra", "Davoker", "kindred-98", "fatmaerm"];
+// Autores fijos: davoker, kindred-98 y fatmaerm salen siempre, aunque un autor
+// llegue sin ningun demo en el catalogo.
+const preferredAuthors = ["All", "Davoker", "kindred-98", "fatmaerm"];
 
 // Animacion propia de cada boton de autor (styles/site.css).
 const authorButtonFx = {
-  Gevendra: "filter-button--underglow",
   Davoker: "filter-button--liquid",
   "kindred-98": "filter-button--datamosh",
   fatmaerm: "filter-button--pulse",
@@ -585,7 +587,6 @@ const authorButtonFx = {
 // Cada autor pide su propia frase en el recuento, asi que cuando el filtro de
 // autor esta activo no se usa "N componentes" sino esta etiqueta.
 const authorSummaryKey = {
-  Gevendra: "authorGevendra",
   Davoker: "authorDavoker",
   fatmaerm: "authorFatmaerm",
   "kindred-98": "authorKindred",
@@ -633,8 +634,7 @@ function renderFilters() {
 }
 
 // Cada boton de autor lleva su animacion: davoker la de Liquid Fill Button,
-// Gevendra la de Animated Gradient Underglow, kindred-98 la de Datamosh Decode y
-// fatmaerm la de Neutron Star Pulse.
+// kindred-98 la de Datamosh Decode y fatmaerm la de Neutron Star Pulse.
 function renderAuthorFilters() {
   if (!elements.authorFilters) return;
   elements.authorFilters.replaceChildren();

@@ -1,6 +1,6 @@
 # Aplicación web Component/Field
 
-Catálogo estático y sin dependencias para los demos independientes de `../GevendraAutorExterno/`. Los demos originales permanecen separados; la aplicación los indexa sin reescribir su HTML, CSS ni JavaScript.
+Catálogo estático y sin dependencias para los demos independientes de `../CreacionesNuevas/`, `../creaciones-primium/` y `../DavokerDiseñador/`. Los demos originales permanecen separados; la aplicación los indexa sin reescribir su HTML, CSS ni JavaScript.
 
 ## Ejecución local
 
@@ -47,7 +47,7 @@ El catálogo local detecta las páginas de demos de cuatro colecciones: los de `
 
 ## Añadir un componente
 
-1. Crea una carpeta independiente dentro de `GevendraAutorExterno/` con un `index.html` y los recursos locales necesarios. Usa `kebab-case` en minúsculas y un nombre que describa el componente.
+1. Crea una carpeta independiente dentro de `CreacionesNuevas/` con un `index.html` y los recursos locales necesarios. Usa `kebab-case` en minúsculas y un nombre que describa el componente.
 2. Enlaza el CSS y JavaScript locales mediante etiquetas `<link rel="stylesheet">` y `<script src="...">`.
 3. Regenera el catálogo con `node Web/scripts/generate-catalog.mjs`.
 4. Escribe el `<title>` con el nombre funcional del componente, sin añadir marcas como `GevStack`.

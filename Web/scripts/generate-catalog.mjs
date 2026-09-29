@@ -6,22 +6,14 @@ import { toIndexEntry, writeSources } from "./catalog-format.mjs";
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "../..");
 // Cada raiz declara su autor: es el dato del filtro de autores de la web.
-// GevendraAutorExterno agrupa los 116 demos de terceros de gevendra2004/gevstack
-// y DavokerDiseñador los 119 efectos de texto de davoker. Su portada,
+// DavokerDiseñador agrupa los 119 efectos de texto de davoker. Su portada,
 // DavokerDiseñador/davoker.html, no es un componente: solo se catalogan los
 // index.html, y la abre el filtro de autores dentro de la rejilla.
+// GevendraAutorExterno/ sigue en el repositorio, pero queda FUERA de esta lista:
+// sus 116 demos son de un tercero que no declara licencia y no respondio a los
+// contactos, asi que no se catalogan, no se publican y no se sirven. Ver
+// Docs/Legalizacion/THIRD_PARTY_NOTICES.md ("Material retirado").
 const libraryRoots = [
-  {
-    name: "GevendraAutorExterno",
-    directory: path.join(repositoryDirectory, "GevendraAutorExterno"),
-    author: "Gevendra",
-    // MIT declarado en la raiz para sus 116 demos: el LICENSE de la carpeta
-    // entra en cada ZIP, igual que el de davoker.
-    license: "MIT",
-    licenseFile: "LICENSE",
-    source: "https://github.com/gevendra2004/gevstack",
-    redistributable: true,
-  },
   {
     name: "DavokerDiseñador",
     directory: path.join(repositoryDirectory, "DavokerDiseñador"),

@@ -537,6 +537,14 @@ input:focus-visible {
   margin-bottom: 0;
 }
 
+/* El enlace al repositorio de origen va suelto dentro del parrafo de la historia,
+   asi que necesita su propio color: si no, se pierde en el --muted del texto. */
+.story-body .story-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
   /* La formula que resume la historia: 3 estudiantes, 1 repositorio, 4 nacionalidades.
      Va dentro de .story-body, que es multicolumna, asi que column-span: all la deja
      entera de ancho completo debajo de las columnas en vez de partirse entre ellas. */
@@ -658,7 +666,7 @@ input:focus-visible {
   text-transform: uppercase;
 }
 
-/* Distingue a los tres del curso de gevendra, que entro por su repositorio. */
+/* Nota de pie de las tarjetas del roster. */
 .team-note {
   margin-top: 2px;
   color: var(--quiet);
@@ -1267,60 +1275,6 @@ input:focus-visible {
   }
 }
 
-/* Animated Gradient Underglow (GevendraAutorExterno/animated-gradient-underglow):
-   el mismo degradado rosa-violeta de la demo, desenfocado y moviendose por
-   debajo del boton. Solo lo lleva el boton de Gevendra. */
-.filter-button--underglow {
-  position: relative;
-  isolation: isolate;
-  border-radius: 999px;
-}
-
-.filter-button--underglow::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 7%;
-  right: 7%;
-  bottom: -9px;
-  height: 74%;
-  border-radius: 999px;
-  background: linear-gradient(
-    to left,
-    #ff5770,
-    #e4428d,
-    #c42da8,
-    #9e16c3,
-    #6501de,
-    #9e16c3,
-    #c42da8,
-    #e4428d,
-    #ff5770
-  );
-  background-size: 200% 200%;
-  filter: blur(14px);
-  transform: scale(0.9);
-  opacity: 0.5;
-  transition: opacity 220ms ease, transform 220ms ease;
-  animation: filter-button-underglow 1.25s linear infinite;
-}
-
-.filter-button--underglow:hover::after,
-.filter-button--underglow:focus-visible::after,
-.filter-button--underglow[aria-pressed="true"]::after {
-  opacity: 0.95;
-  transform: scale(1);
-}
-
-@keyframes filter-button-underglow {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 200% 50%;
-  }
-}
 
 /* Datamosh Decode Button (creaciones-primium/botones/datamosh-decode-button):
    el rotulo sale con la aberracion cromatica y una capa de macrobloques corrupta
@@ -1523,7 +1477,6 @@ input:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .filter-button--underglow::after,
   .filter-button--datamosh,
   .filter-button--datamosh::before,
   .filter-button--datamosh::after,
@@ -2237,10 +2190,10 @@ input:focus-visible {
 
 /* Los nombres de las puntas laterales cuelgan fuera de la escena, asi que
    necesitan sitio a los lados. En pantallas anchas hay de sobra, pero a partir
-   de 1200px la escena se acerca al borde y gevendra2004 se salia de la seccion,
-   creando scroll horizontal. Por debajo de ese ancho se recogen las etiquetas y
-   se achica el chip, porque en escenas de 220-266px el hueco entre el chip y el
-   borde ya no da para una etiqueta de tamano fijo. */
+   de 1200px la escena se acerca al borde y las etiquetas de las puntas se salian
+   de la seccion, creando scroll horizontal. Por debajo de ese ancho se recogen las
+   etiquetas y se achica el chip, porque en escenas de 220-266px el hueco entre el
+   chip y el borde ya no da para una etiqueta de tamano fijo. */
 @media (max-width: 1200px) {
   .pcb-scene .pcb-chip {
     width: 26%;

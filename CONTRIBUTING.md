@@ -11,8 +11,10 @@ No todas las carpetas son iguales. Cuál eliges determina si el componente puede
 | Carpeta | Qué contiene | ZIP |
 | --- | --- | --- |
 | `CreacionesNuevas/` | Creaciones del autor, con `LICENSE` MIT propia | **Habilitado** |
-| `creaciones-primium/` | Creaciones en curso, agrupadas por categoría (`botones/`, `animaciones/`, …) | Deshabilitado mientras no lleven `LICENSE` |
-| `GevendraAutorExterno/` | Demos de terceros, sin licencia de redistribución | Deshabilitado, y no se tocan |
+| `creaciones-primium/` | Creaciones en curso, agrupadas por categoría (`botones/`, `animaciones/`, .), con el `LICENSE` MIT de la raíz | **Habilitado** |
+| `DavokerDiseñador/` | Efectos de texto de davoker, con licencia MIT del autor de origen | **Habilitado** |
+
+**No se toca `GevendraAutorExterno/`**: sigue en el repositorio, pero quedó fuera del catálogo y del sitio el 2026-09-30 porque su material no tiene licencia declarada. No se edita, no se cataloga y no se publica. Ver *Material retirado* en el README.
 
 **Al añadir un componente, la opción correcta es `creaciones-primium/`**, dentro de la categoría que le toque. `CreacionesNuevas/` es el archivo histórico de lo ya publicado.
 
@@ -152,7 +154,7 @@ La decisión de integrar o no es siempre de quien mantiene el repositorio. No ha
 
 ```text
 .
-|-- GevendraAutorExterno/       # demos de terceros, no se modifican
+|-- DavokerDiseñador/           # efectos de texto de davoker, con su licencia MIT
 |-- CreacionesNuevas/           # creaciones propias ya publicadas
 |-- creaciones-primium/         # creaciones en curso, por categoría
 |-- Web/                        # la aplicación

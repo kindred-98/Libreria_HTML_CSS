@@ -7,6 +7,34 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Retirada de los 116 demos de gevendra2004] — 2026-09-30
+
+Sus demos de `GevendraAutorExterno/` **no se publican**: su repositorio de origen,
+`gevendra2004/gevstack`, no declara licencia y el autor no respondió a los
+contactos para pedirle permiso. Publicar su código, con o sin botón de descarga,
+ya es redistribuirlo, así que la carpeta sale del catálogo y del sitio. **Queda en
+el repositorio** para poder consultarla en local.
+
+- `generate-catalog.mjs`: `GevendraAutorExterno` deja de ser raíz del catálogo
+  (1001 → **885** componentes, los 885 descargables).
+- `component-overrides.json`: fuera sus 116 entradas.
+- **Borrado** `GevendraAutorExterno/LICENSE`: el MIT que esta carpeta llevaba
+  desde el 29-09 era de este proyecto sobre obra ajena.
+- `site.css`: fuera el bloque `.filter-button--underglow`, que era CSS copiado
+  de su demo `animated-gradient-underglow`.
+- `vercel.json`: `redirect` permanente de `/GevendraAutorExterno/:path*` a `/Web/`
+  más `X-Robots-Tag: noindex, nofollow`, para que su contenido no se sirva aunque
+  la carpeta siga en el repositorio.
+- Web: fuera su tarjeta del roster, su nodo del diagrama NEXO (ahora dice `IA`),
+  su botón del filtro de autores y sus claves i18n. El filtro queda con 4 autores
+  y el roster con 3 cuentas.
+- `storyP1` se parte en tres porque el nombre de su repositorio es ahora un
+  enlace (`storyP1a` / `storyP1Link` / `storyP1b`): es la **única mención** que
+  queda de él, y cita su trabajo, no su código.
+- Docs: README, CONTRIBUTING, SECURITY, Web/README, `LICENSE` de raíz,
+  THIRD_PARTY_NOTICES (apartado *Material retirado*) y este changelog. Las
+  auditorías y los planes de `Docs/` se dejan intactos: cuentan lo que pasó.
+
 ## [MIT y ZIP para toda creaciones-primium] — 2026-09-29
 
 - La raíz `creaciones-primium` pasa a `license: "MIT"`, `licenseFile: "LICENSE"`,

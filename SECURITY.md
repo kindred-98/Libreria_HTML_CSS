@@ -44,7 +44,7 @@ El proyecto no publica releases numeradas: todo el desarrollo ocurre en `main`, 
 
 **Queda fuera del alcance:**
 
-- El contenido de los componentes de `GevendraAutorExterno/`, que son de terceros y ya estaban publicados en su repositorio de origen. Se incluyen sin modificarlos. Un problema dentro de uno de ellos se reporta a quien lo haya creado
+- El contenido de `GevendraAutorExterno/`, que es de un tercero y no tiene licencia declarada. La carpeta sigue en el repositorio, pero está **fuera del catálogo y del sitio** desde 2026-09-30: `vercel.json` redirige `/GevendraAutorExterno/...` para que no se sirva. Un problema dentro de uno de ellos se reporta a quien lo haya creado
 - Vulnerabilidades en jQuery, Ionicons o cualquier biblioteca cargada desde un CDN externo. Se reportan a sus mantenedores
 - Los enlaces a terceros. El sitio no aloja ni redirige a ellos
 
