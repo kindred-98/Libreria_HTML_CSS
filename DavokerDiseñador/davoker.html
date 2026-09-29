@@ -2879,8 +2879,10 @@
                 // alto del documento, no de la ventana: el cielo tiene
                 // que llegar hasta el pie en las capturas de página
                 // completa (el lienzo no estira el body: va absolute)
-                an = Math.max(window.innerWidth,
-                              document.documentElement.scrollWidth);
+                // ancho del CONTENIDO, no de la ventana: window.innerWidth
+                // incluye la barra de scroll vertical, y este lienzo es
+                // absolute, asi que un ancho de mas creaba scroll horizontal.
+                an = document.documentElement.clientWidth;
                 al = Math.max(window.innerHeight,
                               document.documentElement.scrollHeight);
                 lienzo.style.width = an + "px";
@@ -3098,8 +3100,8 @@
             var ux = 0, uy = 0;     // último clic: donde estalla la luz
 
             function medir() {
-                an = window.innerWidth;
-                al = window.innerHeight;
+                an = document.documentElement.clientWidth;
+                al = document.documentElement.clientHeight;
                 lienzo.width = Math.round(an * dpr);
                 lienzo.height = Math.round(al * dpr);
                 ex.setTransform(dpr, 0, 0, dpr, 0, 0);

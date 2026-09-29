@@ -111,7 +111,8 @@ const translations = {
     footerBuilt: "Open source code library, open to contributions.\nGot a creative idea? OPEN A PR.",
     component: "component",
     components: "components",
-    davokerShowcase: "davoker's showcase",
+    authorGevendra: "Componente de gevendras - {count}",
+    authorDavoker: "Diseños de davoker - {count}",
     browseCategory: "Browse {category} components",
     viewComponent: "View component",
     liveDemo: "Live demo",
@@ -248,7 +249,8 @@ const translations = {
     footerBuilt: "Librería de código abierto, abierta a contribuciones.\nSi tiene una idea creativa de nuevo componente, HAS UNA PR.",
     component: "componente",
     components: "componentes",
-    davokerShowcase: "showcase de davoker",
+    authorGevendra: "Componente de gevendras - {count}",
+    authorDavoker: "Diseños de davoker - {count}",
     browseCategory: "Explorar componentes de {category}",
     viewComponent: "Ver componente",
     liveDemo: "Demo en vivo",
@@ -576,6 +578,13 @@ const authorButtonFx = {
   fatmaerm: "filter-button--pulse",
 };
 
+// Cada autor pide su propia frase en el recuento, asi que cuando el filtro de
+// autor esta activo no se usa "N componentes" sino esta etiqueta.
+const authorSummaryKey = {
+  Gevendra: "authorGevendra",
+  Davoker: "authorDavoker",
+};
+
 function getAuthors() {
   const present = new Set(state.components.map((component) => component.author).filter(Boolean));
   const extras = [...present]
@@ -816,6 +825,7 @@ function scrollToGrid(grid) {
 
 function renderComponents() {
   if (!elements.grid) return;
+  const filteredComponents = getFilteredComponents();
   // Con el autor davoker elegido, sin categoria ni busqueda, la rejilla se
   // sustituye por su portada (davoker.html) dentro del mismo hueco: la cabecera,
   // el buscador y los filtros siguen siendo nuestros. En cuanto cambias de
@@ -834,12 +844,11 @@ function renderComponents() {
     elements.grid.hidden = true;
     elements.emptyState.hidden = true;
     elements.pagination.hidden = true;
-    elements.resultsCount.textContent = t("davokerShowcase");
+    elements.resultsCount.textContent = t("authorDavoker", { count: filteredComponents.length });
     return;
   }
   if (elements.davokerPortal) elements.davokerPortal.hidden = true;
   elements.grid.hidden = false;
-  const filteredComponents = getFilteredComponents();
   const totalPages = Math.max(1, Math.ceil(filteredComponents.length / pageSize));
   // Si el filtro deja menos paginas que la actual, se recorta en vez de dejar
   // la rejilla vacia.
@@ -847,8 +856,11 @@ function renderComponents() {
   const start = (state.currentPage - 1) * pageSize;
   const visibleComponents = filteredComponents.slice(start, start + pageSize);
   elements.grid.replaceChildren(...visibleComponents.map((component, index) => createComponentCard(component, start + index)));
+  const summaryKey = authorSummaryKey[state.author];
   const countLabel = filteredComponents.length === 1 ? t("component") : t("components");
-  elements.resultsCount.textContent = `${filteredComponents.length} ${countLabel}`;
+  elements.resultsCount.textContent = summaryKey
+    ? t(summaryKey, { count: filteredComponents.length })
+    : `${filteredComponents.length} ${countLabel}`;
   elements.emptyState.hidden = filteredComponents.length > 0;
   renderPagination({
     container: elements.pagination,
