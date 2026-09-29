@@ -14,6 +14,40 @@ La `LICENSE` de la raíz se aplica al código original de la aplicación y a la 
 | `creaciones-primium/` | **518** | `kindred-98` y `fatmaerm` (`indicadores-de-carga/`, `navegacion/`) | MIT (archivo `creaciones-primium/LICENSE`) | **Habilitado** |
 | **Total** | **1001** | | | 1001 de 1001 |
 
+## Fotografías de las galerías (Wikimedia Commons)
+
+Las **86 carpetas de `creaciones-primium/galerias/`** (676 fotografías en total) cargan sus fotos desde `upload.wikimedia.org`. Son **recursos de terceros**: la MIT del `LICENSE` de `creaciones-primium/` cubre el código de esos demos y **no** cubre las imágenes, como ya advierte su propia letra. Quienes retratan cada foto conservan sus derechos.
+
+**Cómo se acredita.** Cada galería lleva la atribución dentro de la propia página, en dos formas:
+
+- 78 galerías la imprimen en el HTML, en un pie o bloque de créditos dentro de la página (clases `credits`, `colophon`, `foot__list`, `page__credit`, etcétera): autor por autor y licencia por licencia.
+- Las 8 restantes (`bloom-finder`, `bridge-overlay`, `cathedral-board`, `fogwood-filter`, `lake-phone`, `nebula-preview`, `neoncity-film`, `stadium-grid`) guardan los mismos datos en su `script.js` y los pintan al abrir la ficha.
+
+Ambas formas citan el nombre del autor **y** la licencia de cada archivo, más un enlace a la colección de origen en `commons.wikimedia.org`.
+
+**Licencias encontradas** (recuento sobre las 86 galerías, HTML y JS):
+
+| Licencia | Menciones | Texto oficial |
+|---|---:|---|
+| CC BY-SA 3.0 | 366 | <https://creativecommons.org/licenses/by-sa/3.0/> |
+| CC BY-SA 4.0 | 348 | <https://creativecommons.org/licenses/by-sa/4.0/> |
+| Public domain | 242 | Dominio público: sin condiciones de atribución |
+| CC BY 2.0 | 119 | <https://creativecommons.org/licenses/by/2.0/> |
+| CC0 | 113 | <https://creativecommons.org/publicdomain/zero/1.0/> |
+| CC BY-SA 2.0 | 109 | <https://creativecommons.org/licenses/by-sa/2.0/> |
+| CC BY 4.0 | 40 | <https://creativecommons.org/licenses/by/4.0/> |
+| CC BY-SA 2.5 | 39 | <https://creativecommons.org/licenses/by-sa/2.5/> |
+| CC BY 3.0 | 37 | <https://creativecommons.org/licenses/by/3.0/> |
+| CC BY 2.5 | 21 | <https://creativecommons.org/licenses/by/2.5/> |
+| CC BY / CC BY-SA (sin versión) | 49 | Ver la versión de cada archivo en su ficha de Commons |
+| GFDL 1.2 | 14 | <https://www.gnu.org/licenses/old-licenses/fdl-1.2.html> |
+
+Los textos de arriba son los que rigen el uso de cada foto; este documento los enlaza porque los créditos dentro de los demos citan la licencia por su nombre pero no enlazan al texto.
+
+**Qué sí y qué no se redistribuye.** Las galerías **no llevan las fotos dentro de su ZIP**: las 86 carpetas contienen solo `index.html`, `script.js` y `styles.css`. Las imágenes se piden a Wikimedia en el momento de verlas, así que la descarga se lleva el código que las referencia y nada más. Al no distribuir copias de las fotos, las condiciones de las licencias CC se cumplen con la atribución que cada página muestra.
+
+**Enlaces en las galerías.** Todas apuntan a `commons.wikimedia.org` para ver la colección de origen y a `upload.wikimedia.org` para servir la imagen. Servir la foto desde Wikimedia es carga remota (*hotlink*): quien la ve la recibe de los servidores de Wikimedia, no de este repositorio, y no se guarda copia en el sitio ni en los ZIP.
+
 ## Estado de distribución
 
 Los 248 componentes de `CreacionesNuevas/` están autorizados: el catálogo los marca con `license: "MIT"`, `redistributable: true`, `licenseFile: "LICENSE"` y `source` apuntando a este repositorio. Sus descargas ZIP incluyen el `LICENSE` del componente y un `ATTRIBUTION.txt` generado en el momento de la descarga.
