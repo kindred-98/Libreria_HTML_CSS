@@ -65,9 +65,10 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 |   |   |-- validate.mjs        # Comprueba que el catálogo cuadra con el disco
 |   |   `-- zip.js              # Crea archivos ZIP comprimidos en el navegador
 |   |-- styles/site.css
+|   |-- styles/team-core.css    # Hoja propia de Team Core (solo esa pagina)
 |   |-- components.html          # Listado de componentes y detalle
 |   |-- favicon.svg
-|   |-- og-image.png
+|   |-- og-image.jpg             # Tarjeta social 1200x630 (og:image)
 |   |-- robots.txt
 |   |-- sitemap.xml
 |   |-- team-core.html           # Equipo y donación

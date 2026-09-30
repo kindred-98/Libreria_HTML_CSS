@@ -1279,7 +1279,7 @@ const sitePath = new URL(
 ).pathname;
 const defaultMetadata = {
   description: document.querySelector('meta[name="description"]')?.getAttribute("content") ?? "",
-  image: `${siteOrigin}/Web/og-image.png`,
+  image: `${siteOrigin}/Web/og-image.jpg`,
 };
 
 function setMetaContent(selector, content) {
