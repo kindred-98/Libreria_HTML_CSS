@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Camera Mode Wheel</title>
+<meta name="description" content="A camera mode dial used as a navigation wheel: six engraved sectors turn under a fixed red index mark, the dial settles on a spring return, and the exposure readout recomputes the shutter and aperture pair for the mode you choose.">
+<meta name="description-es" content="Dial de modos de cámara usado como rueda de navegación: seis sectores grabados giran bajo una marca de índice roja fija, el dial se asienta con un muelle de retorno y la lectura de exposición recalcula el par de obturación y diafragma del modo elegido.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="dark">
+
+  <i class="safelight" aria-hidden="true"></i>
+
+  <div class="body">
+    <header class="head">
+      <div class="head__brand">
+        <p class="head__k">School of analogue photography · bench 4</p>
+        <h1>Mode wheel</h1>
+        <p class="head__s">Frame 400 ISO · 50 mm lens · daylight, thin cloud.</p>
+      </div>
+      <div class="self-timer" aria-hidden="true">
+        <i class="lever"></i>
+        <i class="lever-base"></i>
+        <span class="self-timer__k">Self</span>
+      </div>    </header>
+
+    <div class="deck">
+      <div class="wheel" id="wheel" style="--deg:0deg">
+
+        <i class="disc" aria-hidden="true">
+          <b class="engrave" style="--a:0deg"></b>
+          <b class="engrave" style="--a:60deg"></b>
+          <b class="engrave" style="--a:120deg"></b>
+          <b class="engrave" style="--a:180deg"></b>
+          <b class="engrave" style="--a:240deg"></b>
+          <b class="engrave" style="--a:300deg"></b>
+        </i>
+        <i class="wheel__ticks" aria-hidden="true"></i>
+        <i class="wheel__sweep" aria-hidden="true"></i>
+        <i class="wheel__index" id="index" aria-hidden="true"></i>
+        <i class="wheel__glass" aria-hidden="true"></i>
+
+        <div class="knob" role="group" aria-label="Camera mode dial">
+          <button class="sector" type="button" style="--a:0deg" aria-pressed="true">
+            <span class="sector__face"><b class="sector__letter">P</b><i class="sector__name">Program</i></span>
+          </button>
+          <button class="sector" type="button" style="--a:60deg" aria-pressed="false">
+            <span class="sector__face"><b class="sector__letter">A</b><i class="sector__name">Aperture</i></span>
+          </button>
+          <button class="sector" type="button" style="--a:120deg" aria-pressed="false">
+            <span class="sector__face"><b class="sector__letter">S</b><i class="sector__name">Shutter</i></span>
+          </button>
+          <button class="sector" type="button" style="--a:180deg" aria-pressed="false">
+            <span class="sector__face"><b class="sector__letter">M</b><i class="sector__name">Manual</i></span>
+          </button>
+          <button class="sector" type="button" style="--a:240deg" aria-pressed="false">
+            <span class="sector__face"><b class="sector__letter">D</b><i class="sector__name">Depth</i></span>
+          </button>
+          <button class="sector" type="button" style="--a:300deg" aria-pressed="false">
+            <span class="sector__face"><b class="sector__letter">N</b><i class="sector__name">Night</i></span>
+          </button>
+        </div>
+      </div>
+
+      <aside class="exposure" aria-label="Exposure readout">
+        <p class="exposure__k">Mode under the index</p>
+        <h2 class="exposure__mode" id="expMode">Program</h2>
+
+        <div class="pair">
+          <div class="pair__cell">
+            <span>Shutter</span>
+            <b id="expShutter">1/250</b>
+            <i>sec</i>
+          </div>
+          <div class="pair__cell">
+            <span>Aperture</span>
+            <b id="expAperture">f/5.6</b>
+            <i>stop</i>
+          </div>
+        </div>
+
+        <div class="meter">
+          <i class="meter__scale" aria-hidden="true"></i>
+          <i class="meter__set" id="meterSet" aria-hidden="true"></i>
+          <i class="meter__needle" aria-hidden="true"></i>
+          <span class="meter__lo">8</span>
+          <span class="meter__mid">13</span>
+          <span class="meter__hi">20</span>
+        </div>
+        <p class="exposure__note" id="expNote">The camera measures and picks both. Useful until the light gets worse than the program expects.</p>
+
+        <ul class="exposure__list">
+          <li><span>Film</span><b>400 ISO</b></li>
+          <li><span>Lens</span><b>50 mm f/1.8</b></li>
+          <li><span>Format</span><b>35 mm, 36</b></li>
+        </ul>
+      </aside>
+    </div>
+
+    <nav class="strip" aria-label="Frame index">
+      <p class="strip__k">Frame index</p>
+      <ol class="strip__list">
+        <li><a href="#sec-program"><b>01</b>P · Program</a></li>
+        <li><a href="#sec-aperture"><b>02</b>A · Aperture</a></li>
+        <li><a href="#sec-shutter"><b>03</b>S · Shutter</a></li>
+        <li><a href="#sec-manual"><b>04</b>M · Manual</a></li>
+        <li><a href="#sec-depth"><b>05</b>D · Depth</a></li>
+        <li><a href="#sec-night"><b>06</b>N · Night</a></li>
+      </ol>
+    </nav>
+
+    <main class="log">
+
+      <section class="lesson" id="sec-program">
+        <p class="lesson__no">Frame 01 · Mode P</p>
+        <h2>Program mode</h2>
+        <p>Hand the camera the shutter speed and it will find an aperture, hand it the aperture and it will find a shutter speed. In daylight on 400 ISO it settles almost every time at f/5.6 with a shutter between 1/125 and 1/500, which is a perfectly good answer for anybody learning the craft and a bad answer for anybody who knows what the light is doing.</p>
+        <p>The useful habit that survives leaving program mode is to check what the camera chose and ask why. If it picked 1/15 on an overcast afternoon, something is wrong: either the film is two stops under, or you have moved a third of the way into the light.</p>
+      </section>
+
+      <section class="lesson" id="sec-aperture">
+        <p class="lesson__no">Frame 02 · Mode A</p>
+        <h2>Aperture priority</h2>
+        <p>Choose the aperture and the camera matches it with a shutter speed. Open to f/1.8 for a portrait at dusk, stop to f/8 for a landscape where everything from two metres to infinity has to be sharp, and remember that each full stop of aperture costs one stop of shutter speed, so the light decides how much of both you can have.</p>
+        <p>Two thirds of the photographers in any club shoot in this mode and never read the numbers. The exposure readout on this bench shows the combination the camera would choose for the light the meter is reporting, so the dial is a way of learning the arithmetic rather than avoiding it.</p>
+      </section>
+
+      <section class="lesson" id="sec-shutter">
+        <p class="lesson__no">Frame 03 · Mode S</p>
+        <h2>Shutter priority</h2>
+        <p>Choose the shutter speed and the camera finds the aperture. It is the mode for anything that moves: 1/500 to freeze a walking dog, 1/60 to let water fall as water, 1/15 to blur the leaves while the building stays put, and 1/4 for a veil of cloud over a landscape nobody is standing in.</p>
+        <p>The trap in this mode is the aperture the camera chooses in poor light. Below 1/30 on a 50 millimetre lens held in two hands, a quarter of the results are soft, and the camera has no way of knowing that you did not put the camera on a tripod.</p>
+      </section>
+
+      <section class="lesson" id="sec-manual">
+        <p class="lesson__no">Frame 04 · Mode M</p>
+        <h2>Manual and the sunny sixteen</h2>
+        <p>Nothing is decided for you, and the camera only tells you when you are wrong. The old rule still works on any light meter ever made: in bright sun, set f/16 and 1/ISO for a correct exposure, then half a stop under if you want the sky to hold its colour.</p>
+        <p>Manual is how a darkroom print is repeatable. Two exposures of the same scene at f/8 and 1/125 and a third frame at f/8 and 1/250 will bracket the negative in a way the meter can only guess at, and a bracket is what turns a scanned frame into a print with a shadow that is not black.</p>
+      </section>
+
+      <section class="lesson" id="sec-depth">
+        <p class="lesson__no">Frame 05 · Mode D</p>
+        <h2>Depth of field</h2>
+        <p>Depth of field is a lens, a distance and an aperture, and a fifty millimetre at f/1.8 focused at two metres has about twenty centimetres of sharp, which is thinner than most beginners expect. Stopping to f/8 makes it several metres, and the background falls apart at the same time.</p>
+        <p>Two habits fix most beginner portraits: move a step back, and raise the shutter speed rather than opening the lens. Depth of field is not something the camera can rescue at the print, but focus is: a soft photograph taken at f/1.8 is out of focus, and a soft photograph taken at f/8 looks like a mistake.</p>
+      </section>
+
+      <section class="lesson" id="sec-night">
+        <p class="lesson__no">Frame 06 · Mode N</p>
+        <h2>Night and the long frame</h2>
+        <p>After dark the shutter stays open and the only question left is how long. On a tripod, thirty seconds for a lit street, two minutes for the floodlights on a building, and four minutes if a car comes through the frame. Anything longer and the emulsion starts to fog from the sky.</p>
+        <p>Bracket a night frame as carefully as a day one. Push the film two stops in development, print the negatives at 2.7 or 2.8, and pick the frame where the shadows held. A night photograph is made in the darkroom at least as much as on the street.</p>
+      </section>
+
+    </main>
+
+    <footer class="foot">
+      <p>School of analogue photography · bench 4 · exposures are examples on 400 ISO film, not a substitute for a meter.</p>
+      <a href="#sec-program">Back to frame 01</a>
+    </footer>
+  </div>
+
+  <div class="filmstrip" aria-hidden="true">
+    <div class="filmstrip__run">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

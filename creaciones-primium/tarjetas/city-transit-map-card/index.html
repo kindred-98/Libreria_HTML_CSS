@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>City Transit Map Card</title>
+<meta name="description" content="An urban metro card with three lines that draw themselves in, stops that breathe, trains running the route on a real timeline and a station sheet that unfolds when you pick a stop.">
+<meta name="description-es" content="Una tarjeta de metro urbano con tres líneas que se dibujan solas, paradas que laten, trenes recorriendo la ruta y una ficha de estación que se despliega al elegir una parada.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <article class="tmap" id="tmap">
+    <span class="tmap__halo" aria-hidden="true"></span>
+
+    <header class="tmap__bar">
+      <p class="tmap__brand"><span class="tmap__mark">M</span>Lumen Bay Metro</p>
+      <span class="tmap__stamp">SERVICE MAP &middot; REV 11</span>
+    </header>
+
+    <div class="plot" id="plot" data-solo="all">
+      <svg class="plot__svg" viewBox="0 0 420 300" role="img" aria-label="Schematic map of the Lumen Bay metro with three lines">
+        <defs>
+          <pattern id="tmapGrid" width="21" height="21" patternUnits="userSpaceOnUse">
+            <path d="M21 0H0V21" fill="none" stroke="#5f7d9c" stroke-opacity=".22" stroke-width="1"></path>
+          </pattern>
+        </defs>
+        <rect width="420" height="300" fill="url(#tmapGrid)"></rect>
+        <path class="river" d="M-10 262C60 250 96 214 150 206C214 196 246 232 300 228C352 224 384 190 430 182" fill="none" stroke="#2d5a72" stroke-opacity=".5" stroke-width="12" stroke-linecap="round"></path>
+
+        <g class="lines">
+          <path class="line line--l1" pathLength="600" d="M40 250 L120 190 H290 L350 130 H400"></path>
+          <path class="line line--l2" pathLength="600" d="M190 60 H250 V250 H400"></path>
+          <path class="line line--l3" pathLength="600" d="M40 110 H340 L400 50"></path>
+          <path class="flow" pathLength="600" d="M40 250 L120 190 H290 L350 130 H400"></path>
+          <path class="flow flow--b" pathLength="600" d="M190 60 H250 V250 H400"></path>
+          <path class="flow flow--c" pathLength="600" d="M40 110 H340 L400 50"></path>
+        </g>
+
+        <g class="stops">
+          <circle class="stop stop--l1" cx="120" cy="190" r="5"></circle>
+          <circle class="stop stop--l1" cx="180" cy="190" r="5"></circle>
+          <circle class="stop stop--l1" cx="290" cy="190" r="5"></circle>
+          <circle class="stop stop--l1" cx="400" cy="130" r="5"></circle>
+          <circle class="stop stop--l2" cx="190" cy="60" r="5"></circle>
+          <circle class="stop stop--l2" cx="250" cy="60" r="5"></circle>
+          <circle class="stop stop--l2" cx="250" cy="250" r="5"></circle>
+          <circle class="stop stop--l2" cx="320" cy="250" r="5"></circle>
+          <circle class="stop stop--l3" cx="150" cy="110" r="5"></circle>
+          <circle class="stop stop--l3" cx="340" cy="110" r="5"></circle>
+          <circle class="stop stop--hub" cx="250" cy="190" r="8"></circle>
+          <circle class="stop stop--hub" cx="250" cy="110" r="8"></circle>
+        </g>
+
+        <g class="codes" aria-hidden="true">
+          <text x="222" y="213">CE</text>
+          <text x="272" y="134">CT</text>
+        </g>
+
+        <g class="trains">
+          <g class="train train--l1">
+            <circle class="train__halo" r="10"></circle>
+            <circle class="train__core" r="4.4"></circle>
+          </g>
+          <g class="train train--l2">
+            <circle class="train__halo" r="10"></circle>
+            <circle class="train__core" r="4.4"></circle>
+          </g>
+          <g class="train train--l3">
+            <circle class="train__halo" r="10"></circle>
+            <circle class="train__core" r="4.4"></circle>
+          </g>
+        </g>
+      </svg>
+
+      <button class="pin" type="button" style="--x:9.52%;--y:83.33%" data-stop="0" aria-pressed="true" aria-label="Quay Gate station">
+        <span class="pin__dot pin__dot--l1"></span>
+      </button>
+      <button class="pin" type="button" style="--x:28.57%;--y:63.33%" data-stop="1" aria-pressed="false" aria-label="Foundry Row station">
+        <span class="pin__dot pin__dot--l1"></span>
+      </button>
+      <button class="pin" type="button" style="--x:59.52%;--y:63.33%" data-stop="2" aria-pressed="false" aria-label="Central Exchange station">
+        <span class="pin__dot pin__dot--hub"></span>
+      </button>
+      <button class="pin" type="button" style="--x:69.05%;--y:63.33%" data-stop="3" aria-pressed="false" aria-label="Ironworks station">
+        <span class="pin__dot pin__dot--l1"></span>
+      </button>
+      <button class="pin" type="button" style="--x:83.33%;--y:43.33%" data-stop="4" aria-pressed="false" aria-label="Northgate station">
+        <span class="pin__dot pin__dot--l1"></span>
+      </button>
+      <button class="pin" type="button" style="--x:59.52%;--y:83.33%" data-stop="5" aria-pressed="false" aria-label="Southbank station">
+        <span class="pin__dot pin__dot--l2"></span>
+      </button>
+      <button class="pin" type="button" style="--x:76.19%;--y:83.33%" data-stop="6" aria-pressed="false" aria-label="Ferry Point station">
+        <span class="pin__dot pin__dot--l2"></span>
+      </button>
+      <button class="pin" type="button" style="--x:95.24%;--y:83.33%" data-stop="7" aria-pressed="false" aria-label="Estuary station">
+        <span class="pin__dot pin__dot--l2"></span>
+      </button>
+      <button class="pin" type="button" style="--x:9.52%;--y:36.67%" data-stop="8" aria-pressed="false" aria-label="Westfield station">
+        <span class="pin__dot pin__dot--l3"></span>
+      </button>
+      <button class="pin" type="button" style="--x:22.62%;--y:36.67%" data-stop="9" aria-pressed="false" aria-label="Orchard Park station">
+        <span class="pin__dot pin__dot--l3"></span>
+      </button>
+      <button class="pin" type="button" style="--x:35.71%;--y:36.67%" data-stop="10" aria-pressed="false" aria-label="Kiln Street station">
+        <span class="pin__dot pin__dot--l3"></span>
+      </button>
+      <button class="pin" type="button" style="--x:59.52%;--y:36.67%" data-stop="11" aria-pressed="false" aria-label="Cathedral station">
+        <span class="pin__dot pin__dot--hub"></span>
+      </button>
+      <button class="pin" type="button" style="--x:80.95%;--y:36.67%" data-stop="12" aria-pressed="false" aria-label="Bellrose station">
+        <span class="pin__dot pin__dot--l3"></span>
+      </button>
+      <button class="pin" type="button" style="--x:95.24%;--y:16.67%" data-stop="13" aria-pressed="false" aria-label="Highland station">
+        <span class="pin__dot pin__dot--l3"></span>
+      </button>
+
+      <span class="plot__compass" aria-hidden="true"><i></i><b>N</b></span>
+    </div>
+
+    <nav class="legend" aria-label="Lines">
+      <button class="legend__btn" type="button" data-line="1" aria-pressed="false"><i class="legend__dash legend__dash--l1"></i>L1 Harbour</button>
+      <button class="legend__btn" type="button" data-line="2" aria-pressed="false"><i class="legend__dash legend__dash--l2"></i>L2 Verdant</button>
+      <button class="legend__btn" type="button" data-line="3" aria-pressed="false"><i class="legend__dash legend__dash--l3"></i>L3 Orchard</button>
+    </nav>
+
+    <section class="tsheet" id="sheet" aria-live="polite">
+      <p class="tsheet__kicker">
+        <span class="tsheet__badge" id="sheetLine">L1</span>
+        <span class="tsheet__zone" id="sheetZone">Zone B</span>
+        <span class="tsheet__rule"></span>
+        <span class="tsheet__code" id="sheetCode">QG</span>
+      </p>
+      <h2 class="tsheet__name" id="sheetName">Quay Gate</h2>
+      <p class="tsheet__note" id="sheetNote">Fishermen&rsquo;s quarter, cobbles and the morning flower market.</p>
+      <dl class="tsheet__meta">
+        <div class="tsheet__cell"><dt>Next train</dt><dd id="sheetNext">1 min</dd></div>
+        <div class="tsheet__cell"><dt>Headway</dt><dd id="sheetEvery">6 min</dd></div>
+        <div class="tsheet__cell"><dt>Platform</dt><dd id="sheetPlat">2</dd></div>
+      </dl>
+    </section>
+
+    <footer class="tmap__foot">
+      <span>Network 43.2 km</span>
+      <span class="tmap__sig">MAP 11-LB</span>
+      <span>Last sync 09:41</span>
+    </footer>
+  </article>
+</main>
+</body>
+</html>

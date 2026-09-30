@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian Icon Rail</title>
+<meta name="description" content="A fixed icon rail for a station telemetry console: a vertical meridian line with a travelling pulse, labels that slide out on hover or keyboard focus, and powered-off nodes that light up for the section you are in.">
+<meta name="description-es" content="Raíl fijo de iconos para una consola de telemetría orbital: línea meridiana vertical con pulso recorrido, etiquetas que salen al pasar el cursor o al enfocar con teclado y nodos apagados que se encienden en la sección activa.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#telemetry">Skip to content</a>
+
+<nav class="rail" aria-label="Station sections">
+  <span class="rail__line" aria-hidden="true"></span>
+  <span class="rail__pulse" aria-hidden="true"></span>
+
+  <p class="rail__cap" aria-hidden="true">
+    <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"></circle><path d="M4 16h24M16 4c4.5 4 4.5 20 0 24M16 4c-4.5 4-4.5 20 0 24"></path></svg>
+  </p>
+
+  <ul class="rail__list">
+    <li>
+      <a href="#telemetry" aria-current="page">
+        <span class="rail__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"></circle><path d="M12 12l4.6-3.4"></path><path d="M12 3.6v2M20.4 12h-2M12 20.4v-2M3.6 12h2"></path></svg></span>
+        <span class="rail__pip" aria-hidden="true"></span>
+        <span class="rail__lab"><i>01</i>Telemetry</span>
+      </a>
+    </li>
+    <li>
+      <a href="#attitude">
+        <span class="rail__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="2"></circle><path d="M12 1.6v3.8M12 18.6v3.8M1.6 12h3.8M18.6 12h3.8"></path></svg></span>
+        <span class="rail__pip" aria-hidden="true"></span>
+        <span class="rail__lab"><i>02</i>Attitude</span>
+      </a>
+    </li>
+    <li>
+      <a href="#power">
+        <span class="rail__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="10" rx="1.2"></rect><path d="M9 4.5v10M15 4.5v10M3 9.5h18M12 14.5v5.5M8.6 20h6.8"></path></svg></span>
+        <span class="rail__pip" aria-hidden="true"></span>
+        <span class="rail__lab"><i>03</i>Power array</span>
+      </a>
+    </li>
+    <li>
+      <a href="#thermal">
+        <span class="rail__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 14.4V5.2a2 2 0 1 0-4 0v9.2a4 4 0 1 0 4 0z"></path><path d="M12 8.4v7"></path></svg></span>
+        <span class="rail__pip" aria-hidden="true"></span>
+        <span class="rail__lab"><i>04</i>Thermal loop</span>
+      </a>
+    </li>
+    <li>
+      <a href="#comms">
+        <span class="rail__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19.4a13.4 13.4 0 0 1 13.4-13.4"></path><path d="M5 19.4a8.4 8.4 0 0 1 8.4-8.4"></path><path d="M5 19.4l5-5"></path><circle cx="5" cy="19.4" r="1.6"></circle></svg></span>
+        <span class="rail__pip" aria-hidden="true"></span>
+        <span class="rail__lab"><i>05</i>Comms</span>
+      </a>
+    </li>
+    <li>
+      <a href="#manifest">
+        <span class="rail__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7.6l9-4 9 4v8.8l-9 4-9-4z"></path><path d="M3 7.6l9 4 9-4M12 11.6v8.8"></path></svg></span>
+        <span class="rail__pip" aria-hidden="true"></span>
+        <span class="rail__lab"><i>06</i>Manifest</span>
+      </a>
+    </li>
+  </ul>
+
+  <p class="rail__foot" aria-hidden="true">LVL<br>04</p>
+</nav>
+
+<main>
+  <header class="head">
+    <div class="head__beam" aria-hidden="true"></div>
+    <p class="kicker">Low orbit · 402 km · bus 04</p>
+    <h1>Meridian Station</h1>
+    <p class="lede">Six subsystems, one rail. The line running down the left edge of this page is the station bus: a pulse of live frames travels it continuously, each node lights when you arrive at its section, and every label slides out of the rail when you point at an icon or reach it with the tab key.</p>
+    <dl class="stats">
+      <div><dt>Orbit</dt><dd>92.6 min</dd></div>
+      <div><dt>Crew</dt><dd>03</dd></div>
+      <div><dt>Bus voltage</dt><dd>128.4 V</dd></div>
+      <div><dt>Frames</dt><dd>4 096 / min</dd></div>
+    </dl>
+  </header>
+
+  <section class="sec" id="telemetry">
+    <div class="sec__head">
+      <p class="sec__idx">01 / Telemetry</p>
+      <h2>Every frame the bus carries</h2>
+      <p>Four thousand frames a minute arrive from forty-one sensors, each stamped with a counter that never repeats and never runs backwards. The console keeps the last twenty seconds in a ring buffer so a glitch can be read frame by frame after the fact rather than guessed at while it happens.</p>
+      <p>Frames that miss two consecutive deadlines are marked stale instead of dropped, because a late value still tells you which way a trend was heading. The rail shows the bus as a single line for the same reason: one path, six nodes, no ambiguity about where a fault sits.</p>
+      <dl class="meta">
+        <div><dt>Frame rate</dt><dd>4 096 / min</dd></div>
+        <div><dt>Sensors</dt><dd>41</dd></div>
+        <div><dt>Stale limit</dt><dd>2 frames</dd></div>
+        <div><dt>Buffer</dt><dd>20 s</dd></div>
+      </dl>
+    </div>
+    <div class="panel" aria-hidden="true">
+      <div class="panel__row"><span>PWR BUS A</span><b>128.4 V</b></div>
+      <div class="panel__row"><span>PWR BUS B</span><b>127.9 V</b></div>
+      <div class="panel__row"><span>ATT RATE</span><b>0.014 °/s</b></div>
+      <div class="panel__row"><span>LOOP ΔT</span><dd>−2.4 °C</dd></div>
+      <div class="panel__row"><span>DOWNLINK</span><b>84.2 Mbps</b></div>
+    </div>
+  </section>
+
+  <section class="sec" id="attitude">
+    <div class="sec__head">
+      <p class="sec__idx">02 / Attitude</p>
+      <h2>Four wheels holding the station still</h2>
+      <p>Reaction wheels carry the pointing load so the thrusters only fire for momentum dumping, which happens roughly twice a week and never while the crew is asleep. Each wheel spins up to four thousand revolutions per minute and is deliberately run slightly off its neighbours to keep resonances apart.</p>
+      <p>The star trackers sit on the shaded side of the truss and hand over to the gyros for ninety seconds each orbit while the horizon sweeps past them. During that gap the controller flies a model, and the model is never allowed more than one arcsecond of drift before the trackers are back.</p>
+      <dl class="meta">
+        <div><dt>Wheels</dt><dd>04</dd></div>
+        <div><dt>Max rate</dt><dd>4 000 rpm</dd></div>
+        <div><dt>Pointing</dt><dd>±0.03°</dd></div>
+        <div><dt>Dump interval</dt><dd>5.2 days</dd></div>
+      </dl>
+    </div>
+    <div class="panel" aria-hidden="true">
+      <div class="panel__row"><span>ROLL</span><b>+0.008°</b></div>
+      <div class="panel__row"><span>PITCH</span><b>−0.011°</b></div>
+      <div class="panel__row"><span>YAW</span><b>+0.004°</b></div>
+      <div class="panel__row"><span>WHEEL 3</span><b>3 842 rpm</b></div>
+    </div>
+  </section>
+
+  <section class="sec" id="power">
+    <div class="sec__head">
+      <p class="sec__idx">03 / Power array</p>
+      <h2>Ninety kilowatts from two wings</h2>
+      <p>The wings track the sun through the lit part of the orbit and feather their angles before eclipse so the structure does not twist when the plasma hit stops. Output peaks at ninety kilowatts, of which thirty-one run the computers, the cooling pumps and the galley in that order of priority.</p>
+      <p>Batteries take over for thirty-four minutes of every ninety-two, holding the station at full function with a twenty percent reserve that is only touched if a wing fails to deploy. Cell balancing runs during the first ten minutes of daylight, when the array has more current than the bus can use.</p>
+      <dl class="meta">
+        <div><dt>Peak output</dt><dd>90.4 kW</dd></div>
+        <div><dt>Loads</dt><dd>61.7 kW</dd></div>
+        <div><dt>Battery</dt><dd>20 % in reserve</dd></div>
+        <div><dt>Eclipse</dt><dd>34 min</dd></div>
+      </dl>
+    </div>
+    <div class="panel" aria-hidden="true">
+      <div class="panel__row"><span>ARRAY A</span><b>46.8 kW</b></div>
+      <div class="panel__row"><span>ARRAY B</span><b>44.1 kW</b></div>
+      <div class="panel__row"><span>STATE</span><b>86 %</b></div>
+      <div class="panel__row"><span>β ANGLE</span><b>21.4°</b></div>
+    </div>
+  </section>
+
+  <section class="sec" id="thermal">
+    <div class="sec__head">
+      <p class="sec__idx">04 / Thermal loop</p>
+      <h2>Ammonia circling the truss</h2>
+      <p>Two independent loops move heat from the electronics to the radiators, where it is thrown into the black. The loops run at different pressures on purpose, so a micrometeorite hole in one of them is a repair job rather than an emergency, and the pumps can be cross-tied from the console.</p>
+      <p>Cabin air is handled separately: CO2 is scrubbed, humidity is condensed into the water bus, and the whole volume swings less than three degrees between a sleeping shift and a busy one. Radiator panels are angled to the shadow whenever the station is not under load.</p>
+      <dl class="meta">
+        <div><dt>Loop pressure</dt><dd>24.6 bar</dd></div>
+        <div><dt>Cabin</dt><dd>21.4 °C</dd></div>
+        <div><dt>Radiator</dt><dd>−42 °C</dd></div>
+        <div><dt>Pumps</dt><dd>4 + 4 standby</dd></div>
+      </dl>
+    </div>
+    <div class="panel" aria-hidden="true">
+      <div class="panel__row"><span>LOOP A IN</span><b>+6.2 °C</b></div>
+      <div class="panel__row"><span>LOOP A OUT</span><b>+11.8 °C</b></div>
+      <div class="panel__row"><span>LOOP B IN</span><b>+5.7 °C</b></div>
+      <div class="panel__row"><span>CABIN ΔT</span><b>0.4 °C</b></div>
+    </div>
+  </section>
+
+  <section class="sec" id="comms">
+    <div class="sec__head">
+      <p class="sec__idx">05 / Comms</p>
+      <h2>Eighty-four megabits over three relay stars</h2>
+      <p>Downlink runs through a network of relay satellites rather than straight to the ground, so coverage exists over the Pacific as well as over the continent. The high-gain antenna is steered mechanically, and the mechanical steer is the slowest part of the entire signal chain.</p>
+      <p>Command traffic is a separate, encrypted channel with a two-way authentication handshake that repeats every ninety seconds. If the link drops, the station keeps executing the last confirmed sequence and refuses anything new until the handshake completes again.</p>
+      <dl class="meta">
+        <div><dt>Downlink</dt><dd>84.2 Mbps</dd></div>
+        <div><dt>Uplink</dt><dd>2.0 Mbps</dd></div>
+        <div><dt>Relays</dt><dd>03</dd></div>
+        <div><dt>Latency</dt><dd>0.61 s</dd></div>
+      </dl>
+    </div>
+    <div class="panel" aria-hidden="true">
+      <div class="panel__row"><span>ANT TRACK</span><b>LOCK</b></div>
+      <div class="panel__row"><span>SNR</span><b>18.4 dB</b></div>
+      <div class="panel__row"><span>QUEUE</span><b>2.1 GB</b></div>
+      <div class="panel__row"><span>HANDSHAKE</span><b>T−38 s</b></div>
+    </div>
+  </section>
+
+  <section class="sec" id="manifest">
+    <div class="sec__head">
+      <p class="sec__idx">06 / Manifest</p>
+      <h2>Two hundred and six items, all weighed</h2>
+      <p>Every bag aboard has a mass, a stowage location and a return plan. Nothing floats loose: crews re-check the manifest after each arrival because a container that moved three centimetres during docking will be in exactly the wrong place during an emergency procedure.</p>
+      <p>Consumables are tracked down to the individual filter cartridge, with a reorder point set at eleven days of margin. The cargo vehicle due next month has four hundred kilogrammes of margin left, and the list of what goes in it changes until the hatch is closed.</p>
+      <dl class="meta">
+        <div><dt>Items logged</dt><dd>206</dd></div>
+        <div><dt>Stowage</dt><dd>18 racks</dd></div>
+        <div><dt>Margin</dt><dd>11 days</dd></div>
+        <div><dt>Next vehicle</dt><dd>T−34 days</dd></div>
+      </dl>
+    </div>
+    <div class="panel" aria-hidden="true">
+      <div class="panel__row"><span>STOWAGE</span><b>18 / 20</b></div>
+      <div class="panel__row"><span>CONSUMABLES</span><b>11 d</b></div>
+      <div class="panel__row"><span>RETURN CARGO</span><b>64 kg</b></div>
+      <div class="panel__row"><span>NEXT VEHICLE</span><b>T−34 d</b></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Meridian · bus 04</span>
+    <span>Console 3.7 · pass 41</span>
+    <span>UTC 14:26:08</span>
+  </footer>
+</main>
+</body>
+</html>

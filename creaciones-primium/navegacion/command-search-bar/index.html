@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Command Search Bar — Halyard API Docs</title>
+<meta name="description" content="A documentation site whose navigation is a command search bar: press slash to focus, arrow keys move through the results, Enter jumps to the section and Escape closes the palette.">
+<meta name="description-es" content="Documentación técnica cuya navegación es un buscador de comandos: la barra diagonal enfoca, las flechas recorren los resultados, Intro salta a la sección y Escape cierra la paleta.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<a class="skip" href="#doc">Skip to the documentation</a>
+
+<header class="top" id="top">
+  <div class="top__sheen" aria-hidden="true"></div>
+  <a class="brand" href="#doc">
+    <span class="brand__mark" aria-hidden="true"></span>
+    Halyard <i>API</i>
+  </a>
+
+  <button class="trigger" id="searchBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="palette">
+    <span class="trigger__ico" aria-hidden="true"></span>
+    <span class="trigger__txt">Search the documentation</span>
+    <kbd class="cap cap--pulse" id="slashCap">/</kbd>
+  </button>
+
+  <div class="top__end">
+    <span class="chip">v4.2</span>
+    <span class="chip chip--live"><i aria-hidden="true"></i>All systems normal</span>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="side" aria-label="Documentation sections">
+    <p class="side__label">Guides</p>
+    <a class="jump" href="#doc">Overview</a>
+    <a class="jump" href="#quickstart">Quickstart</a>
+    <a class="jump" href="#authentication">Authentication</a>
+    <a class="jump" href="#rate-limits">Rate limits</a>
+    <a class="jump" href="#webhooks">Webhooks</a>
+    <p class="side__label">Reference</p>
+    <a class="jump" href="#errors">Error codes</a>
+    <a class="jump" href="#sdk">SDKs</a>
+    <a class="jump" href="#changelog">Changelog</a>
+  </nav>
+
+  <main class="doc" id="doc">
+    <p class="eyebrow">Halyard API · Reference</p>
+    <h1>Everything the API does, in the order you will need it.</h1>
+    <p class="lede">Halyard moves bookings between harbours, ferries and repair yards. This reference covers the four endpoints that most integrations start with, plus the error codes, webhook payloads and rate limits you will meet in the first week of production traffic.</p>
+
+    <div class="keys" role="region" aria-label="Keyboard shortcuts">
+      <p class="keys__t">Keyboard shortcuts</p>
+      <ul>
+        <li><kbd class="cap">/</kbd><span>Focus the command bar from anywhere</span></li>
+        <li><kbd class="cap">Ctrl</kbd><kbd class="cap">K</kbd><span>Open the palette</span></li>
+        <li><kbd class="cap">↑</kbd><kbd class="cap">↓</kbd><span>Move through the results</span></li>
+        <li><kbd class="cap">Enter</kbd><span>Jump to the highlighted section</span></li>
+        <li><kbd class="cap">Esc</kbd><span>Close the palette and return focus</span></li>
+      </ul>
+    </div>
+
+    <section class="sec" id="quickstart" aria-labelledby="quickstart-t">
+      <p class="sec__no">01 · Guide</p>
+      <h2 id="quickstart-t">Quickstart</h2>
+      <p>Every integration begins with a single key and a single request. Create a key in the console, then ask the availability endpoint which berths are free between two timestamps; the response is a plain list of berth identifiers with their harbour code.</p>
+      <pre class="code"><code>GET /v4/berths/availability?from=2026-04-12T06:00Z
+Authorization: Bearer hk_live_2f1c…
+X-Halyard-Client: ferry-ops</code></pre>
+      <p>Keys are scoped to one harbour group. A key that can read availability cannot write bookings, and the console will refuse to issue a write key until a contact address has been confirmed.</p>
+    </section>
+
+    <section class="sec" id="authentication" aria-labelledby="authentication-t">
+      <p class="sec__no">02 · Guide</p>
+      <h2 id="authentication-t">Authentication</h2>
+      <p>Send the key as a bearer token on every request. Tokens are shown once at creation, stored only as a hash, and can be rotated without downtime: the previous token keeps working for twelve hours after the new one is issued.</p>
+      <pre class="code"><code>curl https://api.halyard.example/v4/berths \
+  -H "Authorization: Bearer hk_live_2f1c…"</code></pre>
+      <p>Server-side calls only. A key that appears in a browser, a mobile bundle or a public repository is revoked automatically within a minute of the scanner finding it, and the console records who shipped it.</p>
+    </section>
+
+    <section class="sec" id="rate-limits" aria-labelledby="rate-limits-t">
+      <p class="sec__no">03 · Guide</p>
+      <h2 id="rate-limits-t">Rate limits</h2>
+      <p>Reads are limited to 600 requests per minute per key and writes to 120. Every response carries the four standard headers, and the limit resets on a sliding window rather than a fixed boundary, so a burst at the top of the minute does not lock you out of the next one.</p>
+      <pre class="code"><code>X-RateLimit-Limit: 600
+X-RateLimit-Remaining: 587
+X-RateLimit-Reset: 1775059260
+Retry-After: 12</code></pre>
+      <p>On 429, back off for the number of seconds in <code>Retry-After</code>. Retrying immediately is counted against the same window and will simply fail again.</p>
+    </section>
+
+    <section class="sec" id="webhooks" aria-labelledby="webhooks-t">
+      <p class="sec__no">04 · Guide</p>
+      <h2 id="webhooks-t">Webhooks</h2>
+      <p>Four events are published: <code>berth.booked</code>, <code>berth.released</code>, <code>vessel.arrived</code> and <code>payment.failed</code>. Each payload is signed with HMAC-SHA256 over the raw body using the endpoint secret, and the signature is sent in the <code>X-Halyard-Signature</code> header.</p>
+      <p>Delivery is attempted five times over thirty minutes with exponential backoff. An endpoint that returns 200 for one hour is marked healthy in the console; one that fails every attempt for a day is paused and the owner is emailed.</p>
+    </section>
+
+    <section class="sec" id="errors" aria-labelledby="errors-t">
+      <p class="sec__no">05 · Reference</p>
+      <h2 id="errors-t">Error codes</h2>
+      <p>Errors return a machine-readable <code>code</code>, a human <code>message</code> and a <code>request_id</code> that appears in the logs for ninety days. Quote the request id when writing to support and the responder can see the exact request without asking for a trace.</p>
+      <ul class="tbl">
+        <li><b>4001</b><span>Malformed timestamp</span><i>Check the ISO 8601 format</i></li>
+        <li><b>4013</b><span>Key lacks harbour scope</span><i>Issue a key for the right group</i></li>
+        <li><b>4091</b><span>Berth already booked</span><i>Retry with another berth</i></li>
+        <li><b>4290</b><span>Rate limit exceeded</span><i>Back off using Retry-After</i></li>
+      </ul>
+    </section>
+
+    <section class="sec" id="sdk" aria-labelledby="sdk-t">
+      <p class="sec__no">06 · Reference</p>
+      <h2 id="sdk-t">Client libraries</h2>
+      <p>Official clients exist for Python, Ruby, Go and TypeScript. All four handle retries, signature verification and the sliding rate limit window, and all four ship the same fixtures so that a payload decoded in one language is byte-identical in another.</p>
+      <pre class="code"><code>pip install halyard
+halyard keys list --harbour ridgeway</code></pre>
+      <p>Community clients are listed in the sidebar of the console with their last release date. Anything older than two major versions of the API is flagged rather than removed.</p>
+    </section>
+
+    <section class="sec" id="changelog" aria-labelledby="changelog-t">
+      <p class="sec__no">07 · Reference</p>
+      <h2 id="changelog-t">Changelog</h2>
+      <ul class="log">
+        <li><b>4.2.0</b><span>Sliding rate limit window and Retry-After on every 429</span><i>Apr 2026</i></li>
+        <li><b>4.1.3</b><span>Webhook signatures include the delivery attempt number</span><i>Mar 2026</i></li>
+        <li><b>4.1.0</b><span>Berth availability accepts a harbour group alias</span><i>Feb 2026</i></li>
+        <li><b>4.0.0</b><span>Token scoping per harbour group, legacy keys retired</span><i>Jan 2026</i></li>
+      </ul>
+      <p>Deprecations are announced twelve months ahead, remain functional for the whole period, and appear at the top of this page while they are running.</p>
+    </section>
+  </main>
+</div>
+
+<footer class="foot">
+  <nav aria-label="Footer">
+    <a class="jump" href="#doc">Overview</a>
+    <a class="jump" href="#authentication">Authentication</a>
+    <a class="jump" href="#errors">Error codes</a>
+    <a class="jump" href="#changelog">Changelog</a>
+  </nav>
+  <p>Halyard API · Written in the harbour office · Updated April 2026</p>
+</footer>
+
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Command search" hidden>
+  <div class="palette__field">
+    <span class="palette__ico" aria-hidden="true"></span>
+    <label class="vh" for="cmdInput">Search the documentation</label>
+    <input id="cmdInput" type="text" role="combobox" aria-expanded="true" aria-controls="cmdList"
+      aria-autocomplete="list" aria-activedescendant="" autocomplete="off" spellcheck="false"
+      placeholder="Search guides, references and error codes">
+    <kbd class="cap">esc</kbd>
+  </div>
+  <p class="palette__count" id="cmdCount" role="status">6 of 8 sections</p>
+  <ul class="palette__list" id="cmdList" role="listbox" aria-label="Search results"></ul>
+  <div class="palette__legend">
+    <span><kbd class="cap">↑</kbd><kbd class="cap">↓</kbd> move</span>
+    <span><kbd class="cap">Enter</kbd> open</span>
+    <span><kbd class="cap">Esc</kbd> close</span>
+  </div>
+</div>
+</body>
+</html>

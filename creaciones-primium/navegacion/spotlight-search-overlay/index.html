@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spotlight Search Overlay - The Printed Index</title>
+<meta name="description" content="A full-screen global search for a digital encyclopedia: an enormous field, results grouped by kind, a live preview panel and keyboard commands, with the focus trapped in the overlay and returned on Escape.">
+<meta name="description-es" content="Buscador global a pantalla completa para una enciclopedia digital: un campo enorme, resultados agrupados por tipo, panel de previsualización y comandos de teclado, con el foco atrapado en la capa y devuelto al pulsar Escape.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<a class="skip" href="#library">Skip to the library</a>
+
+<header class="bar">
+  <a class="mark" href="#library">
+    <span class="mark__sigil" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2"/><path d="M12 2.8v18.4M2.8 12h18.4M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg>
+    </span>
+    <span class="mark__txt"><b>The Printed Index</b><i>Encyclopedia of the made thing</i></span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="#library">Library</a>
+    <a href="#typography">Articles</a>
+    <a href="#reading">Reading room</a>
+    <a href="#colophon">Colophon</a>
+  </nav>
+  <button class="ask" id="askBtn" type="button" aria-haspopup="dialog" aria-controls="spot">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M10.6 10.6 14 14"/></svg>
+    <span>Search the index</span>
+    <kbd aria-hidden="true">Ctrl K</kbd>
+  </button>
+</header>
+
+<div class="spot" id="spot" hidden>
+  <div class="spot__wash" aria-hidden="true"></div>
+  <div class="spot__inner" role="dialog" aria-modal="true" aria-labelledby="spotLabel">
+    <p class="vh" id="spotLabel">Search the encyclopedia</p>
+    <div class="spot__field">
+      <span class="spot__slash" aria-hidden="true">/</span>
+      <label class="vh" for="q">Type a word to search the encyclopedia</label>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Search 25 entries: paper, etching, escapement, folio, atlas">
+      <button class="spot__close" id="spotClose" type="button" aria-label="Close the search">
+        <kbd aria-hidden="true">Esc</kbd>
+      </button>
+      <i class="spot__scan" aria-hidden="true"></i>
+    </div>
+
+    <div class="spot__body">
+      <div class="spot__list" id="results" aria-label="Search results"></div>
+      <aside class="spot__side">
+        <div class="preview" id="preview">
+          <svg class="preview__emblem" id="emblem" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="em__ring" cx="60" cy="60" r="48"/>
+            <path class="em__cross" d="M60 8v104M8 60h104"/>
+          </svg>
+          <p class="preview__kind" id="prevKind">Nothing selected</p>
+          <h2 class="preview__title" id="prevTitle">Start typing</h2>
+          <p class="preview__body" id="prevBody">Results are grouped by kind and the first one is offered as a preview. Use the arrow keys to move through the list and Return to open the entry.</p>
+          <p class="preview__hint" id="prevHint">Esc closes and returns the focus where it was.</p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="spot__foot">
+      <p class="spot__count" id="count" role="status" aria-live="polite">25 entries indexed</p>
+      <ul class="spot__keys" aria-label="Keyboard commands">
+        <li><kbd>Down</kbd> open list</li>
+        <li><kbd>Up</kbd> previous</li>
+        <li><kbd>Return</kbd> open</li>
+        <li><kbd>Esc</kbd> close</li>
+      </ul>
+    </div>
+  </div>
+  <p class="spot__none" id="none" hidden>No entry carries that word. Try paper, atlas, escapement, gilding, hatching or Merz.</p>
+</div>
+
+<main id="library">
+  <section class="hero">
+    <p class="hero__k">Edition 9 &middot; 25 entries &middot; revised 4 March</p>
+    <h1>Everything this index knows, one field away.</h1>
+    <p class="hero__lede">Twenty-five entries on paper, metal, optics and timekeeping, written by people who have handled the objects they describe. Press the field below, or the shortcut, and the whole index comes forward: grouped results, a preview of what you are about to open, and a way out that always puts the cursor back where you left it.</p>
+    <button class="big" id="bigBtn" type="button" aria-haspopup="dialog" aria-controls="spot">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M10.6 10.6 14 14"/></svg>
+      Search the index
+      <kbd aria-hidden="true">Ctrl K</kbd>
+    </button>
+    <p class="hero__alt">Or browse by subject:
+      <a href="#typography">Typography</a>
+      <a href="#papermaking">Papermaking</a>
+      <a href="#binding">Binding</a>
+      <a href="#engraving">Engraving</a>
+      <a href="#cartography">Cartography</a>
+      <a href="#optics">Optics</a>
+      <a href="#horology">Horology</a>
+      <a href="#metallurgy">Metallurgy</a>
+    </p>
+
+    <div class="arm" aria-hidden="true">
+      <svg viewBox="0 0 260 260">
+        <circle class="ar__ecl" cx="130" cy="130" r="104"/>
+        <g class="ar__ball">
+          <ellipse class="ar__ring" cx="130" cy="130" rx="104" ry="40"/>
+          <ellipse class="ar__ring ar__ring--b" cx="130" cy="130" rx="104" ry="72" transform="rotate(28 130 130)"/>
+          <ellipse class="ar__ring ar__ring--c" cx="130" cy="130" rx="104" ry="72" transform="rotate(-28 130 130)"/>
+        </g>
+        <circle class="ar__axis" cx="130" cy="130" r="13"/>
+        <circle class="ar__pip" cx="130" cy="26" r="5"/>
+      </svg>
+      <span>Armature of the volumes &middot; 1841, brass and silvered brass</span>
+    </div>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__win">
+        <div class="ticker__row" id="tick">
+          <span>Revised this month: Fermentation, the wire drawing gauge</span>
+          <span>New plate: Hatching on copper, after the 1789 sheet</span>
+          <span>Corrected: the escapement diagram, side view</span>
+          <span>Revised this month: Fermentation, the wire drawing gauge</span>
+          <span>New plate: Hatching on copper, after the 1789 sheet</span>
+          <span>Corrected: the escapement diagram, side view</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="entry" id="typography" aria-labelledby="typography-t">
+    <p class="entry__k">Article 01 &middot; 412 words</p>
+    <h2 id="typography-t">Typography</h2>
+    <p>The practice of arranging metal type, and later of drawing letters for other means, is a craft of fitting together parts that were each made by somebody else. A punchcutter cut one character, a founder cast it, a compositor locked it into a line, and a press put it on paper. The unit of judgement is the line, not the letter.</p>
+    <p>Two measurements govern everything. The size of the body, measured by the width of the type, and the leading, which is the distance between one line and the next. Set too tight, a page reads as a wall; set too loose, it reads as a list. The old printers settled it by eye at arm's length, and the modern ones argue about it at the same distance.</p>
+    <p class="entry__n">Cross references: <a href="#binding">Binding</a> &middot; <a href="#papermaking">Papermaking</a></p>
+  </section>
+
+  <section class="entry" id="papermaking" aria-labelledby="papermaking-t">
+    <p class="entry__k">Article 02 &middot; 386 words</p>
+    <h2 id="papermaking-t">Papermaking</h2>
+    <p>Lin rag beaten in water, lifted on a wire mould, pressed, couched and hung. The sequence has not changed in six hundred years, and the only part of it that has been replaced is the beating, which went from hours under a pestle to minutes between rollers without altering the character of the sheet.</p>
+    <p>Watermarks are the field marks of the trade: the wire of the mould left an image in the sheet that can be read under a raking light, and a skilled papermaker can date a leaf to within a decade from the pattern alone. Forgers have known this since the eighteenth century, and the marks have been forged ever since.</p>
+    <p class="entry__n">Cross references: <a href="#typography">Typography</a> &middot; <a href="#binding">Binding</a></p>
+  </section>
+
+  <section class="entry" id="binding" aria-labelledby="binding-t">
+    <p class="entry__k">Article 03 &middot; 441 words</p>
+    <h2 id="binding-t">Binding and the case</h2>
+    <p>A book is sewn, glued, pressed, rounded, backed and cased, and each of those operations can be undone by the next one if the workshop is careless. The sewing supports the gatherings; the rounding spreads them into a curve that the case then has to accept. Books that were sewn in too short a chain fail at the shoulder, and the failure is visible from the shelf as a set of hinges.</p>
+    <p>Gilding is leather laid on size and covered with gold leaf, burnished with a agate. It is the most expensive thirty seconds in the book trade and it is also the least protected: flexing the spine at the wrong place cracks the size, and the leaf lifts in flakes. Most repairs of this kind are done with a heated knife blade and a steady hand.</p>
+    <p class="entry__n">Cross references: <a href="#papermaking">Papermaking</a> &middot; <a href="#typography">Typography</a></p>
+  </section>
+
+  <section class="entry" id="engraving" aria-labelledby="engraving-t">
+    <p class="entry__k">Article 04 &middot; 398 words</p>
+    <h2 id="engraving-t">Engraving and etching</h2>
+    <p>Cutting a line into a plate with a graver is slow, confident and unforgiving. The line swells and thins according to pressure and angle, and a hesitating hand leaves a wobble that no later stage can remove. Etching reverses the relationship: the acid does the work, the artist only has to decide where the line is not.</p>
+    <p>For a fine book illustration the two were often combined, an etched ground for the tone and burin work for the line, and the difference is visible in raking light as a change in the width of the stroke. A mezzotint goes further still and works in reverse, roughing the whole plate and then burnishing the lights back toward the paper.</p>
+    <p class="entry__n">Cross references: <a href="#cartography">Cartography</a> &middot; <a href="#metallurgy">Metallurgy</a></p>
+  </section>
+
+  <section class="entry" id="cartography" aria-labelledby="cartography-t">
+    <p class="entry__k">Article 05 &middot; 405 words</p>
+    <h2 id="cartography-t">Cartography</h2>
+    <p>A map is an argument about what matters. Two surveys of the same parish, ten years apart, will disagree on the position of a hedge because one had to show the road and the other had to show the field names, and both were right. The reader who knows this reads a map more carefully than the reader who does not.</p>
+    <p>Projection is the choice of what to sacrifice. Mercator keeps the angle and ruins the area near the poles, which is why Greenland has the area of Africa. An equal area projection keeps the size and bends the shapes, which is why the flight maps in the atlas at the end of this volume look like spread wings.</p>
+    <p class="entry__n">Cross references: <a href="#engraving">Engraving</a> &middot; <a href="#optics">Optics</a></p>
+  </section>
+
+  <section class="entry" id="optics" aria-labelledby="optics-t">
+    <p class="entry__k">Article 06 &middot; 372 words</p>
+    <h2 id="optics-t">Optics and the lens grinder</h2>
+    <p>A lens is ground between two iron tools that are themselves concave and convex, and the maker has to check the curve with a test plate of known radius after every dozen strokes. The skill is not in the machine but in knowing when the figure is close, and the workshop test is to look at the reflection of a striped object and decide whether the stripes lean.</p>
+    <p>Chromatic aberration is the reason a simple lens is not a good magnifier, and the reason the compound lens was worth the extra work. Two glasses of different dispersion, a converging crown and a diverging flint, correct each other well enough for a nineteenth-century microscope and never quite well enough to remove the last coloured fringe.</p>
+    <p class="entry__n">Cross references: <a href="#horology">Horology</a> &middot; <a href="#metallurgy">Metallurgy</a></p>
+  </section>
+
+  <section class="entry" id="horology" aria-labelledby="horology-t">
+    <p class="entry__k">Article 07 &middot; 419 words</p>
+    <h2 id="horology-t">Horology and the escapement</h2>
+    <p>A clock is an argument between a spring that wants to unwind at an accelerating rate and an escapement that refuses to let it. The deadbeat escapement, invented for precision clocks in the eighteenth century, separates the release from the impulse, so the wheel does not receive a shove that changes the rate.</p>
+    <p>Accuracy is then a matter of heat. The balance expands with temperature and the timing changes with it, so a good regulator carries a compensation for it: a bimetal or a mercury jar, chosen not for elegance but for the fact that a measured curve can be corrected with a measured curve. A clock in a cold room and a clock in a warm one are two different instruments.</p>
+    <p class="entry__n">Cross references: <a href="#optics">Optics</a> &middot; <a href="#metallurgy">Metallurgy</a></p>
+  </section>
+
+  <section class="entry" id="metallurgy" aria-labelledby="metallurgy-t">
+    <p class="entry__k">Article 08 &middot; 433 words</p>
+    <h2 id="metallurgy-t">Metallurgy of the tools</h2>
+    <p>Every instrument in this index was made of steel that somebody had to make, and the recipes were guarded more closely than the drawings. Pattern welding, crucible steel, the cementation process that added carbon in a sealed box for days: the practical history of making a good tool edge is a practical history of controlling carbon in a lump of iron.</p>
+    <p>Hardness alone is not the goal. A graver wants a hard point that will not chip and a soft body that will absorb a shock, and that combination is obtained by tempering: heating a quenched piece to a chosen temperature and stopping. The colour of the oxide at that temperature is the whole of the method, from straw to blue.</p>
+    <p class="entry__n">Cross references: <a href="#engraving">Engraving</a> &middot; <a href="#optics">Optics</a></p>
+  </section>
+
+  <section class="entry entry--wide" id="reading" aria-labelledby="reading-t">
+    <p class="entry__k">The reading room &middot; 4 volumes &middot; 2,180 pages</p>
+    <h2 id="reading-t">Four volumes, one long table</h2>
+    <p>The first volume holds the articles, the second the glossaries, the third the atlas sheets and the fourth the biographical notes, in that order because that is the order in which a reader usually needs them. Volumes two and three open flat; volume one does not, and the copy on the table has been opened at the typography section so often that the spine has learned the shape.</p>
+    <p>Readers are asked not to lean on the volumes and to use the weights provided. A silk weight in the shape of a hare sits on the desk for the express purpose of being put on a stubborn page, and a pencil is chained to the table so that a reader who forgets it has to come back and find it.</p>
+    <dl class="entry__meta">
+      <div><dt>Volumes</dt><dd>Four, folio</dd></div>
+      <div><dt>Entries</dt><dd>25 in this index</dd></div>
+      <div><dt>Reading</dt><dd>Silent, by request</dd></div>
+      <div><dt>Pencils</dt><dd>Chained, two to a table</dd></div>
+    </dl>
+  </section>
+
+  <section class="entry" id="colophon" aria-labelledby="colophon-t">
+    <p class="entry__k">Colophon</p>
+    <h2 id="colophon-t">How the ninth edition was made</h2>
+    <p>The ninth edition was set in a transitional serif at 10 point on a laid stock of 92 grams, printed in four impressions, and bound in quarter cloth over pressed board with a paper label. The plates were reduced from the fourth edition plates and re-engraved where the original had been damaged by the 1964 flood.</p>
+    <p>Every entry in this index was checked against a physical object by somebody who has held it, which is a slow way to make a reference work and the only one that has ever produced a useful correction. The nine corrections in this edition are listed in the errata slip in the pocket of volume one.</p>
+    <p class="entry__n">Return to the <a href="#library">library</a> or to the <a href="#reading">reading room</a>.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <nav aria-label="Footer">
+    <a href="#library">Library</a>
+    <a href="#typography">Typography</a>
+    <a href="#papermaking">Papermaking</a>
+    <a href="#binding">Binding</a>
+    <a href="#engraving">Engraving</a>
+    <a href="#cartography">Cartography</a>
+    <a href="#optics">Optics</a>
+    <a href="#horology">Horology</a>
+    <a href="#metallurgy">Metallurgy</a>
+    <a href="#reading">Reading room</a>
+    <a href="#colophon">Colophon</a>
+  </nav>
+  <p>The Printed Index &middot; reference desk on the lower landing &middot; the search field answers to Ctrl K, or the slash key</p>
+</footer>
+</body>
+</html>

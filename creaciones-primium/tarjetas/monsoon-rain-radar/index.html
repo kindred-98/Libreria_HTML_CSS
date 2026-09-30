@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Monsoon Rain Radar</title>
+<meta name="description" content="A monsoon radar console with a rotating sweep beam, rain cells falling as drops, an exposure control that reshapes the contrast of the whole feed, a rainfall scale legend, cell tracking rows and a warning banner that slides in from the side.">
+<meta name="description-es" content="Consola de radar de monzón con haz giratorio, celdas de lluvia que caen, control de exposición que rehace el contraste, escala de precipitación, filas de seguimiento de celdas y aviso que entra deslizando.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <section class="radar" id="radar">
+    <span class="radar__bloom" aria-hidden="true"></span>
+    <span class="radar__scanlines" aria-hidden="true"></span>
+
+    <header class="radar__bar">
+      <p class="radar__brand"><span class="radar__mark" aria-hidden="true"></span>Monsoon Watch</p>
+      <p class="radar__site"><i aria-hidden="true"></i>Station KHI-04</p>
+    </header>
+
+    <div class="feed" id="feed">
+      <span class="feed__grid" aria-hidden="true"></span>
+      <span class="feed__range" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="feed__cells" id="cells" aria-hidden="true"></span>
+      <span class="feed__drops" id="drops" aria-hidden="true"></span>
+      <span class="feed__sweep" aria-hidden="true"></span>
+      <span class="feed__crosshair" aria-hidden="true"></span>
+      <p class="feed__corner feed__corner--tl" aria-hidden="true">AZ 045</p>
+      <p class="feed__corner feed__corner--tr" aria-hidden="true">RANGE 240 KM</p>
+      <p class="feed__corner feed__corner--bl" aria-hidden="true">SWEEP 14 MIN</p>
+      <p class="feed__stamp" aria-hidden="true">REC</p>
+    </div>
+
+    <div class="warn" id="warn">
+      <span class="warn__glyph" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.5l9 16H3z"></path><path d="M12 9.5v4.6"></path><path d="M12 17v.2"></path></svg>
+      </span>
+      <span class="warn__text"><b>Heavy rain cell</b> tracking east at 22 km/h, reaches the valley by 15:20.</span>
+      <button class="warn__btn" type="button" id="warnBtn" aria-pressed="false">Pin the cell</button>
+    </div>
+
+    <section class="expo" aria-label="Exposure controls">
+      <div class="expo__row">
+        <label class="expo__label" for="expoRange">Exposure</label>
+        <input class="expo__range" type="range" id="expoRange" min="0" max="100" value="52" step="1" aria-describedby="expoValue">
+        <output class="expo__value" id="expoValue" for="expoRange">+0.6 EV</output>
+      </div>
+      <div class="expo__modes" role="group" aria-label="Feed preset">
+        <button class="mode is-on" type="button" data-mode="rain" aria-pressed="true">Rain</button>
+        <button class="mode" type="button" data-mode="wind" aria-pressed="false">Wind</button>
+        <button class="mode" type="button" data-mode="temp" aria-pressed="false">Temp</button>
+      </div>
+    </section>
+
+    <section class="scale" aria-label="Rainfall scale">
+      <p class="scale__title">Rainfall mm/h</p>
+      <ul class="scale__list">
+        <li class="scale__step"><span class="scale__chip scale__chip--drizzle" aria-hidden="true"></span><span class="scale__n">0.5</span></li>
+        <li class="scale__step"><span class="scale__chip scale__chip--light" aria-hidden="true"></span><span class="scale__n">2</span></li>
+        <li class="scale__step"><span class="scale__chip scale__chip--mod" aria-hidden="true"></span><span class="scale__n">6</span></li>
+        <li class="scale__step"><span class="scale__chip scale__chip--heavy" aria-hidden="true"></span><span class="scale__n">14</span></li>
+        <li class="scale__step"><span class="scale__chip scale__chip--violent" aria-hidden="true"></span><span class="scale__n">40</span></li>
+      </ul>
+    </section>
+
+    <section class="tracks" aria-label="Tracked cells">
+      <div class="track">
+        <p class="track__id">C-14</p>
+        <p class="track__where">Sailana ridge</p>
+        <span class="track__bar" aria-hidden="true"><i style="--w:.82"></i></span>
+        <p class="track__val"><span data-count="38">38</span> mm/h</p>
+      </div>
+      <div class="track">
+        <p class="track__id">C-09</p>
+        <p class="track__where">Old ferry road</p>
+        <span class="track__bar" aria-hidden="true"><i class="is-warm" style="--w:.54"></i></span>
+        <p class="track__val"><span data-count="21">21</span> mm/h</p>
+      </div>
+      <div class="track">
+        <p class="track__id">C-21</p>
+        <p class="track__where">Kite basin</p>
+        <span class="track__bar" aria-hidden="true"><i class="is-dry" style="--w:.28"></i></span>
+        <p class="track__val"><span data-count="9">9</span> mm/h</p>
+      </div>
+    </section>
+
+    <footer class="radar__foot">
+      <p class="foot__mono">FEED 10 MIN AGO &middot; 480x480 KM</p>
+      <p class="foot__stat">Basin total <b><span data-count="184">184</span> mm</b></p>
+    </footer>
+  </section>
+</main>
+</body>
+</html>

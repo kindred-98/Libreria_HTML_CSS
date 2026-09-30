@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Startup Burn Rate Panel</title>
+<meta name="description" content="A startup burn rate panel with sparklines that draw themselves, stepped cost deltas, growing spend bars, a runway gauge and a cash curve micro chart.">
+<meta name="description-es" content="Un panel de quemamiento de caja con sparklines que se dibujan, deltas escalonados, barras de gasto que crecen, un indicador de margen y un micrográfico de tesorería.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <article class="burn">
+    <span class="burn__glow" aria-hidden="true"></span>
+    <span class="burn__sheen" aria-hidden="true"></span>
+
+    <header class="burn__bar">
+      <p class="burn__brand"><span class="burn__mark" aria-hidden="true"></span>Ledgerline Systems</p>
+      <div class="burn__seg" role="group" aria-label="Reporting window">
+        <button class="burn__seg-btn is-on" type="button" data-range="30" aria-pressed="true">30d</button>
+        <button class="burn__seg-btn" type="button" data-range="90" aria-pressed="false">90d</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero__figure">
+        <p class="hero__label">Net burn / month</p>
+        <p class="hero__value" data-count="182400" data-format="money" id="burnValue">$182,400</p>
+        <p class="chip chip--good" id="burnChip"><i aria-hidden="true"></i><span>9.4% under plan</span></p>
+      </div>
+      <figure class="spark">
+        <svg class="spark__svg" viewBox="0 0 320 108" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="brnArea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffb020" stop-opacity=".38"></stop>
+              <stop offset="1" stop-color="#ffb020" stop-opacity="0"></stop>
+            </linearGradient>
+            <linearGradient id="brnLine" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#4fe0a4"></stop>
+              <stop offset="1" stop-color="#ffc247"></stop>
+            </linearGradient>
+          </defs>
+          <g class="spark__grid">
+            <path d="M0 20h320M0 54h320M0 88h320"></path>
+          </g>
+          <path class="spark__area" id="brnAreaShape" d="M0 34L20 30 40 42 60 38 80 50 100 46 120 58 140 54 160 66 180 62 200 72 220 68 240 78 260 74 280 84 300 80 320 88L320 108 0 108Z"></path>
+          <path class="spark__line" id="brnLineShape" d="M0 34L20 30 40 42 60 38 80 50 100 46 120 58 140 54 160 66 180 62 200 72 220 68 240 78 260 74 280 84 300 80 320 88"></path>
+          <circle class="spark__head" id="brnHead" cx="320" cy="88" r="4.5"></circle>
+        </svg>
+        <figcaption class="spark__cap"><span id="brnCap">Daily net burn · last 30 days</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="tiles" aria-label="Headline metrics">
+      <div class="tile">
+        <p class="tile__label">Runway</p>
+        <p class="tile__value"><span data-count="14.2" data-format="one">14.2</span><small>mo</small></p>
+        <span class="tile__track" aria-hidden="true"><i style="--w:.58"></i></span>
+        <p class="tile__delta tile__delta--good">+1.8 mo vs Q1</p>
+      </div>
+      <div class="tile">
+        <p class="tile__label">Net revenue</p>
+        <p class="tile__value"><span data-count="96.4" data-format="one">96.4</span><small>k</small></p>
+        <span class="tile__track" aria-hidden="true"><i class="is-mint" style="--w:.81"></i></span>
+        <p class="tile__delta tile__delta--good">+12.6% MoM</p>
+      </div>
+      <div class="tile">
+        <p class="tile__label">Gross margin</p>
+        <p class="tile__value"><span data-count="78" data-format="pct">78</span><small>%</small></p>
+        <span class="tile__track" aria-hidden="true"><i class="is-rose" style="--w:.78"></i></span>
+        <p class="tile__delta tile__delta--bad">-2.1 pts infra</p>
+      </div>
+    </section>
+
+    <section class="split">
+      <div class="costs">
+        <p class="block__title">Spend by function</p>
+        <ul class="costs__list">
+          <li class="cost" style="--w:.86">
+            <span class="cost__name">Engineering</span>
+            <span class="cost__val"><span data-count="96" data-format="k">96k</span></span>
+            <span class="cost__track" aria-hidden="true"><i></i></span>
+          </li>
+          <li class="cost" style="--w:.62">
+            <span class="cost__name">Cloud &amp; infra</span>
+            <span class="cost__val"><span data-count="68" data-format="k">68k</span></span>
+            <span class="cost__track" aria-hidden="true"><i class="is-rose"></i></span>
+          </li>
+          <li class="cost" style="--w:.48">
+            <span class="cost__name">Go to market</span>
+            <span class="cost__val"><span data-count="52" data-format="k">52k</span></span>
+            <span class="cost__track" aria-hidden="true"><i class="is-mint"></i></span>
+          </li>
+          <li class="cost" style="--w:.27">
+            <span class="cost__name">Ops &amp; tools</span>
+            <span class="cost__val"><span data-count="29" data-format="k">29k</span></span>
+            <span class="cost__track" aria-hidden="true"><i class="is-cool"></i></span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="curve">
+        <p class="block__title">Cash curve</p>
+        <div class="curve__plot" aria-hidden="true">
+          <i style="--h:.62;--d:.00s"></i><i style="--h:.55;--d:.02s"></i><i style="--h:.48;--d:.04s"></i>
+          <i style="--h:.58;--d:.06s"></i><i style="--h:.42;--d:.08s"></i><i style="--h:.36;--d:.10s"></i>
+          <i style="--h:.44;--d:.12s"></i><i style="--h:.30;--d:.14s"></i><i style="--h:.24;--d:.16s"></i>
+          <i style="--h:.32;--d:.18s"></i><i style="--h:.19;--d:.20s"></i><i style="--h:.14;--d:.22s"></i>
+        </div>
+        <p class="curve__cap">Closing cash by week · W0 to W11</p>
+      </div>
+    </section>
+
+    <footer class="burn__foot">
+      <p class="burn__note">Cash at close <b>$1.94M</b> · drawn $640k · pack 14 Mar</p>
+      <button class="burn__export" type="button" id="brnExport">
+        <span class="burn__export-glyph" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11"></path><path d="M7.5 10.5L12 15l4.5-4.5"></path><path d="M5 19.5h14"></path></svg>
+        </span>
+        Export board pack
+      </button>
+    </footer>
+  </article>
+</main>
+</body>
+</html>

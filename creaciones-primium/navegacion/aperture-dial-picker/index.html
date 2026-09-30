@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aperture Dial Picker</title>
+<meta name="description" content="A camera aperture picker whose six iris blades open and close between stops while an engraved index point swings from f1.4 to f8 with a spring easing.">
+<meta name="description-es" content="Selector de diafragma de cámara donde las seis hojas se abren y se cierran entre posiciones mientras un punto de ajuste grabado va de f1.4 a f8 con un muelle que rebota.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<header class="mast">
+  <div class="mast__rule" aria-hidden="true"><i class="mast__sweep"></i></div>
+  <p class="mast__kicker">Corvus Optics · Iris selector</p>
+  <h1>Six stops, <em>one iris</em></h1>
+  <p class="mast__lede">The dial is the lens barrel seen head on. Step through the engraved scale and nine curved blades ride outwards to open the iris, while the red index point swings across the ring and settles with a small overshoot.</p>
+  <nav class="jump" aria-label="Page sections">
+    <a href="#sec-1">f/1.4</a>
+    <a href="#sec-4">f/4</a>
+    <a href="#sec-6">f/8</a>
+    <a href="#care">Care</a>
+  </nav>
+</header>
+
+<section class="stage">
+  <div class="lens">
+    <div class="lens__head">
+      <p class="lens__cap">Iris unit · Corvus 50 mm 1:1.4</p>
+      <p class="lens__state"><i class="lens__led" aria-hidden="true"></i>Stopped down</p>
+    </div>
+
+    <div class="dial" id="dial" data-stop="0">
+      <svg class="dial__svg" viewBox="0 0 400 400" aria-hidden="true">
+        <defs>
+          <linearGradient id="gBlade" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#454b56"></stop>
+            <stop offset=".55" stop-color="#22252c"></stop>
+            <stop offset="1" stop-color="#101216"></stop>
+          </linearGradient>
+          <radialGradient id="gVoid" cx="50%" cy="42%" r="60%">
+            <stop offset="0" stop-color="#1b2028"></stop>
+            <stop offset="1" stop-color="#05060a"></stop>
+          </radialGradient>
+          <clipPath id="clipIris"><circle cx="200" cy="200" r="184"></circle></clipPath>
+        </defs>
+
+        <circle cx="200" cy="200" r="184" fill="url(#gVoid)"></circle>
+        <g class="blades" clip-path="url(#clipIris)">
+          <path class="blade" style="--i:0" d="M200 200 110 44.1A180 180 0 0 1 290 44.1Z"></path>
+          <path class="blade" style="--i:1" d="M200 200 110 44.1A180 180 0 0 1 290 44.1Z"></path>
+          <path class="blade" style="--i:2" d="M200 200 110 44.1A180 180 0 0 1 290 44.1Z"></path>
+          <path class="blade" style="--i:3" d="M200 200 110 44.1A180 180 0 0 1 290 44.1Z"></path>
+          <path class="blade" style="--i:4" d="M200 200 110 44.1A180 180 0 0 1 290 44.1Z"></path>
+          <path class="blade" style="--i:5" d="M200 200 110 44.1A180 180 0 0 1 290 44.1Z"></path>
+        </g>
+
+        <circle class="dial__rim" cx="200" cy="200" r="196"></circle>
+        <circle class="dial__dash" cx="200" cy="200" r="172"></circle>
+
+        <g class="dial__ticks">
+          <path d="M200 12V34" transform="rotate(-150 200 200)"></path>
+          <path d="M200 12V34" transform="rotate(-90 200 200)"></path>
+          <path d="M200 12V34" transform="rotate(-30 200 200)"></path>
+          <path d="M200 12V34" transform="rotate(30 200 200)"></path>
+          <path d="M200 12V34" transform="rotate(90 200 200)"></path>
+          <path d="M200 12V34" transform="rotate(150 200 200)"></path>
+          <path class="minor" d="M200 16V28" transform="rotate(-120 200 200)"></path>
+          <path class="minor" d="M200 16V28" transform="rotate(-60 200 200)"></path>
+          <path class="minor" d="M200 16V28" transform="rotate(0 200 200)"></path>
+          <path class="minor" d="M200 16V28" transform="rotate(60 200 200)"></path>
+          <path class="minor" d="M200 16V28" transform="rotate(120 200 200)"></path>
+          <path class="minor" d="M200 16V28" transform="rotate(180 200 200)"></path>
+        </g>
+
+        <g class="dial__needle" id="needle">
+          <path d="M200 196 193 104 200 76 207 104Z"></path>
+          <circle cx="200" cy="66" r="10"></circle>
+        </g>
+      </svg>
+
+      <span class="dial__glint" aria-hidden="true"></span>
+    </div>
+
+    <div class="plate">
+      <div class="plate__main">
+        <p class="plate__lab">Selected stop</p>
+        <p class="plate__f" id="fVal">f/1.4</p>
+      </div>
+      <dl class="plate__meta">
+        <div><dt>Opening</dt><dd id="mOpen">35.7 mm</dd></div>
+        <div><dt>Depth at 2 m</dt><dd id="mDof">0.09 m</dd></div>
+        <div><dt>Shutter at iso 400</dt><dd id="mShut">1/2000 s</dd></div>
+      </dl>
+    </div>
+
+    <nav class="stops" aria-label="Aperture stops">
+      <span class="stops__rail" aria-hidden="true"><i class="stops__slide" id="stopsSlide"></i></span>
+      <a class="stop" href="#sec-1" data-stop="0" aria-current="true"><b>f/1.4</b><i>01</i></a>
+      <a class="stop" href="#sec-2" data-stop="1"><b>f/2</b><i>02</i></a>
+      <a class="stop" href="#sec-3" data-stop="2"><b>f/2.8</b><i>03</i></a>
+      <a class="stop" href="#sec-4" data-stop="3"><b>f/4</b><i>04</i></a>
+      <a class="stop" href="#sec-5" data-stop="4"><b>f/5.6</b><i>05</i></a>
+      <a class="stop" href="#sec-6" data-stop="5"><b>f/8</b><i>06</i></a>
+    </nav>
+
+    <p class="lens__hint">Arrow keys step the scale · Enter or click opens the note below</p>
+  </div>
+</section>
+
+<main class="grid">
+  <section class="entry is-here" id="sec-1">
+    <p class="entry__idx">Stop 01 · Wide open</p>
+    <h2>f/1.4</h2>
+    <p>At this opening the depth of field at two metres is barely nine centimetres, so the focus has to land on the near eye and everything behind it dissolves into soft circles of light.</p>
+    <p>The iris is at its widest and the blades form a nearly round polygon, which is what gives the out-of-focus highlights their round shape instead of a polygonal one.</p>
+  </section>
+
+  <section class="entry" id="sec-2">
+    <p class="entry__idx">Stop 02 · Portrait</p>
+    <h2>f/2</h2>
+    <p>Half a stop down takes the edge off the softness wide open and gains a few centimetres of depth, enough to keep both eyes sharp in a three-quarter portrait.</p>
+    <p>Most fast primes are at their best here: contrast climbs, the corners stop smearing, and the background is still thoroughly melted.</p>
+  </section>
+
+  <section class="entry" id="sec-3">
+    <p class="entry__idx">Stop 03 · Reportage</p>
+    <h2>f/2.8</h2>
+    <p>The working opening for interiors and evening streets, where the shutter has to stay fast enough to freeze a person walking and the depth has to forgive a focus error of a few centimetres.</p>
+    <p>Autofocus points spread wider here because the lens no longer hides a soft frame at the edges.</p>
+  </section>
+
+  <section class="entry" id="sec-4">
+    <p class="entry__idx">Stop 04 · Street</p>
+    <h2>f/4</h2>
+    <p>Zone focusing becomes practical: set two metres and everything from one and a half to three is acceptably sharp, so the camera can be raised and fired without waiting.</p>
+    <p>Shadows stay open enough for daylight, and the hexagon formed by the blades begins to show in the specular highlights.</p>
+  </section>
+
+  <section class="entry" id="sec-5">
+    <p class="entry__idx">Stop 05 · Groups</p>
+    <h2>f/5.6</h2>
+    <p>Two rows of people, a table, a room: the depth that was measured in centimetres is now measured in metres and nobody at the back of the group falls out of focus.</p>
+    <p>This is also where most zoom lenses reach their sharpest corner to corner, before diffraction starts to bite.</p>
+  </section>
+
+  <section class="entry" id="sec-6">
+    <p class="entry__idx">Stop 06 · Landscape</p>
+    <h2>f/8</h2>
+    <p>Hyperfocal distance at this opening covers from a few metres to infinity on a fifty millimetre lens, which is why the foreground stone and the far ridge can both hold detail.</p>
+    <p>Any smaller and the aperture becomes a pinhole: the image softens through diffraction long before the depth of field gains anything useful.</p>
+  </section>
+
+  <section class="entry entry--wide" id="care">
+    <p class="entry__idx">Appendix</p>
+    <h2>Care of the front element</h2>
+    <p>Blow the dust off first, then a single pass with a lens cloth dampened in a drop of fluid, working from the centre outwards in a spiral. Rubbing a dry grain of grit across the coating is what scratches a lens, not the coating itself.</p>
+    <p>Leave the iris stopped down only for storage, never for months at a time, and keep the lens capped when the body is open so the sensor does not collect what the front element shed.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Corvus Optics · Iris selector</span>
+  <span>Stop 01 of 06 · Index point on f/1.4</span>
+</footer>
+</body>
+</html>

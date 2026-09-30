@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radar Sweep Picker</title>
+<meta name="description" content="A traffic control radar used as a navigation dial: the sweep runs continuously around the scope, each track is a real destination, and choosing one swings the needle to that bearing and opens the sector underneath it.">
+<meta name="description-es" content="Un radar de control de tráfico usado como dial de navegación: el barrido gira continuamente sobre la pantalla, cada rastro es un destino real y al elegirlo la aguja se orienta a ese rumbo y abre el sector que tiene debajo.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="room">
+
+  <i class="screen" aria-hidden="true"></i>
+
+  <header class="head">
+    <div class="head__id">
+      <p class="head__k">Approach radar · console 12</p>
+      <h1>Sector control</h1>
+      <p class="head__s">Range 24 miles · QNH 1018 · surface wind 240 at 8 knots, gusting 14.</p>
+    </div>
+    <div class="head__lamps" aria-hidden="true">
+      <i class="lamp lamp--ok"></i><i class="lamp lamp--ok"></i><i class="lamp lamp--warn"></i>
+    </div>
+  </header>
+
+  <div class="console">
+
+    <div class="scope" id="scope">
+      <i class="scope__wash" aria-hidden="true"></i>
+      <i class="scope__rings" aria-hidden="true"></i>
+      <i class="scope__sweep" aria-hidden="true"><i class="scope__beam"></i></i>
+      <i class="scope__wedge" id="wedge" aria-hidden="true"></i>
+      <i class="scope__needle" id="needle" aria-hidden="true"></i>
+      <i class="scope__centre" aria-hidden="true"></i>
+      <i class="scope__bearing" aria-hidden="true">
+        <b style="--b:0deg">000</b><b style="--b:90deg">090</b><b style="--b:180deg">180</b><b style="--b:270deg">270</b>
+      </i>
+
+      <div class="tracks" role="group" aria-label="Tracks on the radar">
+        <button class="blip" type="button" style="--b:0deg" aria-expanded="false" aria-controls="sector"
+          data-name="Runway 27L" data-rwy="27L" data-hdg="264" data-dist="11.4" data-bag="KLM 41VA" aria-current="true">
+          <i class="blip__dot" aria-hidden="true"></i>
+          <span class="blip__tag">R27L</span>
+        </button>
+        <button class="blip" type="button" style="--b:52deg" aria-expanded="false" aria-controls="sector"
+          data-name="Taxiway Alpha" data-rwy="AL" data-hdg="082" data-dist="3.2" data-bag="Gatwick 6">
+          <i class="blip__dot" aria-hidden="true"></i>
+          <span class="blip__tag">A</span>
+        </button>
+        <button class="blip" type="button" style="--b:118deg" aria-expanded="false" aria-controls="sector"
+          data-name="Runway 14R" data-rwy="14R" data-hdg="139" data-dist="16.8" data-bag="BA 77W">
+          <i class="blip__dot" aria-hidden="true"></i>
+          <span class="blip__tag">R14R</span>
+        </button>
+        <button class="blip" type="button" style="--b:186deg" aria-expanded="false" aria-controls="sector"
+          data-name="Apron East" data-rwy="APN E" data-hdg="270" data-dist="1.1" data-bag="Four stands">
+          <i class="blip__dot" aria-hidden="true"></i>
+          <span class="blip__tag">APN E</span>
+        </button>
+        <button class="blip" type="button" style="--b:246deg" aria-expanded="false" aria-controls="sector"
+          data-name="Deicing pad" data-rwy="D1" data-hdg="205" data-dist="6.7" data-bag="Two bays">
+          <i class="blip__dot" aria-hidden="true"></i>
+          <span class="blip__tag">D1</span>
+        </button>
+        <button class="blip" type="button" style="--b:312deg" aria-expanded="false" aria-controls="sector"
+          data-name="Radar feed north" data-rwy="FL 9" data-hdg="354" data-dist="21.5" data-bag="Two aircraft">
+          <i class="blip__dot" aria-hidden="true"></i>
+          <span class="blip__tag">FL 9</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="readout">
+      <p class="readout__k">Selected track</p>
+      <h2 class="readout__name" id="selName">Runway 27L</h2>
+
+      <div class="sector" id="sector" role="region" aria-live="polite" aria-label="Selected sector">
+        <div class="sector__head">
+          <span class="sector__tag" id="selBearing">Bearing 000</span>
+          <span class="sector__state" id="selState">Line up and wait</span>
+        </div>
+        <dl class="sector__grid">
+          <div><dt>Designator</dt><dd id="selRwy">27L</dd></div>
+          <div><dt>Heading</dt><dd id="selHdg">264</dd></div>
+          <div><dt>Range</dt><dd id="selDist">11.4 mi</dd></div>
+          <div><dt>Traffic</dt><dd id="selBag">KLM 41VA</dd></div>
+        </dl>
+        <a class="sector__go" id="selGo" href="#sec-rwy27">Open the approach note</a>
+      </div>
+
+      <div class="board" aria-hidden="true">
+        <p class="board__k">Track list</p>
+        <ol class="board__run" id="boardRun">
+          <li>0642 BA 77W 380 140</li><li>0648 DL 2K 210 090</li><li>0651 R09 hold short</li>
+          <li>0655 KLM 41VA 240 100</li><li>0702 apron east clear</li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+
+  <nav class="board-nav" aria-label="Approach board">
+    <p class="board-nav__k">Approach board</p>
+    <ol class="board-nav__list">
+      <li><a href="#sec-rwy27">Runway 27L<span>In service · ILS</span></a></li>
+      <li><a href="#sec-taxy">Taxiway Alpha<span>Open · wet surface</span></a></li>
+      <li><a href="#sec-rwy14">Runway 14R<span>Crosswind 12 kt</span></a></li>
+      <li><a href="#sec-apron">Apron East<span>Four stands free</span></a></li>
+      <li><a href="#sec-deice">Deicing pad<span>Bay 2 in use</span></a></li>
+      <li><a href="#sec-feed">Radar feed north<span>Coverage to 24 miles</span></a></li>
+    </ol>
+  </nav>
+
+  <main class="log">
+
+    <section class="note" id="sec-rwy27">
+      <p class="note__no">Bearing 000</p>
+      <h2>Runway 27L</h2>
+      <p>The westerly runway and the one the approach plate is built around. Localiser from 20 miles, glideslope from 10, and a decision height of 200 feet above the runway on the standard approach, which is low enough to be uncomfortable in a westerly crosswind and high enough to be flown by everyone.</p>
+      <p>With a surface wind at 240 and gusts to 14, the crosswind component on 27L is 12 knots, just inside the limit for the type. Traffic is separated by a half minute and a mile, which is why the board below the scope is the busier of the two displays.</p>
+    </section>
+
+    <section class="note" id="sec-taxy">
+      <p class="note__no">Bearing 052</p>
+      <h2>Taxiway Alpha</h2>
+      <p>Alpha is the only taxiway that connects the northern apron to the runway 27 thresholds, and it is a single lane with passing bays every 400 metres. Aircraft larger than a regional jet hold on the bay markers and are passed by everything else.</p>
+      <p>The surface is wet this morning, so the taxi speed limit drops to 15 knots along the full length, and the runway entry lights at hold short C are flashing amber. A controller who forgets the wet figure is the reason a morning takes an extra hour.</p>
+    </section>
+
+    <section class="note" id="sec-rwy14">
+      <p class="note__no">Bearing 118</p>
+      <h2>Runway 14R</h2>
+      <p>The southeasterly runway is used when the wind swings, and it is the busy one for departures in the morning because it points away from the arrival stream. It has no instrument approach, so an arrival on it needs a visual circuit or a one in a thousand wind.</p>
+      <p>Its crosswind limit is the same as the opposite direction, which sounds obvious until you remember that a runway is not a single heading. The operational number is always the component along the runway, whatever the tower is calling.</p>
+    </section>
+
+    <section class="note" id="sec-apron">
+      <p class="note__no">Bearing 186</p>
+      <h2>Apron East</h2>
+      <p>Four stands, two of which take wide bodies, and a pushback lane that is only wide enough for one aircraft at a time. Stand 3 is on power and stand 4 is on ground power only, which is a sentence that matters to a crew in January and to nobody else in July.</p>
+      <p>Apron East fills first in the morning because it is on the terminal side of the field. Everything that has to be back in the air within the hour is parked here, and everything that can wait is pushed out to the western stands.</p>
+    </section>
+
+    <section class="note" id="sec-deice">
+      <p class="note__no">Bearing 246</p>
+      <h2>Deicing pad</h2>
+      <p>Two bays, a holding point that is comfortably clear of the taxiway, and a holdover time board that is the most consulted document in the building between November and March. Type one fluid for an all clear, type three when there is going to be a delay.</p>
+      <p>The bay is a shared resource and the sequencing is nothing like fair: departures leaving with a frozen wing are separated from arrivals that have already taken a slot, because a departure that is delayed is still leaving the building a gate earlier.</p>
+    </section>
+
+    <section class="note" id="sec-feed">
+      <p class="note__no">Bearing 312</p>
+      <h2>Radar feed north</h2>
+      <p>The northern feed is what gives this console its 24 mile range, and it is a single site on a ridge with a view that stops abruptly about 18 miles out where the ground rises. Beyond that line the picture is whatever the neighbouring sector is willing to pass on.</p>
+      <p>Two aircraft are usually visible on it in marginal conditions, both of them private, both of them asking for a field that is closed. Coverage is not a circle in the way a training slide suggests; it is whatever the terrain and the antenna allow.</p>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <p>Approach radar · console 12 · readings are illustrative · arrow keys walk the tracks, Enter opens the sector, Escape closes it.</p>
+    <a href="#sec-rwy27">First approach note</a>
+  </footer>
+
+  <div class="tape" aria-hidden="true">
+    <div class="tape__run">
+      <span>0642 BA 77W 380 140</span><span>0645 EZY 8 260 070</span><span>0648 DL 2K 210 090</span><span>0651 R09 hold short</span><span>0654 TRA 4Z 180 050</span><span>0655 KLM 41VA 240 100</span>
+      <span>0642 BA 77W 380 140</span><span>0645 EZY 8 260 070</span><span>0648 DL 2K 210 090</span><span>0651 R09 hold short</span><span>0654 TRA 4Z 180 050</span><span>0655 KLM 41VA 240 100</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

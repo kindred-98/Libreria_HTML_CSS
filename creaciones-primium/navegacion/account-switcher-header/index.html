@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account Switcher Header - Meridian and Cole</title>
+<meta name="description" content="A sticky agency masthead that folds down as the desk scrolls and carries a full account switcher: initial avatars, roles and live status lamps for every client, with a sliding product navigation and a real mobile drawer.">
+<meta name="description-es" content="Cabecera fija de agencia que se encoge al bajar el escritorio y lleva un selector de cuentas completo: avatares de iniciales, rol y lámpara de estado en directo de cada cliente, con la navegación de producto deslizante y un panel móvil de verdad.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the desk</a>
+
+<header class="hdr" id="hdr">
+  <div class="hdr__glow" aria-hidden="true"></div>
+
+  <div class="hdr__row">
+    <a class="mark" href="#main">
+      <span class="mark__mono" aria-hidden="true">M<i>&amp;</i>C</span>
+      <span class="mark__full">
+        <span class="mark__name"><b>Meridian</b><em>&amp;</em><b>Cole</b></span>
+        <span class="mark__tag">Client services since 1998</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Product">
+      <a class="nav__a" href="#main"><span>Desk</span></a>
+      <a class="nav__a" href="#accounts"><span>Accounts</span></a>
+      <a class="nav__a" href="#pipeline"><span>Pipeline</span></a>
+      <a class="nav__a" href="#billing"><span>Billing</span></a>
+      <a class="nav__a" href="#team"><span>Team</span></a>
+      <i class="nav__ink" id="navInk" aria-hidden="true"></i>
+    </nav>
+
+    <div class="acct">
+      <button class="acct__btn" id="acctBtn" type="button" aria-expanded="false" aria-controls="acctPanel" aria-haspopup="true">
+        <span class="av av--sm" id="acctAv" data-key="HA" aria-hidden="true">HA</span>
+        <span class="acct__txt">
+          <b id="acctName">Harrow Athletic</b>
+          <i id="acctRole">Account Director</i>
+        </span>
+        <span class="lamp" id="acctLamp" aria-hidden="true"></span>
+        <svg class="acct__chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.6 6 6.4 11 1.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <div class="acct__panel" id="acctPanel" hidden>
+        <p class="acct__legend" id="acctLeg">Switch account</p>
+        <div class="acct__list" id="acctList" role="menu" aria-labelledby="acctLeg">
+          <button class="acc" type="button" role="menuitemradio" aria-checked="true" data-name="Harrow Athletic" data-role="Account Director" data-key="HA" data-state="live">
+            <span class="av" aria-hidden="true">HA</span>
+            <span class="acc__t"><b>Harrow Athletic</b><i>Account Director · 4 campaigns</i></span>
+            <span class="dot dot--live" aria-hidden="true"></span>
+            <span class="acc__tick" aria-hidden="true"></span>
+          </button>
+          <button class="acc" type="button" role="menuitemradio" aria-checked="false" data-name="Verity Foods Group" data-role="Managing Partner" data-key="VF" data-state="review">
+            <span class="av" aria-hidden="true">VF</span>
+            <span class="acc__t"><b>Verity Foods Group</b><i>Managing Partner · 11 rollouts</i></span>
+            <span class="dot dot--review" aria-hidden="true"></span>
+            <span class="acc__tick" aria-hidden="true"></span>
+          </button>
+          <button class="acc" type="button" role="menuitemradio" aria-checked="false" data-name="Northgate Clinic" data-role="Client Partner" data-key="NC" data-state="live">
+            <span class="av" aria-hidden="true">NC</span>
+            <span class="acc__t"><b>Northgate Clinic</b><i>Client Partner · 2 live sites</i></span>
+            <span class="dot dot--live" aria-hidden="true"></span>
+            <span class="acc__tick" aria-hidden="true"></span>
+          </button>
+          <button class="acc" type="button" role="menuitemradio" aria-checked="false" data-name="Pell and Roe" data-role="Account Director" data-key="PR" data-state="paused">
+            <span class="av" aria-hidden="true">PR</span>
+            <span class="acc__t"><b>Pell and Roe</b><i>Account Director · on hold</i></span>
+            <span class="dot dot--paused" aria-hidden="true"></span>
+            <span class="acc__tick" aria-hidden="true"></span>
+          </button>
+          <button class="acc" type="button" role="menuitemradio" aria-checked="false" data-name="Solstice Rail" data-role="New Business" data-key="SR" data-state="draft">
+            <span class="av" aria-hidden="true">SR</span>
+            <span class="acc__t"><b>Solstice Rail</b><i>New Business · proposal open</i></span>
+            <span class="dot dot--draft" aria-hidden="true"></span>
+            <span class="acc__tick" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="acct__foot">
+          <button class="ghost" type="button" id="addBtn">Add account</button>
+          <button class="ghost ghost--out" type="button" id="signBtn">Sign out</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Open the menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="hdr__rule" aria-hidden="true"><i class="hdr__sheen" id="sheen"></i></div>
+</header>
+
+<div class="drawer" id="drawer" hidden>
+  <nav aria-label="Product, small screens">
+    <a class="dr__a" href="#main"><i>01</i>Desk</a>
+    <a class="dr__a" href="#accounts"><i>02</i>Accounts</a>
+    <a class="dr__a" href="#pipeline"><i>03</i>Pipeline</a>
+    <a class="dr__a" href="#billing"><i>04</i>Billing</a>
+    <a class="dr__a" href="#team"><i>05</i>Team</a>
+  </nav>
+  <p class="dr__legend">Accounts in this workspace</p>
+  <div class="dr__acc">
+    <button class="dr__row" type="button" data-name="Harrow Athletic" data-role="Account Director" data-key="HA" data-state="live">
+      <span class="av" aria-hidden="true">HA</span><span class="acc__t"><b>Harrow Athletic</b><i>Account Director</i></span><span class="dot dot--live" aria-hidden="true"></span>
+    </button>
+    <button class="dr__row" type="button" data-name="Verity Foods Group" data-role="Managing Partner" data-key="VF" data-state="review">
+      <span class="av" aria-hidden="true">VF</span><span class="acc__t"><b>Verity Foods Group</b><i>Managing Partner</i></span><span class="dot dot--review" aria-hidden="true"></span>
+    </button>
+    <button class="dr__row" type="button" data-name="Northgate Clinic" data-role="Client Partner" data-key="NC" data-state="live">
+      <span class="av" aria-hidden="true">NC</span><span class="acc__t"><b>Northgate Clinic</b><i>Client Partner</i></span><span class="dot dot--live" aria-hidden="true"></span>
+    </button>
+  </div>
+  <p class="dr__note" role="status" id="drNote">Workspace: Harrow Athletic. Fourteen collaborators, two live campaigns.</p>
+</div>
+
+<main id="main">
+  <section class="hero">
+    <p class="eyebrow"><span class="pip" aria-hidden="true"></span>Workspace of the day</p>
+    <h1>One desk, five clients, and a header that knows which one you are in.</h1>
+    <p class="lede">Meridian and Cole run brand, packaging and retail work for five accounts from a single studio floor. The masthead above folds itself down the moment you start reading, and the account plate on the right keeps your client, your role and their live status within one keypress of each other.</p>
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__win">
+        <div class="ticker__row" id="tick">
+          <span>Verity Foods rolled 14 store signage kits to print</span>
+          <span>Harrow Athletic kit list closed for the away end</span>
+          <span>Northgate Clinic site two went live on Tuesday</span>
+          <span>Pell and Roe paused pending the survey</span>
+          <span>Solstice Rail proposal opened, decision 12 June</span>
+          <span>Verity Foods rolled 14 store signage kits to print</span>
+          <span>Harrow Athletic kit list closed for the away end</span>
+          <span>Northgate Clinic site two went live on Tuesday</span>
+          <span>Pell and Roe paused pending the survey</span>
+          <span>Solstice Rail proposal opened, decision 12 June</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__meta">
+      <span><b>05</b> accounts</span>
+      <span><b>14</b> collaborators</span>
+      <span><b>1998</b> founded</span>
+      <span><b>27</b> years on the floor</span>
+    </div>
+  </section>
+
+  <section class="sec" id="accounts" aria-labelledby="accounts-t">
+    <div class="sec__rule"><span>01</span><b>Accounts</b></div>
+    <h2 id="accounts-t">The account book</h2>
+    <p class="sec__intro">Every engagement is signed against a named partner, so the account plate in the masthead always tells you who answers the phone. Open it, pick a row, and the whole desk re-labels itself: the header, the mobile panel and the running ticker all follow your choice.</p>
+    <ul class="accs">
+      <li class="acc-card">
+        <span class="av av--lg" aria-hidden="true">HA</span>
+        <span class="acc-card__t"><b>Harrow Athletic</b><i>Brand, retail graphics and matchday print</i><span>Partner: Iris Whitcombe · since 2016</span></span>
+        <span class="chip chip--live">Live</span>
+        <p>Fourteen fixture programmes a season, from the programme book to the turnstile vinyl. Work is planned in six-week blocks so the print room never sees a same-week surprise.</p>
+      </li>
+      <li class="acc-card">
+        <span class="av av--lg av--b" aria-hidden="true">VF</span>
+        <span class="acc-card__t"><b>Verity Foods Group</b><i>Packaging systems and store rollout</i><span>Partner: Aurelio Sanz · since 2011</span></span>
+        <span class="chip chip--review">In review</span>
+        <p>Eleven regional rollouts share one artwork system. Colour is locked to a press proof book, and every new store is photographed against the same grey card before it ships.</p>
+      </li>
+      <li class="acc-card">
+        <span class="av av--lg av--c" aria-hidden="true">NC</span>
+        <span class="acc-card__t"><b>Northgate Clinic</b><i>Wayfinding and patient information</i><span>Partner: Dr Halima Bex · since 2021</span></span>
+        <span class="chip chip--live">Live</span>
+        <p>Two hospital sites, 340 rooms and a sign family that must read at forty metres and at arm's length. Contrast is checked against the clinical colour palette, never against taste.</p>
+      </li>
+      <li class="acc-card">
+        <span class="av av--lg av--d" aria-hidden="true">PR</span>
+        <span class="acc-card__t"><b>Pell and Roe</b><i>Identity for an architecture practice</i><span>Partner: Jonas Pell · since 2019</span></span>
+        <span class="chip chip--paused">On hold</span>
+        <p>Identity, stationery and a drawing-set standard. The work is paused while the practice completes a site survey, and the account stays visible so nobody has to remember which drawer it is in.</p>
+      </li>
+      <li class="acc-card">
+        <span class="av av--lg av--e" aria-hidden="true">SR</span>
+        <span class="acc-card__t"><b>Solstice Rail</b><i>Passenger information and livery</i><span>New business · opened May</span></span>
+        <span class="chip chip--draft">Proposal</span>
+        <p>Late-stage proposal for a four-region operator. If it lands, the account plate becomes the busiest object on the studio floor and the masthead had better keep shrinking well.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sec" id="pipeline" aria-labelledby="pipeline-t">
+    <div class="sec__rule"><span>02</span><b>Pipeline</b></div>
+    <h2 id="pipeline-t">What is moving this week</h2>
+    <p class="sec__intro">The board is read at the Monday stand-up and nothing enters it without a partner's name against it. Bars below show booked hours against the agreed ceiling, so a red bar is always a conversation rather than a surprise.</p>
+    <ul class="pipe">
+      <li class="pipe__row"><span class="pipe__k">Harrow Athletic</span><span class="pipe__bar"><i style="--f:.72"></i></span><span class="pipe__v">72%</span></li>
+      <li class="pipe__row"><span class="pipe__k">Verity Foods Group</span><span class="pipe__bar"><i style="--f:.94"></i></span><span class="pipe__v">94%</span></li>
+      <li class="pipe__row"><span class="pipe__k">Northgate Clinic</span><span class="pipe__bar"><i style="--f:.55"></i></span><span class="pipe__v">55%</span></li>
+      <li class="pipe__row"><span class="pipe__k">Pell and Roe</span><span class="pipe__bar"><i style="--f:.18"></i></span><span class="pipe__v">18%</span></li>
+      <li class="pipe__row"><span class="pipe__k">Solstice Rail</span><span class="pipe__bar"><i style="--f:.31"></i></span><span class="pipe__v">31%</span></li>
+      <li class="pipe__row"><span class="pipe__k">Studio overhead</span><span class="pipe__bar"><i style="--f:.63"></i></span><span class="pipe__v">63%</span></li>
+    </ul>
+    <p class="note">Verity Foods is at ninety-four per cent of its ceiling. Two more rollouts this month and we move the print room to a second shift, which the account partner has already signed off.</p>
+  </section>
+
+  <section class="sec" id="billing" aria-labelledby="billing-t">
+    <div class="sec__rule"><span>03</span><b>Billing</b></div>
+    <h2 id="billing-t">Invoices, terms and the small print</h2>
+    <p class="sec__intro">One statement per account, issued on the first working day of the month and tied to the retainer rather than to individual jobs. Drafts live in the account plate, so the number you see in the masthead is the number your client sees.</p>
+    <div class="cards">
+      <article class="card">
+        <h3>Retainers</h3>
+        <p>Five of the seven retainers are quarterly. The two exceptions exist because those clients consolidate payment across regions, and a single monthly statement would put a translator between us and the approver.</p>
+        <p class="card__k">48 statements issued this quarter</p>
+      </article>
+      <article class="card">
+        <h3>Scope changes</h3>
+        <p>A change is written up before it is worked. The note names the trigger, the extra days and the person who approved it, then it waits in the account plate until the partner signs it off.</p>
+        <p class="card__k">7 change notes, 0 disputed</p>
+      </article>
+      <article class="card">
+        <h3>Press and print</h3>
+        <p>Production costs are passed through at cost with the invoice attached, never marked up. Studios that hide the press invoice lose the client eventually; we have found the honest version works better.</p>
+        <p class="card__k">Press invoices attached to 100% of jobs</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec" id="team" aria-labelledby="team-t">
+    <div class="sec__rule"><span>04</span><b>Team</b></div>
+    <h2 id="team-t">Who is on the floor</h2>
+    <p class="sec__intro">Fourteen people, one long table, and a rule that anyone can call a halt to a proof. The three partners rotate which account they open in the morning stand-up, so no client gets the same voice all year.</p>
+    <ul class="crew">
+      <li><span class="av av--sm av--a" aria-hidden="true">IW</span><b>Iris Whitcombe</b><i>Partner, brand systems</i></li>
+      <li><span class="av av--sm av--b" aria-hidden="true">AS</span><b>Aurelio Sanz</b><i>Partner, packaging</i></li>
+      <li><span class="av av--sm av--c" aria-hidden="true">HB</span><b>Halima Bex</b><i>Partner, environments</i></li>
+      <li><span class="av av--sm av--d" aria-hidden="true">TN</span><b>Tomas Nkemdi</b><i>Head of production</i></li>
+      <li><span class="av av--sm av--e" aria-hidden="true">RM</span><b>Rosa Mendel</b><i>Studio manager</i></li>
+      <li><span class="av av--sm av--f" aria-hidden="true">JL</span><b>Jonas Linde</b><i>Motion and screens</i></li>
+    </ul>
+    <p>New briefs land on the table on Monday and are read aloud before anyone opens a file. If nobody can say in one sentence what the client wants, the brief goes back with a question attached, which is slower for a day and faster by a month.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <nav aria-label="Footer">
+    <a href="#main">Desk</a>
+    <a href="#accounts">Accounts</a>
+    <a href="#pipeline">Pipeline</a>
+    <a href="#billing">Billing</a>
+    <a href="#team">Team</a>
+  </nav>
+  <p>Meridian and Cole · 14 Copperfield Row, London E2 · Studio hours 09:00 to 19:00, Monday to Thursday</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icon Rail Tooltip</title>
+<meta name="description" content="A fixed editing-console rail of hand-drawn SVG icons whose labels slide out from the edge on hover and focus while a marker travels along the rail.">
+<meta name="description-es" content="Raíl fijo de una consola de edición con iconos SVG dibujados a mano: las etiquetas salen desde el borde al pasar el cursor o enfocar, y un marcador recorre el raíl.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<a class="skip" href="#media">Skip to content</a>
+
+<nav class="rail" id="rail" aria-label="Editing tools">
+  <i class="rail__scan" aria-hidden="true"></i>
+
+  <a class="rail__brand" href="#media" aria-label="Splice console home">
+    <svg viewBox="0 0 28 28" aria-hidden="true" focusable="false"><rect x="3" y="3" width="22" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M9 8.5h10M9 14h6M9 19.5h8" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg>
+  </a>
+
+  <span class="rail__rule" aria-hidden="true"></span>
+
+  <ul class="rail__list" id="railList">
+    <li class="rail__item">
+      <a class="rail__btn is-active" href="#media" aria-current="true">
+        <span class="rail__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><rect x="2.5" y="5" width="19" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M2.5 9h19M2.5 15h19M7 5v14M17 5v14" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
+        </span>
+        <span class="rail__tip">Media pool</span>
+        <span class="rail__key" aria-hidden="true">1</span>
+      </a>
+    </li>
+    <li class="rail__item">
+      <a class="rail__btn" href="#cut">
+        <span class="rail__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><circle cx="6.5" cy="17.5" r="3" fill="none" stroke="currentColor" stroke-width="1.8"></circle><circle cx="17.5" cy="17.5" r="3" fill="none" stroke="currentColor" stroke-width="1.8"></circle><path d="M8.6 15.4 19 4M15.4 15.4 5 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+        </span>
+        <span class="rail__tip">Cut</span>
+        <span class="rail__key" aria-hidden="true">2</span>
+      </a>
+    </li>
+    <li class="rail__item">
+      <a class="rail__btn" href="#color">
+        <span class="rail__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.2s6 6.1 6 10.1a6 6 0 0 1-12 0c0-4 6-10.1 6-10.1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path><path d="M9.2 14.2a2.9 2.9 0 0 0 2.6 2.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+        </span>
+        <span class="rail__tip">Colour</span>
+        <span class="rail__key" aria-hidden="true">3</span>
+      </a>
+    </li>
+    <li class="rail__item">
+      <a class="rail__btn" href="#audio">
+        <span class="rail__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path d="M3 12h2.2l1.6-5.4L9.6 18l2-11.6L13.6 16l1.7-4.2 1.5 2.6H21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"></path></svg>
+        </span>
+        <span class="rail__tip">Audio</span>
+        <span class="rail__key" aria-hidden="true">4</span>
+      </a>
+    </li>
+    <li class="rail__item">
+      <a class="rail__btn" href="#titles">
+        <span class="rail__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path d="M4.5 6.2V4.5h15v1.7M12 4.5v15M8.6 19.5h6.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+        </span>
+        <span class="rail__tip">Titles</span>
+        <span class="rail__key" aria-hidden="true">5</span>
+      </a>
+    </li>
+    <li class="rail__item">
+      <a class="rail__btn" href="#export">
+        <span class="rail__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.5v10.5M8.2 7.4 12 3.5l3.8 3.9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4.5 14.5v4.2a1.8 1.8 0 0 0 1.8 1.8h11.4a1.8 1.8 0 0 0 1.8-1.8v-4.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+        </span>
+        <span class="rail__tip">Deliver</span>
+        <span class="rail__key" aria-hidden="true">6</span>
+      </a>
+    </li>
+  </ul>
+
+  <span class="rail__rule" aria-hidden="true"></span>
+
+  <div class="rail__foot">
+    <span class="rail__rec" aria-hidden="true"></span>
+    <span class="rail__ver">v9.4</span>
+  </div>
+
+  <i class="marker" id="railMarker" aria-hidden="true"></i>
+</nav>
+
+<main>
+  <div class="console">
+    <div class="console__ruler" aria-hidden="true">
+      <span class="console__ticks"></span>
+      <i class="playhead" aria-hidden="true"></i>
+      <span class="console__tc">01:12:44:08</span>
+    </div>
+  </div>
+
+  <section class="sec" id="media">
+    <p class="kicker"><span>01</span> Media</p>
+    <h1>The pool holds everything</h1>
+    <p class="lede">Sixteen terabytes of rushes, proxies and sound, sorted by card rather than by date, because the card is the only thing the camera operator remembers correctly.</p>
+    <p>Clips enter the pool the moment a card is mounted. The console writes a proxy copy at a quarter resolution, keeps the original untouched, and marks anything shot above eight hundred frames per second so the colourist does not waste an afternoon on a shot that was never meant to be graded.</p>
+    <ul class="spec">
+      <li><span>Online</span><b>16.2 TB of 24 TB</b></li>
+      <li><span>Proxies</span><b>ProRes Proxy · 1/4 resolution</b></li>
+      <li><span>Cards today</span><b>7 mounted · 0 failed</b></li>
+      <li><span>Backups</span><b>Nightly to the vault at 02:00</b></li>
+    </ul>
+  </section>
+
+  <section class="sec" id="cut">
+    <p class="kicker"><span>02</span> Cut</p>
+    <h2>Six tracks and one rule</h2>
+    <p>The assembly runs on six video tracks: picture, cutaways, titles, graphics, grade reference and a locked master. Anything that does not belong to one of those six goes into a bin until somebody can say which of the six it is pretending to be.</p>
+    <p>The rule is simple and it is written on the wall above the monitor: no cut leaves the room until it has survived one full pass without anybody reaching for the pause key.</p>
+    <div class="tl">
+      <div class="tl__row"><b>V1</b><span class="tl__clip" style="--s:2;--l:34">Interview · master</span></div>
+      <div class="tl__row"><b>V2</b><span class="tl__clip tl__clip--alt" style="--s:12;--l:26">Cutaway · workshop</span></div>
+      <div class="tl__row"><b>V3</b><span class="tl__clip" style="--s:24;--l:22">Title · chapter 03</span></div>
+      <div class="tl__row"><b>A1</b><span class="tl__clip tl__clip--aud" style="--s:2;--l:54">Room tone · stereo</span></div>
+      <div class="tl__row"><b>A2</b><span class="tl__clip tl__clip--aud" style="--s:30;--l:40">Voice over · take 6</span></div>
+    </div>
+  </section>
+
+  <section class="sec" id="color">
+    <p class="kicker"><span>03</span> Colour</p>
+    <h2>Grade for the skin, not the sky</h2>
+    <p>Every scene starts with a single primary correction: exposure balanced on a face, white balance taken from a grey card that actually exists in the frame, and nothing else touched. Only after that passes does anybody open a curve.</p>
+    <p>The node tree for this project is deliberately shallow. Four nodes per shot, each with a written purpose, because a twelve-node tree is a place where mistakes hide comfortably for months.</p>
+    <ul class="swatches">
+      <li style="--c:#2b3a4a"><span>Base</span></li>
+      <li style="--c:#7a5c46"><span>Skin</span></li>
+      <li style="--c:#c86a3d"><span>Warm</span></li>
+      <li style="--c:#e8c88f"><span>Highlight</span></li>
+      <li style="--c:#3f5f57"><span>Foliage</span></li>
+      <li style="--c:#141a20"><span>Floor</span></li>
+    </ul>
+  </section>
+
+  <section class="sec" id="audio">
+    <p class="kicker"><span>04</span> Audio</p>
+    <h2>Dialogue first, music second</h2>
+    <p>The mix is built from the dialogue outwards. Everything else, including the score, is treated as furniture that has to move out of the way when somebody speaks. Loudness sits at minus twenty-three LUFS, which is the number the broadcaster asks for and the number we would have chosen anyway.</p>
+    <p>Noise is removed by subtraction rather than by gate: the room tone of each location is sampled, printed to a second track, and phase-cancelled against the dialogue. It takes an hour longer and it does not eat the sibilance.</p>
+    <ul class="meters">
+      <li><span>Dialogue</span><i class="meter" style="--v:78"></i><b>-18 dB</b></li>
+      <li><span>Music</span><i class="meter" style="--v:52"></i><b>-27 dB</b></li>
+      <li><span>Effects</span><i class="meter" style="--v:64"></i><b>-23 dB</b></li>
+      <li><span>Ambience</span><i class="meter" style="--v:40"></i><b>-34 dB</b></li>
+    </ul>
+  </section>
+
+  <section class="sec" id="titles">
+    <p class="kicker"><span>05</span> Titles</p>
+    <h2>Type that stays out of the way</h2>
+    <p>Lower thirds appear at frame forty-eight, hold for two and a half seconds, and leave on a twelve-frame fade. Nobody has ever needed more time to read two lines, and anybody who claims otherwise is designing for a poster rather than a screen.</p>
+    <p>Chapter cards are set in the same grotesque used throughout the project, tracked wide and centred on the optical middle of the frame rather than the mathematical one. It is a two-pixel difference that everybody notices and nobody can name.</p>
+    <ul class="spec">
+      <li><span>Lower third</span><b>2.5 s hold · 12 frame fade</b></li>
+      <li><span>Chapter card</span><b>4 s · optical centring</b></li>
+      <li><span>Captions</span><b>Burned in · 22 characters per line</b></li>
+      <li><span>Safety</span><b>90% title safe · checked per shot</b></li>
+    </ul>
+  </section>
+
+  <section class="sec" id="export">
+    <p class="kicker"><span>06</span> Deliver</p>
+    <h2>Six versions, one master</h2>
+    <p>The master is a sixteen-bit file kept in the vault and never uploaded anywhere. Everything the outside world sees is a descendant of it: broadcast, streaming, a social cut with burned captions and a single reel for the archive.</p>
+    <p>Every export writes a report next to the file: timecode in, timecode out, colour space, loudness measured after encoding, and the checksum of the source. Two of those reports have saved this studio a rewrite, which is two more than most paperwork ever manages.</p>
+    <ul class="spec">
+      <li><span>Master</span><b>16-bit · Rec.709 · 25 fps</b></li>
+      <li><span>Broadcast</span><b>XAVC-I · 50 Mb/s · 1920×1080</b></li>
+      <li><span>Streaming</span><b>H.264 · 12 Mb/s · 3840×2160</b></li>
+      <li><span>Archive</span><b>ProRes 4444 · checksum verified</b></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Splice 9 · editing console</span>
+  <span class="foot__rule" aria-hidden="true"></span>
+  <span>Focus a rail icon to read its label</span>
+</footer>
+</body>
+</html>

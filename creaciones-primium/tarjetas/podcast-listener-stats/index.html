@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Podcast Listener Stats</title>
+<meta name="description" content="A podcast audience dashboard laid out on an episode timeline, with listener bars that grow, download deltas that jump, a completion ring and a spike chart that traces episode by episode.">
+<meta name="description-es" content="Un panel de oyentes de podcast sobre una línea temporal de episodios, con barras que crecen, saltos de descargas, un anillo de reproducción completa y un gráfico de picos que se traza episodio a episodio.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <article class="pls">
+    <span class="pls__glow" aria-hidden="true"></span>
+    <span class="pls__scan" aria-hidden="true"></span>
+
+    <header class="pls__head">
+      <span class="pls__badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <rect x="9" y="3" width="6" height="10" rx="3"></rect>
+          <path d="M6 11a6 6 0 0 0 12 0"></path>
+          <path d="M12 17v4"></path>
+          <path d="M8.5 21h7"></path>
+        </svg>
+      </span>
+      <div class="pls__who">
+        <p class="pls__show">Deep Field Notes</p>
+        <p class="pls__sub">Season 6 · Listener rollup · 12 episodes</p>
+      </div>
+      <p class="pls__window">
+        <span>Window</span>
+        <b>Last 12 weeks</b>
+      </p>
+    </header>
+
+    <section class="top" aria-label="Headline listener metrics">
+      <div class="top__ring">
+        <div class="top__ringWrap">
+          <svg class="top__ringSvg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+            <circle class="top__ringTrack" cx="48" cy="48" r="40"></circle>
+            <circle class="top__ringFill" cx="48" cy="48" r="40"></circle>
+          </svg>
+          <p class="top__ringVal"><span id="plsComplete">78</span><small>%</small></p>
+        </div>
+        <p class="top__ringCap">Avg. completion</p>
+      </div>
+      <div class="top__stats">
+        <div class="stat">
+          <p class="stat__label">Weekly listeners</p>
+          <p class="stat__value"><span id="plsListeners">412 800</span></p>
+          <p class="stat__delta stat__delta--up"><i aria-hidden="true"></i>+ 18.4% vs S5</p>
+        </div>
+        <div class="stat">
+          <p class="stat__label">Downloads / ep</p>
+          <p class="stat__value"><span id="plsAvg">62 400</span></p>
+          <p class="stat__delta stat__delta--up"><i aria-hidden="true"></i>+ 9 200 this week</p>
+        </div>
+        <div class="stat">
+          <p class="stat__label">Follower churn</p>
+          <p class="stat__value">1.8<small>%</small></p>
+          <p class="stat__delta stat__delta--down"><i aria-hidden="true"></i>- 0.6 pts</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="spike" aria-labelledby="plsSpikeTitle">
+      <p class="block__title" id="plsSpikeTitle">Unique listeners by episode</p>
+      <figure class="spike__fig">
+        <svg class="spike__svg" viewBox="0 0 320 64" preserveAspectRatio="none" role="img" aria-label="Line chart of unique listeners rising from episode 47 to episode 58" focusable="false">
+          <defs>
+            <linearGradient id="plsArea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffb257" stop-opacity=".42"></stop>
+              <stop offset="1" stop-color="#ffb257" stop-opacity="0"></stop>
+            </linearGradient>
+            <linearGradient id="plsLine" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#7fe0c0"></stop>
+              <stop offset="1" stop-color="#ffb257"></stop>
+            </linearGradient>
+          </defs>
+          <g class="spike__grid">
+            <path d="M0 15h320M0 32h320M0 49h320"></path>
+          </g>
+          <path class="spike__area" d="M0 52L29 48 58 49.5 87 44 116 45 145 38.5 174 40 203 33 232 35.5 261 26 290 29 320 16L320 64 0 64Z"></path>
+          <path class="spike__line" d="M0 52L29 48 58 49.5 87 44 116 45 145 38.5 174 40 203 33 232 35.5 261 26 290 29 320 16"></path>
+          <circle class="spike__head" cx="320" cy="16" r="4"></circle>
+        </svg>
+        <figcaption class="spike__cap">
+          <span>Ep 47 · 128 k</span>
+          <span class="spike__capArrow" aria-hidden="true"></span>
+          <span>Ep 58 · 412 k</span>
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="axis" aria-label="Episode timeline">
+      <p class="block__title">Episode timeline <span class="block__hint">tap an episode to feature it</span></p>
+      <ol class="axis__list">
+        <li class="axis__row" style="--v:.32">
+          <button class="axis__btn" type="button" data-ep="47" data-listeners="128400" data-delta="-4.2" aria-pressed="false">
+            <span class="axis__node" aria-hidden="true"></span>
+            <span class="axis__body">
+              <span class="axis__rowTop">
+                <span class="axis__num">Ep 47</span>
+                <span class="axis__delta axis__delta--down">-4.2%</span>
+              </span>
+              <span class="axis__title">The glacier that stopped moving</span>
+              <span class="axis__bar" aria-hidden="true"><i></i></span>
+              <span class="axis__foot">
+                <span class="axis__listeners">128 400 listeners</span>
+                <span class="axis__date">06 Feb</span>
+              </span>
+            </span>
+          </button>
+        </li>
+        <li class="axis__row" style="--v:.44">
+          <button class="axis__btn" type="button" data-ep="50" data-listeners="176900" data-delta="6.1" aria-pressed="false">
+            <span class="axis__node" aria-hidden="true"></span>
+            <span class="axis__body">
+              <span class="axis__rowTop">
+                <span class="axis__num">Ep 50</span>
+                <span class="axis__delta axis__delta--up">+6.1%</span>
+              </span>
+              <span class="axis__title">Counting moths in a dark forest</span>
+              <span class="axis__bar" aria-hidden="true"><i></i></span>
+              <span class="axis__foot">
+                <span class="axis__listeners">176 900 listeners</span>
+                <span class="axis__date">20 Feb</span>
+              </span>
+            </span>
+          </button>
+        </li>
+        <li class="axis__row" style="--v:.61">
+          <button class="axis__btn" type="button" data-ep="53" data-listeners="252300" data-delta="12.8" aria-pressed="false">
+            <span class="axis__node" aria-hidden="true"></span>
+            <span class="axis__body">
+              <span class="axis__rowTop">
+                <span class="axis__num">Ep 53</span>
+                <span class="axis__delta axis__delta--up">+12.8%</span>
+              </span>
+              <span class="axis__title">Eleven hours inside a radio dish</span>
+              <span class="axis__bar" aria-hidden="true"><i></i></span>
+              <span class="axis__foot">
+                <span class="axis__listeners">252 300 listeners</span>
+                <span class="axis__date">06 Mar</span>
+              </span>
+            </span>
+          </button>
+        </li>
+        <li class="axis__row" style="--v:.86">
+          <button class="axis__btn" type="button" data-ep="56" data-listeners="361700" data-delta="24.3" aria-pressed="false">
+            <span class="axis__node" aria-hidden="true"></span>
+            <span class="axis__body">
+              <span class="axis__rowTop">
+                <span class="axis__num">Ep 56</span>
+                <span class="axis__delta axis__delta--up">+24.3%</span>
+              </span>
+              <span class="axis__title">The town that mapped its own noise</span>
+              <span class="axis__bar" aria-hidden="true"><i></i></span>
+              <span class="axis__foot">
+                <span class="axis__listeners">361 700 listeners</span>
+                <span class="axis__date">20 Mar</span>
+              </span>
+            </span>
+          </button>
+        </li>
+        <li class="axis__row axis__row--live" style="--v:1">
+          <button class="axis__btn is-on" type="button" data-ep="58" data-listeners="412800" data-delta="18.4" aria-pressed="true">
+            <span class="axis__node" aria-hidden="true"></span>
+            <span class="axis__body">
+              <span class="axis__rowTop">
+                <span class="axis__num">Ep 58</span>
+                <span class="axis__delta axis__delta--up">+18.4%</span>
+              </span>
+              <span class="axis__title">Listening to the ice speak</span>
+              <span class="axis__bar" aria-hidden="true"><i></i></span>
+              <span class="axis__foot">
+                <span class="axis__listeners" id="plsRowListeners">412 800 listeners</span>
+                <span class="axis__date">03 Apr</span>
+              </span>
+            </span>
+          </button>
+        </li>
+      </ol>
+    </section>
+
+    <footer class="pls__foot">
+      <p class="pls__note">Featured <b id="plsFeature">Ep 58</b> · <span id="plsFeatureTitle">Listening to the ice speak</span></p>
+      <button class="pls__export" type="button" id="plsExport" aria-pressed="false">
+        <span class="pls__exportGlyph" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11"></path><path d="M7.5 10.5 12 15l4.5-4.5"></path><path d="M5 19.5h14"></path></svg>
+        </span>
+        <span class="pls__exportText">Export CSV</span>
+      </button>
+    </footer>
+  </article>
+</main>
+</body>
+</html>

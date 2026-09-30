@@ -68,6 +68,9 @@ const NO_RECURSO = [
   /^creativecommons\.org$/,
   /^kyruus\.com$/,
   /^rock\.mit-license\.org$/,
+  // .example es un TLD reservado por la IANA para documentacion: las URL que
+  // acaban en el aparecen dentro de bloques de codigo de ejemplo, nunca se piden.
+  /\.example$/,
 ];
 
 // Que necesita cada etiqueta HTML que puede traer un recurso.

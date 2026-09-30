@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Home Energy Meter</title>
+<meta name="description" content="A domestic energy meter card with a district map, a draggable hourly forecast strip, consumption bars that grow, a sliding peak alert that tracks the highest hour, a live usage readout and a tariff breakdown by band.">
+<meta name="description-es" content="Tarjeta de contador de energía doméstica con mapa de distrito, tira horaria de previsión arrastrable, barras de consumo que crecen, alerta de pico deslizante, lectura de uso en vivo y desglose de tarifa por tramos.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <article class="meter" id="meter">
+    <span class="meter__glow" aria-hidden="true"></span>
+    <span class="meter__grain" aria-hidden="true"></span>
+
+    <header class="meter__bar">
+      <p class="meter__ref">Grid operator &middot; district 4B</p>
+      <p class="meter__state"><i aria-hidden="true"></i>Reading live</p>
+    </header>
+
+    <div class="hero">
+      <div class="hero__read">
+        <p class="hero__label">Drawing right now</p>
+        <p class="hero__value"><span data-count="1.84">1.84</span><small>kW</small></p>
+        <p class="hero__chip" id="heroChip">Below your usual for this hour</p>
+      </div>
+      <figure class="map">
+        <svg class="map__svg" viewBox="0 0 200 128" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="hmmZone" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#3ad6c8"></stop>
+              <stop offset="1" stop-color="#1f6f9c"></stop>
+            </linearGradient>
+          </defs>
+          <path class="map__field" d="M0 0h200v128H0z"></path>
+          <g class="map__streets">
+            <path d="M-10 34h220M-10 78h220M46 -10v150M124 -10v150M178 -10v150"></path>
+          </g>
+          <path class="map__block" d="M8 44h30v26H8z"></path>
+          <path class="map__block" d="M56 44h58v26H56z"></path>
+          <path class="map__block" d="M134 44h36v26h-36z"></path>
+          <path class="map__block map__block--b" d="M8 88h30v30H8z"></path>
+          <path class="map__block" d="M56 88h58v30H56z"></path>
+          <path class="map__block map__block--b" d="M134 88h36v30h-36z"></path>
+          <path class="map__ring" d="M70 58a18 18 0 0 1 36 0 18 18 0 0 1-36 0z"></path>
+          <circle class="map__pulse" cx="88" cy="58" r="10"></circle>
+          <circle class="map__pin" cx="88" cy="58" r="3.4"></circle>
+          <text class="map__label" x="88" y="24">4B</text>
+          <text class="map__label map__label--s" x="88" y="86">YOUR NODE</text>
+        </svg>
+        <figcaption class="map__cap">Feeder 4B &middot; 42 homes on this spur</figcaption>
+      </figure>
+    </div>
+
+    <div class="alert" id="alert">
+      <span class="alert__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M12 4.5l8.5 15h-17z"></path><path d="M12 10v4.4"></path><path d="M12 17.2v.2"></path></svg>
+      </span>
+      <span class="alert__text"><b>Peak window</b> forecast 18:00 to 21:00, above the local average.</span>
+      <button class="alert__btn" type="button" id="alertBtn" aria-pressed="false">Plan around it</button>
+    </div>
+
+    <section class="strip">
+      <div class="strip__head">
+        <p class="strip__title">Hourly forecast</p>
+        <p class="strip__hint" id="stripHint">drag or use the arrows</p>
+      </div>
+      <div class="strip__rail" id="rail" tabindex="0" role="group" aria-label="Hourly forecast strip, use the left and right arrow keys to scroll">
+        <div class="strip__track" id="track">
+          <div class="hour hour--calm" style="--h:.22"><span class="hour__bar"><i></i></span><span class="hour__t">00</span></div>
+          <div class="hour hour--calm" style="--h:.18"><span class="hour__bar"><i></i></span><span class="hour__t">01</span></div>
+          <div class="hour hour--calm" style="--h:.2"><span class="hour__bar"><i></i></span><span class="hour__t">02</span></div>
+          <div class="hour hour--calm" style="--h:.24"><span class="hour__bar"><i></i></span><span class="hour__t">03</span></div>
+          <div class="hour hour--calm" style="--h:.3"><span class="hour__bar"><i></i></span><span class="hour__t">04</span></div>
+          <div class="hour hour--warm" style="--h:.46"><span class="hour__bar"><i></i></span><span class="hour__t">05</span></div>
+          <div class="hour hour--warm" style="--h:.62"><span class="hour__bar"><i></i></span><span class="hour__t">06</span></div>
+          <div class="hour hour--high" style="--h:.74"><span class="hour__bar"><i></i></span><span class="hour__t">07</span></div>
+          <div class="hour hour--high" style="--h:.52"><span class="hour__bar"><i></i></span><span class="hour__t">08</span></div>
+          <div class="hour hour--calm" style="--h:.34"><span class="hour__bar"><i></i></span><span class="hour__t">09</span></div>
+          <div class="hour hour--calm" style="--h:.3"><span class="hour__bar"><i></i></span><span class="hour__t">10</span></div>
+          <div class="hour hour--calm" style="--h:.32"><span class="hour__bar"><i></i></span><span class="hour__t">11</span></div>
+          <div class="hour hour--warm" style="--h:.44"><span class="hour__bar"><i></i></span><span class="hour__t">12</span></div>
+          <div class="hour hour--warm" style="--h:.48"><span class="hour__bar"><i></i></span><span class="hour__t">13</span></div>
+          <div class="hour hour--calm" style="--h:.38"><span class="hour__bar"><i></i></span><span class="hour__t">14</span></div>
+          <div class="hour hour--calm" style="--h:.42"><span class="hour__bar"><i></i></span><span class="hour__t">15</span></div>
+          <div class="hour hour--high" style="--h:.58"><span class="hour__bar"><i></i></span><span class="hour__t">16</span></div>
+          <div class="hour hour--peak is-peak" style="--h:.9"><span class="hour__bar"><i></i></span><span class="hour__t">17</span></div>
+          <div class="hour hour--peak is-peak" style="--h:1"><span class="hour__bar"><i></i></span><span class="hour__t">18</span></div>
+          <div class="hour hour--peak is-peak" style="--h:.96"><span class="hour__bar"><i></i></span><span class="hour__t">19</span></div>
+          <div class="hour hour--peak is-peak" style="--h:.86"><span class="hour__bar"><i></i></span><span class="hour__t">20</span></div>
+          <div class="hour hour--high" style="--h:.66"><span class="hour__bar"><i></i></span><span class="hour__t">21</span></div>
+          <div class="hour hour--warm" style="--h:.5"><span class="hour__bar"><i></i></span><span class="hour__t">22</span></div>
+          <div class="hour hour--calm" style="--h:.36"><span class="hour__bar"><i></i></span><span class="hour__t">23</span></div>
+          <div class="hour hour--calm" style="--h:.26"><span class="hour__bar"><i></i></span><span class="hour__t">00</span></div>
+          <div class="hour hour--calm" style="--h:.22"><span class="hour__bar"><i></i></span><span class="hour__t">01</span></div>
+          <div class="hour hour--calm" style="--h:.2"><span class="hour__bar"><i></i></span><span class="hour__t">02</span></div>
+        </div>
+        <span class="strip__fade strip__fade--a" aria-hidden="true"></span>
+        <span class="strip__fade strip__fade--b" aria-hidden="true"></span>
+        <span class="strip__cursor" id="cursor" aria-hidden="true"></span>
+      </div>
+      <div class="strip__row">
+        <button class="nav" type="button" id="navPrev" aria-label="Scroll the forecast earlier">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 5.5L8 12l6.5 6.5"></path></svg>
+        </button>
+        <p class="strip__read" id="stripRead">Peak hour 18:00 &middot; 3.4 kW forecast</p>
+        <button class="nav" type="button" id="navNext" aria-label="Scroll the forecast later">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 5.5L16 12l-6.5 6.5"></path></svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="bands" aria-label="Tariff bands">
+      <p class="bands__title">Tariff split, today</p>
+      <div class="bands__list">
+        <div class="band band--calm">
+          <p class="band__name">Off peak</p>
+          <p class="band__val"><span data-count="6.4">6.4</span> kWh</p>
+          <span class="band__bar" aria-hidden="true"><i style="--w:.32"></i></span>
+        </div>
+        <div class="band band--warm">
+          <p class="band__name">Shoulder</p>
+          <p class="band__val"><span data-count="9.1">9.1</span> kWh</p>
+          <span class="band__bar" aria-hidden="true"><i style="--w:.54"></i></span>
+        </div>
+        <div class="band band--peak">
+          <p class="band__name">Peak</p>
+          <p class="band__val"><span data-count="7.8">7.8</span> kWh</p>
+          <span class="band__bar" aria-hidden="true"><i style="--w:.46"></i></span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="meter__foot">
+      <p class="foot__mono">METER HM-4B-2219 &middot; 15 MIN INTERVAL</p>
+      <p class="foot__stat">Carbon today <b><span data-count="4.2">4.2</span> kg</b></p>
+    </footer>
+  </article>
+</main>
+</body>
+</html>

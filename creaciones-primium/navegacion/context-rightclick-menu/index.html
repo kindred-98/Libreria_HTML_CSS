@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Right-Click Clip Menu</title>
+<meta name="description" content="A video editing suite whose timeline answers a right click with a cascading clip menu of radio speeds, checked toggles and split actions, driven by arrow keys and dismissed with Escape.">
+<meta name="description-es" content="Suite de montaje de vídeo cuya línea de tiempo responde al clic derecho con un menú de clip en cascada, con velocidades de radio, casillas marcadas y acciones de corte, que se recorre con las flechas y se cierra con Escape.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="shell">
+
+  <header class="bar">
+    <a class="brand" href="#assembly">
+      <i class="brand__reel" aria-hidden="true"><b></b></i>
+      <span class="brand__name">Cutline</span>
+      <i class="brand__ver">Suite 4 · Nightport</i>
+    </a>
+
+    <nav class="menus" aria-label="Edit menus">
+      <div class="dd" id="ddSequence">
+        <button class="dd__btn" type="button" aria-expanded="false" aria-controls="panelSequence">Sequence<i class="dd__car" aria-hidden="true"></i></button>
+        <div class="dd__panel" id="panelSequence">
+          <p class="dd__ttl">Assembly 01 · 23.976 fps</p>
+          <ul class="dd__list">
+            <li><a class="dd__link" href="#assembly">Assembly reel<i class="dd__tick" aria-hidden="true"></i></a></li>
+            <li class="sub" id="subTracks">
+              <button class="sub__btn" type="button" aria-expanded="false" aria-controls="panelTracks">Tracks<i class="dd__car dd__car--r" aria-hidden="true"></i></button>
+              <div class="sub__panel" id="panelTracks">
+                <p class="sub__ttl">Four lanes online</p>
+                <ul class="sub__list">
+                  <li><a href="#cut">V1 picture</a></li>
+                  <li><a href="#grade">V2 grade</a></li>
+                  <li><a href="#mix">A1 dialogue</a></li>
+                </ul>
+              </div>
+            </li>
+            <li><a class="dd__link" href="#delivery">Master reel</a></li>
+          </ul>
+          <p class="dd__note">Two hundred and forty frames kept</p>
+        </div>
+      </div>
+
+      <div class="dd" id="ddClip">
+        <button class="dd__btn" type="button" aria-expanded="false" aria-controls="panelClip">Clip<i class="dd__car" aria-hidden="true"></i></button>
+        <div class="dd__panel" id="panelClip">
+          <p class="dd__ttl">A014 · harbour master</p>
+          <ul class="dd__list">
+            <li><a class="dd__link" href="#cut">Razor at playhead</a></li>
+            <li class="sub" id="subSpeed">
+              <button class="sub__btn" type="button" aria-expanded="false" aria-controls="panelSpeed">Speed<i class="dd__car dd__car--r" aria-hidden="true"></i></button>
+              <div class="sub__panel" id="panelSpeed">
+                <p class="sub__ttl">Optical retime</p>
+                <ul class="sub__list">
+                  <li><a href="#cut">Fifty per cent</a></li>
+                  <li><a href="#mix">Two hundred per cent</a></li>
+                </ul>
+              </div>
+            </li>
+            <li><button class="dd__act" type="button" data-act="mute">Mute this clip</button></li>
+            <li><a class="dd__link" href="#grade">Open grade controls</a></li>
+          </ul>
+          <p class="dd__note">Right click the timeline for more</p>
+        </div>
+      </div>
+
+      <div class="dd" id="ddDeliver">
+        <button class="dd__btn" type="button" aria-expanded="false" aria-controls="panelDeliver">Deliver<i class="dd__car" aria-hidden="true"></i></button>
+        <div class="dd__panel" id="panelDeliver">
+          <p class="dd__ttl">Three files, one archive</p>
+          <ul class="dd__list">
+            <li><a class="dd__link" href="#delivery">Review cut</a></li>
+            <li><a class="dd__link" href="#bench">Project lock file</a></li>
+          </ul>
+          <p class="dd__note">Subtitles burnt in</p>
+        </div>
+      </div>
+    </nav>
+
+    <p class="clock"><i class="clock__rec" aria-hidden="true"></i><b id="tc">00:00:12:04</b></p>
+  </header>
+
+  <section class="desk" id="desk" tabindex="0" role="group" aria-labelledby="deskTitle" aria-describedby="deskHint">
+    <div class="desk__head">
+      <h1 id="deskTitle">Cutting room</h1>
+      <button class="desk__trigger" type="button" id="ctxTrigger" aria-haspopup="menu" aria-expanded="false" aria-controls="ctxMenu">Menu of the selected clip</button>
+    </div>
+
+    <div class="desk__ruler" aria-hidden="true">
+      <span>00:00</span><span>00:05</span><span>00:10</span><span>00:15</span><span>00:20</span><span>00:25</span>
+    </div>
+
+    <div class="desk__lanes" aria-hidden="true">
+      <ol class="lane">
+        <li class="clip clip--a" style="--w:24%;--o:0%"><i class="clip__wave"></i><em>A014</em></li>
+        <li class="clip clip--b" style="--w:31%;--o:25%"><i class="clip__wave"></i><em>A017</em></li>
+        <li class="clip clip--c" style="--w:18%;--o:57%"><i class="clip__wave"></i><em>A022</em></li>
+        <li class="clip clip--d" style="--w:22%;--o:76%"><i class="clip__wave"></i><em>A031</em></li>
+      </ol>
+      <ol class="lane">
+        <li class="clip clip--g" style="--w:38%;--o:0%"><em>Grade 02</em></li>
+        <li class="clip clip--h" style="--w:29%;--o:40%"><em>Grade 05</em></li>
+        <li class="clip clip--i" style="--w:20%;--o:71%"><em>Grade 08</em></li>
+      </ol>
+      <ol class="lane">
+        <li class="clip clip--d" style="--w:46%;--o:0%"><i class="clip__wave"></i><em>Dialogue A014</em></li>
+        <li class="clip clip--a" style="--w:34%;--o:48%"><i class="clip__wave"></i><em>Wild line 3</em></li>
+      </ol>
+      <ol class="lane lane--thin">
+        <li class="clip clip--h" style="--w:100%;--o:0%"><i class="clip__wave"></i><em>Harbour ambience</em></li>
+      </ol>
+    </div>
+
+    <div class="desk__play" aria-hidden="true"><i class="desk__bar"></i></div>
+
+    <div class="desk__foot">
+      <p class="desk__hint" id="deskHint">Right click anywhere on the timeline, or focus the desk and press the context menu key, to open the clip menu.</p>
+      <ul class="meters" aria-hidden="true">
+        <li class="meter"><i></i><i></i><i></i><i></i><i></i></li>
+        <li class="meter"><i></i><i></i><i></i><i></i><i></i></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="page">
+    <section class="card" id="assembly">
+      <p class="card__idx">Chapter 01 · assembly</p>
+      <h2>Two hundred and forty frames</h2>
+      <p>Four cameras went to the harbour and two of them were handheld, which the director defended for a week on the grounds that the wobble is the harbour. A tape of the fog horn was recorded from a boat drifting at the edge of the channel, and it is the only clean sound in the whole film.</p>
+      <p>The first pass is deliberately generous: every take stays in the bin, and the editor marks the moment the horn stops and the city answers it. Nothing is thrown away in the first week, because the cut you hate on day two is often the cut you need on day nine.</p>
+    </section>
+
+    <section class="card" id="cut">
+      <p class="card__idx">Chapter 02 · the cut</p>
+      <h2>Trimming on the beat</h2>
+      <p>Joints are made on the tide line, on the turn of a crane and on the blink of a gull, never on a frame count read off a number pad. Those three events land inside the twenty seconds that open the film, and the sequence cuts cleanly on all three without a single invisible edit.</p>
+      <p>Every accepted cut is written into the edit log with its in and out timecode, so a sound mixer four time zones away can find the frame without scrubbing. The log is plain text on purpose: it survives a software crash, a format change and a decade.</p>
+    </section>
+
+    <section class="card" id="grade">
+      <p class="card__idx">Chapter 03 · the grade</p>
+      <h2>Two looks in one lane</h2>
+      <p>The second video lane holds a neutral look saved for the interior and a second pass that pushes the sodium lamps towards amber while lifting the shadows just enough to keep wet stone readable on a phone. Nothing is desaturated to the point where the fog stops being grey and starts being blue.</p>
+      <p>Scopes are checked at full brightness, because a quarter of the audience will watch outdoors on a train in daylight and the blacks will be gone whatever the intent. The rule on this project is that a face must survive a screen in direct sun.</p>
+    </section>
+
+    <section class="card" id="mix">
+      <p class="card__idx">Chapter 04 · the mix</p>
+      <h2>Dialogue first, never again</h2>
+      <p>Dialogue is levelled on the first day and not touched afterwards, which is the least glamorous decision in the film and the one that makes the ending work. The harbour ambience sits twelve decibels under the voice and comes up only in the two long pauses, where it does the storytelling the picture cannot.</p>
+      <p>Every move is printed on the level ladder, and the loudest moment in the film measures minus three on the master bus. That is the only safe number for a room with no acoustic treatment and a ceiling of bare concrete.</p>
+    </section>
+
+    <section class="card" id="delivery">
+      <p class="card__idx">Chapter 05 · delivery</p>
+      <h2>Three files and an archive</h2>
+      <p>The master is a single file with burnt subtitles, exported at twice the frame rate of the review copy so that a slow pan through the grain does not stutter on a phone. The review copy carries a small timecode burn in the corner; the festival file carries nothing but the film.</p>
+      <p>Three deliveries exist in all: a review file for the producer, a broadcast file for the festival, and an archive folder holding the full stems beside the project lock file. Checksums are written on the day of the burn, not on the day somebody remembers to look.</p>
+    </section>
+
+    <section class="card" id="bench">
+      <p class="card__idx">Chapter 06 · the bench</p>
+      <h2>Every second move has a key</h2>
+      <p>Cut is C, the mark in and out are I and O, the razor is B, and the clip menu opens wherever the pointer is standing. The context menu key does the same job without a pointer, which is the whole reason this suite is still used by editors who type with one hand on a laptop in a cold boat.</p>
+      <p>Pressing the numbers one to six jumps to a chapter of this page, and the ribbon at the top lights the key that was used, so muscle memory has something to read back. The menu itself is a real menu: arrows walk it, the right arrow opens a submenu, the left arrow folds it away, and Escape puts the lid back on and hands focus to whatever you opened it from.</p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>Cutline Suite 4 · project Nightport</span>
+    <span>Three menus · one clip menu · six chapters</span>
+  </footer>
+</div>
+
+<div class="ctx" id="ctxMenu" role="menu" aria-label="Clip menu">
+  <p class="ctx__ttl" aria-hidden="true">A014 · 00:12:04 to 00:18:19</p>
+  <button class="ctx__i" type="button" role="menuitem" tabindex="-1" data-go="#assembly">Open in source monitor</button>
+  <span class="ctx__sep" role="separator"></span>
+  <button class="ctx__i" type="button" role="menuitem" tabindex="-1" data-go="#cut">Razor at playhead</button>
+  <button class="ctx__i" type="button" role="menuitem" tabindex="-1" data-go="#grade">Copy grade to clip</button>
+  <div class="ctx__grp">
+    <button class="ctx__i ctx__i--sub" type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false" aria-controls="ctxSpeed" tabindex="-1">Speed<i class="dd__car dd__car--r" aria-hidden="true"></i></button>
+    <div class="ctx__panel" id="ctxSpeed" role="menu" aria-label="Speed">
+      <button class="ctx__i ctx__i--deep" type="button" role="menuitemradio" aria-checked="true" tabindex="-1" data-go="#cut">One hundred per cent</button>
+      <button class="ctx__i ctx__i--deep" type="button" role="menuitemradio" aria-checked="false" tabindex="-1" data-go="#cut">Fifty per cent</button>
+      <button class="ctx__i ctx__i--deep" type="button" role="menuitemradio" aria-checked="false" tabindex="-1" data-go="#mix">Two hundred per cent</button>
+      <button class="ctx__i ctx__i--deep" type="button" role="menuitemradio" aria-checked="false" tabindex="-1" data-go="#mix">Reverse</button>
+    </div>
+  </div>
+  <span class="ctx__sep" role="separator"></span>
+  <button class="ctx__i" type="button" role="menuitemcheckbox" aria-checked="true" tabindex="-1" data-act="mute">Mute clip</button>
+  <button class="ctx__i" type="button" role="menuitemcheckbox" aria-checked="false" tabindex="-1" data-act="lock">Lock position</button>
+  <span class="ctx__sep" role="separator"></span>
+  <button class="ctx__i ctx__i--end" type="button" role="menuitem" tabindex="-1" data-go="#delivery">Add to master reel</button>
+</div>
+
+</body>
+</html>

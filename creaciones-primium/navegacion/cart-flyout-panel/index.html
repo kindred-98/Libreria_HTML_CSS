@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cart Flyout Panel</title>
+<meta name="description" content="A corner shop with cascading category menus and a real basket: a flyout panel with line items, working quantity steppers, a running total and focus held inside until Escape.">
+<meta name="description-es" content="Ultramarinos de barrio con menús de categoría en cascada y un carrito de verdad: panel lateral con líneas, contadores de cantidad que funcionan, total actualizado y el foco retenido hasta Escape.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+
+<header class="bar">
+  <a class="brand" href="#fresh">
+    <i class="brand__awn" aria-hidden="true"></i>
+    <span class="brand__txt"><b>Esquina Provisions</b><i>Corner shop · since 1946</i></span>
+  </a>
+
+  <nav class="menus" aria-label="Shop categories">
+    <div class="dd" id="ddFresh">
+      <button class="dd__btn" type="button" aria-expanded="false" aria-controls="pFresh">Fruit &amp; veg<i class="dd__car" aria-hidden="true"></i></button>
+      <div class="dd__panel" id="pFresh">
+        <p class="dd__ttl">Crate one · delivered this morning</p>
+        <ul class="dd__list">
+          <li><a class="dd__link" href="#fresh">Salad tomatoes<i class="dd__tick" aria-hidden="true"></i></a></li>
+          <li class="sub" id="subFruit">
+            <button class="sub__btn" type="button" aria-expanded="false" aria-controls="pFruit">Orchard<i class="dd__car dd__car--r" aria-hidden="true"></i></button>
+            <div class="sub__panel" id="pFruit">
+              <p class="sub__ttl">Picked on the tree</p>
+              <ul class="sub__list">
+                <li><a href="#fresh">Cox apples</a></li>
+                <li><a href="#fresh">Williams pears</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="dd__link" href="#fresh">Roots &amp; bulbs</a></li>
+        </ul>
+        <p class="dd__note">Six crates a day, nothing stored</p>
+      </div>
+    </div>
+
+    <div class="dd" id="ddPantry">
+      <button class="dd__btn" type="button" aria-expanded="false" aria-controls="pPantry">Pantry<i class="dd__car" aria-hidden="true"></i></button>
+      <div class="dd__panel" id="pPantry">
+        <p class="dd__ttl">The back shelves</p>
+        <ul class="dd__list">
+          <li><a class="dd__link" href="#pantry">Tinned and jarred</a></li>
+          <li class="sub" id="subGrain">
+            <button class="sub__btn" type="button" aria-expanded="false" aria-controls="pGrain">Grain &amp; flour<i class="dd__car dd__car--r" aria-hidden="true"></i></button>
+            <div class="sub__panel" id="pGrain">
+              <p class="sub__ttl">Stone milled nearby</p>
+              <ul class="sub__list">
+                <li><a href="#pantry">Plain flour</a></li>
+                <li><a href="#bakery">Strong white</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a class="dd__link" href="#offers">Two for one shelf</a></li>
+        </ul>
+        <p class="dd__note">Everything weighed in front of you</p>
+      </div>
+    </div>
+
+    <div class="dd" id="ddCold">
+      <button class="dd__btn" type="button" aria-expanded="false" aria-controls="pCold">Chilled &amp; frozen<i class="dd__car" aria-hidden="true"></i></button>
+      <div class="dd__panel" id="pCold">
+        <p class="dd__ttl">Chest freezer no three</p>
+        <ul class="dd__list">
+          <li><a class="dd__link" href="#frozen">Fish, landed twice a week</a></li>
+          <li><a class="dd__link" href="#frozen">Ready meals</a></li>
+          <li><a class="dd__link" href="#drinks">Dairy &amp; eggs</a></li>
+        </ul>
+        <p class="dd__note">Minus twenty two degrees all year</p>
+      </div>
+    </div>
+
+    <a class="plain" href="#offers">Offers</a>
+  </nav>
+
+  <button class="basket" type="button" id="basketBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="cart">
+    <i class="basket__ico" aria-hidden="true"></i>
+    <span class="basket__txt"><i>Basket</i><b id="basketSum">18.40</b></span>
+    <em class="basket__n" id="basketN">0</em>
+  </button>
+</header>
+
+<div class="tape" aria-hidden="true">
+  <div class="tape__row">
+    <span>Free delivery over 35</span><b>·</b>
+    <span>Apples two for one today</span><b>·</b>
+    <span>The van leaves at seven and at four</span><b>·</b>
+    <span>Bread out of the oven at half six</span><b>·</b>
+    <span>Free delivery over 35</span><b>·</b>
+    <span>Apples two for one today</span><b>·</b>
+    <span>The van leaves at seven and at four</span><b>·</b>
+    <span>Bread out of the oven at half six</span><b>·</b>
+  </div>
+</div>
+
+<main class="shop">
+  <header class="hero">
+    <p class="hero__kick">Open from seven · closed at eight, except Sunday</p>
+    <h1>A corner shop<br><em>that keeps a list</em></h1>
+    <p class="hero__lede">Six shelves, a chest freezer and a notebook. The categories above open into their own lists, and the basket on the right keeps exactly what you put in it: change a quantity and the total moves with it.</p>
+    <p class="hero__meta">The shop has been on this corner long enough to know who takes two loaves</p>
+    <i class="hero__spin" aria-hidden="true"><b></b></i>
+  </header>
+
+  <section class="shelf" id="fresh">
+    <p class="shelf__idx">Shelf 01 · fruit and vegetables</p>
+    <h2>Six crates, no storage</h2>
+    <p>Everything on this shelf came in a crate this morning and will be gone by Friday, which is why there is no second crate underneath and no plan B in the back. The shopkeeper buys what the market sells well, and the worst of it is never offered to a customer who did not ask for it by name.</p>
+    <p>Tomatoes are the only thing weighed in front of you, because they are the only thing that cannot be stacked honestly. Everything else is counted, and a shop that counts things out loud is a shop you can check.</p>
+  </section>
+
+  <section class="shelf" id="pantry">
+    <p class="shelf__idx">Shelf 02 · pantry</p>
+    <h2>Jars, tins and one stone mill</h2>
+    <p>The pantry is the part of the shop that has not changed since the shopkeeper's father ran it, apart from the labels, which were reprinted twice and still have a date on them so you can see how old the tin really is.</p>
+    <p>Flour comes from a mill eleven miles away and arrives in paper sacks, because paper keeps it dry and lets the shopkeeper feel whether the sack has been somewhere warm. A damp sack goes back.</p>
+  </section>
+
+  <section class="shelf" id="frozen">
+    <p class="shelf__idx">Shelf 03 · frozen</p>
+    <h2>Minus twenty two, all year</h2>
+    <p>The chest freezer holds two landings a week, a fortnight of peas and a quantity of ice cream nobody buys except on a hot day. The temperature is written on a card taped to the lid and the card is changed every morning, which is the only reliable temperature log in the building.</p>
+    <p>Ready meals are stacked by best before, oldest at the front. A shop that puts the newest at eye level is a shop that is trying to throw something away.</p>
+  </section>
+
+  <section class="shelf" id="drinks">
+    <p class="shelf__idx">Shelf 04 · drinks</p>
+    <h2>Crates by the door, and a tap</h2>
+    <p>Drinks arrive in crates and stay in them, stacked by the door where the light is worst and the floor is strongest. The tap at the end of the counter sells three things and is cleaned at six every evening whether it was busy or not.</p>
+    <p>Returnable bottles are worth a penny each and the shopkeeper counts them in front of you, because an argument about a crate of empties is not an argument any customer should have to win alone.</p>
+  </section>
+
+  <section class="shelf" id="bakery">
+    <p class="shelf__idx">Shelf 05 · bakery</p>
+    <h2>Out of the oven at half six</h2>
+    <p>The oven is behind the counter and it is on a timer, so bread comes out at half past six and again at one, and the smell reaches the bus stop early enough that people arrive before the bread does.</p>
+    <p>Two loaves is the usual order and one is the usual correction, because the first loaf is still warm and the second one is what you actually eat on the way home.</p>
+  </section>
+
+  <section class="shelf" id="offers">
+    <p class="shelf__idx">Shelf 06 · offers</p>
+    <h2>Two for one, and nothing else</h2>
+    <p>The shop runs a single offer at a time because a shop with six offers has none. This week it is apples, next week it will be whatever arrived by the crate and cannot be sold at a full price before Sunday.</p>
+    <p>Everything on offer is marked with a card the shopkeeper writes by hand, and the date it was written is on the card. An offer that has been up since a previous month is not an offer.</p>
+  </section>
+
+  <footer class="foot">
+    <span class="foot__van"><i class="foot__bar" aria-hidden="true"><b id="van"></b></i>The van leaves in 41 minutes</span>
+    <span>Esquina Provisions · six shelves · one notebook</span>
+  </footer>
+</main>
+
+<aside class="cart" id="cart" role="dialog" aria-modal="true" aria-labelledby="cartTitle" hidden>
+  <div class="cart__panel" id="cartPanel">
+    <div class="cart__scan" aria-hidden="true"></div>
+    <header class="cart__head">
+      <p class="cart__kick">Basket · corner shop</p>
+      <h2 id="cartTitle">Your basket</h2>
+      <button class="cart__x" type="button" id="cartClose" aria-label="Close the basket">Close</button>
+    </header>
+    <ul class="lines" id="lines">
+      <li class="line" data-price="2.45" data-name="Salad tomatoes, per kilo">
+        <p class="line__n">Salad tomatoes</p>
+        <p class="line__m">Per kilo · weighed in front of you</p>
+        <p class="line__p">2.45</p>
+        <div class="qty">
+          <button class="qty__b" type="button" data-step="-1" aria-label="One kilo fewer of salad tomatoes">Less</button>
+          <b class="qty__n" data-qty="2">2</b>
+          <button class="qty__b" type="button" data-step="1" aria-label="One kilo more of salad tomatoes">More</button>
+        </div>
+        <button class="line__x" type="button" data-drop aria-label="Take the salad tomatoes out of the basket">Take out</button>
+      </li>
+      <li class="line" data-price="1.80" data-name="Cox apples, each">
+        <p class="line__n">Cox apples</p>
+        <p class="line__m">Each · two for one today</p>
+        <p class="line__p">1.80</p>
+        <div class="qty">
+          <button class="qty__b" type="button" data-step="-1" aria-label="One fewer cox apple">Less</button>
+          <b class="qty__n" data-qty="4">4</b>
+          <button class="qty__b" type="button" data-step="1" aria-label="One more cox apple">More</button>
+        </div>
+        <button class="line__x" type="button" data-drop aria-label="Take the cox apples out of the basket">Take out</button>
+      </li>
+      <li class="line" data-price="3.60" data-name="Sourdough loaf">
+        <p class="line__n">Sourdough loaf</p>
+        <p class="line__m">Baked at half six</p>
+        <p class="line__p">3.60</p>
+        <div class="qty">
+          <button class="qty__b" type="button" data-step="-1" aria-label="One fewer sourdough loaf">Less</button>
+          <b class="qty__n" data-qty="2">2</b>
+          <button class="qty__b" type="button" data-step="1" aria-label="One more sourdough loaf">More</button>
+        </div>
+        <button class="line__x" type="button" data-drop aria-label="Take the sourdough loaf out of the basket">Take out</button>
+      </li>
+    </ul>
+    <p class="lines__empty" id="linesEmpty" hidden>Nothing in the basket. The shopkeeper will wait.</p>
+
+    <div class="totals">
+      <p class="totals__row"><span>Goods</span><b id="subOut">18.40</b></p>
+      <p class="totals__row"><span>Delivery</span><b id="delOut">Free over 35</b></p>
+      <p class="totals__row totals__row--big"><span>To pay</span><b id="totOut">18.40</b></p>
+    </div>
+    <p class="cart__hint">Escape closes the basket and hands the focus back to the button in the bar. The arrow keys move along the basket panel.</p>
+    <button class="cart__done" type="button" id="cartDone">Pay at the counter</button>
+  </div>
+</aside>
+
+</body>
+</html>

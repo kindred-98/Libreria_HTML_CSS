@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gamepad Shell Nav — Club Muelle 8, retro arcade</title>
+<meta name="description" content="A retro gaming club whose navigation lives inside a gamepad: the cross pad walks between six rooms, Start drops you in, Select opens the manual and the cabinet keeps running with a coin slot, a PAL lamp and a rolling scanline.">
+<meta name="description-es" content="Un club de retro whose navegación vive dentro de un mando: la cruceta recorre seis salas, Start te deja dentro, Select abre el manual y la máquina sigue viva con la ranura de monedas, la luz PAL y una línea de barrido.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<a class="skip" href="#r-machines">Skip to the first room</a>
+
+<div class="cab">
+  <div class="cab__inner">
+    <div class="pad" role="group" aria-labelledby="padLab" id="pad">
+      <p class="pad__lab" id="padLab">Cross pad</p>
+      <div class="pad__cross">
+        <button class="dbtn dbtn--u" type="button" id="dU" tabindex="0" aria-label="Room above">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5 6.5 12M12 6.5 17.5 12"></path></svg>
+        </button>
+        <button class="dbtn dbtn--l" type="button" id="dL" tabindex="-1" aria-label="Room to the left">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 12 12 6.5M6.5 12 12 17.5"></path></svg>
+        </button>
+        <i class="pad__hub" aria-hidden="true"></i>
+        <button class="dbtn dbtn--r" type="button" id="dR" tabindex="-1" aria-label="Room to the right">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 12 12 6.5M17.5 12 12 17.5"></path></svg>
+        </button>
+        <button class="dbtn dbtn--d" type="button" id="dD" tabindex="-1" aria-label="Room below">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17.5 6.5 12M12 17.5 17.5 12"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="bezel">
+      <p class="bezel__brand">Club Muelle 8<span>/</span>Player cabinet</p>
+      <div class="screen" aria-hidden="true">
+        <i class="screen__scan"></i>
+        <i class="screen__grain"></i>
+        <p class="screen__room"><span class="screen__no" id="sNo">01</span><span class="screen__t" id="sTitle">The Machines</span></p>
+        <p class="screen__sub" id="sSub">Twelve cabinets, one working coin box</p>
+        <p class="screen__map" id="sMap">
+          <i class="on"></i><i></i><i></i><i></i><i></i><i></i>
+        </p>
+        <p class="screen__stat"><span>1 credit</span><span id="sPos">Room 1 of 6</span><span>Pal 625 lines</span></p>
+      </div>
+      <p class="vh" id="say" role="status" aria-live="polite">Room 1 of 6: The Machines</p>
+      <div class="bezel__lights">
+        <p class="lamp lamp--p1"><i class="lamp__d"></i>Player one</p>
+        <p class="lamp lamp--pal"><i class="lamp__d"></i>Pal</p>
+        <p class="lamp lamp--dc"><i class="lamp__d"></i>12 v</p>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="coin">
+        <p class="coin__lab">Insert coin</p>
+        <span class="coin__slot" aria-hidden="true"><i class="coin__disc"></i><i class="coin__glint"></i></span>
+      </div>
+      <div class="btns">
+        <button class="face face--sel" type="button" id="sel" aria-expanded="false" aria-controls="manual">
+          <span class="face__cap">Select</span>
+        </button>
+        <button class="face face--start" type="button" id="start">
+          <span class="face__cap">Start</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="grille" aria-hidden="true"></div>
+</div>
+
+<div class="overlay" id="manual" role="dialog" aria-modal="true" aria-labelledby="manT" hidden>
+  <div class="overlay__card">
+    <p class="overlay__eyebrow">Insert coin to continue</p>
+    <h2 class="overlay__t" id="manT">The manual</h2>
+    <dl class="keys">
+      <div><dt>Cross pad</dt><dd>Move between rooms, two at a time on the vertical</dd></div>
+      <div><dt>Arrow keys</dt><dd>Same as the pad, while the cabinet has focus</dd></div>
+      <div><dt>Enter</dt><dd>Insert a coin and drop into the room you are on</dd></div>
+      <div><dt>Select</dt><dd>Open or close this manual</dd></div>
+      <div><dt>Escape</dt><dd>Close this manual and give the focus back</dd></div>
+    </dl>
+    <p class="overlay__note">The cabinet is a navigation device, not a toy: every room below is a real page section, and the credits line is the reading position. Bring your own controller if you want to argue about the high scores.</p>
+    <button class="overlay__x" type="button" id="manX">Back to the cabinet</button>
+  </div>
+</div>
+
+<main class="rooms">
+  <h1 class="title">Club Muelle 8</h1>
+  <p class="intro">Club Muelle 8 has been open on the same eleven-metre pier since 2009. Six rooms, twenty-two members, one cabinet that still takes coins. The controller on this page is the front door: point the cross at a room and press start.</p>
+
+  <section class="room" id="r-machines">
+    <p class="room__no">Room 01</p>
+    <h2 class="room__t">The machines</h2>
+    <p class="room__lede">Twelve cabinets along the wall, nine of them original, all of them warm within a minute of being switched on.</p>
+    <p>The floor rule is that you never switch a cabinet off while somebody is on a credit. It sounds fussy until you have watched a stranger lose an hour of progress to a tired power supply, and then it sounds like the only law the club has. We keep a printed card next to each machine with the service history, the CRT date code and the name of whoever last cleaned the coin track.</p>
+    <p>Screen geometry is the only real argument we have. A shadow mask is quieter than an aperture grille and a three or four inches narrower, which some players can feel in the first minute and most players cannot feel at all. We keep both, we keep the argument, and we do not throw anything away that still holds a decent image.</p>
+  </section>
+
+  <section class="room" id="r-scores">
+    <p class="room__no">Room 02</p>
+    <h2 class="room__t">High scores</h2>
+    <p class="room__lede">The wall board, transcribed. Names are reset every month, grudges are not.</p>
+    <table class="board">
+      <caption>Cabinet 3, ladder for the current month</caption>
+      <thead><tr><th scope="col">Pos</th><th scope="col">Initials</th><th scope="col">Score</th><th scope="col">Cabinet</th><th scope="col">Date</th></tr></thead>
+      <tbody>
+        <tr><td>01</td><td>R.V.</td><td>248 900</td><td>Cab 3</td><td>14 Feb</td></tr>
+        <tr><td>02</td><td>M.T.</td><td>211 350</td><td>Cab 7</td><td>11 Feb</td></tr>
+        <tr><td>03</td><td>KLH</td><td>198 020</td><td>Cab 3</td><td>09 Feb</td></tr>
+        <tr><td>04</td><td>B.S.</td><td>184 640</td><td>Cab 11</td><td>02 Feb</td></tr>
+        <tr><td>05</td><td>ANM</td><td>171 210</td><td>Cab 7</td><td>28 Jan</td></tr>
+      </tbody>
+    </table>
+    <p>Initials only, no exceptions, and no photographs of the screen: the board is a record of what happened, not of who was standing there. A name goes up, a name comes down, and the two players involved shake hands in front of the machine whether or not they want to. That is the entire constitution of the club, and it has never needed an amendment.</p>
+  </section>
+
+  <section class="room" id="r-tourney">
+    <p class="room__no">Room 03</p>
+    <h2 class="room__t">The monthly tournament</h2>
+    <p class="room__lede">One Saturday a month, doors at six, first round at eight, nobody allowed to leave a machine mid-credit.</p>
+    <p>Sixteen players, four cabinets, and a bracket that is drawn in public with slips of paper out of a coffee tin. Losers stay on the floor all night because the consolation bracket is the better half of the tournament and everyone knows it. The prize is a trophy made from a broken joystick housing, awarded for attendance rather than skill.</p>
+    <p>Entry is free and the tea is worse than free. What the tournament actually produces is a list of numbers that people argue about for a month afterwards, and a night where the machines are loud enough that nobody can hear their own kitchen. February's round was won on the last life of the last game, which is the correct ending.</p>
+  </section>
+
+  <section class="room" id="r-trade">
+    <p class="room__no">Room 04</p>
+    <h2 class="room__t">Trade post</h2>
+    <p class="room__lede">A shelf by the door where members leave things they no longer want and take things they have wanted for years.</p>
+    <p>The rule is that the shelf is honest: no dead monitors, no shells without the original artwork, nothing that needs a repair nobody has time for. Post your item on the board with a name and a number, and take what you want off the shelf without asking. Two members have never met in person and have exchanged four joysticks this way, which is the best trade record the club has.</p>
+    <p>Current shelf: a pair of trackball housings, a Japanese arcade flyer from 1984, a working power supply for a 15 kHz monitor, and one very heavy controller with a six-way switch that nobody has claimed in eleven months. Take the last one down and you have to explain your choice at the next tournament.</p>
+  </section>
+
+  <section class="room" id="r-jams">
+    <p class="room__no">Room 05</p>
+    <h2 class="room__t">Jam schedule</h2>
+    <p class="room__lede">Two evenings a week, the side room, and a synthesiser that has to be carried through a doorway by two people.</p>
+    <table class="board board--plain">
+      <caption>Weekly rhythm at Club Muelle 8</caption>
+      <thead><tr><th scope="col">Day</th><th scope="col">Open</th><th scope="col">Room</th><th scope="col">What happens</th></tr></thead>
+      <tbody>
+        <tr><td>Tuesday</td><td>19:00</td><td>Side</td><td>Free play, no music</td></tr>
+        <tr><td>Thursday</td><td>20:00</td><td>Side</td><td>Chiptune session, four players</td></tr>
+        <tr><td>Saturday</td><td>18:00</td><td>Floor</td><td>Tournament round</td></tr>
+        <tr><td>Sunday</td><td>11:00</td><td>Side</td><td>Repairs, all welcome</td></tr>
+      </tbody>
+    </table>
+    <p>The Thursday session is the only time the main room is off limits, because the two side walls are thin and the noise carries. Members have learned to finish a track in four minutes instead of six, which has produced a small, strange and genuinely good body of local music. The Sunday repair hours are how the cabinets stay alive: most of them have been fixed by someone who did not own them.</p>
+  </section>
+
+  <section class="room" id="r-join">
+    <p class="room__no">Room 06</p>
+    <h2 class="room__t">Joining the club</h2>
+    <p class="room__lede">Twenty-two members, one waiting list, and a code of conduct that fits on a postcard.</p>
+    <p>Come on an open evening, buy a coffee, and play something. That is the whole recruitment process, and it has never once failed. Membership costs the price of a drink a month, which buys the tea, the light bulbs and the repair fund; it does not buy a key, because there is no key to buy.</p>
+    <p>The postcard says three things. Never touch somebody else's credit. Never talk over a player who is on a game. And when a machine breaks, do not unplug it, tell somebody. Three sentences, pinned by the door, read aloud once a year to the new members, and amended twice in fifteen years, both times to make them longer.</p>
+    <p>If you are reading this before your first visit, the honest advice is to bring headphones for the walk over. The pier is loud with gulls and the room is louder than that, and both are reasons people keep coming back.</p>
+  </section>
+
+  <nav class="board-nav" aria-label="All rooms">
+    <p class="board-nav__lab">Cabinet map<span>Six rooms on the pier</span></p>
+    <ol class="board-nav__list">
+      <li><span>01</span><a href="#r-machines">The machines</a><i>12 cabinets</i></li>
+      <li><span>02</span><a href="#r-scores">High scores</a><i>248 900</i></li>
+      <li><span>03</span><a href="#r-tourney">The monthly tournament</a><i>Sat 18:00</i></li>
+      <li><span>04</span><a href="#r-trade">Trade post</a><i>By the door</i></li>
+      <li><span>05</span><a href="#r-jams">Jam schedule</a><i>Thu 20:00</i></li>
+      <li><span>06</span><a href="#r-join">Joining the club</a><i>22 members</i></li>
+    </ol>
+    <p class="board-nav__note"><a href="#manual" id="openManual">Read the manual again</a></p>
+  </nav>
+</main>
+
+<footer class="foot">
+  <p>Club Muelle 8 · Pier 8, dock 4 · Open Tuesday to Sunday, 18:00 to late</p>
+  <p><a href="#r-scores">The wall board</a> · <a href="#r-join">How to join</a> · <a href="#r-machines">Room one</a></p>
+</footer>
+</body>
+</html>

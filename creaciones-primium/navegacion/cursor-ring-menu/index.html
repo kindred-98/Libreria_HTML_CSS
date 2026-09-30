@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cursor Ring Menu</title>
+<meta name="description" content="A radial drawing tool wheel with six options circling a hub: arrow keys walk the ring, the focused option scales up and lights, and a guide arc swings to meet it.">
+<meta name="description-es" content="Rueda radial de herramientas de dibujo con seis opciones alrededor de un centro: las flechas recorren el anillo, la opción enfocada crece y se enciende, y un arco guía gira hasta encontrarla.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<header class="mast">
+  <div class="mast__rule" aria-hidden="true"><i class="mast__sweep"></i></div>
+  <p class="mast__kicker">Vellum Studio · Radial tool wheel</p>
+  <h1>Six tools, <em>one circle</em></h1>
+  <p class="mast__lede">The wheel keeps every brush within a wrist of the cursor. Tab into it and the arrow keys walk the ring one slot at a time: the option under the cursor grows, the guide arc swings to meet it, and the hub reads out the tool you are about to pick.</p>
+</header>
+
+<section class="stage">
+  <div class="board">
+    <div class="board__head">
+      <p class="board__cap">Wheel 01 · six slots</p>
+      <p class="board__state"><i class="board__led" aria-hidden="true"></i>Ready</p>
+    </div>
+
+    <div class="ring" id="ring">
+      <svg class="ring__svg" viewBox="0 0 400 400" aria-hidden="true">
+        <circle class="ring__track" cx="200" cy="200" r="150"></circle>
+        <circle class="ring__dial" cx="200" cy="200" r="196"></circle>
+        <g class="ring__spokes">
+          <path d="M200 116V86"></path>
+          <path d="M200 116V86" transform="rotate(60 200 200)"></path>
+          <path d="M200 116V86" transform="rotate(120 200 200)"></path>
+          <path d="M200 116V86" transform="rotate(180 200 200)"></path>
+          <path d="M200 116V86" transform="rotate(240 200 200)"></path>
+          <path d="M200 116V86" transform="rotate(300 200 200)"></path>
+        </g>
+        <g class="ring__guide" id="guide">
+          <path class="ring__spoke" d="M200 116V86"></path>
+          <path class="ring__bracket" d="M106 37.2A188 188 0 0 1 294 37.2"></path>
+        </g>
+      </svg>
+
+      <span class="ring__orbit" aria-hidden="true"><i class="ring__orbit-dot"></i></span>
+
+      <nav class="ring__nav" aria-label="Drawing tools">
+        <ol class="ring__list">
+          <li class="opt"><a href="#pen" tabindex="0" data-i="0"><span class="opt__no">01</span><span class="opt__t">Pen</span></a></li>
+          <li class="opt"><a href="#pencil" tabindex="-1" data-i="1"><span class="opt__no">02</span><span class="opt__t">Pencil</span></a></li>
+          <li class="opt"><a href="#brush" tabindex="-1" data-i="2"><span class="opt__no">03</span><span class="opt__t">Brush</span></a></li>
+          <li class="opt"><a href="#eraser" tabindex="-1" data-i="3"><span class="opt__no">04</span><span class="opt__t">Eraser</span></a></li>
+          <li class="opt"><a href="#fill" tabindex="-1" data-i="4"><span class="opt__no">05</span><span class="opt__t">Fill</span></a></li>
+          <li class="opt"><a href="#ruler" tabindex="-1" data-i="5"><span class="opt__no">06</span><span class="opt__t">Ruler</span></a></li>
+        </ol>
+      </nav>
+
+      <div class="hub">
+        <p class="hub__lab">Focused</p>
+        <p class="hub__name" id="hubName">Pen nib</p>
+        <p class="hub__meta" id="hubMeta">Vector · 100 %</p>
+        <i class="hub__pulse" aria-hidden="true"></i>
+      </div>
+    </div>
+
+    <p class="board__hint">Arrow keys walk the ring · Enter jumps to the note · Escape returns to slot 01</p>
+  </div>
+</section>
+
+<main class="grid">
+  <section class="entry" id="pen">
+    <p class="entry__idx">Tool 01 · Vector</p>
+    <h2>Pen nib</h2>
+    <p>Every click lays an anchor and every drag pulls its handles, so a curve can be corrected long after the stroke was made. The nib snaps to the grid when you hold the modifier, which is how a logo outline stays honest.</p>
+    <p>The preview line shows the segment before it is committed, and a closed path fills itself the moment the last anchor meets the first.</p>
+  </section>
+
+  <section class="entry" id="pencil">
+    <p class="entry__idx">Tool 02 · Dry media</p>
+    <h2>Pencil</h2>
+    <p>Pressure drives both width and opacity, and a tilt of the stylus turns the stroke on its side for shading. The grain of the virtual paper shows through lightly, so a soft pencil never looks like ink.</p>
+    <p>Four grades are stored in the wheel: hard for construction lines, soft for tone, and a coloured pair for the marks you intend to erase later.</p>
+  </section>
+
+  <section class="entry" id="brush">
+    <p class="entry__idx">Tool 03 · Wet media</p>
+    <h2>Brush</h2>
+    <p>Bristle count, loading and drying are modelled separately, which is why the first pass of a stroke is rich and the fourth one is nearly dry. Speed keeps the edge sharp; hesitation lets the pigment pool.</p>
+    <p>Mixing happens on a separate layer that can be flattened once the colour is right, keeping the paintable layer untouched underneath.</p>
+  </section>
+
+  <section class="entry" id="eraser">
+    <p class="entry__idx">Tool 04 · Correction</p>
+    <h2>Eraser</h2>
+    <p>The eraser works on the mask rather than the pixels, so nothing is lost until the file is flattened. Hard edges cut clean shapes; soft edges feather into the tone the way a kneaded rubber does on paper.</p>
+    <p>Used with the modifier held down it flips to restore, which brings back the last section you removed without touching anything around it.</p>
+  </section>
+
+  <section class="entry" id="fill">
+    <p class="entry__idx">Tool 05 · Flat colour</p>
+    <h2>Fill</h2>
+    <p>Tolerance decides how far the colour travels from the pixel you touched, and gap closing bridges the small holes a sketch always leaves behind. The preview floods the area before you release, so the choice can be judged in place.</p>
+    <p>Fills land on their own layer by default, ready to be tinted or masked without disturbing the line work.</p>
+  </section>
+
+  <section class="entry" id="ruler">
+    <p class="entry__idx">Tool 06 · Measure</p>
+    <h2>Ruler and guides</h2>
+    <p>Drag from the edge strip to pull out a guide, then hold the tool against it and the stroke snaps to the straight edge with a light tick. Angles lock to the marks engraved on the blade: fifteen, thirty, forty-five.</p>
+    <p>The readout stays on screen in tabular figures, so two measurements can be compared without writing anything down.</p>
+  </section>
+
+  <section class="entry entry--wide" id="shortcuts">
+    <p class="entry__idx">Appendix</p>
+    <h2>Keyboard shortcuts</h2>
+    <p>The wheel answers to the arrow keys in either direction and wraps around at the end, so the tool opposite your current one is always three presses away. Home returns to the pen, End lands on the ruler.</p>
+    <p>Enter follows the focused slot into its note below, Escape puts focus back on slot 01, and the guide arc resets with it. Nothing on the wheel needs a pointer to be reached.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Vellum Studio · Radial tool wheel</span>
+  <span>Slot 01 of 06 · Guide arc parked on the pen</span>
+</footer>
+</body>
+</html>

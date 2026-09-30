@@ -68,18 +68,21 @@ const libraryRoots = [
       tarjetas: "Cards",
       otros: "Other",
     },
-    // Estas dos carpetas son de fatmaerm: sus 80 indicadores de carga y sus 80
-    // navegaciones. El resto de la carpeta sigue siendo de kindred-98.
+    // Estas tres carpetas son de fatmaerm: sus 80 indicadores de carga, sus 142
+    // navegaciones y sus 71 tarjetas. El resto de la carpeta sigue siendo de
+    // kindred-98.
     authors: {
       "indicadores-de-carga": "fatmaerm",
       navegacion: "fatmaerm",
+      tarjetas: "fatmaerm",
     },
     // El MIT de fatmaerm, declarado por carpeta ademas de en la raiz: su
     // LICENSE la nombra a ella y a kindred-98, y este mapa deja constancia de
-    // que estas dos carpetas son suyas.
+    // que estas tres carpetas son suyas.
     licenses: {
       "indicadores-de-carga": { license: "MIT", licenseFile: "LICENSE", source: "https://github.com/kindred-98/Libreria_HTML_CSS", redistributable: true },
       navegacion: { license: "MIT", licenseFile: "LICENSE", source: "https://github.com/kindred-98/Libreria_HTML_CSS", redistributable: true },
+      tarjetas: { license: "MIT", licenseFile: "LICENSE", source: "https://github.com/kindred-98/Libreria_HTML_CSS", redistributable: true },
     },
   },
 ];

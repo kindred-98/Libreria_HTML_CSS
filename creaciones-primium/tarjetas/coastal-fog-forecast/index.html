@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coastal Fog Forecast</title>
+<meta name="description" content="A coastal fog forecast with a stylised cape map, drifting fog banks, a draggable hourly strip, a visibility alert and tide and dew point readouts.">
+<meta name="description-es" content="Un pronóstico de niebla costera con mapa de cabo, bancos de niebla a la deriva, tira horaria arrastrable, alerta de visibilidad y datos de marea y punto de rocío.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <article class="fog">
+    <span class="fog__glow" aria-hidden="true"></span>
+    <span class="fog__bank fog__bank--a" aria-hidden="true"></span>
+    <span class="fog__bank fog__bank--b" aria-hidden="true"></span>
+    <span class="fog__bank fog__bank--c" aria-hidden="true"></span>
+
+    <header class="fog__bar">
+      <p class="fog__place">Saltcape Point<span class="fog__region">Oregon coast · station CPX4</span></p>
+      <p class="fog__stamp"><span class="fog__dot"></span>Updated 04:12 local</p>
+    </header>
+
+    <section class="map">
+      <span class="map__grid" aria-hidden="true"></span>
+      <svg class="map__svg" viewBox="0 0 340 168" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="seaFill" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#123448"></stop>
+            <stop offset="1" stop-color="#07161f"></stop>
+          </linearGradient>
+          <linearGradient id="landFill" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#34453f"></stop>
+            <stop offset="0.5" stop-color="#2b3a37"></stop>
+            <stop offset="1" stop-color="#1d292b"></stop>
+          </linearGradient>
+        </defs>
+        <path class="map__sea" d="M0 0h340v168H0z" fill="url(#seaFill)"></path>
+        <path class="map__land" d="M212 0h128v168H196l6-18 12-4-4-16 14-6-6-14 10-8-2-16 12-4-6-18 8-12-12-8 6-14-14-10z" fill="url(#landFill)"></path>
+        <path class="map__road" d="M232 14c14 22 6 40 20 56s10 34 24 50 8 32 16 48"></path>
+        <g class="map__contour">
+          <path d="M244 22c-16 18-14 44 4 62s22 44 8 66"></path>
+          <path d="M276 14c-18 20-16 50 4 70s24 50 10 76"></path>
+          <path d="M312 30c-14 18-12 42 4 60s18 44 6 64"></path>
+        </g>
+        <path class="map__surf" d="M196 0l-6 18 12 8-6 14 6 14-10 8 2 16-12 4 6 18-8 12 14 10-6 14 12 8-2 16 14 6-6 14 12 4 4 18"></path>
+        <g class="map__swell">
+          <path d="M18 40q14-8 28 0t28 0"></path>
+          <path d="M40 76q14-8 28 0t28 0"></path>
+          <path d="M14 112q14-8 28 0t28 0"></path>
+          <path d="M44 144q14-8 28 0t28 0"></path>
+        </g>
+      </svg>
+      <span class="map__pin" aria-hidden="true"><i></i></span>
+      <span class="map__sweep" aria-hidden="true"></span>
+      <p class="map__read"><b id="fogVis">240</b> m visibility</p>
+      <p class="map__coord">43.742&deg;N · 124.318&deg;W · tide rising 2.1 m</p>
+    </section>
+
+    <section class="now">
+      <div class="now__temp">
+        <p class="now__deg"><span data-count="9" id="fogTemp">9</span><small>&deg;C</small></p>
+        <p class="now__cond">Dense fog · visibility poor</p>
+      </div>
+      <dl class="now__stats">
+        <div class="gauge">
+          <dt>Wind</dt>
+          <dd>14 km/h W</dd>
+        </div>
+        <div class="gauge">
+          <dt>Dew point</dt>
+          <dd>8&deg;C</dd>
+        </div>
+        <div class="gauge">
+          <dt>Pressure</dt>
+          <dd>1017 hPa</dd>
+        </div>
+      </dl>
+    </section>
+
+    <p class="alert" role="status">
+      <span class="alert__tag">Advisory</span>
+      <span class="alert__text">Visibility below 400 m until 11:00, drizzle easing after noon</span>
+    </p>
+
+    <section class="strip">
+      <div class="strip__head">
+        <p class="strip__title">Next 12 hours</p>
+        <div class="strip__nav">
+          <button class="strip__btn" type="button" id="fogPrev" aria-label="Scroll hourly strip back">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 6l-6 6 6 6"></path></svg>
+          </button>
+          <button class="strip__btn" type="button" id="fogNow" aria-label="Scroll hourly strip back to now">Now</button>
+          <button class="strip__btn" type="button" id="fogNext" aria-label="Scroll hourly strip forward">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 6l6 6-6 6"></path></svg>
+          </button>
+        </div>
+      </div>
+      <div class="strip__rail" id="fogRail" tabindex="0" role="group" aria-label="Hourly forecast, scrollable with arrow keys">
+        <ul class="strip__track" id="fogTrack">
+          <li class="hour hour--now"><p class="hour__t">04</p><p class="hour__i"><span class="ico ico--fog" aria-hidden="true"></span></p><p class="hour__v">9&deg;</p><p class="hour__p">12%</p></li>
+          <li class="hour"><p class="hour__t">05</p><p class="hour__i"><span class="ico ico--fog" aria-hidden="true"></span></p><p class="hour__v">9&deg;</p><p class="hour__p">14%</p></li>
+          <li class="hour"><p class="hour__t">06</p><p class="hour__i"><span class="ico ico--fog" aria-hidden="true"></span></p><p class="hour__v">8&deg;</p><p class="hour__p">18%</p></li>
+          <li class="hour"><p class="hour__t">07</p><p class="hour__i"><span class="ico ico--fog" aria-hidden="true"></span></p><p class="hour__v">8&deg;</p><p class="hour__p">22%</p></li>
+          <li class="hour"><p class="hour__t">08</p><p class="hour__i"><span class="ico ico--drizzle" aria-hidden="true"></span></p><p class="hour__v">9&deg;</p><p class="hour__p">38%</p></li>
+          <li class="hour"><p class="hour__t">09</p><p class="hour__i"><span class="ico ico--drizzle" aria-hidden="true"></span></p><p class="hour__v">10&deg;</p><p class="hour__p">52%</p></li>
+          <li class="hour hour--wet"><p class="hour__t">10</p><p class="hour__i"><span class="ico ico--rain" aria-hidden="true"></span></p><p class="hour__v">11&deg;</p><p class="hour__p">68%</p></li>
+          <li class="hour hour--wet"><p class="hour__t">11</p><p class="hour__i"><span class="ico ico--rain" aria-hidden="true"></span></p><p class="hour__v">12&deg;</p><p class="hour__p">61%</p></li>
+          <li class="hour"><p class="hour__t">12</p><p class="hour__i"><span class="ico ico--cloud" aria-hidden="true"></span></p><p class="hour__v">12&deg;</p><p class="hour__p">34%</p></li>
+          <li class="hour"><p class="hour__t">13</p><p class="hour__i"><span class="ico ico--cloud" aria-hidden="true"></span></p><p class="hour__v">13&deg;</p><p class="hour__p">24%</p></li>
+          <li class="hour"><p class="hour__t">14</p><p class="hour__i"><span class="ico ico--sun" aria-hidden="true"></span></p><p class="hour__v">14&deg;</p><p class="hour__p">16%</p></li>
+          <li class="hour"><p class="hour__t">15</p><p class="hour__i"><span class="ico ico--sun" aria-hidden="true"></span></p><p class="hour__v">15&deg;</p><p class="hour__p">12%</p></li>
+        </ul>
+      </div>
+      <p class="strip__hint">Drag the strip or use the arrows to scrub the forecast</p>
+    </section>
+  </article>
+</main>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Iceland Ring Road Trip</title>
+<meta name="description" content="A Ring Road route card with a drawn coastal map, staggered stop markers, a marching route line and a stop detail sheet that swaps on hover.">
+<meta name="description-es" content="Una tarjeta de ruta de la Ring Road de Islandia con mapa costero que se traza, marcadores de parada escalonados, línea de ruta en movimiento y ficha de parada que cambia al pasar el cursor.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <article class="trip" id="trip">
+    <span class="trip__sheen" aria-hidden="true"></span>
+
+    <header class="trip__head">
+      <div class="trip__id">
+        <p class="trip__kicker">Iceland &middot; Route 1</p>
+        <h1 class="trip__title">Ring Road, Northbound</h1>
+      </div>
+      <p class="trip__day"><span>DAY</span>06<em>/09</em></p>
+    </header>
+
+    <div class="map">
+      <svg class="map__svg" viewBox="0 0 400 250" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="landg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1e3f52"></stop>
+            <stop offset="1" stop-color="#11242f"></stop>
+          </linearGradient>
+          <pattern id="gridp" width="25" height="25" patternUnits="userSpaceOnUse">
+            <path d="M25 0H0V25" fill="none" stroke="#3f7f9b" stroke-opacity=".3" stroke-width="1"></path>
+          </pattern>
+        </defs>
+        <rect width="400" height="250" fill="url(#gridp)"></rect>
+        <path class="map__land" d="M36 138C28 118 40 104 56 100C52 86 66 74 84 76C96 62 120 58 142 64C168 48 206 42 244 46C280 40 318 48 348 58C368 64 376 82 366 98C378 112 374 132 360 142C372 158 366 178 348 186C328 204 292 212 256 214C220 220 180 218 146 212C112 208 78 200 58 182C40 168 34 152 36 138Z" fill="url(#landg)" stroke="#79d6ee" stroke-opacity=".45" stroke-width="1.5" stroke-linejoin="round"></path>
+        <path class="map__inland" d="M74 140C72 116 96 94 132 86C176 76 226 70 274 78C320 86 348 112 348 142C348 174 314 196 262 202C210 208 148 204 110 190C84 180 76 160 74 140Z" fill="none" stroke="#8fd66a" stroke-opacity=".22" stroke-width="1" stroke-dasharray="4 6"></path>
+        <path class="map__route" d="M68 155C96 184 128 198 164 200C214 204 258 200 288 190C324 178 350 166 352 145C356 112 320 88 268 78C240 72 220 66 200 65C160 64 106 92 68 155" fill="none" stroke="#ffd08a" stroke-width="3" stroke-linecap="round"></path>
+        <path class="map__flow" d="M68 155C96 184 128 198 164 200C214 204 258 200 288 190C324 178 350 166 352 145C356 112 320 88 268 78C240 72 220 66 200 65C160 64 106 92 68 155" fill="none" stroke="#fff6e2" stroke-width="3" stroke-linecap="round" stroke-dasharray="9 16"></path>
+        <path class="map__glacier" d="M262 140l30-6 20 12-12 18-30 4z" fill="#bfe9f7" fill-opacity=".42" stroke="#eafaff" stroke-opacity=".5"></path>
+        <path class="map__glacier" d="M146 122l26-8 18 10-10 16-26 2z" fill="#bfe9f7" fill-opacity=".3" stroke="#eafaff" stroke-opacity=".35"></path>
+        <text class="map__label" x="252" y="184">VATNAJ&#214;KULL</text>
+        <text class="map__label" x="58" y="72">VESTFIR&#208;IR</text>
+        <text class="map__coord" x="16" y="240">64.96&#176;N 19.02&#176;W</text>
+      </svg>
+
+      <button class="stop" type="button" style="--x:17%;--y:62%;--i:0" data-stop="0" aria-pressed="true">
+        <span class="stop__pin">1</span>
+        <span class="stop__label">Reykjav&iacute;k</span>
+      </button>
+      <button class="stop" type="button" style="--x:41%;--y:80%;--i:1" data-stop="1" aria-pressed="false">
+        <span class="stop__pin">2</span>
+        <span class="stop__label">V&iacute;k</span>
+      </button>
+      <button class="stop" type="button" style="--x:72%;--y:76%;--i:2" data-stop="2" aria-pressed="false">
+        <span class="stop__pin">3</span>
+        <span class="stop__label">J&ouml;kuls&aacute;rl&oacute;n</span>
+      </button>
+      <button class="stop" type="button" style="--x:87%;--y:57%;--i:3" data-stop="3" aria-pressed="false">
+        <span class="stop__pin">4</span>
+        <span class="stop__label">H&ouml;fn</span>
+      </button>
+      <button class="stop" type="button" style="--x:50%;--y:26%;--i:4" data-stop="4" aria-pressed="false">
+        <span class="stop__pin">5</span>
+        <span class="stop__label">Akureyri</span>
+      </button>
+
+      <span class="map__compass" aria-hidden="true">
+        <i></i>
+        <b>N</b>
+      </span>
+      <span class="map__scalebar" aria-hidden="true"><i></i>100 KM</span>
+    </div>
+
+    <section class="ficha" id="ficha" aria-live="polite">
+      <p class="ficha__kicker"><span id="stopNum">STOP 01</span><span class="ficha__rule"></span><span id="stopRegion">Capital region</span></p>
+      <h2 class="ficha__name" id="stopName">Reykjav&iacute;k</h2>
+      <p class="ficha__note" id="stopNote">Fuel, rye bread and a weather check before the south coast opens up.</p>
+      <div class="ficha__meta">
+        <div class="meta"><span>LEG</span><strong id="stopLeg">0 km</strong></div>
+        <div class="meta"><span>STAY</span><strong id="stopStay">1 night</strong></div>
+        <div class="meta"><span>ROAD</span><strong id="stopRoad">Closed by wind</strong></div>
+      </div>
+    </section>
+
+    <footer class="trip__stats">
+      <div class="stat"><span>Distance</span><strong>1 332 km</strong></div>
+      <div class="stat"><span>Driving</span><strong>17 h 40</strong></div>
+      <div class="stat"><span>Stops</span><strong>09</strong></div>
+    </footer>
+  </article>
+</main>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprint Release Kanban</title>
+<meta name="description" content="A bento style release board with blocks of different sizes that reorganise with an animated flip, cards that hop between lanes and a burndown micro chart.">
+<meta name="description-es" content="Un tablero de release en bloques bento de distintos tamaños que se reorganizan con un giro animado, tarjetas que saltan de carril y un micrográfico de avance.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <article class="bento" id="bento">
+    <span class="bento__glow" aria-hidden="true"></span>
+
+    <header class="bento__bar">
+      <p class="bento__team">Northwind release board</p>
+      <div class="bento__actions">
+        <button class="toggle" type="button" id="bnFlip" aria-pressed="false">
+          <span class="toggle__dot" aria-hidden="true"></span>Regroup
+        </button>
+        <button class="toggle" type="button" id="bnDensity" aria-pressed="false">
+          <span class="toggle__dot toggle__dot--alt" aria-hidden="true"></span>Compact
+        </button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="block block--hero">
+        <p class="block__kicker">Sprint 24</p>
+        <h1 class="block__title">Release 4.2 &middot; Emberline</h1>
+        <p class="block__lede">Cut on Thursday 19:00. Everything not merged by Wednesday noon slips to the next train.</p>
+        <div class="hero__stats">
+          <div class="mini">
+            <p class="mini__label">Shipped</p>
+            <p class="mini__value"><span data-count="18">18</span><small>/26</small></p>
+          </div>
+          <div class="mini">
+            <p class="mini__label">Days left</p>
+            <p class="mini__value"><span data-count="4">4</span></p>
+          </div>
+          <div class="mini">
+            <p class="mini__label">Blocked</p>
+            <p class="mini__value"><span data-count="2">2</span></p>
+          </div>
+        </div>
+        <div class="burn" aria-hidden="true">
+          <span class="burn__line" style="--d:.02s;--h:.94"></span>
+          <span class="burn__line" style="--d:.05s;--h:.86"></span>
+          <span class="burn__line" style="--d:.07s;--h:.79"></span>
+          <span class="burn__line" style="--d:.09s;--h:.68"></span>
+          <span class="burn__line" style="--d:.11s;--h:.6"></span>
+          <span class="burn__line" style="--d:.13s;--h:.5"></span>
+          <span class="burn__line" style="--d:.15s;--h:.43"></span>
+          <span class="burn__line" style="--d:.17s;--h:.34"></span>
+          <svg class="burn__ideal" viewBox="0 0 200 100" preserveAspectRatio="none" focusable="false">
+            <path d="M4 10L196 92"></path>
+          </svg>
+        </div>
+        <p class="block__foot">Actual bars against the ideal burndown</p>
+      </section>
+
+      <section class="block block--lane" data-lane="build">
+        <header class="lane__head">
+          <p class="lane__title"><span class="lane__dot lane__dot--build" aria-hidden="true"></span>In build</p>
+          <p class="lane__count"><span data-count="3">3</span></p>
+        </header>
+        <ul class="lane__cards" data-drop="build"></ul>
+      </section>
+
+      <section class="block block--lane" data-lane="review">
+        <header class="lane__head">
+          <p class="lane__title"><span class="lane__dot lane__dot--review" aria-hidden="true"></span>In review</p>
+          <p class="lane__count"><span data-count="3">3</span></p>
+        </header>
+        <ul class="lane__cards" data-drop="review"></ul>
+      </section>
+
+      <section class="block block--lane" data-lane="ship">
+        <header class="lane__head">
+          <p class="lane__title"><span class="lane__dot lane__dot--ship" aria-hidden="true"></span>Shipped</p>
+          <p class="lane__count"><span data-count="3">3</span></p>
+        </header>
+        <ul class="lane__cards" data-drop="ship"></ul>
+      </section>
+
+      <section class="block block--risk">
+        <p class="block__kicker">Risk register</p>
+        <ul class="risk__list">
+          <li class="risk risk--high">
+            <span class="risk__tag">High</span>
+            <span class="risk__text">Ledger export rewrite lands Thursday morning</span>
+          </li>
+          <li class="risk risk--mid">
+            <span class="risk__tag">Mid</span>
+            <span class="risk__text">Two review slots left before the cut</span>
+          </li>
+          <li class="risk risk--low">
+            <span class="risk__tag">Low</span>
+            <span class="risk__text">Design tokens waiting on copy sign-off</span>
+          </li>
+        </ul>
+        <p class="block__foot">Reviewed 2 h ago &middot; owner Priya</p>
+      </section>
+    </div>
+
+    <footer class="bento__foot">
+      <p class="bento__note"><span id="bnCount">9</span> cards on the board &middot; drag a card or press move to hop it to the next lane</p>
+      <a class="bento__link" href="#bn-move-hint" id="bnLink">Keyboard help</a>
+    </footer>
+    <p class="visually-hidden" id="bn-move-hint">Use the move button on each card to send it to the next lane, or Tab to a card and press M.</p>
+  </article>
+</main>
+</body>
+</html>

@@ -1,12 +1,12 @@
 # Biblioteca HTML y CSS
 
-Biblioteca estática y con búsqueda de demos independientes de interfaces hechos con HTML, CSS y JavaScript. El repositorio contiene actualmente **885 páginas de demos** repartidas en tres colecciones:
+Biblioteca estática y con búsqueda de demos independientes de interfaces hechos con HTML, CSS y JavaScript. El repositorio contiene actualmente **1018 páginas de demos** repartidas en tres colecciones:
 
 - `DavokerDiseñador/` — **119 efectos de texto** de **davoker** (7 temas: miscelánea, harry potter, stalker, monster hunter, star wars, matrix y the division), cada uno con su showcase, su `.zip` y sus instrucciones. Su repositorio es **MIT**, así que **ZIP habilitado**. La carpeta guarda también su **portada** (`davoker.html`, el showcase unificado de los 119), que se abre dentro de la rejilla al elegir a davoker en el filtro de autores, y fuera del catálogo.
 - `CreacionesNuevas/` — **248 demos** originales creados para este repositorio, cada uno con su propio archivo `LICENSE` MIT y **descarga ZIP habilitada**.
-- `creaciones-primium/` — **518 demos** organizados por categoría: 248 animaciones, botones, controles, efectos, formularios, tarjetas y otros de **kindred-98**, más **86 galerías** de fotografía y los **160** de **fatmaerm** repartidos entre `indicadores-de-carga/` y `navegacion/`. Toda la colección comparte el `LICENSE` MIT de la carpeta, que nombra a las dos autoras, así que el **ZIP está habilitado en todos**. Las 86 galerías (676 fotografías) muestran sus fotos desde Wikimedia Commons, con el autor y la licencia de cada imagen impresos en la propia página; el inventario completo está en [`THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md).
+- `creaciones-primium/` — **651 demos** organizados por categoría: **272** de animaciones, botones, controles, efectos y formularios de **kindred-98**, más **86 galerías** de fotografía y los **293** de **fatmaerm** repartidos entre `indicadores-de-carga/`, `navegacion/` y `tarjetas/`. Toda la colección comparte el `LICENSE` MIT de la carpeta, que nombra a las dos autoras, así que el **ZIP está habilitado en todos**. Las 86 galerías (676 fotografías) muestran sus fotos desde Wikimedia Commons, con el autor y la licencia de cada imagen impresos en la propia página; el inventario completo está en [`THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md).
 
-Los **885 son descargables**. La aplicación web está separada en `Web/` y se divide en tres páginas —`index.html` (portada), `components.html` (listado y detalle) y `team-core.html` (equipo y donación)—; los demos originales se cargan directamente para mostrar vistas previas reales.
+Los **1018 son descargables**. La aplicación web está separada en `Web/` y se divide en tres páginas —`index.html` (portada), `components.html` (listado y detalle) y `team-core.html` (equipo y donación)—; los demos originales se cargan directamente para mostrar vistas previas reales.
 
 > `GevendraAutorExterno/` **no forma parte del repositorio**: los 116 demos que provee un tercero quedan en el disco local para poder trabajar con ellos, pero están en `.gitignore`, **no se catalogan, no se publican y no se sirven**. Su material no tiene licencia declarada. Ver *Material retirado*.
 
@@ -50,7 +50,7 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 .
 |-- DavokerDiseñador/           # 119 efectos de texto de davoker (MIT, ZIP habilitado) + su portada davoker.html
 |-- CreacionesNuevas/           # 248 creaciones propias del autor (MIT, ZIP habilitado)
-|-- creaciones-primium/         # 518 creaciones en curso, por categorías (MIT, ZIP habilitado)
+|-- creaciones-primium/         # 651 creaciones en curso, por categorías (MIT, ZIP habilitado)
 |-- Web/
 |   |-- data/
 |   |   |-- catalog.json        # Índice ligero generado (sin código fuente)
@@ -143,7 +143,7 @@ Se despliega **la raíz del repositorio**, no un subdirectorio: las vistas previ
 
 La CSP usa `frame-src 'self'`, así que las vistas previas siguen cargando porque viven en el mismo origen. Los demos de terceros van dentro de un `iframe` y **sí** quedan sujetos a esta CSP: cada documento hereda las cabeceras del sitio, así que si la CSP no permite el host del que un demo saca sus imágenes o sus scripts, ese demo se ve roto en producción aunque en local vaya bien.
 
-Por eso la CSP es deliberadamente corta. Los recursos que usaban los demos se bajaron a la carpeta `vendor/` de cada componente, así que solo quedan tres hosts externos: `upload.wikimedia.org` y `commons.wikimedia.org` para las fotos de las galerías, y `api.qrserver.com` para el único componente que genera códigos QR en el momento. `validar-csp.mjs` comprueba esto en cada despliegue: rastrea los recursos externos de los 885 demos, avisa si alguno no está permitido en la directiva que le toca y también si la CSP permite un host que ya no usa nadie.
+Por eso la CSP es deliberadamente corta. Los recursos que usaban los demos se bajaron a la carpeta `vendor/` de cada componente, así que solo quedan tres hosts externos: `upload.wikimedia.org` y `commons.wikimedia.org` para las fotos de las galerías, y `api.qrserver.com` para el único componente que genera códigos QR en el momento. `validar-csp.mjs` comprueba esto en cada despliegue: rastrea los recursos externos de los 1018 demos, avisa si alguno no está permitido en la directiva que le toca y también si la CSP permite un host que ya no usa nadie.
 
 ### El catálogo se genera en el despliegue
 

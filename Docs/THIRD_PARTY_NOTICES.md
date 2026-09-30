@@ -10,8 +10,8 @@ La `LICENSE` de la raíz se aplica al código original de la aplicación y a la 
 |---|---:|---|---|---|
 | `CreacionesNuevas/` | **248** | `kindred-98`, creations originales | MIT (archivo `LICENSE` en cada carpeta) | **Habilitado** |
 | `DavokerDiseñador/` | **119** | `davoker`, efectos de texto CSS | MIT (archivo `DavokerDiseñador/LICENSE`, de su repositorio) | **Habilitado** |
-| `creaciones-primium/` | **518** | `kindred-98` y `fatmaerm` (`indicadores-de-carga/`, `navegacion/`) | MIT (archivo `creaciones-primium/LICENSE`) | **Habilitado** |
-| **Total** | **885** | | | 885 de 885 |
+| `creaciones-primium/` | **651** | `kindred-98` y `fatmaerm` (`indicadores-de-carga/`, `navegacion/`, `tarjetas/`) | MIT (archivo `creaciones-primium/LICENSE`) | **Habilitado** |
+| **Total** | **1018** | | | 1018 de 1018 |
 
 ## Fotografías de las galerías (Wikimedia Commons)
 
@@ -53,7 +53,7 @@ Los 248 componentes de `CreacionesNuevas/` están autorizados: el catálogo los 
 
 Los 119 efectos de `DavokerDiseñador/` proceden de `https://github.com/davoker/efectos_css_para_html`, de un miembro del equipo y con licencia **MIT** declarada en su `LICENSE`. Ese archivo vive en la raíz de la carpeta y el generador lo añade a cada ZIP, así que `license: "MIT"`, `licenseFile: "LICENSE"` y `source` salen verificados y la descarga está habilitada. `transicion.html`, `transicion.css` y la portada `davoker.html` (renombrada para no chocar con el `index.html` de la web) son piezas del mismo repositorio: la portada no es un componente del catálogo, se abre dentro de la rejilla al elegir a **davoker** en el filtro de autores.
 
-Los 518 componentes de `creaciones-primium/` se crearon para este repositorio: 160 de `fatmaerm` (las carpetas `indicadores-de-carga/` y `navegacion/`) y 358 de `kindred-98`. Todos comparten el **MIT** del `LICENSE` de la raíz de la colección, que nombra a las dos autoras, y el generador lo inyecta en cada ZIP, así que `license: "MIT"`, `licenseFile: "LICENSE"`, `source` y `redistributable: true` salen verificados en los 518.
+Los 651 componentes de `creaciones-primium/` se crearon para este repositorio: 293 de `fatmaerm` (las carpetas `indicadores-de-carga/`, `navegacion/` y `tarjetas/`) y 358 de `kindred-98`. Todos comparten el **MIT** del `LICENSE` de la raíz de la colección, que nombra a las dos autoras, y el generador lo inyecta en cada ZIP, así que `license: "MIT"`, `licenseFile: "LICENSE"`, `source` y `redistributable: true` salen verificados en los 651.
 
 ## Material retirado: `GevendraAutorExterno/` (116 demos)
 
@@ -78,8 +78,8 @@ La carpeta sigue en el repositorio, pero **quedó fuera del catálogo, del sitio
 
 ## Consecuencias asumidas en el proyecto
 
-- El botón **ZIP está habilitado en los 885 componentes**: los 248 de `CreacionesNuevas/`, los 119 de `DavokerDiseñador/` y los 518 de `creaciones-primium/`. Ninguno queda sin redistribución.
-- El sitio se despliega en **Vercel sirviendo la raíz del repositorio**, que muestra los 885 componentes y evita que las previews den 404. `vercel.json` bloquea `/GevendraAutorExterno/...` con una redirección permanente, de modo que el material retirado no se sirve aunque la carpeta siga en el repositorio. No existe un artefacto de publicación alternativo: el constructor que filtraba por licencias se eliminó junto con el despliegue en GitHub Pages, para que solo haya una copia del sitio y no se puedan publicar por error los componentes sin permiso de redistribución.
+- El botón **ZIP está habilitado en los 1018 componentes**: los 248 de `CreacionesNuevas/`, los 119 de `DavokerDiseñador/` y los 651 de `creaciones-primium/`. Ninguno queda sin redistribución.
+- El sitio se despliega en **Vercel sirviendo la raíz del repositorio**, que muestra los 1018 componentes y evita que las previews den 404. `vercel.json` bloquea `/GevendraAutorExterno/...` con una redirección permanente, de modo que el material retirado no se sirve aunque la carpeta siga en el repositorio. No existe un artefacto de publicación alternativo: el constructor que filtraba por licencias se eliminó junto con el despliegue en GitHub Pages, para que solo haya una copia del sitio y no se puedan publicar por error los componentes sin permiso de redistribución.
 - La atribución de origen se muestra en el detalle de cada componente («Source: …»), tanto si está verificado como si no.
 
 ## Autorizar un componente

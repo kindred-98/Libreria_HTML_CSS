@@ -1,0 +1,845 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --kraft-1: #e0b57c;
+  --kraft-2: #c9974f;
+  --kraft-3: #ad7739;
+  --kraft-4: #85542a;
+  --ink: #3b2413;
+  --ink-2: rgba(59, 36, 19, 0.74);
+  --ink-3: rgba(59, 36, 19, 0.46);
+  --rule: rgba(59, 36, 19, 0.26);
+  --stamp: #b0362a;
+  --olive: #4a6a3c;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --tear: polygon(0% 0%, 100% 0%, 100% 100%, 95.8% 97.4%, 91.6% 100%, 87.5% 98.2%, 83.3% 100%, 79.1% 97%, 75% 100%, 70.8% 98.6%, 66.6% 100%, 62.5% 97.2%, 58.3% 100%, 54.1% 98.4%, 50% 100%, 45.8% 97.6%, 41.6% 100%, 37.5% 98.8%, 33.3% 100%, 29.1% 97.4%, 25% 100%, 20.8% 98.2%, 16.6% 100%, 12.5% 97.8%, 8.3% 100%, 4.1% 98.4%, 0% 100%);
+  --tear-flat: polygon(0% 0%, 100% 0%, 100% 100%, 95.8% 100%, 91.6% 100%, 87.5% 100%, 83.3% 100%, 79.1% 100%, 75% 100%, 70.8% 100%, 66.6% 100%, 62.5% 100%, 58.3% 100%, 54.1% 100%, 50% 100%, 45.8% 100%, 41.6% 100%, 37.5% 100%, 33.3% 100%, 29.1% 100%, 25% 100%, 20.8% 100%, 16.6% 100%, 12.5% 100%, 8.3% 100%, 4.1% 100%, 0% 100%);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: clamp(14px, 4vmin, 40px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  overflow-x: hidden;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(64% 52% at 50% 12%, rgba(255, 196, 120, 0.18) 0%, rgba(255, 196, 120, 0) 68%),
+    radial-gradient(70% 60% at 88% 100%, rgba(120, 74, 38, 0.5) 0%, rgba(120, 74, 38, 0) 72%),
+    repeating-linear-gradient(92deg, rgba(255, 255, 255, 0.018) 0 2px, rgba(0, 0, 0, 0) 2px 7px),
+    linear-gradient(178deg, #2a1d15 0%, #150e0a 100%);
+}
+
+.stage {
+  width: min(540px, 100%);
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  animation: stage-in 0.5s var(--ease-out) backwards;
+}
+
+.kv {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  transform-origin: 50% -14px;
+  filter: drop-shadow(0 22px 26px rgba(10, 5, 2, 0.6)) drop-shadow(0 3px 2px rgba(10, 5, 2, 0.4));
+  animation: kv-sway 7.6s var(--ease-soft) infinite alternate;
+}
+
+.kv__sheet {
+  position: relative;
+  padding: 32px 24px 78px;
+  clip-path: var(--tear);
+  background:
+    repeating-linear-gradient(174deg, rgba(255, 255, 255, 0.05) 0 3px, rgba(94, 56, 20, 0.05) 3px 7px),
+    radial-gradient(120% 60% at 12% 0%, rgba(255, 236, 202, 0.55) 0%, rgba(255, 236, 202, 0) 58%),
+    radial-gradient(90% 50% at 100% 100%, rgba(104, 62, 22, 0.34) 0%, rgba(104, 62, 22, 0) 62%),
+    linear-gradient(168deg, var(--kraft-1) 0%, var(--kraft-2) 44%, var(--kraft-3) 78%, var(--kraft-4) 100%);
+  animation: kv-tear 0.5s var(--ease-out) backwards;
+}
+
+.kv__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='k'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23k)'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+  opacity: 0.09;
+  mix-blend-mode: multiply;
+}
+
+.kv__light {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(104deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0) 32%);
+  box-shadow: 0 1px 0 rgba(255, 244, 222, 0.5) inset;
+}
+
+.clip {
+  position: absolute;
+  top: -21px;
+  left: 24px;
+  z-index: 4;
+  width: 66px;
+  height: 56px;
+  transform-origin: 50% 88%;
+  animation: clip-sway 4.9s var(--ease-soft) infinite alternate;
+}
+
+.clip__arm,
+.clip__hinge {
+  position: absolute;
+  display: block;
+  border: 1px solid rgba(24, 16, 8, 0.55);
+  background: linear-gradient(160deg, #f6f8fa 0%, #c3cad0 32%, #79828a 64%, #d6dde2 100%);
+  box-shadow: 0 3px 6px rgba(20, 10, 2, 0.6);
+}
+
+.clip__arm {
+  top: 1px;
+  left: 6px;
+  width: 48px;
+  height: 10px;
+  border-radius: 6px 6px 2px 2px;
+}
+
+.clip__arm--far {
+  top: 17px;
+  left: 0;
+  width: 58px;
+  height: 11px;
+  opacity: 0.92;
+}
+
+.clip__hinge {
+  top: 32px;
+  left: 18px;
+  width: 25px;
+  height: 25px;
+  border-radius: 3px 3px 11px 11px;
+  background: linear-gradient(120deg, #e4eaef 0%, #8d959c 52%, #bcc3c9 100%);
+  animation: clip-glint 5.6s var(--ease-soft) infinite;
+}
+
+.clip__hinge::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 5px;
+  width: 15px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(40, 30, 20, 0.55);
+}
+
+.kv__head {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 10px;
+}
+
+.kv__shop {
+  margin: 0;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  text-shadow: 0 1px 0 rgba(255, 238, 208, 0.4);
+}
+
+.kv__meta,
+.kv__sub,
+.kv__siglabel,
+.kv__terms {
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.kv__meta {
+  margin: 0;
+}
+
+.kv__title {
+  position: relative;
+  z-index: 3;
+  margin: 12px 0 0;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  font-size: 27px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: #331e0f;
+  text-shadow: 0 1px 0 rgba(255, 240, 212, 0.42);
+  animation: settle 0.44s var(--ease-out) 0.06s backwards;
+}
+
+.kv__sub {
+  position: relative;
+  z-index: 3;
+  margin: 5px 0 0;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-size: 12.5px;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--ink-2);
+  animation: settle 0.44s var(--ease-out) 0.11s backwards;
+}
+
+.kv__rule {
+  position: relative;
+  z-index: 3;
+  display: block;
+  height: 1px;
+  margin: 13px 0 12px;
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--rule) 0%, rgba(59, 36, 19, 0.06) 100%);
+  animation: rule-draw 0.5s var(--ease-out) 0.1s backwards;
+}
+
+.crate {
+  position: relative;
+  z-index: 3;
+  list-style: none;
+  margin: 0;
+  padding: 0 92px 0 0;
+  display: grid;
+  gap: 2px;
+}
+
+.crate__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 5px 0;
+  border-bottom: 1px dotted rgba(59, 36, 19, 0.22);
+  animation: settle 0.4s var(--ease-out) backwards;
+}
+
+.crate__item:nth-child(1) {
+  animation-delay: 0.14s;
+}
+
+.crate__item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.crate__item:nth-child(3) {
+  animation-delay: 0.26s;
+}
+
+.crate__item:nth-child(4) {
+  animation-delay: 0.32s;
+}
+
+.tick {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  margin: 0;
+  padding: 3px 2px;
+  border: 0;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.28s var(--ease-soft);
+}
+
+.tick:hover {
+  color: var(--ink);
+}
+
+.tick:focus-visible {
+  outline: 2px solid var(--stamp);
+  outline-offset: 2px;
+}
+
+.tick__box {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border: 1px solid rgba(59, 36, 19, 0.42);
+  border-radius: 3px;
+  background: rgba(255, 244, 224, 0.32);
+  box-shadow: 0 1px 1px rgba(59, 36, 19, 0.18) inset;
+  transition: background 0.28s var(--ease-soft), border-color 0.28s var(--ease-soft);
+}
+
+.tick__box svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: var(--stamp);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+}
+
+.tick.is-on {
+  color: var(--ink);
+}
+
+.tick.is-on .tick__box {
+  border-color: rgba(59, 36, 19, 0.62);
+  background: rgba(255, 246, 228, 0.72);
+  box-shadow: 0 1px 0 rgba(255, 250, 238, 0.7) inset, 0 1px 2px rgba(59, 36, 19, 0.25);
+}
+
+.tick.is-on .tick__box svg {
+  stroke-dashoffset: 0;
+  animation: ink 0.3s var(--ease-out);
+}
+
+.tick__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crate__qty {
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.kv__sign {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 13px;
+}
+
+.kv__script {
+  margin: 0;
+  padding: 0 4px 2px;
+  font-family: "Segoe Script", "Bradley Hand", "Lucida Handwriting", cursive;
+  font-size: 20px;
+  line-height: 1;
+  color: rgba(40, 62, 74, 0.86);
+  border-bottom: 1px solid rgba(40, 62, 74, 0.34);
+  transform: rotate(-1.6deg);
+}
+
+.kv__siglabel {
+  margin: 0 0 2px;
+  font-size: 8.5px;
+}
+
+.kv__acts {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 15px;
+  animation: settle 0.4s var(--ease-out) 0.34s backwards;
+}
+
+.btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1 1 150px;
+  min-width: 0;
+  padding: 9px 14px;
+  border: 1px solid rgba(59, 36, 19, 0.5);
+  border-radius: 3px;
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: linear-gradient(180deg, rgba(255, 246, 226, 0.6) 0%, rgba(214, 168, 106, 0.42) 100%);
+  box-shadow: 0 1px 0 rgba(255, 248, 232, 0.7) inset, 0 6px 12px -8px rgba(30, 16, 4, 0.8);
+  cursor: pointer;
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255, 248, 232, 0.8) inset, 0 10px 16px -8px rgba(30, 16, 4, 0.9);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--stamp);
+  outline-offset: 2px;
+}
+
+.btn__seal {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #d8564a 0%, var(--stamp) 62%, #7a1f16 100%);
+  box-shadow: 0 0 0 1px rgba(122, 31, 22, 0.6) inset;
+  transition: background 0.3s var(--ease-soft);
+}
+
+.btn--ink[aria-pressed="true"] {
+  color: #f6e7cd;
+  border-color: rgba(74, 106, 60, 0.9);
+  background: linear-gradient(180deg, #5c8050 0%, #3d5a31 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) inset, 0 8px 16px -8px rgba(30, 46, 20, 0.9);
+}
+
+.btn--ink[aria-pressed="true"] .btn__seal {
+  background: radial-gradient(circle at 34% 30%, #b9e39a 0%, var(--olive) 62%, #2c4222 100%);
+}
+
+.btn--quiet {
+  flex: 0 1 auto;
+  color: var(--ink-2);
+  background: transparent;
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.btn--quiet:hover {
+  color: var(--ink);
+}
+
+.btn--quiet[aria-pressed="true"] {
+  opacity: 0.42;
+  transform: translateY(2px);
+}
+
+.kv__perf {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 58px;
+  z-index: 3;
+  height: 2px;
+  background-image: radial-gradient(circle at 1px 1px, rgba(59, 36, 19, 0.45) 0 1.1px, rgba(59, 36, 19, 0) 1.4px);
+  background-size: 7px 2px;
+  background-repeat: repeat-x;
+}
+
+.kv__stub {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 0 24px;
+  transform-origin: 50% 0%;
+  transition: transform 0.5s var(--ease-out), opacity 0.45s var(--ease-soft);
+  animation: settle 0.42s var(--ease-out) 0.36s backwards;
+}
+
+.kv__amount {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0;
+}
+
+.kv__amount span {
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.kv__amount b {
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-size: 17px;
+  color: #2f1b0d;
+}
+
+.kv__terms {
+  margin: 0;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-align: center;
+  color: var(--ink-3);
+}
+
+.kv__code {
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--ink-2);
+}
+
+.kv.is-redeemed .kv__stub {
+  transform: translateY(26px) rotate(5deg);
+  opacity: 0;
+}
+
+.kv.is-torn .kv__stub {
+  transform: translateY(120px) rotate(9deg) scale(0.96);
+  opacity: 0;
+}
+
+.kv.is-torn .kv__perf {
+  opacity: 0.25;
+}
+
+.stamp {
+  position: absolute;
+  top: 62px;
+  right: 12px;
+  z-index: 5;
+  width: 92px;
+  height: 92px;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.82;
+  transform: rotate(-15deg);
+  animation: stamp-down 0.36s var(--ease-out) 0.3s backwards;
+}
+
+.stamp__face {
+  position: relative;
+  display: grid;
+  place-content: center;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  color: var(--stamp);
+  text-align: center;
+  animation: stamp-wobble 8.5s var(--ease-soft) 0.8s infinite alternate;
+}
+
+.stamp__ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(176, 54, 42, 0.28) inset;
+  opacity: 0.8;
+}
+
+.stamp__word {
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.stamp__date {
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.void {
+  position: absolute;
+  top: 44%;
+  left: -12%;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  width: 124%;
+  height: 46px;
+  border-top: 2px solid rgba(176, 54, 42, 0.62);
+  border-bottom: 2px solid rgba(176, 54, 42, 0.62);
+  color: rgba(176, 54, 42, 0.72);
+  transform: rotate(-11deg) scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.34s var(--ease-soft), transform 0.34s var(--ease-out);
+  mix-blend-mode: multiply;
+}
+
+.void b {
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  padding-left: 0.36em;
+}
+
+.kv.is-redeemed .void {
+  opacity: 1;
+  transform: rotate(-11deg) scale(1);
+}
+
+.kv.is-redeemed .stamp__face {
+  animation: none;
+  filter: saturate(0.6) brightness(0.9);
+}
+
+.hint {
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(226, 190, 142, 0.62);
+}
+
+.stage.is-settled,
+.stage.is-settled .kv__sheet,
+.stage.is-settled .kv__title,
+.stage.is-settled .kv__sub,
+.stage.is-settled .kv__rule,
+.stage.is-settled .crate__item,
+.stage.is-settled .kv__acts,
+.stage.is-settled .kv__stub,
+.stage.is-settled .stamp {
+  animation-name: none;
+}
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes kv-sway {
+  from {
+    transform: rotate(-1.1deg) translateY(0);
+  }
+  to {
+    transform: rotate(0.5deg) translateY(-3px);
+  }
+}
+
+@keyframes kv-tear {
+  from {
+    clip-path: var(--tear-flat);
+  }
+  to {
+    clip-path: var(--tear);
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rule-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes clip-sway {
+  from {
+    transform: rotate(-3.4deg);
+  }
+  to {
+    transform: rotate(2.2deg);
+  }
+}
+
+@keyframes clip-glint {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.28);
+  }
+}
+
+@keyframes ink {
+  from {
+    stroke-dashoffset: 20;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes stamp-down {
+  from {
+    opacity: 0;
+    transform: rotate(-34deg) scale(2.5);
+  }
+  to {
+    opacity: 0.82;
+    transform: rotate(-15deg) scale(1);
+  }
+}
+
+@keyframes stamp-wobble {
+  from {
+    transform: rotate(-3deg) scale(0.985);
+  }
+  to {
+    transform: rotate(3.4deg) scale(1.015);
+  }
+}
+
+@media (max-width: 460px) {
+  .kv__sheet {
+    padding: 28px 17px 76px;
+  }
+
+  .kv__title {
+    font-size: 23px;
+  }
+
+  .crate {
+    padding-right: 70px;
+  }
+
+  .tick {
+    font-size: 11.5px;
+  }
+
+  .tick__text {
+    white-space: normal;
+  }
+
+  .kv__stub {
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: 0 17px;
+  }
+
+  .kv__code {
+    grid-column: 1 / -1;
+    text-align: right;
+  }
+
+  .kv__terms {
+    text-align: right;
+  }
+
+  .stamp {
+    top: 244px;
+    right: 8px;
+    width: 64px;
+    height: 64px;
+  }
+
+  .stamp__word {
+    font-size: 11px;
+  }
+
+  .stamp__date {
+    font-size: 7.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .stage,
+  .kv__title,
+  .kv__sub,
+  .crate__item,
+  .kv__acts,
+  .kv__stub,
+  .kv__rule,
+  .kv__sheet,
+  .stamp {
+    opacity: 1;
+    transform: none;
+  }
+
+  .kv__sheet {
+    clip-path: var(--tear);
+  }
+
+  .kv__rule {
+    transform: scaleX(1);
+  }
+
+  .kv {
+    transform: rotate(-0.6deg);
+  }
+
+  .clip {
+    transform: rotate(-1deg);
+  }
+
+  .stamp {
+    opacity: 0.82;
+    transform: rotate(-15deg) scale(1);
+  }
+
+  .stamp__face {
+    transform: rotate(1deg);
+    filter: none;
+  }
+
+  .tick.is-on .tick__box svg {
+    stroke-dashoffset: 0;
+  }
+
+  .kv__grain {
+    opacity: 0.09;
+  }
+}

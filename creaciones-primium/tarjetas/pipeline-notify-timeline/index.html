@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pipeline Notify Timeline</title>
+<meta name="description" content="A pipeline notification timeline where alerts drop onto the axis one after another, the connector line draws itself, each state badge blinks on its own rhythm and a new notice keeps sliding in from the top.">
+<meta name="description-es" content="Una línea de tiempo de avisos del pipeline donde las alertas caen sobre el eje una tras otra, la línea conectora se dibuja sola, cada insignia de estado parpadea a su ritmo y un aviso nuevo sigue entrando por arriba.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <article class="pnt">
+    <span class="pnt__glow" aria-hidden="true"></span>
+    <span class="pnt__grid" aria-hidden="true"></span>
+
+    <header class="pnt__bar">
+      <p class="pnt__brand"><span class="pnt__mark" aria-hidden="true"></span>Relay Nine <em>pipeline</em></p>
+      <p class="pnt__live"><i></i>Live &middot; build 4417</p>
+    </header>
+
+    <section class="axis" aria-label="Pipeline stages">
+      <span class="axis__line" aria-hidden="true"><i id="pntAxisFill"></i></span>
+      <span class="axis__cursor" id="pntHead" aria-hidden="true"><i></i></span>
+      <ol class="axis__steps">
+        <li class="step is-past"><span class="step__dot" aria-hidden="true"></span><p class="step__name">Ingest</p></li>
+        <li class="step is-past"><span class="step__dot" aria-hidden="true"></span><p class="step__name">Build</p></li>
+        <li class="step is-now"><span class="step__dot" aria-hidden="true"></span><p class="step__name">Staging</p></li>
+        <li class="step"><span class="step__dot" aria-hidden="true"></span><p class="step__name">Prod</p></li>
+      </ol>
+    </section>
+
+    <section class="feeds">
+      <p class="feeds__title">Notifications <span id="pntCount">5</span> in the last hour</p>
+      <ol class="feeds__list" id="pntList">
+        <li class="feed">
+          <span class="feed__dot" aria-hidden="true"></span>
+          <span class="feed__body">
+            <p class="feed__head"><b class="feed__stage">Deploy</b><time datetime="2026-09-30T09:14">09:14:02</time></p>
+            <p class="feed__msg">Checkout bundle 8f41c9 released to the edge fleet</p>
+          </span>
+          <span class="feed__state feed__state--ok">live</span>
+        </li>
+        <li class="feed">
+          <span class="feed__dot" aria-hidden="true"></span>
+          <span class="feed__body">
+            <p class="feed__head"><b class="feed__stage">Queue</b><time datetime="2026-09-30T09:12">09:12:48</time></p>
+            <p class="feed__msg">Retrying 3 webhook deliveries &middot; backoff 12s</p>
+          </span>
+          <span class="feed__state feed__state--warn">retry</span>
+        </li>
+        <li class="feed">
+          <span class="feed__dot" aria-hidden="true"></span>
+          <span class="feed__body">
+            <p class="feed__head"><b class="feed__stage">Storage</b><time datetime="2026-09-30T09:09">09:09:31</time></p>
+            <p class="feed__msg">Snapshot taken for namespace billing-prod-07</p>
+          </span>
+          <span class="feed__state feed__state--ok">done</span>
+        </li>
+        <li class="feed">
+          <span class="feed__dot" aria-hidden="true"></span>
+          <span class="feed__body">
+            <p class="feed__head"><b class="feed__stage">Auth</b><time datetime="2026-09-30T09:04">09:04:17</time></p>
+            <p class="feed__msg">Token rotation paused &middot; awaiting approval</p>
+          </span>
+          <span class="feed__state feed__state--bad">held</span>
+        </li>
+        <li class="feed">
+          <span class="feed__dot" aria-hidden="true"></span>
+          <span class="feed__body">
+            <p class="feed__head"><b class="feed__stage">Ingest</b><time datetime="2026-09-30T08:58">08:58:04</time></p>
+            <p class="feed__msg">Nightly extract finished &middot; 4.2M rows landed</p>
+          </span>
+          <span class="feed__state feed__state--ok">done</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="gauges">
+      <div class="gauge">
+        <p class="gauge__label">Throughput</p>
+        <p class="gauge__value"><span data-count="1284">1284</span><small> evt/min</small></p>
+        <span class="gauge__track" aria-hidden="true"><i style="--w:.72"></i></span>
+      </div>
+      <div class="gauge">
+        <p class="gauge__label">Error rate</p>
+        <p class="gauge__value"><span data-count="1.8" data-dec="1">1.8</span><small> %</small></p>
+        <span class="gauge__track" aria-hidden="true"><i class="is-bad" style="--w:.18"></i></span>
+      </div>
+      <div class="gauge">
+        <p class="gauge__label">Median lag</p>
+        <p class="gauge__value"><span data-count="412">412</span><small> ms</small></p>
+        <span class="gauge__track" aria-hidden="true"><i class="is-cool" style="--w:.41"></i></span>
+      </div>
+    </section>
+
+    <footer class="pnt__foot">
+      <p class="pnt__note">Muted channels: billing-alerts &middot; digest at 10:00</p>
+      <div class="pnt__acts">
+        <button class="pbtn" type="button" id="pntMute" aria-pressed="false">Mute</button>
+        <button class="pbtn pbtn--main" type="button" id="pntFlush">Flush queue</button>
+      </div>
+    </footer>
+  </article>
+</main>
+</body>
+</html>

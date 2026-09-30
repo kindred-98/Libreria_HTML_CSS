@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbit Ring Menu</title>
+<meta name="description" content="A navigation ring for orbital flight operations: six destinations circle a central hub, the selected one advances out of the plane and drags a comet trail behind it, and an orbital elements readout follows the choice.">
+<meta name="description-es" content="Anillo de navegación para operaciones orbitales: seis destinos giran alrededor de un cubo central, el seleccionado avanza fuera del plano y arrastra una estela de cometa, y la lectura de elementos orbitales sigue la elección.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="flight">
+
+  <i class="field" aria-hidden="true">
+    <span class="field__stars"></span>
+    <span class="field__nebula"></span>
+  </i>
+
+  <header class="masthead">
+    <p class="kicker">Flight dynamics · console 3</p>
+    <h1>Orbital ring</h1>
+    <p class="lede">Six destinations of a single mission orbit a central hub, each on its own ellipse. Whatever you select comes forward out of the plane and leaves a trail behind it, and the elements readout on the right follows the choice around the ring.</p>
+  </header>
+
+  <div class="console">
+
+    <div class="stage">
+      <span class="stage__plane" aria-hidden="true"></span>
+      <svg class="trails" viewBox="0 0 400 400" aria-hidden="true">
+        <ellipse class="trail trail--1" cx="200" cy="200" rx="182" ry="74" transform="rotate(-18 200 200)"></ellipse>
+        <ellipse class="trail trail--2" cx="200" cy="200" rx="142" ry="150" transform="rotate(24 200 200)"></ellipse>
+        <ellipse class="trail trail--3" cx="200" cy="200" rx="196" ry="196" transform="rotate(8 200 200)"></ellipse>
+      </svg>
+
+      <nav class="ring" aria-label="Mission phases">
+        <a class="hub" href="#sec-log">
+          <i class="hub__ring" aria-hidden="true"></i>
+          <b class="hub__name">Flight log</b>
+          <i class="hub__state" id="hubState">Orbit nominal</i>
+        </a>
+
+        <a class="orb" href="#sec-window" style="--a:-90deg" data-phase="Launch window" data-alt="Apogee 120 km" data-inc="24.5 deg" data-vel="2.8 km/s">
+          <span class="orb__plate">
+            <i class="orb__num">01</i>
+            <b class="orb__name">Launch window</b>
+            <i class="orb__role">T minus zero</i>
+            <i class="orb__tail" aria-hidden="true"></i>
+          </span>
+        </a>
+        <a class="orb" href="#sec-ascent" style="--a:-30deg" data-phase="Ascent stage" data-alt="Apogee 210 km" data-inc="24.5 deg" data-vel="5.2 km/s">
+          <span class="orb__plate">
+            <i class="orb__num">02</i>
+            <b class="orb__name">Ascent stage</b>
+            <i class="orb__role">Two minutes ten</i>
+            <i class="orb__tail" aria-hidden="true"></i>
+          </span>
+        </a>
+        <a class="orb" href="#sec-insert" style="--a:30deg" data-phase="Insertion burn" data-alt="Apogee 408 km" data-inc="51.6 deg" data-vel="7.7 km/s">
+          <span class="orb__plate">
+            <i class="orb__num">03</i>
+            <b class="orb__name">Insertion</b>
+            <i class="orb__role">Main engine, 96 s</i>
+            <i class="orb__tail" aria-hidden="true"></i>
+          </span>
+        </a>
+        <a class="orb" href="#sec-station" style="--a:90deg" data-phase="Station keeping" data-alt="Apogee 412 km" data-inc="51.6 deg" data-vel="7.66 km/s">
+          <span class="orb__plate">
+            <i class="orb__num">04</i>
+            <b class="orb__name">Station keeping</b>
+            <i class="orb__role">Trim, twice a day</i>
+            <i class="orb__tail" aria-hidden="true"></i>
+          </span>
+        </a>
+        <a class="orb" href="#sec-transfer" style="--a:150deg" data-phase="Transfer" data-alt="Apogee 780 km" data-inc="28.4 deg" data-vel="7.4 km/s">
+          <span class="orb__plate">
+            <i class="orb__num">05</i>
+            <b class="orb__name">Transfer</b>
+            <i class="orb__role">Two burns, one plane</i>
+            <i class="orb__tail" aria-hidden="true"></i>
+          </span>
+        </a>
+        <a class="orb" href="#sec-reentry" style="--a:210deg" data-phase="Reentry corridor" data-alt="Interface 80 km" data-inc="51.6 deg" data-vel="7.8 km/s">
+          <span class="orb__plate">
+            <i class="orb__num">06</i>
+            <b class="orb__name">Reentry</b>
+            <i class="orb__role">Corridor, 1.4 deg wide</i>
+            <i class="orb__tail" aria-hidden="true"></i>
+          </span>
+        </a>
+      </nav>
+    </div>
+
+    <aside class="elements" aria-label="Orbital elements">
+      <p class="elements__k">Selected phase</p>
+      <h2 class="elements__phase" id="phaseName">Launch window</h2>
+
+      <div class="dial" aria-hidden="true">
+        <i class="dial__arc"></i>
+        <i class="dial__hand" id="dialHand"></i>
+        <i class="dial__pin"></i>
+        <i class="dial__ticks"></i>
+      </div>
+
+      <dl class="elements__list">
+        <div><dt>Apogee</dt><dd id="elAlt">Apogee 120 km</dd></div>
+        <div><dt>Inclination</dt><dd id="elInc">24.5 deg</dd></div>
+        <div><dt>Velocity</dt><dd id="elVel">2.8 km/s</dd></div>
+        <div><dt>Met</dt><dd id="elMet">T minus 00:04:12</dd></div>
+      </dl>
+
+      <p class="elements__hint">Arrow keys walk the ring, Enter opens the phase below, Escape returns to the hub.</p>
+    </aside>
+
+  </div>
+
+  <main class="log">
+
+    <section class="phase" id="sec-window">
+      <p class="phase__no">Phase 01</p>
+      <h2>Launch window</h2>
+      <p>The window is the interval in which the geometry of the launch site, the target orbit plane and the rotation of the earth all agree, and it is usually about ninety minutes wide. Miss it and the vehicle waits in the hold, which is boring and expensive and much better than launching into a plane the target will not be in.</p>
+      <p>The countdown is built backwards from a fixed instant, and every hold is added on the front of it rather than subtracted from the end, so a forty minute hold does not push the launch into the next window.</p>
+    </section>
+
+    <section class="phase" id="sec-ascent">
+      <p class="phase__no">Phase 02</p>
+      <h2>Ascent stage</h2>
+      <p>Two minutes and ten seconds of powered flight, most of it spent turning rather than climbing. The vehicle pitches over early, flies almost level for a while, and picks up speed across the range rather than against gravity, which is why the ascent looks so lazy from the tower and is the most efficient way out of an atmosphere.</p>
+      <p>Max q, the moment of maximum dynamic pressure, arrives about seventy seconds in and is the first genuinely structural moment of the flight. After it, the air is thin enough that the engines can be opened up and the vehicle is no longer pushing through weather.</p>
+    </section>
+
+    <section class="phase" id="sec-insert">
+      <p class="phase__no">Phase 03</p>
+      <h2>Insertion burn</h2>
+      <p>Ninety six seconds of main engine above the sensible atmosphere, with the vehicle pitched down and rolling to a heading that is not where it will eventually point. The burn is a nominal engine, a nominal tank, and a fairly precise set of gimbal angles; when all three are right the spacecraft is in orbit and nobody notices.</p>
+      <p>Insertion is confirmed from three independent sources: the onboard navigation solution, a tracking station, and the vehicle itself reporting through a link that is about to be turned off anyway. Two confirmations are enough, three are better.</p>
+    </section>
+
+    <section class="phase" id="sec-station">
+      <p class="phase__no">Phase 04</p>
+      <h2>Station keeping</h2>
+      <p>A low orbit is not a circle and a spacecraft in one is not still. Drag at four hundred kilometres takes about a tenth of a kilometre of altitude a day, so twice a day the vehicle spends twenty seconds burning a small amount of propellant to put back what the air took.</p>
+      <p>The trim burns look unimpressive on the timeline and are the reason a ten year mission is possible. Their effect compounds: skip a week and the burn needed to correct it is larger than the burn that would have prevented the drift.</p>
+    </section>
+
+    <section class="phase" id="sec-transfer">
+      <p class="phase__no">Phase 05</p>
+      <h2>Transfer</h2>
+      <p>Leaving one orbit for another is two burns and a coast of several hours, not one long engine run. The first burn raises the far side of the orbit without raising the near side, the coast happens at an apogee that passes through the height you want, and the second burn circularises it.</p>
+      <p>The plane change is the expensive part. Do it where the orbit is naturally tilted relative to the target and the same amount of propellant buys several degrees, which is the whole reason transfer windows are worth waiting two days for.</p>
+    </section>
+
+    <section class="phase" id="sec-reentry">
+      <p class="phase__no">Phase 06</p>
+      <h2>Reentry corridor</h2>
+      <p>The corridor is about a degree and a half wide at the interface, and it is defined by where the vehicle is allowed to come apart, by how high the heating is allowed to run, and by whether there is anybody down there with a boat.</p>
+      <p>Most of the interesting decisions on the way down were made hours earlier, by a group of people whose names never appear in the log. The vehicle simply flies a corridor somebody else designed, decelerates, and lands like a very expensive aeroplane.</p>
+    </section>
+
+    <section class="phase phase--log" id="sec-log">
+      <p class="phase__no">Log</p>
+      <h2>Flight log</h2>
+      <p>Every phase in the ring writes an entry here, and the entries are written in the past tense, which is the single most useful decision in operational documentation: an operator reading the log should never have to work out whether something is still happening.</p>
+      <ul class="phases">
+        <li><a href="#sec-window">01 · Launch window</a></li>
+        <li><a href="#sec-ascent">02 · Ascent stage</a></li>
+        <li><a href="#sec-insert">03 · Insertion burn</a></li>
+        <li><a href="#sec-station">04 · Station keeping</a></li>
+        <li><a href="#sec-transfer">05 · Transfer</a></li>
+        <li><a href="#sec-reentry">06 · Reentry corridor</a></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <p>Flight dynamics console 3 · elements are indicative and rounded · arrow keys walk the ring, Escape returns to the hub.</p>
+    <a href="#sec-window">First phase</a>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desert Rally Waypoints</title>
+<meta name="description" content="A desert rally stage card with a traced dune route, waypoint markers that drop in one after another, a service vehicle running the course and a control sheet that swaps when you pick a point.">
+<meta name="description-es" content="Una tarjeta de etapa de rally del desierto con la ruta trazada entre dunas, marcadores de punto que caen uno tras otro, un vehículo de asistencia recorriendo el trazado y una ficha de control que cambia al elegir.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <article class="drw" id="drw">
+    <span class="drw__sand" aria-hidden="true"></span>
+
+    <header class="drw__head">
+      <div class="drw__id">
+        <p class="drw__kicker">Raid du Grand Erg &middot; stage 4</p>
+        <h1 class="drw__title">Oasis Gate to Erg Finish</h1>
+      </div>
+      <p class="drw__num"><span>CAR</span>214</p>
+    </header>
+
+    <div class="drw__map">
+      <svg class="drw__svg" viewBox="0 0 400 200" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="drwSky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3a2352"></stop>
+            <stop offset="1" stop-color="#6d3550"></stop>
+          </linearGradient>
+          <linearGradient id="drwDune1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e0a860"></stop>
+            <stop offset="1" stop-color="#b87a3c"></stop>
+          </linearGradient>
+          <linearGradient id="drwDune2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#c2864a"></stop>
+            <stop offset="1" stop-color="#8d5a2c"></stop>
+          </linearGradient>
+          <linearGradient id="drwDune3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#9d6733"></stop>
+            <stop offset="1" stop-color="#6a3f1e"></stop>
+          </linearGradient>
+          <radialGradient id="drwSun" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#ffd9a8"></stop>
+            <stop offset=".6" stop-color="#ff7a3d"></stop>
+            <stop offset="1" stop-color="rgba(255,122,61,0)"></stop>
+          </radialGradient>
+        </defs>
+        <rect width="400" height="200" fill="url(#drwSky)"></rect>
+        <circle cx="322" cy="46" r="34" fill="url(#drwSun)"></circle>
+        <circle cx="322" cy="46" r="13" fill="#ffe6c2" opacity=".9"></circle>
+        <path d="M0 96c34-14 62 8 96 2s58-24 96-18 66 26 102 22 60-22 106-14v112H0z" fill="url(#drwDune1)"></path>
+        <path d="M0 128c40-16 70 10 108 4s62-22 100-14 62 24 96 18 58-18 96-10v74H0z" fill="url(#drwDune2)"></path>
+        <path d="M0 162c44-14 76 8 116 2s64-18 102-10 58 20 92 14 54-14 90-6v38H0z" fill="url(#drwDune3)"></path>
+        <path class="drw__ridge" d="M14 118c26-8 44 6 68 2s40-12 62-8 38 14 58 10" fill="none" stroke="#ffe0b4" stroke-opacity=".28" stroke-width="1"></path>
+        <path class="drw__ridge" d="M186 88c30-10 52 8 80 2s46-14 70-8" fill="none" stroke="#ffe0b4" stroke-opacity=".2" stroke-width="1"></path>
+        <path class="drw__route" id="drwRoute" d="M28 168C70 150 92 176 128 162C164 148 178 118 214 112C250 106 262 132 296 122C330 112 352 84 380 74" fill="none" stroke="#2b1a3f" stroke-opacity=".55" stroke-width="5.5" stroke-linecap="round"></path>
+        <path class="drw__route drw__route--line" id="drwRouteLine" d="M28 168C70 150 92 176 128 162C164 148 178 118 214 112C250 106 262 132 296 122C330 112 352 84 380 74" fill="none" stroke="#ffd06a" stroke-width="2.6" stroke-linecap="round"></path>
+        <path class="drw__flow" d="M28 168C70 150 92 176 128 162C164 148 178 118 214 112C250 106 262 132 296 122C330 112 352 84 380 74" fill="none" stroke="#fff6e2" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="10 22"></path>
+        <g class="drw__car" id="drwCar">
+          <rect x="-9" y="-6" width="18" height="12" rx="3" fill="#3fd8c0"></rect>
+          <rect x="-4.5" y="-3.6" width="9" height="7.2" rx="2" fill="#0f2b28"></rect>
+          <circle cx="-5" cy="6.4" r="2.6" fill="#1c1a2c"></circle>
+          <circle cx="5" cy="6.4" r="2.6" fill="#1c1a2c"></circle>
+        </g>
+      </svg>
+
+      <button class="drw__wp" type="button" style="--x:7%;--y:84%;--i:0" data-wp="0" aria-pressed="true" aria-label="Waypoint 1, Oasis Gate">
+        <span class="drw__pin"><b>1</b></span>
+        <span class="drw__tag">Oasis Gate</span>
+      </button>
+      <button class="drw__wp" type="button" style="--x:32%;--y:81%;--i:1" data-wp="1" aria-pressed="false" aria-label="Waypoint 2, Dune Sea">
+        <span class="drw__pin"><b>2</b></span>
+        <span class="drw__tag">Dune Sea</span>
+      </button>
+      <button class="drw__wp" type="button" style="--x:53.5%;--y:56%;--i:2" data-wp="2" aria-pressed="false" aria-label="Waypoint 3, Salt Pan">
+        <span class="drw__pin"><b>3</b></span>
+        <span class="drw__tag">Salt Pan</span>
+      </button>
+      <button class="drw__wp" type="button" style="--x:74%;--y:61%;--i:3" data-wp="3" aria-pressed="false" aria-label="Waypoint 4, Dry Wadi">
+        <span class="drw__pin"><b>4</b></span>
+        <span class="drw__tag">Dry Wadi</span>
+      </button>
+      <button class="drw__wp" type="button" style="--x:92%;--y:37%;--i:4" data-wp="4" aria-pressed="false" aria-label="Waypoint 5, Erg Finish">
+        <span class="drw__pin"><b>5</b></span>
+        <span class="drw__tag">Erg Finish</span>
+      </button>
+
+      <span class="drw__compass" aria-hidden="true"><i></i><b>N</b></span>
+      <span class="drw__scale" aria-hidden="true"><i></i>50 KM</span>
+    </div>
+
+    <section class="drw__ficha" id="drwFicha" aria-live="polite">
+      <p class="drw__ficha-kicker">
+        <span class="drw__cp" id="drwCp">CP 1</span>
+        <span class="drw__rule" aria-hidden="true"></span>
+        <span class="drw__sect" id="drwSect">Sector S1</span>
+      </p>
+      <h2 class="drw__ficha-name" id="drwName">Oasis Gate</h2>
+      <p class="drw__ficha-note" id="drwNote">Start control on hard pack. The clock starts on the green flag, not on the ramp.</p>
+      <dl class="drw__ficha-meta">
+        <div class="drw__cell"><dt>Surface</dt><dd id="drwSurf">Hard pack</dd></div>
+        <div class="drw__cell"><dt>To next</dt><dd id="drwNext">41 km</dd></div>
+        <div class="drw__cell"><dt>Note</dt><dd id="drwCoord">30.41 N / 4.22 E</dd></div>
+      </dl>
+    </section>
+
+    <footer class="drw__foot">
+      <div class="drw__stat"><span>Stage</span><b>214 km</b></div>
+      <div class="drw__stat"><span>Remaining</span><b>88 km</b></div>
+      <div class="drw__stat"><span>Elapsed</span><b id="drwClock">01:12:38</b></div>
+      <div class="drw__stat"><span>Position</span><b>4 of 38</b></div>
+    </footer>
+  </article>
+</main>
+</body>
+</html>

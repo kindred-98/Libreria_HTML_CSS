@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segment Glass Filter</title>
+<meta name="description" content="A frosted glass segmented control that filters a studio catalogue: the lit segment slides under the pointer, a second group of chips narrows the list by session length, and the visible classes are re-staggered as the combination changes.">
+<meta name="description-es" content="Control segmentado de vidrio esmerilado que filtra el catálogo de un estudio: el segmento iluminado se desliza, un segundo grupo de fichas acorta la lista por duración de sesión y las clases visibles se reescalonan al cambiar la combinación.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <div class="app__glow" aria-hidden="true"></div>
+
+  <header class="top">
+    <p class="kicker">Studio platform · Catalogue 07</p>
+    <h1>Aerobic catalogue</h1>
+    <p class="lede">Ten rooms of classes, sorted by discipline and by how much wall clock time you are willing to spend. Pick a discipline in the glass control, narrow it by session length, and the studio index below rebuilds itself with the classes that survive both filters.</p>
+    <div class="pulse" aria-hidden="true">
+      <span class="pulse__bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      <span class="pulse__read"><b>152</b> bpm resting mean</span>
+    </div>
+  </header>
+
+  <section class="filters" aria-label="Catalogue filters">
+
+    <div class="seg">
+      <span class="seg__label" id="segLabel">Discipline</span>
+      <div class="seg__track" id="segTrack" role="radiogroup" aria-labelledby="segLabel">
+        <i class="seg__slider" id="segSlider" aria-hidden="true"><b class="seg__sheen"></b></i>
+        <button class="seg__opt" type="button" role="radio" aria-checked="true" tabindex="0" data-cat="cardio">Cardio</button>
+        <button class="seg__opt" type="button" role="radio" aria-checked="false" tabindex="-1" data-cat="strength">Strength</button>
+        <button class="seg__opt" type="button" role="radio" aria-checked="false" tabindex="-1" data-cat="mobility">Mobility</button>
+        <button class="seg__opt" type="button" role="radio" aria-checked="false" tabindex="-1" data-cat="recovery">Recovery</button>
+      </div>
+    </div>
+
+    <div class="chips">
+      <span class="chips__label" id="chipLabel">Session length</span>
+      <div class="chips__row" role="group" aria-labelledby="chipLabel">
+        <button class="chip" type="button" aria-pressed="false" data-len="short">Under 20 min</button>
+        <button class="chip" type="button" aria-pressed="false" data-len="mid">20 to 40 min</button>
+        <button class="chip" type="button" aria-pressed="false" data-len="long">Over 40 min</button>
+      </div>
+    </div>
+
+    <p class="filters__count" id="count" role="status">Showing 3 of 10 classes</p>
+  </section>
+
+  <nav class="index" aria-label="Visible classes">
+    <p class="index__kicker">Studio index</p>
+    <ol class="index__list" id="indexList">
+      <li data-cat="cardio" data-len="short"><a href="#cls-interval"><b>Interval treadmill</b><i>18 min · high intensity</i></a></li>
+      <li data-cat="cardio" data-len="mid"><a href="#cls-cadence"><b>Cadence bike test</b><i>30 min · threshold</i></a></li>
+      <li data-cat="cardio" data-len="long"><a href="#cls-rowing"><b>Rowing threshold</b><i>55 min · steady state</i></a></li>
+      <li data-cat="strength" data-len="mid"><a href="#cls-rack"><b>Rack and pin</b><i>40 min · heavy, low reps</i></a></li>
+      <li data-cat="strength" data-len="short"><a href="#cls-kettle"><b>Kettlebell density</b><i>16 min · circuit</i></a></li>
+      <li data-cat="mobility" data-len="short"><a href="#cls-hip"><b>Hip rotator flow</b><i>12 min · floor</i></a></li>
+      <li data-cat="mobility" data-len="mid"><a href="#cls-spinal"><b>Spinal wave routine</b><i>25 min · mat and bench</i></a></li>
+      <li data-cat="recovery" data-len="short"><a href="#cls-contrast"><b>Contrast shower protocol</b><i>10 min · wet side</i></a></li>
+      <li data-cat="recovery" data-len="mid"><a href="#cls-foam"><b>Foam roll and flush</b><i>35 min · studio 4</i></a></li>
+      <li data-cat="recovery" data-len="long"><a href="#cls-breath"><b>Long breathing reset</b><i>45 min · dimmed room</i></a></li>
+    </ol>
+    <p class="index__none" id="none" hidden>No class in this discipline runs for that length. Try a shorter session or another discipline.</p>
+  </nav>
+
+  <main class="log">
+
+    <section class="cls" id="cls-interval" data-cat="cardio" data-len="short">
+      <p class="cls__tag"><span>Cardio</span><i>18 min · Studio 2 · high intensity</i></p>
+      <h2>Interval treadmill</h2>
+      <p>Four minutes hard, ninety seconds easy, repeated seven times, with the first three minutes used to settle the stride. The screen shows pace and heart rate side by side, and the instructor calls the pace down in the second half of every repeat so the last two are not just the first two with more tired.</p>
+      <p>Come in with the footwear you would use for a race, not the shoes you wear for the walk to the studio. The belt is calibrated to within three percent, so a pace that feels fast on the short intervals is genuinely fast.</p>
+    </section>
+
+    <section class="cls" id="cls-cadence" data-cat="cardio" data-len="mid">
+      <p class="cls__tag"><span>Cardio</span><i>30 min · Studio 1 · threshold</i></p>
+      <h2>Cadence bike test</h2>
+      <p>Three stages of eight minutes with five minutes of recovery between them, and a test in the middle of each stage that is the whole point of the class: a five second all out effort, repeated twice, with the bar dropped and the readings compared. Most people find the second test is worse than the first, which is the useful information.</p>
+      <p>Numbers are logged against your own history, not against the room. The only rule is to arrive having ridden three times in the previous fortnight, because a test on cold legs is a measurement of the legs, not of the engine.</p>
+    </section>
+
+    <section class="cls" id="cls-rowing" data-cat="cardio" data-len="long">
+      <p class="cls__tag"><span>Cardio</span><i>55 min · Studio 3 · steady state</i></p>
+      <h2>Rowing threshold</h2>
+      <p>The longest class in the catalogue and the only one that is almost entirely conversational. Half the session is a continuous piece at a rate of eighteen to twenty two strokes a minute, long enough that the first ten minutes feel flat and the last ten feel easy. The coach calls splits on the wall display, not on the individual monitors.</p>
+      <p>Bring a bottle. Rowing is the one discipline here where nobody drinks for forty minutes and everybody regrets it afterwards, and the ergometers are at the back of the studio where the fans are loud enough that you will not hear yourself pant.</p>
+    </section>
+
+    <section class="cls" id="cls-rack" data-cat="strength" data-len="mid">
+      <p class="cls__tag"><span>Strength</span><i>40 min · Studio 5 · heavy, low reps</i></p>
+      <h2>Rack and pin</h2>
+      <p>Barbell work only, five movements, three to five repetitions each, with a full two minutes of rest on the clock. Spotters are paired by experience rather than by seniority, and nobody adds a plate without the spotter agreeing, which has not stopped one argument in four years.</p>
+      <p>The pin heights are written on the rack in chalk and re-chalked every morning. If your squat looks the same as it did last month, the bar has been doing the work; load it until the last repetition is a decision rather than a formality.</p>
+    </section>
+
+    <section class="cls" id="cls-kettle" data-cat="strength" data-len="short">
+      <p class="cls__tag"><span>Strength</span><i>16 min · Studio 5 · circuit</i></p>
+      <h2>Kettlebell density</h2>
+      <p>Six stations of forty seconds on, twenty seconds off, two full rounds, with the bell weight chosen from what you carried last week rather than from what looks respectable. The stations are the swing, the clean, the press, the front rack squat, the snatch and a farmer carry that will find out whether your grip has opinions.</p>
+      <p>It is the shortest class here and the only one that looks chaotic from the doorway. Nobody is timing anybody; the coach counts down, the room counts with her, and the circuit is over before the playlist changes.</p>
+    </section>
+
+    <section class="cls" id="cls-hip" data-cat="mobility" data-len="short">
+      <p class="cls__tag"><span>Mobility</span><i>12 min · Studio 4 · floor</i></p>
+      <h2>Hip rotator flow</h2>
+      <p>Twelve minutes on the mat, entirely on one side first and then the other, so nobody spends the whole class stretched on the left. The sequence is four shapes repeated with a longer hold each round: half kneeling fold, ninety ninety, a windmill reach, and a low lunge that is allowed to be uncomfortable only in the front of the hip, not in the knee.</p>
+      <p>It is the class most often recommended by the strength coaches, and the one that survives a winter badly: come before the strength block, not after it, or the positions will be the best available rather than the ones you actually need.</p>
+    </section>
+
+    <section class="cls" id="cls-spinal" data-cat="mobility" data-len="mid">
+      <p class="cls__tag"><span>Mobility</span><i>25 min · Studio 4 · mat and bench</i></p>
+      <h2>Spinal wave routine</h2>
+      <p>Flexion, extension, rotation and side bending, each taken through a full range with the breath leading and the movement following. Half the class is on the mat and half is standing against the wall bars at the back, which is where people discover that their rotation is not symmetrical and always has been.</p>
+      <p>Everything in this class is graded by depth rather than by speed. A slower round with the chin tucked and the ribs down does more than a fast one, and the coach will stop the room twice to reset that, which is the reason the class is twenty five minutes and not forty.</p>
+    </section>
+
+    <section class="cls" id="cls-contrast" data-cat="recovery" data-len="short">
+      <p class="cls__tag"><span>Recovery</span><i>10 min · wet side · guided</i></p>
+      <h2>Contrast shower protocol</h2>
+      <p>Ten minutes at the wet side: ninety seconds warm to open the skin, four rounds of thirty seconds cold on the legs and back with a full warm minute between them, and a final two minutes cold on the whole body to finish. The instructor talks through the timings, so nobody has to stand there counting on wet tiles.</p>
+      <p>It looks theatrical and it is entirely ordinary. The method has been used for a century on rivers and in alpine huts, and the rule that matters is the warm minute between rounds: without it the second cold minute is the only one that reaches the muscle.</p>
+    </section>
+
+    <section class="cls" id="cls-foam" data-cat="recovery" data-len="mid">
+      <p class="cls__tag"><span>Recovery</span><i>35 min · Studio 4 · self directed</i></p>
+      <h2>Foam roll and flush</h2>
+      <p>Thirty five minutes with six rollers, a timer on the wall and a list on the board of the twelve positions worth doing. The room is quiet and dimmed, there is no music to train to, and the only instruction is to spend the full time on each position rather than moving along the body as if the session were a checklist.</p>
+      <p>Roll the slow parts slowly and stop at the hip flexor, the calf and the latissimus, which are the three that take the best return for the time. If you can only give it twenty minutes, those three and nothing else.</p>
+    </section>
+
+    <section class="cls" id="cls-breath" data-cat="recovery" data-len="long">
+      <p class="cls__tag"><span>Recovery</span><i>45 min · dimmed room · no lights above</i></p>
+      <h2>Long breathing reset</h2>
+      <p>Forty five minutes in a dimmed room, mostly on the floor, built around long exhales rather than deep breaths. The first fifteen minutes are nasal breathing at a rate of five and a half breaths a minute, the middle twenty are longer holds, and the last ten are the part everyone remembers: a slow, silent minute with a bell at the end of it.</p>
+      <p>Bring nothing but a layer for the floor and a water bottle. The class is genuinely quiet, phones stay in the locker, and the coach will not talk during the silent minute, which is the entire reason people book it once a week.</p>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <p>Studio platform · 10 rooms, 4 disciplines · Members may book any class included in the tier above basic.</p>
+    <a href="#cls-interval">Jump to the first visible class</a>
+  </footer>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__run">
+      <span>Rowing threshold</span><span>Hip rotator flow</span><span>Rack and pin</span><span>Contrast shower protocol</span><span>Cadence bike test</span><span>Foam roll and flush</span><span>Interval treadmill</span><span>Spinal wave routine</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

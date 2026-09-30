@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ethereum Gas Gauge</title>
+<meta name="description" content="An Ethereum gas meter with a needle that swings with damping, a percentile readout that counts, a thirty block sparkline and a market order ticket that confirms.">
+<meta name="description-es" content="Un medidor de gas de Ethereum con una aguja que oscila con amortiguación, un percentil que cuenta, una sparkline de treinta bloques y una orden de mercado que se confirma.">
+<link rel="stylesheet" href="styles.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+<main class="stage">
+  <article class="gas" id="gas">
+    <span class="gas__glow" aria-hidden="true"></span>
+
+    <header class="gas__bar">
+      <p class="gas__brand"><span class="gas__mark" aria-hidden="true"></span>Gas watch</p>
+      <p class="gas__net">Ethereum mainnet &middot; block 21 448 902</p>
+    </header>
+
+    <div class="dial">
+      <div class="dial__gauge">
+        <svg class="dial__svg" viewBox="0 0 300 172" aria-hidden="true" focusable="false">
+          <path class="dial__track" d="M32 140A118 118 0 0 1 268 140"></path>
+          <path class="dial__zone dial__zone--a" d="M32 140A118 118 0 0 1 65.1 58"></path>
+          <path class="dial__zone dial__zone--b" d="M68 55.1A118 118 0 0 1 178.5 25.5"></path>
+          <path class="dial__zone dial__zone--c" d="M182.6 26.6A118 118 0 0 1 268 140"></path>
+          <g class="dial__ticks">
+            <path d="M46 140H38M60 88L53 84M98 50L94 43M150 36V28M202 50L206 43M240 88L247 84M254 140H262"></path>
+          </g>
+          <g class="dial__labels">
+            <text x="22" y="148">0</text>
+            <text x="86" y="30">20</text>
+            <text x="214" y="30">40</text>
+            <text x="278" y="148">60</text>
+          </g>
+          <g class="dial__needle">
+            <path d="M150 141 146.4 52 150 34 153.6 52Z"></path>
+          </g>
+          <circle class="dial__hub" cx="150" cy="140" r="9"></circle>
+          <circle class="dial__hubdot" cx="150" cy="140" r="3.2"></circle>
+        </svg>
+        <p class="dial__scale">gwei per gas</p>
+        <ul class="dial__legend" aria-hidden="true">
+          <li><i class="is-cheap"></i>Cheap</li>
+          <li><i class="is-mid"></i>Standard</li>
+          <li><i class="is-hot"></i>Fast</li>
+        </ul>
+      </div>
+
+      <div class="readout">
+        <p class="readout__label">Standard transfer</p>
+        <p class="readout__value"><span data-count="18.4" data-format="one">18.4</span><small>gwei</small></p>
+        <p class="readout__delta" id="delta">
+          <span class="readout__arrow" aria-hidden="true"></span>
+          <span id="deltaText">-2.6 gwei vs 30 blocks</span>
+        </p>
+        <p class="readout__pct"><span data-count="84" data-format="pct">84</span><small>th percentile</small></p>
+        <p class="readout__cost">Cost 21 000 gas &asymp; <b>$0.71</b></p>
+      </div>
+    </div>
+
+    <figure class="spark">
+      <svg class="spark__svg" viewBox="0 0 240 52" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="gasArea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#8f9bff" stop-opacity=".4"></stop>
+            <stop offset="1" stop-color="#8f9bff" stop-opacity="0"></stop>
+          </linearGradient>
+        </defs>
+        <g class="spark__grid">
+          <path d="M0 16h240M0 32h240M0 48h240"></path>
+        </g>
+        <path class="spark__area" d="M0 30L10 26 20 29 30 22 40 17 50 20 60 24 70 27 80 31 90 29 100 25 110 19 120 14 130 18 140 22 150 26 160 28 170 24 180 20 190 15 200 21 210 25 220 28 230 29 240 27L240 52 0 52Z"></path>
+        <path class="spark__line" d="M0 30L10 26 20 29 30 22 40 17 50 20 60 24 70 27 80 31 90 29 100 25 110 19 120 14 130 18 140 22 150 26 160 28 170 24 180 20 190 15 200 21 210 25 220 28 230 29 240 27"></path>
+        <circle class="spark__head" cx="240" cy="27" r="3.4"></circle>
+      </svg>
+      <figcaption class="spark__cap">Gas price &middot; last 25 blocks &middot; 2.1 s blocks</figcaption>
+    </figure>
+
+    <section class="ticket" id="ticket">
+      <div class="ticket__side" role="group" aria-label="Order side">
+        <button class="ticket__sidebtn is-on" type="button" data-side="buy" aria-pressed="true">Buy</button>
+        <button class="ticket__sidebtn" type="button" data-side="sell" aria-pressed="false">Sell</button>
+      </div>
+      <div class="ticket__body">
+        <p class="ticket__pair">ETH per gwei &middot; limit 19</p>
+        <p class="ticket__amount">0.42 ETH</p>
+        <p class="ticket__status" id="orderStatus">Pending &middot; nonce 0x4F1 &middot; fee cap 21 gwei</p>
+      </div>
+      <button class="ticket__go" type="button" id="orderBtn" aria-pressed="false">
+        <span class="ticket__go-text">Confirm order</span>
+      </button>
+    </section>
+
+    <footer class="gas__foot">
+      <span class="gas__stat">Base 0.42 gwei</span>
+      <span class="gas__stat">Priority 1.1 gwei</span>
+      <span class="gas__stat">Mempool 3 tx</span>
+    </footer>
+  </article>
+</main>
+</body>
+</html>

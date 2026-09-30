@@ -1,0 +1,758 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --night: #0a0d14;
+  --paper: #ece0c6;
+  --paper-hi: #f9f3e4;
+  --paper-lo: #d9c9a8;
+  --ink: #2b2217;
+  --ink-soft: #6d5e49;
+  --amber: #e79b33;
+  --amber-hi: #ffca76;
+  --claret: #8d3a2c;
+  --sage: #5c7a5e;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: clamp(14px, 4vmin, 40px);
+  display: grid;
+  place-items: center;
+  overflow-x: hidden;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--paper-hi);
+  background:
+    radial-gradient(120% 62% at 50% -18%, #3a2b3f 0%, rgba(58, 43, 63, 0) 62%),
+    radial-gradient(70% 55% at 88% 108%, rgba(231, 155, 51, 0.2) 0%, rgba(231, 155, 51, 0) 70%),
+    linear-gradient(180deg, #12141d 0%, var(--night) 100%);
+}
+
+.stage {
+  width: min(540px, 100%);
+  min-width: 0;
+}
+
+.cam {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 16px 18px 14px 40px;
+  border: 1px solid rgba(249, 243, 228, 0.22);
+  border-radius: 16px 12px 16px 12px;
+  background:
+    radial-gradient(120% 80% at 12% 0%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(158deg, var(--paper-hi) 0%, var(--paper) 46%, var(--paper-lo) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 -34px 54px rgba(80, 58, 26, 0.22) inset,
+    0 40px 70px -34px rgba(0, 0, 0, 0.9),
+    0 0 130px -50px rgba(231, 155, 51, 0.6);
+  animation: cam-in 0.4s var(--ease-out) backwards;
+}
+
+.cam__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.14;
+  mix-blend-mode: multiply;
+}
+
+.cam__spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 22px;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0%, rgba(255, 255, 255, 0.1) 30%, rgba(0, 0, 0, 0.2) 100%),
+    linear-gradient(180deg, #5a2a20 0%, #3d1c15 55%, #2a120d 100%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5) inset;
+}
+
+.cam__spine::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 8px;
+  width: 6px;
+  border-left: 2px dashed rgba(247, 226, 190, 0.42);
+  border-right: 2px dashed rgba(247, 226, 190, 0.42);
+}
+
+.cam__lantern {
+  position: absolute;
+  top: -46%;
+  left: -18%;
+  z-index: -1;
+  width: 82%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 202, 118, 0.5) 0%, rgba(255, 202, 118, 0) 64%);
+  animation: cam-lantern 11s var(--ease-soft) infinite alternate;
+}
+
+.cam__head {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(43, 34, 23, 0.18);
+  animation: cam-slide 0.34s var(--ease-out) 0.05s backwards;
+}
+
+.cam__id {
+  min-width: 0;
+  flex: 1 1 150px;
+}
+
+.cam__eyebrow {
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--claret);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.cam__title {
+  margin: 5px 0 0;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+  font-size: clamp(23px, 5.4vw, 30px);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65), 0 -1px 1px rgba(43, 34, 23, 0.16);
+}
+
+.cam__who {
+  margin: 6px 0 0;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.cam__odo {
+  flex: 0 1 158px;
+  min-width: 0;
+  text-align: right;
+}
+
+.cam__odo-num {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 3px;
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: clamp(24px, 5.8vw, 32px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.cam__odo-num small {
+  font-size: 0.42em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--claret);
+}
+
+.cam__odo-track {
+  display: block;
+  height: 6px;
+  margin: 8px 0 5px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(43, 34, 23, 0.16);
+  box-shadow: inset 0 1px 2px rgba(60, 44, 24, 0.4);
+}
+
+.cam__odo-track i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  transform-origin: left center;
+  transform: scaleX(0.667);
+  background: linear-gradient(90deg, #a5462f 0%, var(--amber) 100%);
+  box-shadow: 0 0 10px rgba(231, 155, 51, 0.5);
+  transition: transform 0.6s var(--ease-out);
+}
+
+.cam__odo-lab {
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.cam__prof {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 9px 11px 8px;
+  border: 1px solid rgba(43, 34, 23, 0.14);
+  border-radius: 9px;
+  background: linear-gradient(180deg, rgba(255, 252, 244, 0.7) 0%, rgba(214, 197, 164, 0.5) 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 10px 18px -18px rgba(50, 36, 18, 0.9);
+  animation: cam-slide 0.34s var(--ease-out) 0.1s backwards;
+}
+
+.cam__prof-lab,
+.cam__prof-cap {
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.cam__prof-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 34px;
+  min-width: 0;
+}
+
+.cam__prof-bars i {
+  flex: 1;
+  min-width: 0;
+  height: calc(var(--h, 0.4) * 100%);
+  border-radius: 2px 2px 1px 1px;
+  transform-origin: bottom center;
+  transform: scaleY(1);
+  background: linear-gradient(180deg, #8d3a2c 0%, rgba(141, 58, 44, 0.18) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  animation: cam-bar 0.32s var(--ease-out) var(--d, 0s) backwards;
+}
+
+.cam__prof-bars i.is-now {
+  background: linear-gradient(180deg, var(--amber-hi) 0%, var(--amber) 58%, rgba(231, 155, 51, 0.2) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 12px -2px rgba(231, 155, 51, 0.9);
+}
+
+.cam__route {
+  position: relative;
+  z-index: 2;
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0 0 0 26px;
+}
+
+.cam__route::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  bottom: 20px;
+  left: 8px;
+  width: 3px;
+  border-radius: 3px;
+  background: rgba(43, 34, 23, 0.16);
+  box-shadow: inset 0 1px 2px rgba(60, 44, 24, 0.35);
+}
+
+.cam__route::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 8px;
+  width: 3px;
+  height: calc(100% - 32px);
+  border-radius: 3px;
+  transform-origin: top center;
+  transform: scaleY(var(--fill, 0.667));
+  background: linear-gradient(180deg, var(--claret) 0%, var(--amber) 100%);
+  box-shadow: 0 0 8px rgba(231, 155, 51, 0.5);
+  transition: transform 0.6s var(--ease-out);
+}
+
+.cam__stage {
+  position: relative;
+  min-width: 0;
+  padding: 0 0 11px;
+  animation: cam-stage-in 0.34s var(--ease-out) backwards;
+}
+
+.cam__stage:nth-child(1) {
+  animation-delay: 0.12s;
+}
+
+.cam__stage:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.cam__stage:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.cam__stage:nth-child(4) {
+  animation-delay: 0.24s;
+}
+
+.cam__stage:nth-child(5) {
+  animation-delay: 0.28s;
+}
+
+.cam__stage:nth-child(6) {
+  animation-delay: 0.32s;
+}
+
+.cam__stage:last-child {
+  padding-bottom: 2px;
+}
+
+.cam__dot {
+  position: absolute;
+  top: 8px;
+  left: -24px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #fff 0%, var(--paper-lo) 60%, #a8916c 100%);
+  box-shadow: 0 1px 2px rgba(40, 28, 12, 0.6), 0 0 0 3px rgba(43, 34, 23, 0.12);
+}
+
+.cam__stage.is-done .cam__dot {
+  background: radial-gradient(circle at 32% 28%, #f6d3a1 0%, var(--claret) 62%, #5c241b 100%);
+  box-shadow: 0 1px 2px rgba(40, 28, 12, 0.6), 0 0 0 3px rgba(141, 58, 44, 0.22);
+}
+
+.cam__stage.is-ahead .cam__dot {
+  background: radial-gradient(circle at 32% 28%, #fff 0%, #d8cbb2 58%, #a8916c 100%);
+  box-shadow: 0 1px 2px rgba(40, 28, 12, 0.5), 0 0 0 3px rgba(43, 34, 23, 0.1);
+}
+
+.cam__stage.is-current .cam__dot {
+  width: 13px;
+  height: 13px;
+  top: 7px;
+  left: -25px;
+  background: radial-gradient(circle at 32% 26%, #fff6e2 0%, var(--amber-hi) 40%, var(--amber) 72%, #a06a12 100%);
+  box-shadow: 0 1px 3px rgba(40, 28, 12, 0.6), 0 0 0 4px rgba(231, 155, 51, 0.3), 0 0 16px -2px rgba(231, 155, 51, 0.9);
+}
+
+.cam__pin {
+  position: absolute;
+  top: -6px;
+  left: -34px;
+  width: 22px;
+  height: 22px;
+  transform: rotate(-16deg);
+  transition: transform 0.4s var(--ease-out), opacity 0.3s var(--ease-soft);
+}
+
+.cam__stage:not(.is-current) .cam__pin {
+  opacity: 0;
+  transform: rotate(-52deg) scale(0.42);
+}
+
+.cam__pin::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 9px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #2a120d;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.cam__pin-head {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 24%, #fff2d6 0%, #e3a13c 38%, #b06a12 74%, #6d3d07 100%);
+  box-shadow:
+    0 2px 4px rgba(40, 22, 6, 0.55),
+    0 0 0 1px rgba(90, 52, 10, 0.7) inset,
+    0 8px 14px -8px rgba(60, 34, 8, 0.9);
+  animation: cam-pin-bob 3.6s var(--ease-soft) infinite;
+}
+
+.cam__card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 10px;
+  padding: 7px 10px 8px;
+  border: 1px solid rgba(43, 34, 23, 0.13);
+  border-radius: 9px;
+  background: linear-gradient(170deg, rgba(255, 253, 246, 0.82) 0%, rgba(233, 220, 194, 0.42) 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 8px 16px -16px rgba(50, 36, 18, 0.9);
+  transition: border-color 0.35s var(--ease-soft), background 0.35s var(--ease-soft), transform 0.35s var(--ease-out);
+}
+
+.cam__stage.is-current .cam__card {
+  border-color: rgba(231, 155, 51, 0.75);
+  background: linear-gradient(170deg, rgba(255, 250, 236, 0.95) 0%, rgba(248, 224, 180, 0.6) 100%);
+  transform: translateX(3px);
+}
+
+.cam__stage.is-ahead .cam__card {
+  opacity: 0.82;
+  background: linear-gradient(170deg, rgba(246, 240, 226, 0.6) 0%, rgba(219, 205, 178, 0.4) 100%);
+}
+
+.cam__stage.is-logged .cam__card {
+  border-color: rgba(92, 122, 94, 0.7);
+}
+
+.cam__place {
+  grid-column: 1;
+  margin: 0;
+  min-width: 0;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.cam__km {
+  grid-column: 2;
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--claret);
+  white-space: nowrap;
+}
+
+.cam__km small {
+  font-size: 0.62em;
+  font-weight: 600;
+  margin-left: 1px;
+  color: var(--ink-soft);
+}
+
+.cam__meta {
+  grid-column: 1;
+  margin: 0;
+  min-width: 0;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.cam__stamp {
+  grid-column: 2;
+  margin: 0;
+  padding: 2px 7px;
+  border: 1px solid rgba(43, 34, 23, 0.22);
+  border-radius: 999px;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 7.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+  transition: color 0.3s var(--ease-soft), border-color 0.3s var(--ease-soft), background 0.3s var(--ease-soft);
+}
+
+.cam__stage.is-done .cam__stamp {
+  color: #6d2820;
+  border-color: rgba(141, 58, 44, 0.45);
+  background: rgba(141, 58, 44, 0.1);
+  transform: rotate(-3deg);
+}
+
+.cam__stage.is-current .cam__stamp {
+  color: #5a3a05;
+  border-color: rgba(231, 155, 51, 0.6);
+  background: rgba(255, 202, 118, 0.34);
+}
+
+.cam__stage.is-logged .cam__stamp {
+  color: #2f4a33;
+  border-color: rgba(92, 122, 94, 0.6);
+  background: rgba(92, 122, 94, 0.16);
+}
+
+.cam__foot {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(43, 34, 23, 0.18);
+  animation: cam-slide 0.34s var(--ease-out) 0.36s backwards;
+}
+
+.cam__status {
+  flex: 1 1 170px;
+  min-width: 0;
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 9px;
+  line-height: 1.55;
+  letter-spacing: 0.07em;
+  color: var(--ink-soft);
+}
+
+.cam__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cam__btn {
+  appearance: none;
+  margin: 0;
+  padding: 7px 12px;
+  border: 1px solid rgba(43, 34, 23, 0.28);
+  border-radius: 7px;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(222, 207, 178, 0.6) 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 6px 12px -10px rgba(50, 36, 18, 1);
+  cursor: pointer;
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), background 0.25s var(--ease-soft);
+}
+
+.cam__btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 10px 16px -12px rgba(50, 36, 18, 1);
+}
+
+.cam__btn:focus-visible {
+  outline: 2px solid var(--claret);
+  outline-offset: 2px;
+}
+
+.cam__btn--go {
+  color: #2a1206;
+  border-color: rgba(141, 58, 44, 0.6);
+  background: linear-gradient(180deg, #f6c877 0%, var(--amber) 100%);
+}
+
+.cam__btn--go:hover {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 12px 20px -12px rgba(160, 100, 20, 1);
+}
+
+.cam__btn[disabled] {
+  cursor: default;
+  opacity: 0.55;
+  transform: none;
+}
+
+.cam__btn[disabled]:hover {
+  transform: none;
+}
+
+.cam__btn.is-logged {
+  color: #eaf5ea;
+  border-color: rgba(92, 122, 94, 0.8);
+  background: linear-gradient(180deg, #7a9c7c 0%, #4d6b50 100%);
+}
+
+@keyframes cam-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px) rotateX(6deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+@keyframes cam-lantern {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(72px, 46px, 0) scale(1.22);
+  }
+}
+
+@keyframes cam-slide {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cam-bar {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes cam-stage-in {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes cam-pin-bob {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(1.5px) scale(1.06);
+  }
+}
+
+@media (max-width: 520px) {
+  .cam {
+    padding: 14px 13px 12px 34px;
+  }
+
+  .cam__spine {
+    width: 18px;
+  }
+
+  .cam__spine::after {
+    left: 5px;
+    width: 6px;
+  }
+
+  .cam__odo {
+    flex: 1 1 100%;
+    text-align: left;
+  }
+
+  .cam__odo-num {
+    justify-content: flex-start;
+  }
+
+  .cam__prof {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+  }
+
+  .cam__prof-lab,
+  .cam__prof-cap {
+    white-space: normal;
+  }
+
+  .cam__prof-bars {
+    height: 40px;
+  }
+
+  .cam__acts {
+    flex: 1 1 100%;
+  }
+
+  .cam__btn {
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 380px) {
+  .cam__card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cam__km,
+  .cam__stamp {
+    grid-column: 1;
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .cam,
+  .cam__head,
+  .cam__prof,
+  .cam__foot,
+  .cam__stage {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cam__stage.is-current .cam__card {
+    transform: translateX(3px);
+  }
+
+  .cam__prof-bars i {
+    transform: scaleY(1);
+  }
+
+  .cam__pin {
+    opacity: 1;
+    transform: rotate(-16deg);
+  }
+
+  .cam__stage:not(.is-current) .cam__pin {
+    opacity: 0;
+    transform: rotate(-52deg) scale(0.42);
+  }
+
+  .cam__pin-head {
+    transform: translateY(1px);
+  }
+
+  .cam__lantern {
+    transform: translate3d(36px, 23px, 0) scale(1.1);
+  }
+}
