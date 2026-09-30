@@ -21,8 +21,7 @@ function render(text){
     const g=chars[c]||chars[' '];
     g.forEach((row,i)=>{rows[i]+=row+' ';});
   });
-  return rows.join('
-');
+  return rows.join('\n');
 }
 const inp=document.getElementById('aInput');
 const out=document.getElementById('aOutput');

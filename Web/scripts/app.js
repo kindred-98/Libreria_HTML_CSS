@@ -27,11 +27,11 @@ let featuredTimer = null;
 // colapsar el resto en puntos suspensivos.
 const pageWindow = 1;
 
-// Google Analytics 4. El ID de medicion va aqui y en ningun otro sitio: con el
-// valor de ejemplo (G-PENDIENTE) no se carga nada, para poder desplegar y
-// probar el banner sin tener la cuenta creada. Se cambia por el G-XXXXXXXXXX
-// que da Analytics > Administracion > Flujos de datos.
-const analyticsId = "G-PENDIENTE";
+// Google Analytics 4. El ID de medicion va aqui y en ningun otro sitio, y solo
+// se manda algo si tiene el formato G-XXXXXXXXXX: con cualquier otro valor el
+// codigo descarta el envio y no se pide nada a Google. El ID real esta en
+// Analytics > Administracion > Flujos de datos > ID de medicion.
+const analyticsId = "G-3TRY9F4G0Z";
 // Hosts que necesita el CSP de vercel.json. El primero es el script de gtag y
 // los otros dos los endpoints de recogida (el pixel y el beacon). Se declaran
 // aqui para que el validador del CSP los vea y avise si alguno se queda fuera.
@@ -1512,14 +1512,26 @@ function writeAnalyticsConsent(decision) {
 }
 
 function hasAnalyticsId() {
-  // Un ID de medicion de GA4 son las letras G, un guion y al menos cuatro
-  // caracteres, con al menos dos digitos: asi el valor de ejemplo G-PENDIENTE
-  // (todo letras) no llega a pedir el script ni a poner cookies.
-  return /^G-[A-Z0-9]{4,}$/i.test(analyticsId) && /\d{2}/.test(analyticsId);
+  // Un ID de medicion de GA4 son las letras G, un guion y de cuatro a diez
+  // caracteres en mayusculas y digitos. El valor de ejemplo ("PENDIENTE", sin
+  // la G) no lo cumple, asi que con el no se pide el script ni se pone ninguna
+  // cookie. Se exige mayusculas porque los IDs que emite Google las traen.
+  return /^G-[A-Z0-9]{4,10}$/.test(analyticsId);
+}
+
+// En local no se manda nada a Google: cada recarga desde localhost contaria
+// como una visita real y ensuciaria las estadisticas. En produccion el
+// hostname es el dominio de Vercel, asi que la pregunta solo corta cuando la
+// web se abre en el servidor del propio repositorio.
+function isLocalPreview() {
+  const host = window.location.hostname;
+  return host === "localhost" || host === "127.0.0.1" || host === "[::1]";
 }
 
 function loadAnalytics() {
-  if (!hasAnalyticsId() || typeof window.gtag === "function") return;
+  // El ID de ejemplo y las pruebas en local se quedan fuera a proposito: sin
+  // esto, revisar la web en localhost seria contar visitas falsas.
+  if (!hasAnalyticsId() || isLocalPreview() || typeof window.gtag === "function") return;
   const script = document.createElement("script");
   script.async = true;
   script.src = `${analyticsEndpoints.tag}?id=${encodeURIComponent(analyticsId)}`;

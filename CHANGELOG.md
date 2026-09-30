@@ -7,37 +7,71 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Dos demos con el JavaScript roto, arreglados] - 2026-09-30
+
+- **`CreacionesNuevas/ascii-art-generator/script.js`**: `rows.join('` lleva un
+  salto de linea real dentro de la cadena en vez de `\n`, asi que el fichero no
+  parseaba y el demo no hacia nada. Ahora el generador pinta el texto en bloques.
+- **`CreacionesNuevas/markdown-preview-live/script.js`**: dos fallos por el mismo
+  motivo, los escapes perdidos al escribir el fichero. Los asteriscos de `**negrita**`
+  y `*cursiva*`aban sin escapar, con lo que `/*` abria un comentario y rompia la
+  expresion; y el salto doble de `\n\n` estaba escrito con dos saltos de verdad,
+  partiendo el regex por la mitad. Con los escapes puestos, el demo convierte
+  Markdown en HTML.
+- Se paso `node --check` a los **641 ficheros JavaScript** del repositorio: no
+  queda ninguno con error de sintaxis.
+
+## [El pie de escritorio llega a tablet y cookies en la fila del año] - 2026-09-30
+
+- **Tablet igual que PC**: el bloque que rehace el pie como columna se ha movido de
+  `@media (max-width: 1200px)` a `@media (max-width: 620px)`. Con eso, desde 621 px
+  manda el pie en su forma de escritorio, asi que un iPad de 768, 834, 1024 o
+  1194 px se ve igual que un ordenador. **El movil no se toca**: por debajo de
+  620 px sigue igual.
+- **`2026 - GitHub - Cookies` en la misma linea a todos los anchos**: el boton de
+  cookies sale de su propia fila (el `<p class="footer-legal">` desaparece del
+  HTML y sus dos reglas del CSS) y entra en `.footer-meta` detras de un guion.
+  Se queda `flex-wrap: wrap` en `.footer-meta` solo por si en un ancho estrecho la
+  fila no cupiera entera, en lugar de desbordar.
+- Se corrigen los comentarios de `.site-footer`: describian un pie con las cookies
+  aparte en una tercera columna que ahora esta vacia a proposito, para que los dos
+  lados pesen lo mismo y el pie quede simetrico.
+- Google Analytics 4 queda con su ID real (`G-3TRY9F4G0Z`) y con la guarda de
+  `localhost`, para que probar en local no cuente visitas falsas.
+
 ## [Google Analytics 4 con aviso de consentimiento] - 2026-09-30
 
-- **Todo en un sitio**: el ID de medicion esta en una constante, `analyticsId`,
-  al principio de `Web/scripts/app.js`. **Ahora mismo vale `G-PENDIENTE`**, un
-  valor que el propio codigo rechaza, asi que **no se pide nada a Google**
-  hasta que se sustituya por el `G-XXXXXXXXXX` real de la propiedad. Es el
-  unico sitio que hay que tocar.
-- **Primero se pregunta, despues se carga**: `initializeAnalytics()` se ejecuta al
-  arrancar la pagina, lee la decision guardada en `localStorage`
+- **Medición activa** con el ID `G-3TRY9F4G0Z`, que vive en una sola
+  constante, `analyticsId`, al principio de `Web/scripts/app.js`. Mientras no
+  tenga el formato `G-XXXXXXXXXX` el código no hace nada: el valor de ejemplo
+  es `"PENDIENTE"`, que el propio formato descarta, así que desplegar sin el
+  ID real no manda nada a Google.
+- **Primero se pregunta, después se carga**: `initializeAnalytics()` se ejecuta al
+  arrancar la página, lee la decisión guardada en `localStorage`
   (`component-field-analytics-consent`) y solo entonces inyecta `gtag.js`. Si no
-  hay decision previa aparece `.consent-banner` con su texto y dos botones; con
+  hay decisión previa aparece `.consent-banner` con su texto y dos botones; con
   `deny` ya guardado no se vuelve a preguntar.
-- **Se puede cambiar de opinion**: el boton `Cookies` del pie
-  (`data-cookie-preferences` en las tres paginas) borra la decision y vuelve a
+- **Se puede cambiar de opinión**: el botón `Cookies` del pie
+  (`data-cookie-preferences` en las tres páginas) borra la decisión y vuelve a
   abrir el aviso.
-- **Privacidad**: `anonymize_ip: true` en la configuracion, sin
+- **Nada de lo que se prueba en local cuenta como visita**: `isLocalPreview()` corta
+  el envío si el hostname es `localhost`, porque si no cada recarga desde el
+  servidor del repositorio sería una visita falsa en el panel.
+- **Privacidad**: `anonymize_ip: true` en la configuración, sin
   identificadores publicitarios y sin scripts de terceros. Los textos del aviso
-  salen de `translations`, en espanol e ingles.
-- **Eventos**: ademas de la visita, se mandan `ver_componente` (con `id` y
-  `categoria`) al abrir un detalle y `cambio_idioma` al pulsar el boton de
+  salen de `translations`, en español e inglés.
+- **Eventos**: además de la visita, se mandan `ver_componente` (con `id` y
+  `categoria`) al abrir un detalle y `cambio_idioma` al pulsar el botón de
   idioma.
 - **CSP**: `vercel.json` permite `www.googletagmanager.com` en `script-src`,
   `www.google-analytics.com` en `img-src` y `connect-src`, y
-  `region1.google-analytics.com` en `connect-src`. Los tres hosts estan en la
+  `region1.google-analytics.com` en `connect-src`. Los tres hosts están en la
   tabla `RELEVANCE` de `Web/scripts/validar-csp.mjs` para que el validador los
   revise con la directiva correcta, y las URLs de recogida viven en
-  `analyticsEndpoints` dentro de `app.js` para que las vea el escaner del CSP.
-- `?v=20260930-3` → `?v=20260930-4` en los tres HTML de `Web/`.
+  `analyticsEndpoints` dentro de `app.js` para que las vea el escáner del CSP.
+- `?v=20260930-4` → `?v=20260930-5` en los tres HTML de `Web/`.
 
-
-## [Nombres de los componentes en español y pie de página único hasta 1200 px] — 2026-09-30
+## [Nombres de los componentes en español y pie reagrupado por anchura] — 2026-09-30
 
 - **Nombres en español para los 1018 componentes**: `Web/data/names-es.json` es una
   tabla escrita a mano con clave = nombre en inglés del catálogo y valor =
@@ -47,13 +81,12 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
   (+40 KB en crudo), y `app.js` lo muestra en tarjetas, detalle, título de la
   pestaña y al ordenar los destacados. El buscador incluye las dos versiones,
   así que "hourglass" y "reloj de arena" encuentran lo mismo.
-- **El pie se ve igual en móvil, tablet y iPad**: las reglas del pie que estaban
-  en `@media (max-width: 620px)` y las de dos columnas de 900 px se han junto en
-  un único bloque `@media (max-width: 1200px)` al final de `site.css`, que pisa
-  las media queries anteriores. Resultado: una sola columna, marca centrada,
-  donación a la izquierda, nota a la derecha y (año + GitHub) centrado desde
-  360 px hasta 1200 px; a partir de 1216 px vuelve la fila de tres columnas.
-  Sin scroll horizontal en ningún ancho comprobado.
+- **El pie se reagrupa en una columna**: las reglas que estaban en
+  `@media (max-width: 620px)` y las de dos columnas de 900 px se juntan en un
+  único bloque al final de `site.css`, que pisa las media queries anteriores.
+  Entonces el corte estaba en 1200 px, así que tablet veía el pie apelmazado; en
+  la sección siguiente ese bloque baja a 620 px y tablet vuelve al diseño de
+  escritorio. Sin scroll horizontal en ningún ancho comprobado.
 - `?v=20260930-2` → `?v=20260930-3` en los tres HTML de `Web/`.
 - `README.md` y `Web/README.md` describen la tabla de nombres.
 

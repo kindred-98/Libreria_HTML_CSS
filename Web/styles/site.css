@@ -370,6 +370,7 @@ input:focus-visible {
 .component-category,
 .detail-kicker,
 .code-label,
+.footer-about,
 .footer-meta {
   font-family: "DM Mono", "Courier New", monospace;
   font-size: 12px;
@@ -1628,13 +1629,24 @@ input:focus-visible {
   color: var(--text);
 }
 
+/* Pie en forma de tabla de tres filas y dos columnas utiles. Columna izquierda:
+   marca y, en la ultima fila, el texto de la libreria; columna derecha: la
+   donacion (que ocupa las dos primeras filas, porque son dos lineas) y, en la
+   ultima, la fila "ano - GitHub - cookies". Todo lo de la derecha pegado a su
+   borde. Las posiciones van fijas porque el orden del HTML es el de lectura en
+   movil. */
 .site-footer {
   display: grid;
   width: min(1320px, calc(100% - 64px));
   min-height: 100px;
-  grid-template-columns: 1fr 1.2fr 1.5fr;
-  align-items: center;
-  gap: 20px;
+  /* Tres columnas: la del medio se queda vacia a proposito. Con ella, los dos
+     lados reciben el mismo ancho esten como esten de largos los textos, asi que
+     el pie queda simetrico en vez de depender de cuanto mide la donacion. */
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: 20px;
+  row-gap: 20px;
+  align-items: start;
   margin-inline: auto;
   padding-block: 34px 26px;
     border-top: 2px solid var(--accent);
@@ -1643,7 +1655,35 @@ input:focus-visible {
 }
 
 .footer-brand {
+  grid-row: 1;
+  grid-column: 1;
   color: var(--text);
+}
+
+/* Donacion y ano/GitHub comparten la celda derecha: pegados a su borde para que
+   ambos textos terminen en el mismo sitio. */
+.footer-note {
+  grid-row: 1 / span 2;
+  grid-column: 3;
+  justify-self: end;
+  text-align: right;
+}
+
+.footer-about {
+  grid-row: 3;
+  grid-column: 1;
+  margin: 0;
+  max-width: 70ch;
+  font-size: 9px;
+  line-height: 1.6;
+  /* El texto son dos frases separadas por \n; sin pre-line el salto se
+     colapsaria en un espacio y volverian a ser un solo renglon. */
+  white-space: pre-line;
+}
+
+.footer-meta {
+  grid-row: 3;
+  grid-column: 3;
 }
 
 .footer-note p {
@@ -1700,58 +1740,29 @@ input:focus-visible {
   opacity: 1;
 }
 
-/* "Copy" solo aparece al pasar por encima o al copiar, para no ensuciar el footer. */
-.footer-address-hint {
-  order: 2;
-  color: var(--accent);
-  font-family: "Manrope", "Trebuchet MS", sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  /* Sin esto, hereda el overflow-wrap:anywhere del boton y en movil "Copiar"
-     se parte en dos renglones. */
-  white-space: nowrap;
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: opacity 150ms ease, transform 150ms ease;
-  pointer-events: none;
-}
-
-.footer-address:hover .footer-address-hint,
-.footer-address:focus-visible .footer-address-hint,
-.footer-address.is-copied .footer-address-hint {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* En pantallas tactiles no hay hover que lo muestre: "Copiar" se queda visible
-   para que se entienda que el boton hace algo. */
-@media (hover: none) {
-  .footer-address-hint {
-    opacity: 1;
-    transform: none;
-  }
-}
-
+/* Ano, GitHub y cookies en la misma linea, separados por guiones, a los dos
+   lados: en escritorio y tablet, uno detras del otro y todo a la derecha; en
+   movil, lo mismo pero centrado y con el cuerpo del pie. El wrap queda por si
+   en algun ancho estrecho la fila no cabe entera, en vez de desbordar. */
 .footer-meta {
+
   display: flex;
-  align-items: flex-start;
-  justify-content: end;
-  gap: 17px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
   color: var(--quiet);
   font-size: 9px;
-}
-
-/* El texto son dos frases separadas por \n; sin pre-line el salto se
-   colapsaria en un espacio y volverian a ser un solo renglon. */
-.footer-meta [data-i18n="footerBuilt"] {
-  white-space: pre-line;
   text-align: right;
 }
 
 .footer-meta a {
   white-space: nowrap;
+}
+
+.footer-meta-divider {
+  color: var(--line);
 }
 
 /* Boton del pie que reabre el aviso de cookies: parece un enlace del pie, pero
@@ -2170,15 +2181,18 @@ input:focus-visible {
   }
 }
 
-/* El pie se ve como en movil hasta pantallas de sobremesa: entre 620 y 1200 la
-   version de tres columnas queda aplastada y la de dos no reparte bien el aire,
-   sobre todo en tablet e iPad. Orden en esa unica fila: marca centrada,
-   donacion a la izquierda, contribuciones a la derecha y pie (ano + GitHub)
-   centrado; el HTML ya viene en ese orden. Va al final del fichero a proposito,
-   para que pise cualquier regla de pie de las media queries de arriba. */
-@media (max-width: 1200px) {
+/* Hasta 620 el pie se lee como una columna: en tablet se apelmaza y queda raro.
+   Se deshacen las posiciones fijas y se ordena por lectura con order (marca,
+   donacion, libreria, ano - GitHub - cookies); todo centrado. El corte esta en
+   620 y no en 1200 para que una tablet con anchura de sobra (834, 1024, 1194)
+   vea el pie en su forma de escritorio, igual que un PC. Va al final del
+   fichero a proposito, para que pise cualquier regla de pie de las media
+   queries de arriba. */
+@media (max-width: 620px) {
   .site-footer {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
+    justify-items: center;
     gap: 22px;
     padding-block: 34px 30px;
   }
@@ -2189,10 +2203,15 @@ input:focus-visible {
     margin-inline: auto;
     justify-self: center;
     text-align: center;
+    order: 1;
   }
 
   .footer-note {
-    justify-self: start;
+    grid-row: auto;
+    grid-column: auto;
+    justify-self: center;
+    text-align: center;
+    order: 2;
   }
 
   .footer-note p {
@@ -2205,22 +2224,31 @@ input:focus-visible {
   }
 
   .footer-address {
+    justify-content: center;
     padding-block: 4px;
     font-size: 11px;
+    text-align: center;
+  }
+
+  .footer-about {
+    grid-row: auto;
+    grid-column: auto;
+    /* Sin tope de ancho y con un cuerpo que se ajusta al ancho de la pantalla:
+       cada frase cabe en una linea, asi que se ven dos y no cuatro partidas. */
+    max-width: none;
+    font-size: clamp(8.5px, 2.4vw, 11px);
+    text-align: center;
+    order: 3;
   }
 
   .footer-meta {
+    grid-row: auto;
+    grid-column: auto;
+    align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 12px 16px;
+    text-align: center;
     font-size: 11px;
-  }
-
-  /* Ocupa linea propia y alineada a la derecha; ano y GitHub quedan en la fila
-     siguiente, centrados, porque esa es la unica que ocupa menos del 100%. */
-  .footer-meta [data-i18n="footerBuilt"] {
-    flex: 0 0 100%;
-    text-align: right;
+    order: 4;
   }
 }
 
