@@ -47,7 +47,7 @@ const translations = {
     // el <a> se queda en el HTML con su href fijo. El texto del enlace si se
     // traduce (data-i18n="storyP1Link" va en el propio <a>).
     storyP1a: "It started at 10 in the morning, in an analysis and programming course on Java. We had an HTML and CSS practice session, and our teacher showed us how far you can push those two languages, using a few examples from ",
-    storyP1Link: "gevendra2004's repository",
+    storyP1Link: "https://github.com/gevendra2004/gevstack",
     storyP1b: ". What was in there looked far too good to just look at.",
     storyP2: "davoker started practising on his computer. Twenty minutes later, he called me to show me what he had built: it was something else. So I asked him: why don't we set up a library? Building components is his thing, and that is where he stands out: obsessive about every detail, with ideas nobody else comes up with.",
     storyP3: "fatmaerm saw it from the start: he told us there are already plenty of HTML and CSS libraries, but for anyone just beginning that is not the same thing. I'm in: it is real practice, and it settles the foundations of both languages.",
@@ -180,7 +180,7 @@ const translations = {
     // el <a> se queda en el HTML con su href fijo. El texto del enlace si se
     // traduce (data-i18n="storyP1Link" va en el propio <a>).
     storyP1a: "Todo empezó a las 10 de la mañana, en una clase de análisis y programación en Java. Teníamos práctica de HTML y CSS y la profesora nos mostró hasta dónde se puede llegar con esos dos lenguajes, enseñándonos algunos ejemplos del ",
-    storyP1Link: "repositorio de gevendra2004",
+    storyP1Link: "https://github.com/gevendra2004/gevstack",
     storyP1b: ". Lo que había dentro nos pareció demasiado bueno como para quedarnos solo mirándolo.",
     storyP2: "davoker empezó a practicar en su ordenador. A los veinte minutos, me llamó para enseñarme lo que había hecho: era una chulada. Le dije: ¿por qué no montábamos una biblioteca? Crear componentes es lo suyo, y en eso se distingue: maniático con cada detalle y con ideas que no se le ocurren a nadie más.",
     storyP3: "fatmaerm lo vio claro desde el principio: nos dijo que ya existían un montón de bibliotecas de HTML y CSS, pero para quien está empezando eso no vale igual. Me apunto sirve para practicar de verdad y para asentar la base de los dos lenguajes.",
