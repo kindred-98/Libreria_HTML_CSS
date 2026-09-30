@@ -54,6 +54,11 @@ const RELEVANCE = [
   { host: "upload.wikimedia.org", directiva: "img-src", why: "fotos de las galerias" },
   { host: "commons.wikimedia.org", directiva: "img-src", why: "fichas de Commons" },
   { host: "api.qrserver.com", directiva: "img-src", why: "QR generados al vuelo" },
+  // Google Analytics: el script de gtag lo carga app.js solo con consentimiento,
+  // y los hits salen por connect-src (beacon) y por un pixel en img-src.
+  { host: "www.googletagmanager.com", directiva: "script-src", why: "el script de gtag" },
+  { host: "www.google-analytics.com", directiva: ["connect-src", "img-src"], why: "los hits de Analytics" },
+  { host: "region1.google-analytics.com", directiva: "connect-src", why: "los hits de Analytics en la region de datos" },
 ];
 
 // Hosts que no son recursos: solo los toca la navegacion, y el CSP no

@@ -7,6 +7,36 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Google Analytics 4 con aviso de consentimiento] - 2026-09-30
+
+- **Todo en un sitio**: el ID de medicion esta en una constante, `analyticsId`,
+  al principio de `Web/scripts/app.js`. **Ahora mismo vale `G-PENDIENTE`**, un
+  valor que el propio codigo rechaza, asi que **no se pide nada a Google**
+  hasta que se sustituya por el `G-XXXXXXXXXX` real de la propiedad. Es el
+  unico sitio que hay que tocar.
+- **Primero se pregunta, despues se carga**: `initializeAnalytics()` se ejecuta al
+  arrancar la pagina, lee la decision guardada en `localStorage`
+  (`component-field-analytics-consent`) y solo entonces inyecta `gtag.js`. Si no
+  hay decision previa aparece `.consent-banner` con su texto y dos botones; con
+  `deny` ya guardado no se vuelve a preguntar.
+- **Se puede cambiar de opinion**: el boton `Cookies` del pie
+  (`data-cookie-preferences` en las tres paginas) borra la decision y vuelve a
+  abrir el aviso.
+- **Privacidad**: `anonymize_ip: true` en la configuracion, sin
+  identificadores publicitarios y sin scripts de terceros. Los textos del aviso
+  salen de `translations`, en espanol e ingles.
+- **Eventos**: ademas de la visita, se mandan `ver_componente` (con `id` y
+  `categoria`) al abrir un detalle y `cambio_idioma` al pulsar el boton de
+  idioma.
+- **CSP**: `vercel.json` permite `www.googletagmanager.com` en `script-src`,
+  `www.google-analytics.com` en `img-src` y `connect-src`, y
+  `region1.google-analytics.com` en `connect-src`. Los tres hosts estan en la
+  tabla `RELEVANCE` de `Web/scripts/validar-csp.mjs` para que el validador los
+  revise con la directiva correcta, y las URLs de recogida viven en
+  `analyticsEndpoints` dentro de `app.js` para que las vea el escaner del CSP.
+- `?v=20260930-3` → `?v=20260930-4` en los tres HTML de `Web/`.
+
+
 ## [Nombres de los componentes en español y pie de página único hasta 1200 px] — 2026-09-30
 
 - **Nombres en español para los 1018 componentes**: `Web/data/names-es.json` es una

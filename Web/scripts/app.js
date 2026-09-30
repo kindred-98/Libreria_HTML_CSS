@@ -26,6 +26,21 @@ let featuredTimer = null;
 // Cuantas páginas numeradas se dibujan a cada lado de la actual antes de
 // colapsar el resto en puntos suspensivos.
 const pageWindow = 1;
+
+// Google Analytics 4. El ID de medicion va aqui y en ningun otro sitio: con el
+// valor de ejemplo (G-PENDIENTE) no se carga nada, para poder desplegar y
+// probar el banner sin tener la cuenta creada. Se cambia por el G-XXXXXXXXXX
+// que da Analytics > Administracion > Flujos de datos.
+const analyticsId = "G-PENDIENTE";
+// Hosts que necesita el CSP de vercel.json. El primero es el script de gtag y
+// los otros dos los endpoints de recogida (el pixel y el beacon). Se declaran
+// aqui para que el validador del CSP los vea y avise si alguno se queda fuera.
+const analyticsEndpoints = {
+  tag: "https://www.googletagmanager.com/gtag/js",
+  collect: "https://www.google-analytics.com/g/collect",
+  collectRegional: "https://region1.google-analytics.com/g/collect",
+};
+const consentStorageKey = "component-field-analytics-consent";
 const translations = {
   en: {
     categories: {
@@ -164,6 +179,13 @@ const translations = {
     catalogLoadError: "Could not load the component catalog. Run the site from a local web server and regenerate it if needed. {message}",
     themeNotSaved: "Theme preference will not be saved in this browser",
     languageNotSaved: "Language preference will not be saved in this browser",
+    consentLabel: "Cookie notice",
+    consentText: "We use Google Analytics to know how many people visit and which pages they open. It only loads if you accept. You can change your mind from the footer.",
+    consentAccept: "Accept",
+    consentReject: "Only necessary",
+    consentAccepted: "Thank you. Analytics enabled",
+    consentRejected: "Analytics disabled. You can change this from the footer",
+    cookies: "Cookies",
   },
   es: {
     categories: {
@@ -302,6 +324,13 @@ const translations = {
     catalogLoadError: "No se pudo cargar el catálogo. Abre el sitio desde un servidor local y, si hace falta, vuelve a generarlo. {message}",
     themeNotSaved: "No se pudo guardar el tema en este navegador",
     languageNotSaved: "No se pudo guardar el idioma en este navegador",
+    consentLabel: "Aviso de cookies",
+    consentText: "Usamos Google Analytics para saber cuánta gente entra y qué páginas abre. Solo se carga si lo aceptas. Puedes cambiar de opinión desde el pie.",
+    consentAccept: "Aceptar",
+    consentReject: "Solo lo necesario",
+    consentAccepted: "Gracias. Estadísticas activadas",
+    consentRejected: "Estadísticas desactivadas. Puedes cambiarlo desde el pie",
+    cookies: "Cookies",
   },
 };
 
@@ -1330,6 +1359,7 @@ async function renderDetail(component) {
     url: `${siteOrigin}${componentsPath}?component=${encodeURIComponent(component.id)}`,
     robots: "noindex, follow",
   });
+  trackAnalyticsEvent("ver_componente", { id: component.id, categoria: component.category });
 
   // El detalle vive en components.html; si se abre desde otra pagina, "volver"
   // tiene que llevar ahi en vez de a un ancla que no existe.
@@ -1452,7 +1482,122 @@ function initializeLanguage() {
   }
   applyLanguage(savedLanguage, false);
   for (const button of elements.languageButtons) {
-    button.addEventListener("click", () => applyLanguage(button.dataset.language));
+    button.addEventListener("click", () => {
+      applyLanguage(button.dataset.language);
+      trackAnalyticsEvent("cambio_idioma", { idioma: button.dataset.language });
+    });
+  }
+}
+
+// --- Google Analytics ------------------------------------------------------
+// Nada de esto se ejecuta hasta que hay un ID de medicion real y alguien ha
+// aceptado: el banner pregunta primero y el script de gtag se pide despues, de
+// modo que sin aceptacion no sale ni una peticion a Google ni una cookie.
+
+function readAnalyticsConsent() {
+  try {
+    return localStorage.getItem(consentStorageKey);
+  } catch {
+    return null;
+  }
+}
+
+function writeAnalyticsConsent(decision) {
+  try {
+    localStorage.setItem(consentStorageKey, decision);
+  } catch {
+    // Sin localStorage la eleccion no se recuerda, pero la pagina actual ya
+    // abide por ella: es mejor que bloquear la decision.
+  }
+}
+
+function hasAnalyticsId() {
+  // Un ID de medicion de GA4 son las letras G, un guion y al menos cuatro
+  // caracteres, con al menos dos digitos: asi el valor de ejemplo G-PENDIENTE
+  // (todo letras) no llega a pedir el script ni a poner cookies.
+  return /^G-[A-Z0-9]{4,}$/i.test(analyticsId) && /\d{2}/.test(analyticsId);
+}
+
+function loadAnalytics() {
+  if (!hasAnalyticsId() || typeof window.gtag === "function") return;
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = `${analyticsEndpoints.tag}?id=${encodeURIComponent(analyticsId)}`;
+  document.head.append(script);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function gtag() {
+    window.dataLayer.push(arguments);
+  };
+  window.gtag("js", new Date());
+  // anonymize_ip trunca la IP antes de guardarla. La web no publica datos
+  // publicitarios: eso se declara aqui en vez de en la configuracion de GA.
+  window.gtag("config", analyticsId, { anonymize_ip: true });
+}
+
+function trackAnalyticsEvent(name, parameters) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", name, parameters ?? {});
+}
+
+function openConsentBanner() {
+  const banner = createElement("div", "consent-banner");
+  banner.dataset.consentBanner = "";
+  banner.dataset.i18nAriaLabel = "consentLabel";
+  banner.setAttribute("role", "region");
+
+  const text = createElement("p", "consent-text");
+  text.dataset.i18n = "consentText";
+  const actions = createElement("div", "consent-actions");
+  const reject = createElement("button", "button button-secondary");
+  reject.type = "button";
+  reject.dataset.consent = "deny";
+  reject.dataset.i18n = "consentReject";
+  const accept = createElement("button", "button");
+  accept.type = "button";
+  accept.dataset.consent = "grant";
+  accept.dataset.i18n = "consentAccept";
+  actions.append(reject, accept);
+  banner.append(text, actions);
+  document.body.append(banner);
+
+  for (const button of banner.querySelectorAll("[data-consent]")) {
+    button.addEventListener("click", () => {
+      const decision = button.dataset.consent === "grant" ? "grant" : "deny";
+      writeAnalyticsConsent(decision);
+      banner.remove();
+      if (decision === "grant") {
+        loadAnalytics();
+        showToast(t("consentAccepted"));
+      } else {
+        showToast(t("consentRejected"));
+      }
+    });
+  }
+  // El banner se pinta ya traducido: los textos se rellenan con el idioma
+  // activo en vez de esperar al siguiente applyLanguage.
+  applyStaticTranslations();
+  return banner;
+}
+
+function initializeAnalytics() {
+  const decision = readAnalyticsConsent();
+  if (decision === "grant") {
+    loadAnalytics();
+  } else if (decision !== "deny") {
+    // Sin respuesta todavia: se pregunta. Un "deny" no vuelve a preguntar.
+    openConsentBanner();
+  }
+  // El boton del pie reabre el aviso para poder cambiar de idea, que es lo que
+  // pide el consentimiento: se puede retirar cuando se quiera.
+  for (const button of document.querySelectorAll("[data-cookie-preferences]")) {
+    button.addEventListener("click", () => {
+      try {
+        localStorage.removeItem(consentStorageKey);
+      } catch {
+        // da igual: el banner se abre igualmente.
+      }
+      openConsentBanner();
+    });
   }
 }
 
@@ -1581,6 +1726,7 @@ function initializeSearch() {
 
 async function initializeApp() {
   initializeLanguage();
+  initializeAnalytics();
   initializeTheme();
   initializeNavigation();
   initializeSearch();
