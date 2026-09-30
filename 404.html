@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -89,12 +89,12 @@
       <p class="nota">HTML &amp; CSS Library</p>
     </main>
     <script>
-      // El sitio es bilingue: si el visitante ya eligio espanol, se respeta.
+      // El sitio es bilingue y arranca en espanol, igual que el resto: quien ha
+      // elegido ingles en el boton de idioma lo respeta tambien en la 404.
       (function () {
-        var es = false;
-        try { es = localStorage.getItem("component-field-language") === "es"; } catch (e) {}
-        if (!es && /^es\b/i.test(navigator.language || "")) es = true;
-        if (!es) return;
+        var es = true;
+        try { es = localStorage.getItem("component-field-language") !== "en"; } catch (e) {}
+        if (!es) { document.documentElement.lang = "en"; return; }
         document.documentElement.lang = "es";
         document.title = "Pagina no encontrada | Libreria HTML y CSS";
         for (var i = 0; i < document.querySelectorAll("[data-es]").length; i++) {

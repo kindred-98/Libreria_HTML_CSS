@@ -1434,11 +1434,13 @@ function applyLanguage(language, rerender = true) {
 }
 
 function initializeLanguage() {
-  let savedLanguage = "en";
+  // Por defecto espanol: es el idioma del proyecto. Quien quiera ingles lo cambia
+  // con el boton de idioma y la eleccion queda guardada en localStorage.
+  let savedLanguage = "es";
   try {
-    savedLanguage = localStorage.getItem("component-field-language") ?? "en";
+    savedLanguage = localStorage.getItem("component-field-language") ?? "es";
   } catch {
-    savedLanguage = "en";
+    savedLanguage = "es";
   }
   applyLanguage(savedLanguage, false);
   for (const button of elements.languageButtons) {

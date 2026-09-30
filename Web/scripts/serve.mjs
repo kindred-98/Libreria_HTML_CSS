@@ -11,6 +11,15 @@ const brotliAsync = promisify(brotliCompress);
 const repositoryDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const port = Number(process.env.PORT ?? 8000);
 
+// Vercel manda el CSP de vercel.json en todas las respuestas y aqui no habia
+// cabecera ninguna: un host que el CSP no permite (los avatares de GitHub en
+// team-core) se veia bien en local y roto en produccion. Sirve igual que alli.
+const vercelFile = path.join(repositoryDirectory, "vercel.json");
+const vercel = JSON.parse(await readFile(vercelFile, "utf8"));
+const securityPolicy = (vercel.headers ?? [])
+  .flatMap((block) => block.headers ?? [])
+  .find((header) => header.key?.toLowerCase() === "content-security-policy")?.value;
+
 const contentTypes = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -77,6 +86,7 @@ const server = http.createServer(async (request, response) => {
       "cache-control": "no-cache",
       vary: "Accept-Encoding",
     };
+    if (securityPolicy) headers["content-security-policy"] = securityPolicy;
     if (compressed) {
       headers["content-encoding"] = compressed.encoding;
       headers["content-length"] = String(compressed.payload.length);

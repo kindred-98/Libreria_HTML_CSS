@@ -29,6 +29,9 @@ const ROOTS = [
   "creaciones-primium",
   "CreacionesNuevas",
   "DavokerDiseñador",
+  // Las paginas del sitio tambien: sus avatares de GitHub se rompieron en
+  // produccion porque github.com no esta en img-src y aqui no se miraba.
+  "Web",
 ];
 
 // Extension que sirve para adivinar la directiva de un recurso.
@@ -199,6 +202,9 @@ for (const root of ROOTS) {
     const texto = await readFile(file, "utf8");
     escaneados += 1;
     const rel = path.relative(repositoryDirectory, file).split(path.sep).join("/");
+    // Web/data/catalog.js es el catalogo generado para abrirlo con file://: es
+    // texto con miles de URLs de origen, no peticiones que haga la pagina.
+    if (rel.startsWith("Web/data/")) continue;
     const esCss = rel.endsWith(".css");
     const esHtml = rel.endsWith(".html");
 
@@ -216,14 +222,17 @@ for (const root of ROOTS) {
       let etiqueta = null;
       if (esHtml) {
         const et = etiquetaEn(texto, m.index);
-        // Un enlace <a> no es una peticion.
-        if (et === "a") continue;
+        // Un enlace <a> no es una peticion, ni lo es una URL de metadata: el
+        // og:image o la canonical los lee el rastreador, no el navegador.
+        if (et === "a" || et === "meta") continue;
         const ventana = texto.slice(Math.max(0, m.index - 400), m.index);
         for (const [re, directiva, nombre] of POR_ETIQUETA) {
           for (const t of ventana.matchAll(new RegExp(re.source, "gi"))) {
             if (!ventana.slice(t.index + t[0].length).includes(">")) etiqueta = [directiva, nombre];
           }
         }
+        // <link> sin rel de recurso (canonical, preload): no pide nada externo.
+        if (et === "link" && !etiqueta) continue;
       }
 
       // Las hojas y los scripts que se descargaron a local traen comentarios de
@@ -257,13 +266,19 @@ for (const { host, directiva, why } of RELEVANCE) {
 }
 
 const failures = [];
+const avisos = [];
 for (const [host, uso] of [...usados].sort((a, b) => b[1].veces - a[1].veces)) {
   for (const directiva of uso.directivas) {
-    if (!permitidoEn(directiva, host)) {
-      const ejemplos = [...uso.en].slice(0, 2).join(", ");
-      const detalle = uso.why ? `, que se usa para ${uso.why}` : "";
-      failures.push(`${directiva} no permite ${host} (${uso.veces} usos${detalle}, p. ej. ${ejemplos})`);
+    if (permitidoEn(directiva, host)) continue;
+    const ejemplos = [...uso.en].slice(0, 2).join(", ");
+    const detalle = uso.why ? `, que se usa para ${uso.why}` : "";
+    // Tipo sin determinar: puede ser un enlace o texto de un script. No corta,
+    // pero se deja anotado para verlo.
+    if (directiva === "*") {
+      avisos.push(`tipo sin determinar para ${host} (${uso.veces} usos, p. ej. ${ejemplos})`);
+      continue;
     }
+    failures.push(`${directiva} no permite ${host} (${uso.veces} usos${detalle}, p. ej. ${ejemplos})`);
   }
 }
 
@@ -286,6 +301,11 @@ console.log(`hosts externos en los demos: ${usados.size}`);
 console.log(`directivas del CSP: ${[...directivas.keys()].join(", ")}`);
 for (const [host, uso] of [...usados].sort((a, b) => b[1].veces - a[1].veces)) {
   console.log(`  ${host.padEnd(28)} ${String(uso.veces).padStart(4)} usos  [${[...uso.directivas].join(", ")}]`);
+}
+
+if (avisos.length) {
+  console.log("");
+  for (const aviso of avisos) console.log(`AVISO: ${aviso}`);
 }
 
 if (failures.length || huerfanos.length) {
