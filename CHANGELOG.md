@@ -7,13 +7,78 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Recursos remotos localizados y CSP de 25 hosts a 3] — 2026-09-30
+
+Los demos pedían sus librerías, tipografías e iconos a CDNs (unpkg, jsDelivr,
+cdnjs, Google Fonts, Typekit, Remix Icon, Font Awesome, Unicons). Como el
+catálogo muestra cada demo dentro de un `iframe` que hereda las cabeceras del
+sitio, un CDN caído dejaba el componente roto en producción aunque en local
+fuese bien. Además, la CSP anterior **no incluía `upload.wikimedia.org`**: en el
+límite, las 86 galerías se habrían servido sin una sola foto.
+
+- **676 ficheros** bajados a la carpeta `vendor/` de 66 componentes: 580 `woff2`,
+  76 hojas de estilos, 9 imágenes, 8 scripts y 1 `.ttf`. Cada referencia se
+  reescribe a la ruta local, incluidas las `url()` relativas que piden las hojas
+  de iconos (`remixicon.woff2`, `../webfonts/fa-solid-900.woff2`), que al mover
+  la hoja apuntaban a carpetas inexistentes y dejaban los iconos en blanco.
+- **14 fotos** de origen desconocido o de franquicias (filmibeat, wallpaperflare
+  con material de Marvel, Pinterest, repositorios personales) sustituidas por
+  fotos de Wikimedia **PD o CC0** que ya usan las galerías. Las 13 con licencia
+  clara (Pexels, Unsplash, transparenttextures) sí se copiaron a local.
+- **CSP**: de 25 hosts a **3** — `upload.wikimedia.org` y
+  `commons.wikimedia.org` (las fotos de las galerías) y `api.qrserver.com` (el
+  único componente que dibuja un QR en el momento). `script-src`,
+  `style-src` y `font-src` quedan en `'self'`.
+- **`validar-csp.mjs`** reescrito: rastrea los recursos externos de los 885
+  demos en `.html`, `.js` y `.css`, decide qué directiva necesita cada uno
+  mirando la etiqueta o el contexto del CSS, y avisa **también** de los hosts
+  que la CSP permite pero ya no usa nadie. Entra en el workflow y en
+  `npm run validar`.
+- **`apartar-recursos-remotos.mjs`** y **`limpiar-fuentes-vendor.mjs`**: para
+  cuando un componente nuevo vuelva a traer un CDN. El primero es idempotente
+  y se puede relanzar sin romper nada.
+- **Typekit eliminado** de `scroll-effect`: su hoja devolvía 404, así que la
+  tipografía nunca cargaba.
+
+## [Las 676 fotos de las galerías, documentadas] — 2026-09-30
+
+`THIRD_PARTY_NOTICES.md` no mencionaba las fotografías, que son el único recurso
+de terceros que llega a las descargas.
+
+- Nueva sección con el inventario: 86 carpetas, 676 fotos, cómo se atribuye
+  cada una (78 con el pie en el HTML, 8 que lo guardan en `script.js`) y el
+  recuento de licencias, enlazando a cada texto oficial CC, CC0 y GFDL.
+- Constancia de que los **ZIP no llevan fotos dentro**: las carpetas contienen
+  solo `html`, `js` y `css`.
+- `creaciones-primium/LICENSE` apunta a ese inventario: su MIT cubre el código
+  de las galerías, no las fotos.
+- **6 galerías** (`bridge-board`, `coffee-finder`, `falls-filter`,
+  `fogwood-phone`, `nebula-film`, `reef-grid`) citaban a Wikimedia Commons solo
+  como texto, sin enlace. Ahora las 86 enlazan igual. Comprobado en navegador:
+  siguen cargando sus fotos, con el enlace y sin errores.
+
+## [Página 404 y documentación al día] — 2026-09-30
+
+- **`404.html`** en la raíz, que Vercel sirve en cualquier dirección inexistente.
+  Replica la paleta del sitio, avisa en el idioma que el visitante ya tenga
+  elegido (`component-field-language`) y ofrece los dos destinos útiles: el
+  catálogo y el listado completo.
+- **README**: `GevendraAutorExterno` ya no se describe como parte del
+  repositorio; se documentan las 86 galerías y los 160 componentes nuevos; la
+  sección de despliegue explica la CSP corta y por qué los demos **sí** quedan
+  sujetos a ella.
+- **`robots.txt`**: el comentario decía 396 detalles, son 885.
+- **`vercel.json`**: fuera el `redirect` de Gevendra y su `X-Robots-Tag`, ya
+  innecesarios (esa carpeta está en `.gitignore` y no se despliega).
+
 ## [Retirada de los 116 demos de gevendra2004] — 2026-09-30
 
 Sus demos de `GevendraAutorExterno/` **no se publican**: su repositorio de origen,
 `gevendra2004/gevstack`, no declara licencia y el autor no respondió a los
 contactos para pedirle permiso. Publicar su código, con o sin botón de descarga,
-ya es redistribuirlo, así que la carpeta sale del catálogo y del sitio. **Queda en
-el repositorio** para poder consultarla en local.
+ya es redistribuirlo, así que la carpeta sale del catálogo y del sitio, **y
+también del índice de git**: queda solo en el disco local, en `.gitignore`, para
+poder consultarla mientras se espera una respuesta.
 
 - `generate-catalog.mjs`: `GevendraAutorExterno` deja de ser raíz del catálogo
   (1001 → **885** componentes, los 885 descargables).
@@ -24,7 +89,10 @@ el repositorio** para poder consultarla en local.
   de su demo `animated-gradient-underglow`.
 - `vercel.json`: `redirect` permanente de `/GevendraAutorExterno/:path*` a `/Web/`
   más `X-Robots-Tag: noindex, nofollow`, para que su contenido no se sirva aunque
-  la carpeta siga en el repositorio.
+  la carpeta siga en el repositorio. *(Retirados después en la misma fecha: la
+  carpeta pasó a `.gitignore` y ya no se despliega, así que el bloqueo sobraba.)*
+- `.gitignore`: `GevendraAutorExterno/`, y sus **1189 ficheros salen del índice**
+  sin borrarse del disco.
 - Web: fuera su tarjeta del roster, su nodo del diagrama NEXO (ahora dice `IA`),
   su botón del filtro de autores y sus claves i18n. El filtro queda con 4 autores
   y el roster con 3 cuentas.
