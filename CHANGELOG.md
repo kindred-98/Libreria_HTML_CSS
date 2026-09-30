@@ -7,6 +7,40 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Auditoría de seguridad, licencias y código muerto] - 2026-09-30
+
+- `Docs/Auditoria.md` recoge el resultado: qué se comprobó y está bien, qué hay
+  que proteger y qué queda por decidir. Los datos del documento están medidos
+  sobre el repositorio, no estimados.
+- **No hay secretos activos** ni en el árbol ni en los 67 commits: ni claves de
+  API, ni tokens, ni claves privadas, ni ficheros `.env`. Los dos
+  identificadores públicos (el ID de Google Analytics y la dirección de la
+  cartera) lo son a propósito y están justificados en el propio aviso.
+- **Cuatro fallos reales de seguridad**, con su reproducción: un enlace simbólico
+  en un demo podía meter cualquier fichero legible en un JSON público al
+  generar el catálogo; un `GET /%zz` tumbaba `serve.mjs`; el servidor local
+  servía `.git/config` y escuchaba en todas las interfaces; y el iframe del
+  portal de davoker era el único sin `sandbox`.
+- **Dos hallazgos legales**: 577 KB de la portada de GitHub guardados como `.css`
+  dentro de un demo (y dentro de su ZIP), y 119 ZIP de `DavokerDiseñador/` sin
+  el aviso de copyright que su MIT exige. Los dos están en el historial, así que
+  borrarlos no basta: hace falta decidir si se reescribe.
+- **Cero atribución dentro de los ficheros de los demos**: 0 de 1 018 llevan el
+  nombre de la autora o un aviso de licencia. Quien copia un demo se lo lleva
+  sin el crédito, que es justo lo que la MIT pide conservar.
+- **Código muerto: una línea**, en `Web/scripts/stamp-assets.mjs`. Ni un selector
+  CSS huérfano, ni una variable sin usar, ni una clave de traducción rota, ni
+  una referencia rota en los 1 018 demos, ni un fichero JavaScript con error de
+  sintaxis (641 revisados).
+- **La documentación se contradice en 17 puntos** con lo que hace el código. El
+  más peligroso: dos documentos afirmaban que los demos no heredan la CSP del
+  sitio, cuando sí, porque se sirven del mismo dominio. El más práctico:
+  `Web/README.md` decía que no hay script de build, y seguirlo deja el sitio
+  sin catálogo.
+- Lo pendiente, con lo que significa de verdad, está en el apartado `## 11` del
+  documento, separado en lo que bloquea, lo que es mecánico y lo que requiere
+  decidir.
+
 ## [Los nombres del diagrama se despegan de la linea y la version se sella sola] - 2026-09-30
 
 - **Los nombres laterales de Team Core ya no se montan sobre la linea**: por debajo
