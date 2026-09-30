@@ -125,7 +125,7 @@ Ese párrafo de alcance es importante: deja claro que la licencia no se extiende
 
 Si has copiado o adaptado el trabajo de otra persona, **no** marques `redistributable: true`. Basta con dejar `source` apuntando al trabajo original y explicarlo en el issue del PR. Un repo público no es permiso de redistribución.
 
-El inventario completo está en [`Docs/Legalizacion/THIRD_PARTY_NOTICES.md`](./Docs/Legalizacion/THIRD_PARTY_NOTICES.md).
+El inventario completo está en [`Docs/THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md).
 
 ## Commits
 
@@ -162,7 +162,7 @@ La decisión de integrar o no es siempre de quien mantiene el repositorio. No ha
 |   |-- scripts/                # app.js, zip.js y los scripts de Node
 |   `-- styles/site.css
 |-- .github/workflows/          # validación en CI, no despliega
-`-- Docs/
+`-- Docs/                        # solo THIRD_PARTY_NOTICES.md
 ```
 
 ## Documentación
@@ -170,5 +170,4 @@ La decisión de integrar o no es siempre de quien mantiene el repositorio. No ha
 - [`README.md`](./README.md) — descripción, despliegue y estructura
 - [`Web/README.md`](./Web/README.md) — cómo funciona la aplicación por dentro
 - [`CHANGELOG.md`](./CHANGELOG.md) — registro de cambios
-- [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md) — plan de mejora por fases
-- [`Docs/auditoria/`](./Docs/auditoria/) — informes de limpieza del repositorio
+- [`Docs/THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md) — procedencia y licencias de los componentes

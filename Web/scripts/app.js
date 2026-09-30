@@ -31,9 +31,7 @@ const translations = {
     languageLabel: "Language",
     navHome: "Home",
     navComponents: "Components",
-    navCategories: "Categories",
     navGitHub: "GitHub",
-    navDonations: "Donations",
     navTeamCore: "Team Core",
     marqueeLabel: "Featured strip",
     pageComponents: "Components",
@@ -88,7 +86,6 @@ const translations = {
     heroAsideLineTwo: "Useful details.",
     experiments: "experiments",
     categoriesLabel: "categories",
-    categoriesTitle: "Categories",
     selectedComponents: "SELECTED COMPONENTS",
     featuredTitle: "A few to explore",
     featuredNote: "Real demos from the collection, selected for a quick first look.",
@@ -105,8 +102,6 @@ const translations = {
     nextPage: "Next page",
     goToPage: "Go to page {page}",
     pageOf: "Page {current} of {total}.",
-    findStartingPoint: "FIND A STARTING POINT",
-    categoriesNote: "Grouped from the component names and folders.",
     footerDonate: "Donate USDT through BNB Smart Chain (BEP20)",
     footerDonateAddress: "0xa8f0230135b4f6a959358be3e8e8531f3551fa81",
     walletAddress: "Wallet address",
@@ -117,7 +112,6 @@ const translations = {
     authorDavoker: "Davoker design - {count}",
     authorFatmaerm: "Fatmaerm component - {count}",
     authorKindred: "Kindred component - {count}",
-    browseCategory: "Browse {category} components",
     viewComponent: "View component",
     liveDemo: "Live demo",
     copied: "Copied!",
@@ -147,7 +141,6 @@ const translations = {
     backToComponents: "← Back to components",
     sourceCode: "Source code",
     htmlSource: "HTML · index.html",
-    cssSource: "CSS",
     javascriptSource: "JavaScript",
     inlineSource: "{label} · inline {number}",
     localFileSource: "{label} · {name}",
@@ -157,8 +150,6 @@ const translations = {
     catalogLoadError: "Could not load the component catalog. Run the site from a local web server and regenerate it if needed. {message}",
     themeNotSaved: "Theme preference will not be saved in this browser",
     languageNotSaved: "Language preference will not be saved in this browser",
-    loadingPreview: "Loading preview...",
-    previewUnavailable: "Preview unavailable",
   },
   es: {
     categories: {
@@ -173,9 +164,7 @@ const translations = {
     languageLabel: "Idioma",
     navHome: "Inicio",
     navComponents: "Componentes",
-    navCategories: "Categorías",
     navGitHub: "GitHub",
-    navDonations: "Donaciones",
     navTeamCore: "Team Core",
     marqueeLabel: "Cinta destacada",
     pageComponents: "Componentes",
@@ -230,7 +219,6 @@ const translations = {
     heroAsideLineTwo: "Detalles útiles.",
     experiments: "experimentos",
     categoriesLabel: "categorías",
-    categoriesTitle: "Categorías",
     selectedComponents: "COMPONENTES DESTACADOS",
     featuredTitle: "Algunos para explorar",
     featuredNote: "Demos reales de la colección para empezar a explorar.",
@@ -247,8 +235,6 @@ const translations = {
     nextPage: "Página siguiente",
     goToPage: "Ir a la página {page}",
     pageOf: "Página {current} de {total}.",
-    findStartingPoint: "ENCUENTRA UN PUNTO DE PARTIDA",
-    categoriesNote: "Agrupados según los nombres de los componentes y sus carpetas.",
     footerDonate: "Puedes donar USDT a través de BNB Smart Chain (BEP20)",
     footerDonateAddress: "0xa8f0230135b4f6a959358be3e8e8531f3551fa81",
     walletAddress: "Dirección de la cartera",
@@ -259,7 +245,6 @@ const translations = {
     authorDavoker: "Diseños de davoker - {count}",
     authorFatmaerm: "Componente de fatmaerm - {count}",
     authorKindred: "Componente de kindred - {count}",
-    browseCategory: "Explorar componentes de {category}",
     viewComponent: "Ver componente",
     liveDemo: "Demo en vivo",
     copied: "¡Copiado!",
@@ -289,7 +274,6 @@ const translations = {
     backToComponents: "← Volver a los componentes",
     sourceCode: "Código fuente",
     htmlSource: "HTML · index.html",
-    cssSource: "CSS",
     javascriptSource: "JavaScript",
     inlineSource: "{label} · integrado {number}",
     localFileSource: "{label} · {name}",
@@ -299,14 +283,11 @@ const translations = {
     catalogLoadError: "No se pudo cargar el catálogo. Abre el sitio desde un servidor local y, si hace falta, vuelve a generarlo. {message}",
     themeNotSaved: "No se pudo guardar el tema en este navegador",
     languageNotSaved: "No se pudo guardar el idioma en este navegador",
-    loadingPreview: "Cargando vista previa...",
-    previewUnavailable: "Vista previa no disponible",
   },
 };
 
 const state = {
   components: [],
-  catalogLoaded: false,
   language: "en",
   category: "All",
   author: "All",
@@ -536,9 +517,6 @@ function applyStaticTranslations() {
   }
   for (const element of document.querySelectorAll("[data-i18n-placeholder]")) {
     element.placeholder = t(element.dataset.i18nPlaceholder);
-  }
-  for (const element of document.querySelectorAll("[data-i18n-alt]")) {
-    element.alt = t(element.dataset.i18nAlt);
   }
   for (const element of document.querySelectorAll("[data-i18n-aria-label]")) {
     element.setAttribute("aria-label", t(element.dataset.i18nAriaLabel));
@@ -1437,7 +1415,6 @@ async function initializeApp() {
 
   try {
     state.components = await loadCatalog();
-    state.catalogLoaded = true;
     const statComponents = document.querySelector("#stat-components");
     const statCategories = document.querySelector("#stat-categories");
     if (statComponents) statComponents.textContent = String(state.components.length);

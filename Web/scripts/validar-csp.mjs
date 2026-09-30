@@ -28,7 +28,6 @@ const vercelFile = path.join(repositoryDirectory, "vercel.json");
 const ROOTS = [
   "creaciones-primium",
   "CreacionesNuevas",
-  "GevendraAutorExterno",
   "DavokerDiseñador",
 ];
 

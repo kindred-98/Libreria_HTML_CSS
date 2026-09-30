@@ -4,7 +4,7 @@ Biblioteca estática y con búsqueda de demos independientes de interfaces hecho
 
 - `DavokerDiseñador/` — **119 efectos de texto** de **davoker** (7 temas: miscelánea, harry potter, stalker, monster hunter, star wars, matrix y the division), cada uno con su showcase, su `.zip` y sus instrucciones. Su repositorio es **MIT**, así que **ZIP habilitado**. La carpeta guarda también su **portada** (`davoker.html`, el showcase unificado de los 119), que se abre dentro de la rejilla al elegir a davoker en el filtro de autores, y fuera del catálogo.
 - `CreacionesNuevas/` — **248 demos** originales creados para este repositorio, cada uno con su propio archivo `LICENSE` MIT y **descarga ZIP habilitada**.
-- `creaciones-primium/` — **518 demos** organizados por categoría: 248 animaciones, botones, controles, efectos, formularios, tarjetas y otros de **kindred-98**, más **86 galerías** de fotografía y los **160** de **fatmaerm** repartidos entre `indicadores-de-carga/` y `navegacion/`. Toda la colección comparte el `LICENSE` MIT de la carpeta, que nombra a las dos autoras, así que el **ZIP está habilitado en todos**. Las 86 galerías (676 fotografías) muestran sus fotos desde Wikimedia Commons, con el autor y la licencia de cada imagen impresos en la propia página; el inventario completo está en [`THIRD_PARTY_NOTICES.md`](./Docs/Legalizacion/THIRD_PARTY_NOTICES.md).
+- `creaciones-primium/` — **518 demos** organizados por categoría: 248 animaciones, botones, controles, efectos, formularios, tarjetas y otros de **kindred-98**, más **86 galerías** de fotografía y los **160** de **fatmaerm** repartidos entre `indicadores-de-carga/` y `navegacion/`. Toda la colección comparte el `LICENSE` MIT de la carpeta, que nombra a las dos autoras, así que el **ZIP está habilitado en todos**. Las 86 galerías (676 fotografías) muestran sus fotos desde Wikimedia Commons, con el autor y la licencia de cada imagen impresos en la propia página; el inventario completo está en [`THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md).
 
 Los **885 son descargables**. La aplicación web está separada en `Web/` y se divide en tres páginas —`index.html` (portada), `components.html` (listado y detalle) y `team-core.html` (equipo y donación)—; los demos originales se cargan directamente para mostrar vistas previas reales.
 
@@ -65,7 +65,6 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 |   |   |-- validate.mjs        # Comprueba que el catálogo cuadra con el disco
 |   |   `-- zip.js              # Crea archivos ZIP comprimidos en el navegador
 |   |-- styles/site.css
-|   |-- assets/
 |   |-- components.html          # Listado de componentes y detalle
 |   |-- favicon.svg
 |   |-- og-image.png
@@ -74,10 +73,8 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 |   |-- team-core.html           # Equipo y donación
 |   `-- index.html
 |-- .github/workflows/          # Validación en CI (no despliega)
-|-- Docs/auditoria/             # Informes de limpieza del repositorio
-|-- Docs/Opencode/Plan.md       # Plan de mejora por fases
 |-- CHANGELOG.md
-|-- Docs/Legalizacion/
+|-- Docs/
 |   `-- THIRD_PARTY_NOTICES.md   # Procedencia y licencias de los componentes
 |-- index.html                  # Entrada a la aplicación web
 |-- LICENSE
@@ -126,7 +123,7 @@ Hay una situación distinta en la colección:
 
 - **`CreacionesNuevas/` (248 demos del autor).** Son creaciones originales de este repositorio, cada una con un `LICENSE` MIT propio. El catálogo los marca con `license: "MIT"`, `redistributable: true` y `source` apuntando a este repositorio, así que **el botón ZIP está activo** y el ZIP incluye el `LICENSE` y un `ATTRIBUTION.txt` con la fuente y la licencia.
 
-El inventario completo está en [Docs/Legalizacion/THIRD_PARTY_NOTICES.md](Docs/Legalizacion/THIRD_PARTY_NOTICES.md).
+El inventario completo está en [Docs/THIRD_PARTY_NOTICES.md](Docs/THIRD_PARTY_NOTICES.md).
 
 ### Material retirado
 

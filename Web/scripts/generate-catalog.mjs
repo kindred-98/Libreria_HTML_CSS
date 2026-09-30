@@ -12,7 +12,7 @@ const repositoryDirectory = path.resolve(scriptDirectory, "../..");
 // GevendraAutorExterno/ sigue en el repositorio, pero queda FUERA de esta lista:
 // sus 116 demos son de un tercero que no declara licencia y no respondio a los
 // contactos, asi que no se catalogan, no se publican y no se sirven. Ver
-// Docs/Legalizacion/THIRD_PARTY_NOTICES.md ("Material retirado").
+// Docs/THIRD_PARTY_NOTICES.md ("Material retirado").
 const libraryRoots = [
   {
     name: "DavokerDiseñador",
