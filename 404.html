@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Page not found | HTML &amp; CSS Library</title>
+    <meta name="description" content="This address does not exist in the library. Go back to the catalogue to keep looking.">
+    <meta name="description-es" content="Esta direccion no existe en la libreria. Vuelve al catalogo para seguir buscando.">
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="/Web/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/Web/favicon.svg">
+    <style>
+      :root {
+        --page: #111511;
+        --surface: #191e19;
+        --surface-raised: #202720;
+        --text: #f1f2e9;
+        --muted: #a0aa9d;
+        --line: #343d34;
+        --accent: #d4f779;
+        --accent-ink: #17200d;
+        --coral: #f29a80;
+      }
+      * { box-sizing: border-box; }
+      html { color-scheme: dark; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 32px;
+        background: var(--page);
+        color: var(--text);
+        font: 16px/1.6 ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+      main { width: min(560px, 100%); text-align: center; }
+      .code {
+        font-size: clamp(72px, 18vw, 128px);
+        line-height: 1;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        color: var(--accent);
+        margin: 0 0 8px;
+      }
+      .slash {
+        font-size: clamp(28px, 6vw, 40px);
+        line-height: 1;
+        color: var(--coral);
+        font-weight: 300;
+        margin: 0 0 24px;
+      }
+      h1 { font-size: 1.5rem; margin: 0 0 12px; letter-spacing: -0.01em; }
+      p { color: var(--muted); margin: 0 0 28px; }
+      .acciones { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+      .btn {
+        display: inline-block;
+        padding: 12px 22px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--text);
+        transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+      }
+      .btn:hover { background: var(--surface-raised); border-color: var(--accent); transform: translateY(-1px); }
+      .btn--principal { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+      .btn--principal:hover { background: #c3ec68; }
+      .nota { margin-top: 32px; font-size: 0.85rem; color: var(--muted); }
+      @media (prefers-reduced-motion: reduce) {
+        .btn { transition: none; }
+        .btn:hover { transform: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="code">404</p>
+      <p class="slash">//</p>
+      <h1 data-en="This page does not exist" data-es="Esta pagina no existe">This page does not exist</h1>
+      <p data-en="The address you followed is not part of the library. It may have been renamed, or the link that brought you here was incomplete."
+         data-es="La direccion que has seguido no forma parte de la libreria. Puede que se haya renombrado, o que el vinculo que te trajo aqui estuviera incompleto.">
+        The address you followed is not part of the library. It may have been renamed, or the link that brought you here was incomplete.
+      </p>
+      <div class="acciones">
+        <a class="btn btn--principal" href="/Web/" data-en="Go to the catalogue" data-es="Ir al catalogo">Go to the catalogue</a>
+        <a class="btn" href="/Web/components.html" data-en="Browse all components" data-es="Ver todos los componentes">Browse all components</a>
+      </div>
+      <p class="nota">HTML &amp; CSS Library</p>
+    </main>
+    <script>
+      // El sitio es bilingue: si el visitante ya eligio espanol, se respeta.
+      (function () {
+        var es = false;
+        try { es = localStorage.getItem("component-field-language") === "es"; } catch (e) {}
+        if (!es && /^es\b/i.test(navigator.language || "")) es = true;
+        if (!es) return;
+        document.documentElement.lang = "es";
+        document.title = "Pagina no encontrada | Libreria HTML y CSS";
+        for (var i = 0; i < document.querySelectorAll("[data-es]").length; i++) {
+          var nodo = document.querySelectorAll("[data-es]")[i];
+          nodo.textContent = nodo.getAttribute("data-es");
+        }
+      })();
+    </script>
+  </body>
+</html>
