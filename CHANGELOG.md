@@ -7,6 +7,27 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Nombres de los componentes en español y pie de página único hasta 1200 px] — 2026-09-30
+
+- **Nombres en español para los 1018 componentes**: `Web/data/names-es.json` es una
+  tabla escrita a mano con clave = nombre en inglés del catálogo y valor =
+  castellano. Hay **899 entradas**; las otras 119 ya venían en español o son
+  nombres propios (`ARENA`, `PATRONUS`, `VHS`, `HUD`…), así que no necesitan
+  entrada. `generate-catalog.mjs` la lee como `nameEs` y lo añade al índice
+  (+40 KB en crudo), y `app.js` lo muestra en tarjetas, detalle, título de la
+  pestaña y al ordenar los destacados. El buscador incluye las dos versiones,
+  así que "hourglass" y "reloj de arena" encuentran lo mismo.
+- **El pie se ve igual en móvil, tablet y iPad**: las reglas del pie que estaban
+  en `@media (max-width: 620px)` y las de dos columnas de 900 px se han junto en
+  un único bloque `@media (max-width: 1200px)` al final de `site.css`, que pisa
+  las media queries anteriores. Resultado: una sola columna, marca centrada,
+  donación a la izquierda, nota a la derecha y (año + GitHub) centrado desde
+  360 px hasta 1200 px; a partir de 1216 px vuelve la fila de tres columnas.
+  Sin scroll horizontal en ningún ancho comprobado.
+- `?v=20260930-2` → `?v=20260930-3` en los tres HTML de `Web/`.
+- `README.md` y `Web/README.md` describen la tabla de nombres.
+
+
 ## [Rendimiento: camino crítico aligerado de punta a punta] — 2026-09-30
 
 Todo lo que hacía que la portada tardara en pintar o gastara datos de más, medido

@@ -419,6 +419,13 @@ function getComponentDescription(component) {
   return component.descriptionEs || component.description;
 }
 
+// El nombre en espanol vive en el catalogo (nameEs, de names-es.json). Si no
+// hay traduccion, el nombre original ya es español o es un nombre propio.
+function getComponentName(component) {
+  if (state.language === "en") return component.name;
+  return component.nameEs || component.name;
+}
+
 // La cinta necesita texto real y, sobre todo, que se clone hasta tapar dos veces
 // el ancho de la ventana: el bucle usa translateX(-50%), asi que si la mitad no
 // llega a cubrir la pantalla aparece un hueco al final del recorrido.
@@ -617,6 +624,7 @@ function getFilteredComponents() {
       : component.author === state.author;
     const searchableText = normalizeText([
       component.name,
+      component.nameEs,
       component.category,
       component.author,
       component.description,
@@ -717,7 +725,7 @@ function createPreview(component, className) {
   preview.classList.add("live-preview");
   preview.dataset.previewState = "loading";
   const frame = document.createElement("iframe");
-  frame.title = t("livePreviewTitle", { name: component.name });
+  frame.title = t("livePreviewTitle", { name: getComponentName(component) });
   frame.loading = "lazy";
   frame.referrerPolicy = "no-referrer";
   frame.setAttribute("scrolling", "no");
@@ -752,7 +760,7 @@ function createComponentCard(component, index) {
     createElement("span", "component-category", getCategoryLabel(component.category)),
     createElement("span", "component-number", String(index + 1).padStart(3, "0")),
   );
-  const heading = createElement("h3", "", component.name);
+  const heading = createElement("h3", "", getComponentName(component));
   const description = createElement("p", "", getComponentDescription(component));
   const link = createElement("a", "card-link", t("viewComponent"));
   link.href = componentDetailUrl(component.id);
@@ -942,7 +950,7 @@ function getFeaturedComponents() {
     .sort(
       (first, second) =>
         (first.featuredOrder ?? Number.MAX_SAFE_INTEGER) - (second.featuredOrder ?? Number.MAX_SAFE_INTEGER)
-        || first.name.localeCompare(second.name),
+        || getComponentName(first).localeCompare(getComponentName(second)),
     );
 }
 
@@ -1201,7 +1209,7 @@ function createDetailHeading(component) {
   const copy = createElement("div");
   copy.append(
     createElement("p", "detail-kicker", `${getCategoryLabel(component.category)} / ${componentFolder(component)}`),
-    createElement("h1", "", component.name),
+    createElement("h1", "", getComponentName(component)),
     createElement("p", "detail-description", getComponentDescription(component)),
   );
   const actions = createElement("div", "detail-actions");
@@ -1317,7 +1325,7 @@ async function renderDetail(component) {
   elements.detailView.hidden = false;
   elements.detailView.replaceChildren();
   updateDocumentMetadata({
-    title: `${component.name} · ${t("libraryTitle")}`,
+    title: `${getComponentName(component)} · ${t("libraryTitle")}`,
     description: getComponentDescription(component),
     url: `${siteOrigin}${componentsPath}?component=${encodeURIComponent(component.id)}`,
     robots: "noindex, follow",

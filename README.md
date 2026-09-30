@@ -57,6 +57,7 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 |   |   |-- catalog.js          # Catálogo completo, solo para abrir con file:// (no se despliega)
 |   |   |-- sources/            # Código de cada componente, se paga al abrir el detalle
 |   |   `-- component-overrides.json
+|   |   `-- names-es.json        # Nombre en español por nombre inglés, escrito a mano
 |   |-- scripts/
 |   |   |-- app.js              # Búsqueda, filtros, detalle, copia, tema y metadatos
 |   |   |-- catalog-format.mjs  # Formato compartido por el generador y el validador

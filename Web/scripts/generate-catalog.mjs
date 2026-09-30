@@ -90,6 +90,7 @@ const catalogFile = path.join(repositoryDirectory, "Web", "data", "catalog.json"
 const catalogScriptFile = path.join(repositoryDirectory, "Web", "data", "catalog.js");
 const sourcesDirectory = path.join(repositoryDirectory, "Web", "data", "sources");
 const overridesFile = path.join(repositoryDirectory, "Web", "data", "component-overrides.json");
+const namesEsFile = path.join(repositoryDirectory, "Web", "data", "names-es.json");
 
 async function findHtmlPages(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -284,6 +285,7 @@ async function createComponent(root, pagePath) {
   const id = createSlug(folderPath);
   const override = catalogOverrides[id] ?? {};
   const name = override.name ?? (title || directoryName.replace(/[-_]+/g, " "));
+  const nameEs = namesEs[name] ?? null;
   const folderCategory = root.categories?.[folderPath.split("/")[0]];
   const category = override.category ?? folderCategory ?? getCategory(`${directoryName} ${name}`);
   // Algunas carpetas cambian de autor sin cambiar de raiz (las de fatmaerm).
@@ -336,6 +338,7 @@ async function createComponent(root, pagePath) {
   return {
     id,
     name,
+    ...(nameEs ? { nameEs } : {}),
     category,
     author: override.author ?? folderAuthor ?? root.author ?? "kindred-98",
     featured: override.featured === true,
@@ -376,6 +379,16 @@ async function createComponent(root, pagePath) {
 let catalogOverrides = {};
 try {
   catalogOverrides = JSON.parse(await readFile(overridesFile, "utf8"));
+} catch (error) {
+  if (error.code !== "ENOENT") throw error;
+}
+
+// Nombres en espanol, tabla escrita a mano: clave el nombre ingles, valor el
+// castellano. Solo se guardan las entradas que cambian; el resto ya son
+// españolas o son nombres propios.
+let namesEs = {};
+try {
+  namesEs = JSON.parse(await readFile(namesEsFile, "utf8"));
 } catch (error) {
   if (error.code !== "ENOENT") throw error;
 }
