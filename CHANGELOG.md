@@ -7,6 +7,29 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Los nombres del diagrama se despegan de la linea y la version se sella sola] - 2026-09-30
+
+- **Los nombres laterales de Team Core ya no se montan sobre la linea**: por debajo
+  de 1200 px las etiquetas se recogian hacia dentro (`left: -10px`) para no
+  crear scroll horizontal, y al cruzarse con el trazo horizontal se quedaban
+  encima de el. Ahora `fatmaerm` cuelga **debajo** de la linea e `IA` **encima**,
+  cada una anclada por el lado que la aleja (`top` la de abajo, `bottom` la de
+  arriba) para que el hueco sean 6 y 8 px fijos aunque la etiqueta mida 17 px o
+  20 px segun el ancho. Se mide en los tres: no se solapan ni con la linea, ni con
+  el chip `NEXO`, ni con la pillora de `kindred-98`, ni con la de `devoker`, y no
+  aparece scroll horizontal. **El escritorio (1280 px en adelante) no se toca**:
+  ahi las etiquetas cuelgan fuera de la escena y la linea ya se ve limpia.
+- **La version de los assets la calcula el despliegue**: nuevo
+  `Web/scripts/stamp-assets.mjs`, anadido al `buildCommand` de `vercel.json`.
+  Como `/Web/styles/*` y `/Web/scripts/*` se sirven con `immutable` y un ano de
+  vida, cambiar un CSS no se veia hasta que alguien subia a mano el `?v=` de los
+  tres HTML, que se olvidaba. El script sustituye ese `?v=` por una huella de
+  ocho caracteres del contenido del fichero al que apunta, **una por asset**, para
+  que cambiar `site.css` no invalide un `app.js` que no ha cambiado. En local no
+  hace nada (con `npm run sellar` se fuerza), y avisa con un error si un HTML
+  apunta a un asset que no existe. El `?v=20260930-5` que queda en el HTML del
+  repositorio es un marcador legible, no el valor que ve el visitante.
+
 ## [Dos demos con el JavaScript roto, arreglados] - 2026-09-30
 
 - **`CreacionesNuevas/ascii-art-generator/script.js`**: `rows.join('` lleva un
