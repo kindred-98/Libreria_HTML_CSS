@@ -13,7 +13,16 @@ const previewRevision = appVersion;
 const pageSize = 9;
 // Los destacados van a cuatro columnas, asi que la pagina se mide en multiplos
 // de cuatro para no dejar una fila a medias cuando haya mas de una pagina.
-const featuredPageSize = 8;
+// Destacados: una sola fila que va pasando sola. Avanza una tarjeta cada
+// featuredStepMs y se para al pasar el ratón o al llevar el foco.
+const featuredStepMs = 4000;
+const featuredTransitionMs = 500;
+// Tarjetas repetidas al final del track. En llegar a la primera repetida la
+// vista es exactamente la del principio, asi que el bucle se reinicia sin que
+// se note el salto.
+const featuredClones = 4;
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+let featuredTimer = null;
 // Cuantas páginas numeradas se dibujan a cada lado de la actual antes de
 // colapsar el resto en puntos suspensivos.
 const pageWindow = 1;
@@ -24,7 +33,7 @@ const translations = {
       Effects: "Effects", Forms: "Forms", Galleries: "Galleries", Loaders: "Loaders", Navigation: "Navigation", Other: "Other",
     },
     authors: {
-      All: "All authors", Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
+      Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
     },
     brandHome: "HTML and CSS Library home",
     mainNavigation: "Main navigation",
@@ -89,6 +98,8 @@ const translations = {
     selectedComponents: "SELECTED COMPONENTS",
     featuredTitle: "A few to explore",
     featuredNote: "Real demos from the collection, selected for a quick first look.",
+    featuredPrev: "Go back",
+    featuredNext: "Advance",
     collectionEyebrow: "THE COLLECTION",
     browseComponents: "Browse components",
     libraryNote: "Search the details. Open a demo. Make it yours.",
@@ -112,6 +123,9 @@ const translations = {
     authorDavoker: "Davoker design - {count}",
     authorFatmaerm: "Fatmaerm component - {count}",
     authorKindred: "Kindred component - {count}",
+    defaultCount: "{count} components by kindred and fatma",
+    davokerHint: "119 more components available in davoker's section.",
+    searchOffPlaceholder: "Search is off in davoker's section",
     viewComponent: "View component",
     liveDemo: "Live demo",
     copied: "Copied!",
@@ -157,7 +171,7 @@ const translations = {
       Effects: "Efectos", Forms: "Formularios", Galleries: "Galerías", Loaders: "Indicadores de carga", Navigation: "Navegación", Other: "Otros",
     },
     authors: {
-      All: "Todos los autores", Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
+      Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
     },
     brandHome: "Inicio de la biblioteca HTML y CSS",
     mainNavigation: "Navegación principal",
@@ -222,6 +236,8 @@ const translations = {
     selectedComponents: "COMPONENTES DESTACADOS",
     featuredTitle: "Algunos para explorar",
     featuredNote: "Demos reales de la colección para empezar a explorar.",
+    featuredPrev: "Retroceder",
+    featuredNext: "Avanzar",
     collectionEyebrow: "LA COLECCIÓN",
     browseComponents: "Explorar componentes",
     libraryNote: "Busca detalles. Abre un demo. Hazlo tuyo.",
@@ -245,6 +261,9 @@ const translations = {
     authorDavoker: "Diseños de davoker - {count}",
     authorFatmaerm: "Componente de fatmaerm - {count}",
     authorKindred: "Componente de kindred - {count}",
+    defaultCount: "{count} componentes de kindred y fatma",
+    davokerHint: "119 componentes más disponibles en el apartado de davoker.",
+    searchOffPlaceholder: "Buscador desactivado en el apartado de davoker",
     viewComponent: "Ver componente",
     liveDemo: "Demo en vivo",
     copied: "¡Copiado!",
@@ -290,10 +309,13 @@ const state = {
   components: [],
   language: "en",
   category: "All",
-  author: "All",
+  // null = ningun chip de autor marcado: se listan los de kindred-98 y los de
+  // fatmaerm. Lo de davoker no entra aqui, vive aparte en su propio portal.
+  author: null,
   query: "",
   currentPage: 1,
-  featuredPage: 1,
+  featuredIndex: 0,
+  featuredCount: 0,
   toastTimer: null,
 };
 
@@ -314,11 +336,9 @@ const elements = {
   pageNext: document.querySelector("#page-next"),
   paginationPages: document.querySelector("#pagination-pages"),
   paginationStatus: document.querySelector("#pagination-status"),
-  featuredPagination: document.querySelector("#featured-pagination"),
-  featuredPagePrev: document.querySelector("#featured-page-prev"),
-  featuredPageNext: document.querySelector("#featured-page-next"),
-  featuredPaginationPages: document.querySelector("#featured-pagination-pages"),
-  featuredPaginationStatus: document.querySelector("#featured-pagination-status"),
+  featuredCarousel: document.querySelector("#featured-carousel"),
+  featuredPrev: document.querySelector("#featured-prev"),
+  featuredNext: document.querySelector("#featured-next"),
   toast: document.querySelector("#toast"),
   themeToggle: document.querySelector("#theme-toggle"),
   languageButtons: [...document.querySelectorAll(".language-button")],
@@ -529,6 +549,9 @@ function applyStaticTranslations() {
   for (const button of elements.languageButtons) {
     button.setAttribute("aria-pressed", String(button.dataset.language === state.language));
   }
+  // El bucle de placeholders de arriba reescribe el del buscador, asi que el
+  // aviso de "buscador apagado" se vuelve a aplicar aqui mismo.
+  syncSearchAvailability();
   applyTypewriterMetrics();
 }
 
@@ -552,8 +575,13 @@ function getCategories() {
 }
 
 // Autores fijos: davoker, kindred-98 y fatmaerm salen siempre, aunque un autor
-// llegue sin ningun demo en el catalogo.
-const preferredAuthors = ["All", "Davoker", "kindred-98", "fatmaerm"];
+// llegue sin ningun demo en el catalogo. No hay chip de "todos los autores":
+// ese papel lo hace el estado sin autor marcado (state.author = null).
+const preferredAuthors = ["Davoker", "kindred-98", "fatmaerm"];
+
+// Autor que queda fuera del listado general: el suyo solo se ve entrando en su
+// apartado, que es su propia web embebida en la rejilla.
+const defaultHiddenAuthor = "Davoker";
 
 // Animacion propia de cada boton de autor (styles/site.css).
 const authorButtonFx = {
@@ -582,7 +610,11 @@ function getFilteredComponents() {
   const query = normalizeText(state.query);
   return state.components.filter((component) => {
     const matchesCategory = state.category === "All" || component.category === state.category;
-    const matchesAuthor = state.author === "All" || component.author === state.author;
+    // Sin autor marcado se listan todos menos los de davoker: su material no
+    // tiene demo en vivo en la rejilla, se ve dentro de su portal.
+    const matchesAuthor = state.author == null
+      ? component.author !== defaultHiddenAuthor
+      : component.author === state.author;
     const searchableText = normalizeText([
       component.name,
       component.category,
@@ -603,8 +635,15 @@ function renderFilters() {
     button.setAttribute("aria-pressed", String(state.category === category));
     button.addEventListener("click", () => {
       state.category = category;
+      // Cualquier categoria saca del apartado de davoker: su portal solo se ve
+      // sin categoria activa, y al salir se vuelve al listado general.
+      if (state.author === "Davoker") {
+        state.author = null;
+        syncSearchAvailability();
+      }
       state.currentPage = 1;
       renderFilters();
+      renderAuthorFilters();
       renderComponents();
     });
     elements.filters.append(button);
@@ -622,8 +661,14 @@ function renderAuthorFilters() {
     button.type = "button";
     button.setAttribute("aria-pressed", String(state.author === author));
     button.addEventListener("click", () => {
-      state.author = author;
+      // El chip ya marcado se desmarca y se vuelve al listado general.
+      state.author = state.author === author ? null : author;
+      // El apartado de davoker siempre empieza en "Todas": el resto de
+      // categorias y el buscador quedan para salir de el.
+      if (state.author === "Davoker") state.category = "All";
       state.currentPage = 1;
+      syncSearchAvailability();
+      renderFilters();
       renderAuthorFilters();
       renderComponents();
     });
@@ -807,15 +852,39 @@ function scrollToGrid(grid) {
   grid.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
 }
 
+// Mientras se esta en el apartado de davoker no hay nada que buscar en la
+// rejilla: su material no se cataloga ahi. El buscador se apaga, se vacia y
+// cambia el placeholder para que se note, y se enciende en cuanto se sale.
+function syncSearchAvailability() {
+  if (!elements.search) return;
+  const off = state.author === "Davoker";
+  if (off) {
+    state.query = "";
+    elements.search.value = "";
+  }
+  elements.search.disabled = off;
+  elements.search.placeholder = t(off ? "searchOffPlaceholder" : "searchPlaceholder");
+}
+
+// El recuento del listado puede llevar una segunda linea de ayuda (el aviso de
+// davoker), asi que se escribe con nodos y no con un textContent plano.
+function setResultsCount(lines) {
+  if (!elements.resultsCount) return;
+  elements.resultsCount.replaceChildren();
+  lines.forEach((line, index) => {
+    if (index > 0) elements.resultsCount.append(document.createElement("br"));
+    elements.resultsCount.append(document.createTextNode(line));
+  });
+}
+
 function renderComponents() {
   if (!elements.grid) return;
   const filteredComponents = getFilteredComponents();
-  // Con el autor davoker elegido, sin categoria ni busqueda, la rejilla se
-  // sustituye por su portada (davoker.html) dentro del mismo hueco: la cabecera,
-  // el buscador y los filtros siguen siendo nuestros. En cuanto cambias de
-  // autor, de categoria o buscas algo, vuelve la lista normal de tarjetas.
+  // Con el autor davoker elegido la rejilla se sustituye por su portada
+  // (davoker.html) dentro del mismo hueco: la cabecera, el buscador apagado y
+  // los filtros siguen siendo nuestros. Al marcar una categoria, desmarcarlo o
+  // elegir otro autor, vuelve la lista normal de tarjetas.
   const showDavokerPortal = state.author === "Davoker"
-    && state.category === "All"
     && !state.query
     && Boolean(elements.davokerPortal && elements.davokerFrame);
   if (showDavokerPortal) {
@@ -840,11 +909,16 @@ function renderComponents() {
   const start = (state.currentPage - 1) * pageSize;
   const visibleComponents = filteredComponents.slice(start, start + pageSize);
   elements.grid.replaceChildren(...visibleComponents.map((component, index) => createComponentCard(component, start + index)));
-  const summaryKey = authorSummaryKey[state.author];
-  const countLabel = filteredComponents.length === 1 ? t("component") : t("components");
-  elements.resultsCount.textContent = summaryKey
-    ? t(summaryKey, { count: filteredComponents.length })
-    : `${filteredComponents.length} ${countLabel}`;
+  const count = filteredComponents.length;
+  const countLabel = count === 1 ? t("component") : t("components");
+  if (state.author == null) {
+    // Listado general: lo nuestro y lo de fatmaerm, con el aviso de davoker
+    // debajo para que se sepa que sus demos estan en su propio apartado.
+    setResultsCount([t("defaultCount", { count }), t("davokerHint")]);
+  } else {
+    const summaryKey = authorSummaryKey[state.author];
+    setResultsCount([summaryKey ? t(summaryKey, { count }) : `${count} ${countLabel}`]);
+  }
   elements.emptyState.hidden = filteredComponents.length > 0;
   renderPagination({
     container: elements.pagination,
@@ -859,30 +933,108 @@ function renderComponents() {
   refreshQueuedPreviews();
 }
 
+function getFeaturedComponents() {
+  // El orden de los destacados lo fija featuredOrder en component-overrides.json:
+  // es el unico sitio desde el que se reordenan. Sin numero (o con uno repetido)
+  // se desempata por nombre para que la fila no cambie entre visitas.
+  return state.components
+    .filter((component) => component.featured)
+    .sort(
+      (first, second) =>
+        (first.featuredOrder ?? Number.MAX_SAFE_INTEGER) - (second.featuredOrder ?? Number.MAX_SAFE_INTEGER)
+        || first.name.localeCompare(second.name),
+    );
+}
+
+// Cuantas tarjetas caben en la fila: lo decide --featured-visible en site.css,
+// que bajan las media queries.
+function getFeaturedVisible() {
+  if (!elements.featuredGrid) return featuredClones;
+  const value = Number.parseFloat(getComputedStyle(elements.featuredGrid).getPropertyValue("--featured-visible"));
+  return Number.isFinite(value) && value > 0 ? value : featuredClones;
+}
+
+// Mueve el track hasta la tarjeta numero index. Sin animacion el cambio es
+// inmediato y se fuerza un reflow: si no, el navegador funde el salto con el
+// movimiento siguiente en una sola transicion larga.
+function positionFeatured(index, animate) {
+  const track = elements.featuredGrid;
+  const card = track?.firstElementChild;
+  if (!card) return;
+  state.featuredIndex = index;
+  const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
+  const step = card.getBoundingClientRect().width + gap;
+  track.style.transition = animate ? `transform ${featuredTransitionMs}ms ease` : "none";
+  track.style.transform = `translateX(${-index * step}px)`;
+  if (!animate) void track.offsetHeight;
+}
+
+function stopFeaturedCarousel() {
+  if (featuredTimer !== null) {
+    window.clearInterval(featuredTimer);
+    featuredTimer = null;
+  }
+}
+
+function startFeaturedCarousel() {
+  stopFeaturedCarousel();
+  if (reducedMotion.matches) return;
+  if (!elements.featuredGrid?.firstElementChild) return;
+  if (state.featuredCount <= getFeaturedVisible()) return;
+  featuredTimer = window.setInterval(() => stepFeatured(1), featuredStepMs);
+}
+
+// Las tarjetas repetidas solo se muestran si la fila de verdad se mueve: si
+// caben todas (pantallas estrechas con pocos destacados) estarian duplicadas.
+function syncFeaturedState() {
+  const moving = state.featuredCount > getFeaturedVisible();
+  for (const card of elements.featuredGrid?.children ?? []) {
+    if (card.dataset.featuredClone) card.hidden = !moving;
+  }
+  if (moving) startFeaturedCarousel();
+  else stopFeaturedCarousel();
+}
+
+function stepFeatured(delta) {
+  if (!elements.featuredGrid?.firstElementChild) return;
+  if (state.featuredCount <= getFeaturedVisible()) return;
+  // La ultima posicion del track es la de las repetidas, que se ve igual que la
+  // primera: sirve de puente para dar la vuelta en los dos sentidos.
+  const maxIndex = state.featuredCount;
+  let target = state.featuredIndex + delta;
+  if (target > maxIndex) {
+    positionFeatured(0, false);
+    target = 1;
+  } else if (target < 0) {
+    positionFeatured(maxIndex, false);
+    target = maxIndex - 1;
+  }
+  positionFeatured(target, true);
+}
+
 function renderFeaturedComponents() {
   if (!elements.featuredGrid) return;
-  // El catalogo viene ordenado por carpeta, asi que sin ordenar los destacados
-  // salen en un orden que no encaja con como se eligen. Por nombre queda
-  // Bicycle, Liquid Fill Button, Neural Synapse Network, Photo Gallery.
-  const featuredComponents = state.components
-    .filter((component) => component.featured)
-    .sort((first, second) => first.name.localeCompare(second.name));
-  const totalPages = Math.max(1, Math.ceil(featuredComponents.length / featuredPageSize));
-  if (state.featuredPage > totalPages) state.featuredPage = totalPages;
-  const start = (state.featuredPage - 1) * featuredPageSize;
-  const visible = featuredComponents.slice(start, start + featuredPageSize);
-  elements.featuredGrid.replaceChildren(...visible.map((component, index) => createComponentCard(component, start + index)));
-  elements.featuredGrid.closest(".featured-section").hidden = featuredComponents.length === 0;
-  renderPagination({
-    container: elements.featuredPagination,
-    pagesList: elements.featuredPaginationPages,
-    status: elements.featuredPaginationStatus,
-    previous: elements.featuredPagePrev,
-    next: elements.featuredPageNext,
-    totalPages,
-    currentPage: state.featuredPage,
-    size: featuredPageSize,
+  stopFeaturedCarousel();
+  const featuredComponents = getFeaturedComponents();
+  state.featuredCount = featuredComponents.length;
+  state.featuredIndex = 0;
+  const section = elements.featuredGrid.closest(".featured-section");
+  if (section) section.hidden = featuredComponents.length === 0;
+  if (!featuredComponents.length) {
+    elements.featuredGrid.replaceChildren();
+    return;
+  }
+  const cards = featuredComponents.map((component, index) => createComponentCard(component, index));
+  // Las repetidas se construyen enteras, no con cloneNode: cloneNode no copia
+  // los manejadores del enlace y el clic recargaria la pagina.
+  const clones = featuredComponents.slice(0, featuredClones).map((component, index) => {
+    const card = createComponentCard(component, index);
+    card.dataset.featuredClone = "true";
+    return card;
   });
+  elements.featuredGrid.replaceChildren(...cards, ...clones);
+  positionFeatured(0, false);
+  syncFeaturedState();
   refreshQueuedPreviews();
 }
 
@@ -1335,16 +1487,6 @@ function goToPage(page, grid) {
   scrollToGrid(grid);
 }
 
-function goToFeaturedPage(page) {
-  const featured = state.components.filter((component) => component.featured);
-  const totalPages = Math.max(1, Math.ceil(featured.length / featuredPageSize));
-  const target = Math.min(Math.max(page, 1), totalPages);
-  if (target === state.featuredPage) return;
-  state.featuredPage = target;
-  renderFeaturedComponents();
-  scrollToGrid(elements.featuredGrid);
-}
-
 function initializePagination() {
   elements.pagePrev?.addEventListener("click", () => goToPage(state.currentPage - 1, elements.grid));
   elements.pageNext?.addEventListener("click", () => goToPage(state.currentPage + 1, elements.grid));
@@ -1352,11 +1494,32 @@ function initializePagination() {
     const button = event.target.closest("button[data-page]");
     if (button) goToPage(Number(button.dataset.page), elements.grid);
   });
-  elements.featuredPagePrev?.addEventListener("click", () => goToFeaturedPage(state.featuredPage - 1));
-  elements.featuredPageNext?.addEventListener("click", () => goToFeaturedPage(state.featuredPage + 1));
-  elements.featuredPaginationPages?.addEventListener("click", (event) => {
-    const button = event.target.closest("button[data-page]");
-    if (button) goToFeaturedPage(Number(button.dataset.page));
+}
+
+// El carrusel de destacados: se para al interactuar y se vuelve a lanzar al
+// soltar, y las flechas avanzan o retroceden una tarjeta.
+function initializeFeaturedCarousel() {
+  if (!elements.featuredCarousel) return;
+  for (const type of ["pointerenter", "focusin"]) {
+    elements.featuredCarousel.addEventListener(type, stopFeaturedCarousel);
+  }
+  elements.featuredCarousel.addEventListener("pointerleave", startFeaturedCarousel);
+  elements.featuredCarousel.addEventListener("focusout", (event) => {
+    if (!elements.featuredCarousel.contains(event.relatedTarget)) startFeaturedCarousel();
+  });
+  elements.featuredPrev?.addEventListener("click", () => stepFeatured(-1));
+  elements.featuredNext?.addEventListener("click", () => stepFeatured(1));
+
+  reducedMotion.addEventListener?.("change", syncFeaturedState);
+
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    if (resizeTimer) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      if (!elements.featuredGrid?.firstElementChild) return;
+      positionFeatured(Math.min(state.featuredIndex, state.featuredCount), false);
+      syncFeaturedState();
+    }, 150);
   });
 }
 
@@ -1370,7 +1533,7 @@ function initializeSearch() {
   document.addEventListener("keydown", (event) => {
     const activeTag = document.activeElement?.tagName;
     const typing = ["INPUT", "TEXTAREA", "SELECT"].includes(activeTag);
-    if (event.key === "/" && !typing) {
+    if (event.key === "/" && !typing && !elements.search.disabled) {
       event.preventDefault();
       elements.search.focus();
     }
@@ -1400,6 +1563,7 @@ async function initializeApp() {
   initializeNavigation();
   initializeSearch();
   initializePagination();
+  initializeFeaturedCarousel();
   initializeMarquee();
     initializeCopyAddress();
     initializeDonationLink();

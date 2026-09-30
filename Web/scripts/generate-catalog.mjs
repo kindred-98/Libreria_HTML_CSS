@@ -336,6 +336,9 @@ async function createComponent(root, pagePath) {
     category,
     author: override.author ?? folderAuthor ?? root.author ?? "kindred-98",
     featured: override.featured === true,
+    // Orden dentro de la seccion destacados de Inicio: el numero lo pone
+    // quien edita component-overrides.json, que es como se reordenan.
+    ...(typeof override.featuredOrder === "number" ? { featuredOrder: override.featuredOrder } : {}),
     description,
     ...(descriptionEs ? { descriptionEs } : {}),
     tags: override.tags ?? getTags(folderPath, name, category),

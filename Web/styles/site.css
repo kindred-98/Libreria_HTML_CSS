@@ -1177,12 +1177,23 @@ input:focus-visible {
   font-size: 10px;
 }
 
+.search-box:has(input:disabled) {
+  border-style: dashed;
+  opacity: 0.6;
+}
+
+.search-box input:disabled {
+  cursor: not-allowed;
+}
+
 .results-count {
   margin: 0;
   color: var(--muted);
   font-family: "DM Mono", monospace;
   font-size: 10px;
-  white-space: nowrap;
+  /* Puede llevar una segunda linea con el aviso de davoker, asi que no se
+     impide el salto de linea: sin mas, una linea larga desbordaria la barra. */
+  white-space: normal;
 }
 
 .category-filters {
@@ -1509,15 +1520,60 @@ input:focus-visible {
   background: var(--surface);
 }
 
-/* Los destacados de Inicio son cuatro y tienen que entrar en una sola fila, asi
-   que van a 4 columnas con la preview mas baja. No se toca .component-grid
-   porque esa tambien es la rejilla de components.html, que muestra 12. */
-#featured-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  /* El grid viene con align-items: center, y asi las tarjetas no se estiran a
-     la fila: segun si el titulo ocupa una o dos lineas quedan 284px o 263px y
-     descuadran. Con stretch todas miden lo mismo. */
-  align-items: stretch;
+/* Destacados: una sola fila de tarjetas que va pasando sola. El ancho de cada
+   tarjeta sale de --featured-visible, que bajan las media queries; el resto de
+   la pagina sigue en .component-grid. */
+.featured-carousel {
+  position: relative;
+  /* Sin esto el overflow cortaria el salto de 3px que se da la tarjeta al
+     pasar el ratón por encima. */
+  padding-block: 6px;
+  overflow: hidden;
+}
+
+.featured-track {
+  --featured-visible: 4;
+  --featured-gap: 16px;
+  display: flex;
+  gap: var(--featured-gap);
+  will-change: transform;
+}
+
+.featured-track > * {
+  flex: 0 0 calc((100% - (var(--featured-visible) - 1) * var(--featured-gap)) / var(--featured-visible));
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.carousel-arrow:hover,
+.carousel-arrow:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.carousel-arrow--prev {
+  left: 6px;
+}
+
+.carousel-arrow--next {
+  right: 6px;
 }
 
 #featured-grid .card-preview {
@@ -2194,7 +2250,7 @@ input:focus-visible {
   }
 
   #featured-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    --featured-visible: 2;
   }
 
   .story-body {
@@ -2394,8 +2450,8 @@ input:focus-visible {
   }
 
   #featured-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    --featured-visible: 2;
+    --featured-gap: 10px;
   }
 
   #featured-grid .card-preview {
