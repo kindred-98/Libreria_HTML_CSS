@@ -7,6 +7,48 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Rendimiento: camino crítico aligerado de punta a punta] — 2026-09-30
+
+Todo lo que hacía que la portada tardara en pintar o gastara datos de más, medido
+en local con **brotli** (lo que Vercel sirve de fábrica):
+
+| Recurso | Antes | Ahora |
+|---|---:|---:|
+| `data/catalog.json` | 1.227 KB | 667 KB (148 KB con brotli) |
+| `styles/site.css` | 57 KB | 42 KB (9,9 KB con brotli) |
+| `index.html` | — | 2,5 KB con brotli |
+| **Primera visita de `/Web/`** | — | **≈ 216 KB** (HTML + CSS + `app.js` + `zip.js` + catálogo + 2 fuentes) |
+
+- **Catálogo minificado.** `generate-catalog.mjs` escribe `catalog.json` en una
+  sola línea sin `null`: 1.227 KB → 667 KB. Sigue siendo el fichero grande, y
+  es proporcional: son 1018 componentes.
+- **Índice ligero.** `catalog-format.mjs` deja la entrada del índice en 12 campos
+  y manda `folder`, `source`, `license`, `licenseFile`, `stylesheets` y `scripts`
+  a `Web/data/sources/<id>.json`, que solo pide la ficha de un componente. El
+  campo `folder` desaparece del índice porque `app.js` lo deduce de `preview` con
+  `componentFolder()`. La rejilla ya no arrastra datos que solo usa el detalle.
+- **`<link rel="preload" as="fetch">` de `catalog.json`** en las tres páginas:
+  el `fetch` no espera a que se descargue y ejecute `app.js`.
+- **Tipografías auto-hospedadas.** Manrope y DM Mono (SIL OFL 1.1) en
+  `Web/assets/fonts/` con seis `@font-face` al principio de `site.css`
+  (`font-display: swap`, `unicode-range` para `latin`). Desaparecen los `<link>`
+  a `fonts.googleapis.com` y `fonts.gstatic.com`, que eran render-blocking y que
+  **la CSP bloqueaba en producción** (`font-src` y `style-src` están en `'self'`):
+  en el despliegue real las fuentes se habrían caído a las del sistema. Los dos
+  `OFL-*.txt` viajan junto a los `.woff2`; el detalle está en
+  [`Docs/THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md).
+- **Compresión y caché.** `serve.mjs` comprime en brotli (gzip de respaldo) con
+  `Vary: Accept-Encoding`, igual que el CDN de Vercel. `vercel.json` añade
+  `Cache-Control`: `max-age=31536000, immutable` para `styles/` y `scripts/`
+  (van con `?v=20260930-1`), 7 días para `assets/` y `favicon.svg`, y
+  `max-age=300, stale-while-revalidate=3600` para `catalog.json` y los
+  `sources/`, que son los que cambian al regenerar el catálogo.
+- **`site.css` partido.** La página de Team Core se lleva sus 11,5 KB a
+  `styles/team-core.css`, que solo enlaza `team-core.html` y **antes** que
+  `site.css`, para que los ajustes por media query que quedan en `site.css`
+  sigan mandando en pantallas pequeñas. `index.html` y `components.html` se
+  ahorran esas reglas (57 KB → 42 KB, 12,7 KB → 9,9 KB con brotli).
+
 ## [Recursos remotos localizados y CSP de 25 hosts a 3] — 2026-09-30
 
 Los demos pedían sus librerías, tipografías e iconos a CDNs (unpkg, jsDelivr,

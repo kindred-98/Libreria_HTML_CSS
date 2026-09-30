@@ -47,6 +47,21 @@ Los textos de arriba son los que rigen el uso de cada foto; este documento los e
 
 **Enlaces en las galerías.** Todas apuntan a `commons.wikimedia.org` para ver la colección de origen y a `upload.wikimedia.org` para servir la imagen. Servir la foto desde Wikimedia es carga remota (*hotlink*): quien la ve la recibe de los servidores de Wikimedia, no de este repositorio, y no se guarda copia en el sitio ni en los ZIP.
 
+## Tipografías auto-hospedadas (SIL OFL 1.1)
+
+La web se maqueta con dos familias publicadas por Google Fonts, **Manrope** (variable, pesos 200–800) y **DM Mono** (400 y 500), ambas bajo la **SIL Open Font License 1.1**. Se distribuyen aquí **sin modificar**.
+
+| Familia | Ficheros | Copyright (dentro del propio `.woff2`) | Licencia íntegra |
+|---|---|---|---|
+| Manrope | `Web/assets/fonts/manrope-latin.woff2`, `manrope-latin-ext.woff2` | *Copyright 2019 The Manrope Project Authors* | `Web/assets/fonts/OFL-Manrope.txt` |
+| DM Mono | `dm-mono-400-latin.woff2`, `dm-mono-400-latin-ext.woff2`, `dm-mono-500-latin.woff2`, `dm-mono-500-latin-ext.woff2` | *Copyright 2020 The DM Mono Project Authors* | `Web/assets/fonts/OFL-DM-Mono.txt` |
+
+**Por qué están aquí dentro.** Antes las tres páginas enlazaban `fonts.googleapis.com` y `fonts.gstatic.com` con un `<link>` en el camino crítico del render. Ese enlace añadía dos peticiones a terceros al primer pintado y, sobre todo, **chocaba con la CSP del despliegue**: `font-src` y `style-src` viven en `'self'`, así que en producción las tipografías se habrían bloqueado y el sitio habría caído a las del sistema. Ahora los 6 `.woff2` se sirven desde el propio origen mediante seis reglas `@font-face` al principio de `Web/styles/site.css`, con `font-display: swap` y `unicode-range`, de modo que el subconjunto `latin-ext` solo se descarga si el texto lo pide.
+
+**Qué permite y qué exige la OFL.** El texto completo está en los dos ficheros `OFL-*.txt` de la misma carpeta que las fuentes. En resumen: se puede usar, estudiar, copiar, incrustar, modificar y redistribuir la fuente con cualquier software, siempre que (1) **no se venda por sí sola**, (2) cada copia lleve el copyright y la licencia, (3) una versión modificada **no use el nombre reservado** de la original, (4) el nombre de sus autores no se emplee para promocionar una modificación y (5) la fuente siga distribuyéndose bajo la OFL. Este proyecto no modifica ninguna de las dos familias: usa los subconjuntos que publica Google Fonts, con sus nombres originales, y solo las empaqueta como recursos estáticos del sitio. El copyright de cada familia también viaja dentro de cada `.woff2`, en su tabla `name`.
+
+**Fuera del alcance de la licencia.** La OFL no se aplica a los documentos creados con la fuente: el HTML, el CSS y el JS originales de este sitio siguen bajo la `LICENSE` de la raíz, y el copyright de la fuente no dice nada sobre ellos.
+
 ## Estado de distribución
 
 Los 248 componentes de `CreacionesNuevas/` están autorizados: el catálogo los marca con `license: "MIT"`, `redistributable: true`, `licenseFile: "LICENSE"` y `source` apuntando a este repositorio. Sus descargas ZIP incluyen el `LICENSE` del componente y un `ATTRIBUTION.txt` generado en el momento de la descarga.

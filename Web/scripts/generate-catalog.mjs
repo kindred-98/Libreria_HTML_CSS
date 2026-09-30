@@ -394,7 +394,9 @@ if (duplicateIds.length) {
 }
 
 await mkdir(path.dirname(catalogFile), { recursive: true });
-await writeFile(catalogFile, `${JSON.stringify(components.map(toIndexEntry), null, 2)}\n`, "utf8");
+// Indice en una sola linea: el pretty-print anterior costaba 225 KB de
+// espacios en un fichero que solo se parsea en el navegador.
+await writeFile(catalogFile, `${JSON.stringify(components.map(toIndexEntry))}\n`, "utf8");
 await writeFile(
   catalogScriptFile,
   `window.COMPONENT_CATALOG = ${JSON.stringify(components)};\n`,

@@ -1184,11 +1184,23 @@ async function downloadComponentZip(component) {
   window.setTimeout(() => URL.revokeObjectURL(archiveUrl), 1000);
 }
 
+// El índice del catálogo ya no trae `folder` (viaja en sources/<id>.json para
+// aligerar la descarga), pero la ruta de la preview lo lleva dentro: de ahí se
+// reconstruye sin volver a pedir nada.
+function componentFolder(component) {
+  if (component.folder) return component.folder;
+  const prefix = `../${component.root}/`;
+  const preview = component.preview ?? "";
+  return preview.startsWith(prefix)
+    ? preview.slice(prefix.length).replace(/\/index\.html$/, "")
+    : preview;
+}
+
 function createDetailHeading(component) {
   const heading = createElement("div", "detail-heading");
   const copy = createElement("div");
   copy.append(
-    createElement("p", "detail-kicker", `${getCategoryLabel(component.category)} / ${component.folder}`),
+    createElement("p", "detail-kicker", `${getCategoryLabel(component.category)} / ${componentFolder(component)}`),
     createElement("h1", "", component.name),
     createElement("p", "detail-description", getComponentDescription(component)),
   );
