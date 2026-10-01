@@ -124,8 +124,28 @@ const server = http.createServer(async (request, response) => {
 
 // Solo en la interfaz de bucle local. Sin host, Node escucha en "::", o sea en
 // todas las interfaces: con el puerto publicado (Codespaces, contenedor, red
-// domestica) cualquiera de la LAN podria leer el repositorio entero.
-server.listen(port, "127.0.0.1", () => {
-  console.log(`Sirviendo el repositorio en http://localhost:${port}/`);
-  console.log(`La web esta en http://localhost:${port}/Web/`);
+// domestica) cualquiera de la LAN podria leer el repositorio entero. Se hace
+// un listen por familia (IPv4 127.0.0.1 y IPv6 ::1) para que `localhost`
+// funcione tanto si el navegador resuelve primero a IPv6 como si va a IPv4.
+// El primero en arrancar es IPv6, porque un listener huerfano de un proceso
+// antiguo puede seguir ocupando 127.0.0.1 sin que ::1 este ocupada; si IPv4
+// falla con EADDRINUSE se avisa y el servidor sigue siendo valido por IPv6.
+function avisarSiListo() {
+  return () => {
+    if (!avisado) {
+      avisado = true;
+      console.log(`Sirviendo el repositorio en http://localhost:${port}/`);
+      console.log(`La web esta en http://localhost:${port}/Web/`);
+    }
+  };
+}
+let avisado = false;
+server.on("error", (error) => {
+  if (error.code === "EADDRINUSE") {
+    console.error(`Aviso: no se escucho ${error.address}:${error.port} (puerto ocupado por otro proceso): ${error.message}`);
+  } else {
+    throw error;
+  }
 });
+server.listen(port, "::1", avisarSiListo());
+server.listen(port, "127.0.0.1", avisarSiListo());

@@ -4384,5 +4384,41 @@
             });
         })();
     </script>
+    <script>
+        // Mide la altura real del documento y la envia al shell (components.html)
+        // para que el iframe crezca a lo que mide el contenido y el visitante
+        // pueda hacer scroll natural desde fuera. Sin esto, el iframe se queda
+        // en min-height: 90vh y solo se ven unos efectos de los 119.
+        (function () {
+            function notificar() {
+                var h = Math.max(
+                    document.documentElement.scrollHeight,
+                    document.body ? document.body.scrollHeight : 0
+                );
+                if (window.parent !== window && h > 0) {
+                    window.parent.postMessage({ type: "davoker-height", height: h }, "*");
+                }
+            }
+            // Al cargar y en cuanto el layout se estabilice.
+            window.addEventListener("load", notificar);
+            // Cada vez que algo cambia de tamano (incluidas fuentes, imagenes y
+            // eventos del tema): un breve respiro para no mandar 100 mensajes
+            // por click.
+            var temporizador = null;
+            function notificarConDebounce() {
+                if (temporizador) clearTimeout(temporizador);
+                temporizador = setTimeout(notificar, 80);
+            }
+            if (typeof ResizeObserver !== "undefined") {
+                new ResizeObserver(notificarConDebounce).observe(document.documentElement);
+            }
+            // Tambien si alguien cambia la fuente (el chip de tema).
+            new MutationObserver(notificarConDebounce).observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ["data-tema", "class", "style"],
+            });
+            notificar();
+        })();
+    </script>
 </body>
 </html>

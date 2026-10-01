@@ -1799,6 +1799,21 @@ async function initializeApp() {
   }
 }
 
+function installDavokerHeightBridge() {
+  // davoker.html mide su propio body y nos envia la altura por postMessage:
+  // ajustamos el alto del iframe para que el contenido quepa y el visitante
+  // pueda hacer scroll natural del shell (no del iframe). Sin este puente, el
+  // iframe se queda en min-height: 90vh y solo se ven 5-6 efectos de los 119.
+  window.addEventListener("message", (evento) => {
+    if (!evento.data || typeof evento.data !== "object") return;
+    if (evento.data.type !== "davoker-height") return;
+    if (typeof evento.data.height !== "number" || evento.data.height <= 0) return;
+    const altura = Math.min(evento.data.height + 24, 20000);
+    if (elements.davokerFrame) elements.davokerFrame.style.height = `${altura}px`;
+  });
+}
+
 window.addEventListener("DOMContentLoaded", () => {
+  installDavokerHeightBridge();
   void initializeApp();
 }, { once: true });

@@ -7,6 +7,32 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Fase 2 de la auditoria: ZIPs, LICENSE y altura del portal davoker] - 2026-10-01
+
+- **ZIPs redistribuibles regenerados en el build** (`Web/scripts/build-zips.mjs`).
+  Los 119 ZIPs de `DavokerDiseñador/` versionados sin la MIT se
+  regeneran en cada despliegue al lado del `index.html` del demo, con los
+  mismos archivos que `app.js` empaqueta en el navegador y con el `LICENSE`
+  de davoker. El repo publico distribuye ZIPs que cumplen la licencia sin que
+  nadie tenga que acordarse de regenerarlos a mano. Se integra en
+  `vercel.json:buildCommand` despues del catalogo y del sellado.
+- **El portal de davoker crecia con su contenido**, pero `scrolling="no"`
+  impedia el scroll interior y `min-height: 90vh` dejaba 114 de los 119
+  efectos cortados. Se quita `scrolling="no"` del iframe, `davoker.html`
+  avisa al shell de su altura real por `postMessage`, y `app.js` ajusta
+  `davokerFrame.style.height` para que el scroll natural del shell muestre
+  todo. Medido en local: el iframe pasa de 810 px (min-height) a 1607 px,
+  y el primer boton de descarga esta visible y descargable.
+- **LICENSE raiz reescrito en ingles**, con un inventario exacto: el
+  codigo de la web y la documentacion por kindred-98, `CreacionesNuevas/`
+  con su `LICENSE` propio, `creaciones-primium/` con la licencia de su
+  coleccion, `DavokerDiseñador/` con la MIT de davoker, las fuentes bajo
+  OFL, y fuera de todo eso los recursos de terceros y el material retirado.
+  La referencia inexistente a `GevendraAutorExterno/` se elimina.
+- **Donde va un demo nuevo**: unificados. `README.md:88` ahora apunta a
+  `creaciones-primium/` (y `CreacionesNuevas/` queda marcada como archivo
+  historico). `CONTRIBUTING.md:19` ya decia lo correcto.
+
 ## [Fase 1 de la auditoria: los cuatro fallos de seguridad] - 2026-09-30
 
 - **Enlaces simbolicos del catalogo:** `generate-catalog.mjs` comprobaba la contencion

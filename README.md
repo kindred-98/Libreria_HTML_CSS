@@ -85,7 +85,7 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 
 ## Añadir un demo
 
-1. Crea una carpeta dentro de `CreacionesNuevas/` con un `index.html` y sus recursos locales. Usa `kebab-case` en minúsculas y un nombre que describa el componente, por ejemplo `image-gallery/`.
+1. Crea una carpeta dentro de `creaciones-primium/` con un `index.html` y sus recursos locales. Usa `kebab-case` en minúsculas y un nombre que describa el componente, por ejemplo `image-gallery/`. Si es de fatmaerm, dentro de `indicadores-de-carga/`, `navegacion/` o `tarjetas/`. `CreacionesNuevas/` está cerrada; es el archivo histórico de lo ya publicado.
 2. Enlaza el CSS y JavaScript locales desde ese HTML con `<link rel="stylesheet">` y `<script src="...">`.
 3. Ejecuta `node Web/scripts/generate-catalog.mjs`. El generador busca también en carpetas anidadas, lee títulos y referencias locales a CSS/JS, y actualiza `Web/data/catalog.json`.
 4. Si hace falta, añade metadatos revisados a `Web/data/component-overrides.json`. El ID del demo se forma con la ruta de su carpeta en minúsculas y guiones como separadores.
