@@ -776,8 +776,25 @@ function componentDetailUrl(componentId) {
   return `./components.html?component=${encodeURIComponent(componentId)}`;
 }
 
+function navigateToComponent(component, event) {
+  if (event.defaultPrevented || event.button !== 0) return;
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  window.history.pushState({}, "", componentDetailUrl(component.id));
+  renderRoute();
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
 function createComponentCard(component, index) {
   const article = createElement("article", "component-card");
+  // La tarjeta entera abre el detalle: solo con click simple (boton izquierdo,
+  // sin modificadores) y si el origen no es ya un enlace o un boton. Asi el
+  // "View component" sigue funcionando con click central / cmd+click para abrir
+  // en pestana nueva, y los futuros botones que se metan dentro no disparan la
+  // navegacion dos veces.
+  article.setAttribute("role", "link");
+  article.tabIndex = 0;
+  article.setAttribute("aria-label", `${t("viewComponent")}: ${getComponentName(component)}`);
   article.append(createPreview(component, "card-preview"));
 
   const previewLabel = createElement("span", "card-preview-label", t("liveDemo"));
@@ -798,18 +815,24 @@ function createComponentCard(component, index) {
   // el estado se conserva. Se deja el href para que el clic con el boton
   // central y "abrir en pestana nueva" sigan funcionando.
   link.addEventListener("click", (event) => {
-    if (event.defaultPrevented || event.button !== 0) return;
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    event.preventDefault();
-    window.history.pushState({}, "", componentDetailUrl(component.id));
-    renderRoute();
-    window.scrollTo({ top: 0, behavior: "auto" });
+    navigateToComponent(component, event);
   });
   const arrow = createElement("span", "", "→");
   arrow.setAttribute("aria-hidden", "true");
   link.append(arrow);
   content.append(top, heading, description, link);
   article.append(content);
+
+  article.addEventListener("click", (event) => {
+    if (event.target.closest("a, button")) return;
+    navigateToComponent(component, event);
+  });
+  article.addEventListener("keydown", (event) => {
+    if (event.target !== article) return;
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    navigateToComponent(component, { button: 0, preventDefault() {} });
+  });
   return article;
 }
 
