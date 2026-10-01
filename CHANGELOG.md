@@ -7,6 +7,34 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Fase 1 de la auditoria: los cuatro fallos de seguridad] - 2026-09-30
+
+- **Enlaces simbolicos del catalogo:** `generate-catalog.mjs` comprobaba la contencion
+  con un `startsWith` que es solo de texto. `stat()` y `readFile()` SI
+  siguen enlaces, asi que un symlink dentro de un demo podia meter cualquier
+  fichero legible en un JSON publico de `Web/data/sources/`. En Vercel, eso
+  incluye el token de despliegue. Ahora `lstat()` descarta el enlace simbolico
+  y se compara la ruta ya resuelta contra la raiz tambien resuelta con
+  `realpath()`. El catalogo sigue generando 1018 componentes, 0 referencias
+  rotas.
+- **`GET /%zz` ya no tumba `serve.mjs`:** el `decodeURIComponent` estaba fuera
+  del `try` del manejador y una URL malformada mataba el proceso. Se mete dentro
+  de un `try` propio que devuelve `null` (403) si lanza. Reproducido antes y
+  despues: ahora responde 403 y el servidor sigue respondiendo.
+- **`serve.mjs` ya no sirve `.git/` ni escucha en toda la red:** `server.listen`
+  pasa a `127.0.0.1` (antes escuchaba en `::`); solo se aceptan `GET`/`HEAD` (405
+  en cualquier otro metodo); una lista explicita bloquea `.git`, `.github`,
+  `.vercel`, `Docs/`, `LICENSE`, `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`,
+  `SECURITY.md`, `CODE_OF_CONDUCT.md`, `vercel.json` y `package.json`.
+  Verificado: `GET /.git/config`, `GET /vercel.json`, `GET /Docs/...` y `POST`
+  devuelven 403/405.
+- **El iframe del portal de davoker llevaba el origen del sitio entero** porque
+  era el unico sin `sandbox`. Se iguala al resto:
+  `sandbox="allow-scripts allow-forms allow-popups"` y `referrerpolicy="no-referrer"`.
+  Y `validate.mjs` ahora falla si algun `<iframe>` de las paginas del sitio
+  (Web/index.html, Web/components.html, Web/team-core.html, 404.html, index.html)
+  no lleva el atributo: la proxima persona que se lo salte se entera en CI.
+
 ## [Auditoría de seguridad, licencias y código muerto] - 2026-09-30
 
 - `Docs/Auditoria.md` recoge el resultado: qué se comprobó y está bien, qué hay

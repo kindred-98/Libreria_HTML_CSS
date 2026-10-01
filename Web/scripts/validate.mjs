@@ -150,6 +150,29 @@ for (const root of libraryRoots) {
 const unverifiable = catalog.filter((component) => !component.downloadable).length;
 notes.push(`${catalog.length} componentes · ${catalog.length - unverifiable} descargables · ${unverifiable} sin redistribucion`);
 
+// 7. Todo <iframe> de las paginas del sitio lleva sandbox. Si no, el demo
+//    corre en el mismo origen y ve el `localStorage` (incluido el consentimiento
+//    de cookies). Un cambio asi pasa este check antes de llegar a main.
+const htmlFiles = [
+  path.join(repositoryDirectory, "Web", "index.html"),
+  path.join(repositoryDirectory, "Web", "components.html"),
+  path.join(repositoryDirectory, "Web", "team-core.html"),
+  path.join(repositoryDirectory, "index.html"),
+  path.join(repositoryDirectory, "404.html"),
+];
+const iframeTag = /<iframe\b[^<>]*>/gi;
+for (const htmlFile of htmlFiles) {
+  if (!(await exists(htmlFile))) continue;
+  const relative = path.relative(repositoryDirectory, htmlFile);
+  const texto = await readFile(htmlFile, "utf8");
+  for (const match of texto.matchAll(iframeTag)) {
+    const tag = match[0];
+    if (!/\bsandbox\s*=/.test(tag)) {
+      fail("iframe", `${relative} tiene un <iframe> sin atributo sandbox (tag: ${tag})`);
+    }
+  }
+}
+
 for (const note of notes) console.log(`info  ${note}`);
 
 if (failures.length) {

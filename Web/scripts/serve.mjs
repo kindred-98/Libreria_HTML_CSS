@@ -44,14 +44,31 @@ const contentTypes = {
 const compressible = new Set([".html", ".css", ".js", ".mjs", ".json", ".svg", ".txt", ".xml"]);
 const compressFromBytes = 1024;
 
+// Carpetas y ficheros que no se sirven: el historial de git entero, los
+// ficheros de configuracion del despliegue y la documentacion interna. Un serve
+// de desarrollo no tiene por que publicarlos, y .git/config puede llevar
+// credenciales si el remoto se clono con token en la URL.
+const noServir = /^\.(?:git|github|qodo|vercel|vscode|idea)(?:\/|$)/;
+const noServirTambien = /^(?:Docs|CHANGELOG\.md|CONTRIBUTING\.md|SECURITY\.md|CODE_OF_CONDUCT\.md|vercel\.json|package\.json)(?:\/|$)/;
+
 function resolveRequest(url) {
-  const requested = decodeURIComponent(url.split("?")[0].split("#")[0]);
+  let requested;
+  try {
+    // decodeURIComponent lanza URIError con un "%" malformado, y como esta
+    // llamada vive fuera del try del manejador, una sola peticion asi tumbaba
+    // el proceso entero. Aqui un escape significa 403.
+    requested = decodeURIComponent(url.split("?")[0].split("#")[0]);
+  } catch {
+    return null;
+  }
   const base = path.resolve(repositoryDirectory, `.${path.posix.sep}${requested}`);
   // Nunca dejar que una ruta salga de la raiz del repositorio. path.relative es
   // la comprobacion correcta: un startsWith sin separador final dejaria pasar
   // una carpeta vecina cuyo nombre empiece por el del repositorio.
   const relative = path.relative(repositoryDirectory, base);
   if (relative.startsWith("..") || path.isAbsolute(relative)) return null;
+  const relativo = relative.split(path.sep).join("/");
+  if (noServir.test(relativo) || noServirTambien.test(relativo)) return null;
   return base;
 }
 
@@ -70,6 +87,11 @@ async function compressBody(body, extension, acceptEncoding) {
 }
 
 const server = http.createServer(async (request, response) => {
+  // Solo lectura: sin esto un POST a un HTML devolvia 200 con el fichero entero.
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    response.writeHead(405, { allow: "GET, HEAD" }).end("405");
+    return;
+  }
   let file = resolveRequest(request.url ?? "/");
   if (!file) {
     response.writeHead(403).end("403");
@@ -100,7 +122,10 @@ const server = http.createServer(async (request, response) => {
   }
 });
 
-server.listen(port, () => {
+// Solo en la interfaz de bucle local. Sin host, Node escucha en "::", o sea en
+// todas las interfaces: con el puerto publicado (Codespaces, contenedor, red
+// domestica) cualquiera de la LAN podria leer el repositorio entero.
+server.listen(port, "127.0.0.1", () => {
   console.log(`Sirviendo el repositorio en http://localhost:${port}/`);
   console.log(`La web esta en http://localhost:${port}/Web/`);
 });

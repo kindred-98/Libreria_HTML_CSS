@@ -1,4 +1,4 @@
-import { readdir, readFile, mkdir, stat, writeFile } from "node:fs/promises";
+import { lstat, readdir, readFile, mkdir, realpath, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { toIndexEntry, writeSources } from "./catalog-format.mjs";
@@ -201,6 +201,17 @@ async function getLocalReferences(html, pageDirectory, rootDirectory, tagName, r
     if (!resolvedPath.startsWith(`${rootDirectory}${path.sep}`)) continue;
 
     try {
+      // Un demo no necesita enlaces simbolicos, y si los tuviera servirian solo
+      // para leer ficheros de fuera: el codigo se publica en Web/data/sources/,
+      // asi que un enlace simbolico en un PR seria una via de exfiltracion. lstat
+      // no sigue el enlace, asi que basta con descartarlo.
+      if ((await lstat(resolvedPath)).isSymbolicLink()) continue;
+      // La contencion arriba es solo lexical: path.resolve normaliza los "..",
+      // no los enlaces. Asi que se compara contra la raiz ya resuelta: el
+      // repositorio entero puede estar detras de un enlace (en macOS /var apunta
+      // a /private/var) y entonces las dos rutas jamas comparten prefijo.
+      const realPath = await realpath(resolvedPath);
+      if (!realPath.startsWith(`${await realpath(rootDirectory)}${path.sep}`)) continue;
       if ((await stat(resolvedPath)).isFile()) {
         const relativePath = path.relative(repositoryDirectory, resolvedPath).split(path.sep).join("/");
         references.push({
