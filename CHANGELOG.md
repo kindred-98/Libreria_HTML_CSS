@@ -7,6 +7,60 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Los cuatro nombres del Nexo miden igual y NEXO crece] - 2026-10-01
+
+- **Los nombres de la escena del Nexo (`team-core.html`) miden lo mismo.**
+  `Kindred-98` (`.pcb-status`) estaba a `0.75rem` y las etiquetas de las puntas
+  —`davoker`, `IA` y `fatmaerm` (`.pcb-node`)— a `0.58rem`, con `0.5rem` y
+  `0.52rem` en las dos media queries: cuatro numeros sueltos para el mismo dato,
+  y ademas no coincidian. Ahora los cuatro leen `--pcb-label-size`, una variable
+  declarada en `.pcb-scene`, y las media queries bajan esa variable en lugar de
+  pisar el `font-size` de uno solo (que era como se separaban entre si).
+  Medido con Chrome a 12 anchos, de 375 a 1600: los cuatro miden 12 px por
+  encima de 1200, 9,92 px entre 900 y 1200 y 8,64 px por debajo de 900, siempre
+  iguales. Por debajo de 1200 bajan los cuatro juntos porque a partir de ahi la
+  escena se acerca al borde y con el tamano grande las etiquetas se salian de la
+  seccion.
+- **"NEXO" pasa a `1.5rem`** (estaba en `0.75rem`), con la misma `font-weight: 900`
+  y el mismo `letter-spacing`. Es el rotulo del componente, no un nombre, asi que
+  no entra en la variable compartida. Medido: la palabra ocupa 72 px y el chip
+  90 px en escritorio, asi que cabe. **Por debajo de 900 px se sale del chip
+  entre 4 y 15 px** porque el chip es el 30% de una escena de 220-300 px; se
+  queda dentro de la escena y no genera scroll horizontal, pero el texto
+  rebasa el borde del chip. Si molesta, la salida es agrandar el chip (`width`
+  del 30%) o bajar el tamano en las media queries.
+
+## [La segunda visita ya no baja nada: cache en el HTML y en local] - 2026-10-01
+
+- **El HTML del sitio se cachea, no se revalida en cada visita.** Vercel servia
+  `/Web/*.html` con `max-age=0, must-revalidate`, con lo que el navegador tenia
+  que ir al servidor antes de pintar en cada visita. Son 2,8 KB, asi que no es
+  ancho de banda: es latencia, y en movil son cientos de milisegundos de
+  pantalla en blanco. Ahora es `max-age=60, stale-while-revalidate=86400`: se
+  pinta desde la cache al instante y se revalida por detras. Un despliegue
+  entra en 60 segundos y, como mucho, una visita ve la version anterior.
+- **Los HTML de los 1018 demos tambien se cachean** (`max-age=300,
+  stale-while-revalidate=3600`), que son 6,2 MB que se piden al hacer scroll
+  y se vuelven a pedir en cada visita. Aqui el max-age es corto a proposito:
+  `previewRevision` solo cambia cuando cambia `app.js`, no cuando edita un
+  demo, asi que con una ventana larga un demo editado se veria viejo. Con 5
+  minutos, editar un demo y recargar a los 5 ya sale, y mientras tanto las
+  visitas repetidas no gastan red. Los `.zip` se quedan sin cachear.
+- **`serve.mjs` sirve las mismas cabeceras que Vercel, con ETag y 304.** Antes
+  mandaba `cache-control: no-cache` en todo y no emitia ETags, de modo que en
+  local no se cacheaba NADA: la segunda visita volvia a descargar el sitio
+  entero y cualquier prueba de rendimiento en local salia siempre mal, aunque
+  en produccion el sitio si estuviera cacheado. Ahora lee los `Cache-Control` de
+  `vercel.json` (mismo criterio que alli: manda la ultima regla que coincide) y
+  anade un ETag debil, con lo que una revalidacion responde 304 sin cuerpo, como
+  en produccion. Medido en local con Chrome: primera visita 247,8 KB por la
+  red, segunda visita **0,0 KB**, con los 8 recursos del nucleo servidos de
+  cache.
+- **Lo que ya funcionaba y no se ha tocado**: `site.css` y `app.js` con
+  `immutable` de un ano, que no se vuelven a pedir nunca, y el sellado por
+  huella sha256 de `stamp-assets.mjs`, que es lo que hace que eso sea seguro en
+  vez de peligroso.
+
 ## [Descarga del zip y bajada del scroll al volver de un showcase] - 2026-10-01
 
 - **Los botones de descargar el zip funcionan**, el del listado del portal y el

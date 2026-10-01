@@ -1,4 +1,5 @@
 import http from "node:http";
+import { createHash } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,6 +20,44 @@ const vercel = JSON.parse(await readFile(vercelFile, "utf8"));
 const securityPolicy = (vercel.headers ?? [])
   .flatMap((block) => block.headers ?? [])
   .find((header) => header.key?.toLowerCase() === "content-security-policy")?.value;
+
+// Los Cache-Control de vercel.json tambien se sirven aqui. Antes este servidor
+// mandaba "no-cache" en todo, con lo que en local no se cacheaba NADA y la
+// segunda visita volvia a descargar el sitio entero: cualquier prueba de
+// rendimiento en local salia siempre mal, aunque en produccion el sitio si
+// estuviera cacheado. Se leen de vercel.json para que local y produccion
+// coincidan y el comportamiento se pueda medir de verdad.
+//
+// El "source" de Vercel ya viene en forma de expresion regular (por ejemplo
+// "/Web/data/sources/(.*)" o "/Web/(.*\\.html)"), asi que aqui solo hay que
+// anclarlo para que sea una coincidencia completa y no un prefijo. Si algún dia
+// se usa la sintaxis de parametros de Vercel (":nombre*"), que no es una regex
+// valida, esa regla se avisa y se ignora en vez de romper el arranque.
+const cacheRules = [];
+for (const block of vercel.headers ?? []) {
+  const valor = (block.headers ?? []).find((h) => h.key?.toLowerCase() === "cache-control")?.value;
+  if (!valor) continue;
+  const source = String(block.source);
+  if (source.includes(":")) {
+    console.warn(`aviso: no se aplica en local la regla de cache "${source}" (sintaxis de parametros de Vercel).`);
+    continue;
+  }
+  try {
+    cacheRules.push({ source, expression: new RegExp(`^${source}$`), valor });
+  } catch (error) {
+    console.warn(`aviso: la regla de cache "${source}" no es una expresion regular valida (${error.message}).`);
+  }
+}
+
+// Como en Vercel, manda la ultima regla que coincide: el orden del array es
+// el orden de aplicacion.
+function cacheControlFor(ruta) {
+  let valor = "no-cache";
+  for (const rule of cacheRules) {
+    if (rule.expression.test(ruta)) valor = rule.valor;
+  }
+  return valor;
+}
 
 const contentTypes = {
   ".html": "text/html; charset=utf-8",
@@ -103,12 +142,30 @@ const server = http.createServer(async (request, response) => {
     const body = await readFile(file);
     const extension = path.extname(file).toLowerCase();
     const compressed = await compressBody(body, extension, request.headers["accept-encoding"]);
+    // ETag debil sobre el contenido, como hace Vercel. Es lo que permite que
+    // una revalidacion con max-age=0/max-age=60 responda 304 con la cabecera
+    // sola en vez de repetir el fichero entero: en local se ve, pues, el mismo
+    // "no baja nada" que en produccion, en vez de una falsa sensacion de que
+    // nada se cachea. Es debil (W/) precisamente porque el mismo fichero se
+    // sirve comprimido de dos maneras y con Vary: Accept-Encoding.
+    const etag = `W/"${createHash("sha256").update(body).digest("hex").slice(0, 24)}"`;
     const headers = {
       "content-type": contentTypes[extension] ?? "application/octet-stream",
-      "cache-control": "no-cache",
+      "cache-control": cacheControlFor(request.url ?? "/"),
+      etag,
       vary: "Accept-Encoding",
     };
     if (securityPolicy) headers["content-security-policy"] = securityPolicy;
+    // 304: el cliente ya lo tiene y solo hay que confirmar que no ha cambiado.
+    // Sin cuerpo, y con las cabeceras de cache para que actualice su fecha.
+    if (request.headers["if-none-match"] === etag) {
+      delete headers["content-type"];
+      delete headers["content-encoding"];
+      delete headers["content-length"];
+      response.writeHead(304, headers);
+      response.end();
+      return;
+    }
     if (compressed) {
       headers["content-encoding"] = compressed.encoding;
       headers["content-length"] = String(compressed.payload.length);
