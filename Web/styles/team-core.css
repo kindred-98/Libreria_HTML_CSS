@@ -48,6 +48,14 @@
     width: clamp(220px, 26vw, 300px);
     aspect-ratio: 1;
     place-items: center;
+    /* Tamano de los nombres de la escena. Lo comparten la pillora de
+       Kindred-98 (.pcb-status) y las etiquetas de las puntas —davoker, IA y
+       fatmaerm— (.pcb-node), y sale de una sola variable para que los cuatro
+       midan exactamente lo mismo. Antes cada uno llevaba su numero
+       (.75rem, .58rem y dos mas en las media queries), asi que aparte de que
+       no coincidian, cualquier ajuste futuro habia que acordarlo en cuatro
+       sitios y era facil que se quedaran desincronizados. */
+    --pcb-label-size: 0.75rem;
   }
 
   .pcb-chip {
@@ -67,7 +75,7 @@
   .pcb-chip .chip-label {
     color: var(--accent);
     font-family: "DM Mono", "Courier New", monospace;
-    font-size: 0.75rem;
+    font-size: 1.5rem;
     font-weight: 900;
     letter-spacing: 0.15em;
     text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 60%, transparent);
@@ -174,7 +182,10 @@
   /* Nombre de cada integrante, pegado a la punta de su pista y con la misma caja
      que la pillora de Kindred-98, pero mas pequena. Se quedan dentro de la escena
      a proposito: si se salieran, en escritorio empujarian el ancho de la pagina.
-     La punta de abajo no lleva nombre porque justo debajo esta esa pillora. */
+     La punta de abajo no lleva nombre porque justo debajo esta esa pillora.
+     El tamano de letra es el de --pcb-label-size, el mismo que el de la
+     pillora: comparten caja, tamano y familia, asi que solo se distinguen por
+     donde estan y por el texto que llevan. */
   .pcb-scene .pcb-node {
     position: absolute;
     padding: 3px 8px;
@@ -183,7 +194,7 @@
     background: color-mix(in srgb, var(--accent) 8%, transparent);
     color: var(--accent);
     font-family: "DM Mono", "Courier New", monospace;
-    font-size: 0.58rem;
+    font-size: var(--pcb-label-size);
     letter-spacing: 0.08em;
     white-space: nowrap;
   }
@@ -215,7 +226,7 @@
     background: color-mix(in srgb, var(--accent) 8%, transparent);
     color: var(--accent);
     font-family: "DM Mono", "Courier New", monospace;
-    font-size: 0.75rem;
+    font-size: var(--pcb-label-size);
     letter-spacing: 0.1em;
     white-space: nowrap;
   }
