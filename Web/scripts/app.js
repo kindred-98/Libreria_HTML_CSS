@@ -1813,7 +1813,27 @@ function installDavokerHeightBridge() {
   });
 }
 
+function installDavokerTransitionBridge() {
+  // Al pulsar "Todos los efectos" se abre transicion.html DENTRO del iframe del
+  // portal, y su escena tematica se pinta en el rectangulo del iframe. Si el
+  // visitante esta scrolleado mas abajo, el iframe se sale de la pantalla y la
+  // animacion se ve cortada, asi que al avisar (que es al pulsarla, no al
+  // terminar) el iframe se centra en la ventana. Sin recorrido de sobra, que
+  // aqui es el caso normal porque el portal se ve a 90vh con su propio scroll.
+  window.addEventListener("message", (evento) => {
+    if (!evento.data || typeof evento.data !== "object") return;
+    if (evento.data.type !== "davoker-transicion") return;
+    if (!elements.davokerFrame) return;
+    const marco = elements.davokerFrame.getBoundingClientRect();
+    const objetivo = marco.top + window.scrollY - (window.innerHeight - marco.height) / 2;
+    // `auto` y no `smooth`: si no, el scroll todavia recorreria el camino
+    // mientras la escena ya ha empezado a dispararse.
+    window.scrollTo({ top: Math.max(0, objetivo), behavior: "auto" });
+  });
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   installDavokerHeightBridge();
+  installDavokerTransitionBridge();
   void initializeApp();
 }, { once: true });

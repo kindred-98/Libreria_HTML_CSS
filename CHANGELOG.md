@@ -7,6 +7,38 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Descarga del zip y bajada del scroll al volver de un showcase] - 2026-10-01
+
+- **Los botones de descargar el zip funcionan**, el del listado del portal y el
+  de dentro de cada showcase. El `sandbox` del iframe del portal era
+  `allow-scripts allow-forms allow-popups`, sin `allow-downloads`, asi que el
+  navegador bloqueaba la descarga en silencio: la escena tematica se disparaba
+  (es CSS, con `:focus` y `:active`) pero el `.zip` no bajaba, y el visitante no
+  veia ningun aviso. Anadido `allow-downloads` al atributo. Verificado con
+  Chrome headless, A/B sobre el sitio local: sin el token ninguno de los dos
+  botones descarga; con el token, el del portal baja `apagon.zip` y el del
+  showcase `glitch.zip`.
+- **Al pulsar "Todos los efectos" el scroll de la pagina baja al instante, con
+  la animacion de despedida a la vista.** Se hacia al terminar la animacion
+  (1,6 s despues) y de rebote, cuando ya no habia nada que ver. Ahora
+  `transicion.html` avisa por `postMessage` en cuanto se pinta —que es al
+  pulsarlo— y el shell (`app.js`) centra el iframe en la ventana. Medido: 289 ms
+  desde el clic, con el iframe entrando entero en la ventana (de 31 a 755 de
+  805). Es el scroll de la pagina, el del visitante, no el interno del iframe.
+  Abierta en una pestana suelta, sin shell, el aviso no hace nada.
+- **El iframe del portal se queda en su tamano, 90vh, con su scroll propio.**
+  Centro el efecto en la pagina estirando el iframe a la altura de su contenido,
+  y eso no es lo que se pidio: la pagina de davoker se ve como estaba. El
+  centrado sale de mover el scroll de la pagina que lo envuelve, no de tocar su
+  alto.
+- **`centrar()` de davoker.html abria la carpeta equivocada (o ninguna).** Buscaba
+  el grupo con `seccion.closest("details.grupo")`, pero la carpeta plegable del
+  indice vive en el `<aside>` y no es ancestro de la tarjeta: `closest()`
+  devolvia `null` y la tarjeta se quedaba en `display:none`, sin nada que
+  desplazar. Ahora se abre por id (`g-` + el `data-cat` de la tarjeta), que es
+  como el CSS decide que tarjetas se ven. Sin esto el centrado no podia
+  funcionar por mucho que se desplazara el scroll.
+
 ## [Volver al listado: scroll al efecto en davoker.html y descarga del zip] - 2026-10-01
 
 - **Volver al listado desde un showcase ya baja al efecto correcto.** Cada

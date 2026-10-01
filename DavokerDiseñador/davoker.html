@@ -4386,29 +4386,41 @@
     </script>
     <script>
         // Al cargar davoker.html desde `transicion.html#<id>` (boton "Todos los
-        // efectos" de cada showcase), se abre el <details> del grupo de ese
-        // efecto, se desplaza a su <section con id="<id>"> y se centra en la
-        // pantalla para que la animacion de cierre (de antes de cerrar el
-        // <details>) sea visible. Lo mismo cuando el usuario abre un showcase
-        // desde dentro del iframe y quiere ver el efecto ya cargado.
+        // efectos" de cada showcase), se abre la carpeta del indice que
+        // contiene ese efecto y se desplaza a su <section con id="<id>">. Lo
+        // mismo cuando el usuario abre un showcase desde dentro del iframe y
+        // quiere ver el efecto ya cargado.
+        //
+        // El desplazamiento va al contenido del iframe, que es lo suyo: esta
+        // pagina se ve a 90vh con su propio scroll y asi debe seguir. Lo que
+        // hace el shell con la pagina que lo envuelve —centrar el iframe para
+        // que se vea la animacion de despedida— se le avisa desde
+        // transicion.html, al cargar, que es cuando la hay.
         (function () {
             function centrar(id) {
                 var seccion = id ? document.getElementById(id) : null;
-                if (seccion) {
-                    // Abre el grupo si esta plegado, porque si no, el <section>
-                    // esta oculto y no se puede scrollear a el.
-                    var grupo = seccion.closest("details.grupo");
-                    if (grupo && !grupo.open) grupo.open = true;
-                    // Apunta al propio <section>: la .escena es position:fixed y
-                    // no se puede usar de objetivo para scrollIntoView.
-                    var objetivo = seccion;
-                    // "nearest" hace lo que haria el navegador al pulsar Tab:
-                    // si la seccion ya esta visible no se mueve, y si no,
-                    // ajusta lo minimo para que entre entera en el viewport.
-                    setTimeout(function () {
-                        objetivo.scrollIntoView({ block: "nearest", behavior: "auto" });
-                    }, 400);
+                if (!seccion) return;
+                // Las tarjetas se muestran segun que carpeta este abierta en el
+                // indice (las reglas de CSS son "hay un .grupo abierto" + "el
+                // data-cat de la tarjeta es el de esa carpeta"), y la carpeta
+                // vive en el <aside>, no dentro de la <section>: por eso se
+                // busca por id (g-<data-cat>) y no con closest(). Sin esto la
+                // tarjeta que se vuelve a abrir sigue en display:none y no hay
+                // nada que desplazar.
+                var cat = seccion.getAttribute("data-cat");
+                if (cat) {
+                    var carpeta = document.getElementById("g-" + cat);
+                    if (carpeta && !carpeta.open) carpeta.open = true;
                 }
+                // Apunta al propio <section>: la .escena es position:fixed y
+                // no se puede usar de objetivo para scrollIntoView.
+                var objetivo = seccion;
+                // "nearest" hace lo que haria el navegador al pulsar Tab:
+                // si la seccion ya esta visible no se mueve, y si no,
+                // ajusta lo minimo para que entre entera en el viewport.
+                setTimeout(function () {
+                    objetivo.scrollIntoView({ block: "nearest", behavior: "auto" });
+                }, 400);
             }
 
             // 1) Carga inicial: lee location.hash y centra.

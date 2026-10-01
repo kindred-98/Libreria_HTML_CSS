@@ -938,5 +938,21 @@
     </div>
 
     <p class="volver"><a href="davoker.html">Todos los efectos →</a></p>
+
+    <script>
+        // Esta pagina se ve DENTRO del iframe del portal (components.html), asi
+        // que la escena tematica se dibuja en el rectangulo del iframe, no en el
+        // de la ventana. Si el visitante esta scrolleado mas abajo, el iframe
+        // queda medio fuera de la pantalla y la animacion se ve cortada. Por eso
+        // se avisa al shell en cuanto se pinta, que es justo al pulsar "Todos los
+        // efectos": el scroll de la pagina baja ahi y no 1,6 s despues, cuando ya
+        // ha terminado la despedida. Sin esto, abrir transicion.html en una
+        // pestaña no hace nada (no hay shell al que avisarle).
+        try {
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: "davoker-transicion" }, "*");
+            }
+        } catch (e) { /* sin padre: la pagina se ve suelta */ }
+    </script>
 </body>
 </html>
