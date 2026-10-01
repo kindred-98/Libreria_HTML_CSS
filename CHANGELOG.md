@@ -2,12 +2,12 @@
 
 Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 
-**Documentación relacionada**: [README](./README.md) · plan de fases ([`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md)) · [Web/README.md](./Web/README.md) · [THIRD_PARTY_NOTICES.md](./Docs/Legalizacion/THIRD_PARTY_NOTICES.md).
+**Documentación relacionada**: [README](./README.md) · plan de fases ([`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md)) · [Web/README.md](./Web/README.md) · [THIRD_PARTY_NOTICES.md](./Docs/THIRD_PARTY_NOTICES.md) · detalle de la sesión del 2026-10-01/02 ([`Docs/Sesion_2026-10-01_02.md`](./Docs/Sesion_2026-10-01_02.md)).
 
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
-[`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
+[`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md).
 
-## [Los cuatro nombres del Nexo miden igual y NEXO crece] - 2026-10-01
+## [Los cuatro nombres del Nexo miden igual y NEXO crece] - 2026-10-02
 
 - **Los nombres de la escena del Nexo (`team-core.html`) miden lo mismo.**
   `Kindred-98` (`.pcb-status`) estaba a `0.75rem` y las etiquetas de las puntas
@@ -29,7 +29,7 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
   4 y 15 px. Con `1rem` ocupa 48 px y cabe en todos los anchos, de 320 a 1600, sin
   salirse de la escena ni generar scroll horizontal.
 
-## [La segunda visita ya no baja nada: cache en el HTML y en local] - 2026-10-01
+## [La segunda visita ya no baja nada: cache en el HTML y en local] - 2026-10-02
 
 - **El HTML del sitio se cachea, no se revalida en cada visita.** Vercel servia
   `/Web/*.html` con `max-age=0, must-revalidate`, con lo que el navegador tenia
@@ -576,7 +576,7 @@ Se puede corregir por ID con `author` en `Web/data/component-overrides.json`.
 
 ## [El catálogo se genera en el despliegue] — 2026-09-27
 
-Continuidad de la [segunda auditoría](./Docs/auditoria/segunda-auditoria.md). Resuelve
+Continuidad de la [segunda auditoría](./Docs/Auditoria.md). Resuelve
 el problema que aquella dejó abierto: el catálogo había que regenerarlo a mano, así que
 un demo nuevo no aparecía en la web hasta que alguien se acordaba.
 
@@ -636,7 +636,9 @@ catálogo. Se suben (~1,6 MB) y el build los sobrescribe.
 
 ## [Auditoría, CI de validación y cabeceras de seguridad] — 2026-09-27
 
-Trabajo posterior a la [primera auditoría](./Docs/auditoria/primera-auditoria.md), que
+Trabajo posterior a la primera auditoría (su documento se borró al limpiar
+`Docs/` en `d650750` y no tiene equivalente actual; el inventario que la
+sustituye está en [`Auditoria.md`](./Docs/Auditoria.md)), que
 limpió 13,64 MB de ficheros sin uso. Aquí se registra lo que no es una fase del plan.
 
 ### Hecho — un solo sitio: se elimina el despliegue en GitHub Pages
@@ -835,7 +837,7 @@ ZIP habilitada por ser creaciones originales con licencia propia.
   de sentido (ya no publica 0 componentes, publica 248).
 - `Web/README.md`: 364 componentes y las dos situaciones de licencia.
 - `THIRD_PARTY_NOTICES.md`: tabla con las dos colecciones y su estado de ZIP.
-- `Docs/Opencode/Plan.md`: **Fase 9** añadida y el pendiente que la bloqueaba
+- `Docs/Plan_de_fases.md`: **Fase 9** añadida y el pendiente que la bloqueaba
   marcado como resuelto.
 
 ### Verificado
@@ -1362,7 +1364,7 @@ todas las tarjetas mostraban la misma frase
   `.github-pages-site-check-2/`, `.github-pages-site-final-check/`.
 - Verificación: `git ls-files` ya **no contiene ninguna ruta `github-pages*`**.
 - Se creó este `CHANGELOG.md` y el plan de fases en
-  [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md) (Fases 0–8).
+  [`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md) (Fases 0–8).
 
 ### Pendiente / limitaciones
 
