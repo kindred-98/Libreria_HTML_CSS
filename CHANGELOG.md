@@ -7,6 +7,29 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Opencode/Plan.md`](./Docs/Opencode/Plan.md).
 
+## [Volver al listado: scroll al efecto en davoker.html y descarga del zip] - 2026-10-01
+
+- **Volver al listado desde un showcase ya baja al efecto correcto.** Cada
+  showcase (miscelanea/glitch/index.html, etc.) tiene un boton "Todos los
+  efectos" que navega a `transicion.html#<id>`, una pagina sin JS que reproduce
+  la animacion de cierre y a los 1.6 s redirige a davoker.html. Antes el
+  meta-refresh llevaba `url=davoker.html` sin fragmento, asi que davoker.html
+  no sabia que `<section>` centrar y veia el top de la pagina. `transicion.html`
+  reescribe ahora la URL del meta-refresh para preservar el hash con un
+  pequeno script; `davoker.html` lo lee al cargar (y al cambiar) y hace
+  `scrollIntoView({block: 'nearest'})` sobre el `<section>` correspondiente, de
+  modo que la animacion de cierre sea visible al volver al listado.
+- **El iframe del portal se queda en su tamano original (810 px, no 1881)**
+  con scroll interno del navegador: ya no manda la altura a su padre por
+  postMessage. El visitante puede hacer scroll dentro del iframe y llegar al
+  boton "Descargar efecto" de cualquier demo.
+- **La descarga del zip funciona.** Verificado end-to-end con
+  Accept-Downloads + click sobre el `<a download>`: 113641 B para `glitch.zip`.
+  El zip regenerado por `build-zips.mjs` contiene los mismos archivos que
+  `app.js` empaqueta en el navegador y el LICENSE de davoker, asi que el
+  repositorio publico distribuye ZIPs que cumplen la MIT sin intervencion
+manual.
+
 ## [Fase 2 de la auditoria: ZIPs, LICENSE y altura del portal davoker] - 2026-10-01
 
 - **ZIPs redistribuibles regenerados en el build** (`Web/scripts/build-zips.mjs`).

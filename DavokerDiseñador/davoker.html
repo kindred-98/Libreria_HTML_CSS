@@ -4385,39 +4385,44 @@
         })();
     </script>
     <script>
-        // Mide la altura real del documento y la envia al shell (components.html)
-        // para que el iframe crezca a lo que mide el contenido y el visitante
-        // pueda hacer scroll natural desde fuera. Sin esto, el iframe se queda
-        // en min-height: 90vh y solo se ven unos efectos de los 119.
+        // Al cargar davoker.html desde `transicion.html#<id>` (boton "Todos los
+        // efectos" de cada showcase), se abre el <details> del grupo de ese
+        // efecto, se desplaza a su <section con id="<id>"> y se centra en la
+        // pantalla para que la animacion de cierre (de antes de cerrar el
+        // <details>) sea visible. Lo mismo cuando el usuario abre un showcase
+        // desde dentro del iframe y quiere ver el efecto ya cargado.
         (function () {
-            function notificar() {
-                var h = Math.max(
-                    document.documentElement.scrollHeight,
-                    document.body ? document.body.scrollHeight : 0
-                );
-                if (window.parent !== window && h > 0) {
-                    window.parent.postMessage({ type: "davoker-height", height: h }, "*");
+            function centrar(id) {
+                var seccion = id ? document.getElementById(id) : null;
+                if (seccion) {
+                    // Abre el grupo si esta plegado, porque si no, el <section>
+                    // esta oculto y no se puede scrollear a el.
+                    var grupo = seccion.closest("details.grupo");
+                    if (grupo && !grupo.open) grupo.open = true;
+                    // Apunta al propio <section>: la .escena es position:fixed y
+                    // no se puede usar de objetivo para scrollIntoView.
+                    var objetivo = seccion;
+                    // "nearest" hace lo que haria el navegador al pulsar Tab:
+                    // si la seccion ya esta visible no se mueve, y si no,
+                    // ajusta lo minimo para que entre entera en el viewport.
+                    setTimeout(function () {
+                        objetivo.scrollIntoView({ block: "nearest", behavior: "auto" });
+                    }, 400);
                 }
             }
-            // Al cargar y en cuanto el layout se estabilice.
-            window.addEventListener("load", notificar);
-            // Cada vez que algo cambia de tamano (incluidas fuentes, imagenes y
-            // eventos del tema): un breve respiro para no mandar 100 mensajes
-            // por click.
-            var temporizador = null;
-            function notificarConDebounce() {
-                if (temporizador) clearTimeout(temporizador);
-                temporizador = setTimeout(notificar, 80);
+
+            // 1) Carga inicial: lee location.hash y centra.
+            if (location.hash) {
+                // Un microtask despues para que el navegador termine de
+                // colocar el <details> segun el scroll restoration.
+                requestAnimationFrame(function () { centrar(location.hash.slice(1)); });
             }
-            if (typeof ResizeObserver !== "undefined") {
-                new ResizeObserver(notificarConDebounce).observe(document.documentElement);
-            }
-            // Tambien si alguien cambia la fuente (el chip de tema).
-            new MutationObserver(notificarConDebounce).observe(document.documentElement, {
-                attributes: true,
-                attributeFilter: ["data-tema", "class", "style"],
+            // 2) Cargas siguientes (meta-refresh del showcase): location.hash
+            // se actualiza, pero el evento hashchange no siempre dispara en
+            // navegaciones que el navegador no considera historicas.
+            window.addEventListener("hashchange", function () {
+                centrar(location.hash.slice(1));
             });
-            notificar();
         })();
     </script>
 </body>

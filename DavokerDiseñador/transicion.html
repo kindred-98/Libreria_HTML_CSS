@@ -23,6 +23,21 @@
     <meta http-equiv="refresh" content="1.6;url=davoker.html">
     <title>Transición… · Efectos de texto CSS</title>
 
+    <!-- El meta-refresh de arriba va a davoker.html sin fragmento. Como cada
+         botón "Todos los efectos" abre esta página como transicion.html#<id>,
+         hay que preservar el hash al volver para que davoker.html sepa qué
+         <section> centrar. Si JS está activo, este <meta> se reescribe con
+         el fragmento de la URL actual; si no, el fallback sin fragmento sigue
+         funcionando. -->
+    <script>
+        try {
+            if (location.hash) {
+                var meta = document.querySelector('meta[http-equiv="refresh"]');
+                if (meta) meta.setAttribute("content", "1.6;url=davoker.html" + location.hash);
+            }
+        } catch (e) { /* sin JS: fallback al meta-refresh plano */ }
+    </script>
+
     <!-- Escenas temáticas (compartidas con la portada) -->
     <link rel="stylesheet" href="transicion.css">
 
