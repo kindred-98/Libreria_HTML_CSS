@@ -21,14 +21,13 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
   iguales. Por debajo de 1200 bajan los cuatro juntos porque a partir de ahi la
   escena se acerca al borde y con el tamano grande las etiquetas se salian de la
   seccion.
-- **"NEXO" pasa a `1.5rem`** (estaba en `0.75rem`), con la misma `font-weight: 900`
+- **"NEXO" pasa a `1rem`** (estaba en `0.75rem`), con la misma `font-weight: 900`
   y el mismo `letter-spacing`. Es el rotulo del componente, no un nombre, asi que
-  no entra en la variable compartida. Medido: la palabra ocupa 72 px y el chip
-  90 px en escritorio, asi que cabe. **Por debajo de 900 px se sale del chip
-  entre 4 y 15 px** porque el chip es el 30% de una escena de 220-300 px; se
-  queda dentro de la escena y no genera scroll horizontal, pero el texto
-  rebasa el borde del chip. Si molesta, la salida es agrandar el chip (`width`
-  del 30%) o bajar el tamano en las media queries.
+  no entra en la variable compartida. Se midio cuanto cabe: el chip es el 30% de
+  una escena de 220-300 px, o sea 57-90 px segun el ancho, y con `1.5rem` la
+  palabra ocupaba 72 px, de modo que por debajo de 900 px se salia del chip entre
+  4 y 15 px. Con `1rem` ocupa 48 px y cabe en todos los anchos, de 320 a 1600, sin
+  salirse de la escena ni generar scroll horizontal.
 
 ## [La segunda visita ya no baja nada: cache en el HTML y en local] - 2026-10-01
 
