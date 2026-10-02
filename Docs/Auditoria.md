@@ -9,6 +9,12 @@ La auditoría anterior (2026-09-30) queda archivada en
 no la amplía: los hallazgos antiguos se han vuelto a medir y los que ya no se
 reproducen están marcados como cerrados.
 
+**Estado:** las seis fases de esta auditoría están aplicadas. El registro de qué se tocó,
+con qué comando se comprobó y qué quedó descartado está en
+[`Fases-de-Auditoria-Aplicadas/`](./Fases-de-Auditoria-Aplicadas/). **Este documento es
+el diagnóstico en `39f4e8d`, el commit revisado**: §1 y §8 describen ese estado, no el de
+hoy.
+
 ---
 
 ## 0. Resumen
@@ -19,8 +25,8 @@ reproducen están marcados como cerrados.
 | `npm run validar` | ✅ pasa (`1 018 componentes · 1 018 descargables`) |
 | `npm run validar:csp` | ✅ pasa (2 688 ficheros, 9 hosts externos, 2 avisos no bloqueantes) |
 | Dependencias npm | **1** (`playwright`, en `devDependencies`): la usa `validar-layout.mjs`, que es la comprobación que mide si una página se sale de lado |
-| Hallazgos críticos | 4 |
-| Hallazgos altos | 8 |
+| Hallazgos con ID | **10** (C-1…C-4, H-1…H-3, M-1…M-3): **1** crítico, **4** altos, **5** medios |
+| Filas sin ID | **9** en §6 y §7 (una repite C-1): **1** alto, **5** medios, **2** bajos, 1 sin etiquetar |
 
 **Lo más importante de este documento:** en la auditoría del 2026-09-30 se
 declararon fases como completadas que no lo estaban (§1), y se anunció una
@@ -30,14 +36,19 @@ descarga de ZIP funcionando con una prueba que no cubría el caso del usuario (�
 
 ## 1. Estado real de las fases
 
-El plan de fases (`Docs/Plan_de_fases.md`) declareba el estado. Se contrastó con el disco:
+El plan de fases (`Docs/Plan_de_fases.md`) declaraba el estado. Se contrastó con el disco:
+
+> **Nota:** esta tabla es el estado en `39f4e8d`. Hoy ya no es así: los 119 ZIP han salido
+> del repo, `.gitattributes` tiene 16 líneas con 12 tipos binarios, los 9 ficheros
+> estándar existen, `components.html` tiene `<h1>` y la matriz de Node es `[20, 22, 24]`.
+> El detalle de cada cierre, en [`Fases-de-Auditoria-Aplicadas/`](./Fases-de-Auditoria-Aplicadas/).
 
 | Fase | Lo que se dijo | Lo que hay |
 |---|---|---|
 | 0 — Baseline | hecha | ✅ hecha |
 | 1 — Seguridad | hecha | ✅ hecha **en `generate-catalog.mjs`**, ❌ **no en `serve.mjs`** (ver H-1) |
 | 2 — Legal | «completa» | ⚠️ parcial: los 119 ZIP **siguen versionados**; el CSS de terceros sin borrar |
-| 3 — Documentación | parcial | ⚠️ parcial: 24 filas falsas siguen (ver §4) |
+| 3 — Documentación | parcial | ⚠️ parcial: 16 filas falsas siguen (ver §4) |
 | 4 — Higiene | pendiente | ❌ no empezada: `.gitattributes` tiene 2 líneas |
 | 5 — Ficheros estándar | pendiente | ❌ no empezada: faltan los 9 |
 | 6 — Código muerto | pendiente | ❌ no empezada: `components.html` sigue sin `<h1>` |
@@ -119,7 +130,7 @@ iframe con origen opaco.
 
 ### H-1 — ALTO · `serve.mjs` sigue vulnerable a enlaces simbólicos
 
-El commit `deb98b0` se-annuncia como «cierra los 4 fallos de seguridad», pero el symlink
+El commit `deb98b0` se anuncia como «cierra los 4 fallos de seguridad», pero el symlink
 **nunca se corrigió en `serve.mjs`**. `resolveRequest()` (`:103-111`) valida la ruta
 normalizada y después `stat`/`readFile` (`:140-142`) siguen el enlace. Comprobado: un
 junction fuera de la raíz se sirve con `200`.
@@ -163,7 +174,7 @@ del propio script.
 `& < >` pero no `"`, y se usa dentro de un atributo entrecomillado. Se pueden inyectar
 atributos (`onmouseover`) sobre el `<button>`. Como `<` y `>` sí se escapan, no se puede
 inyectar una etiqueta nueva. **Es self-XSS**: lo dispara quien escribe en el input. Se
-arregla añadindo `"` y `'` a `esc()`.
+arregla añadiendo `"` y `'` a `esc()`.
 
 ### M-2 — MEDIO · `.env` se sirve en local
 
@@ -189,15 +200,15 @@ conviene `persist-credentials: false`.
   huérfanos.
 - **Los 2 iframes del sitio no llevan `allow-same-origin`**: los demos no ven el
   `localStorage` del sitio ni el consentimiento de cookies.
-- **0 secretos** en los 3 210 ficheros versionados, searched con 9 patrones.
-- **0 dependencias npm**, y los escritores de ZIP están hechos a mano paraConservarlo.
+- **0 secretos** en los 3 210 ficheros versionados, buscados con 9 patrones.
+- **1 dependencia npm** (`playwright`, en `devDependencies`, solo para `validar-layout.mjs`),
+  y los escritores de ZIP siguen estando hechos a mano para conservarlo.
 
 ---
 
 ## 4. Documentación que contradice al código
 
-**24 filas.** Las 18 de la auditoría anterior seVEN más 6 nuevas. Las que rompen algo si
-se siguen:
+**16 filas.** Las que rompen algo si se siguen:
 
 | Fichero:línea | Dice | Realidad |
 |---|---|---|
@@ -229,8 +240,8 @@ Enlaces Markdown rotos: **0**.
 `CreacionesNuevas/url-qr-code-generator/vendor/recurso-84b7e44a.css`, 576 817 bytes.
 Leído: los primeros bytes son `<!DOCTYPE html>` de `https://github.com`, con sus
 `dns-prefetch` a `github.githubassets.com` y sus logotipos. Es la **portada de GitHub,
-Inc.**, no un CSS.Va referenciado en `index.html:15` como valor por defecto del input y
-**via dentro del ZIP** que genera `app.js`.
+Inc.**, no un CSS. Va referenciado en `index.html:15` como valor por defecto del input y
+**va dentro del ZIP** que genera `app.js`.
 
 La `LICENSE` de esa carpeta excluye expresamente los recursos de terceros. El proyecto
 **no puede redistribuir** ese fichero.
@@ -281,7 +292,7 @@ contienen nombre de autora, y 3 de ellos son la portada de Davoker.
 | **ALTO** | `Web/styles/site.css:741` | `.search-box input { outline: 0 }` anula el `input:focus-visible` de la línea 135 (misma especificidad, gana por orden). El buscador de `components.html` es **invisible al tabular**. |
 | MEDIO | `Web/components.html:80-84` | El `<label>` del buscador no contiene texto, así que su **nombre accesible es «/»**. |
 | MEDIO | `Web/components.html:93` | `aria-live="polite"` en el contenedor que se reemplaza entero en cada cambio: el lector de pantalla reanuncia las 9 tarjetas cada vez, además del recuento de la línea 85. |
-| MEDIO | `Web/styles/site.css:1761` | `.footer-meta` a `--quiet` sobre `--page`: **3,50:1** en tema claro. AA pide 4,5:1. |
+| MEDIO | `Web/styles/site.css:1753` | `.footer-meta` a `--quiet` sobre `--page`: **3,50:1** en tema claro. AA pide 4,5:1. |
 | BAJO | `index.html:37`, `components.html:37`, `team-core.html:41` | «Skip to content» literal, sin traducir, en páginas `lang="es"`. |
 | — | `Web/components.html:75` | Empieza en `<h2>`: **falta el `<h1>`**. |
 
@@ -341,7 +352,7 @@ brotli funciona (23,5 MB → 3,29 MB).
 
 ## 9. El historial
 
-El rumor de «unas 1 700 líneas de notas internas» era una infrestimación:
+El rumor de «unas 1 700 líneas de notas internas» era una estimación muy a la baja:
 
 ```
 git show d650750 --numstat    ->  9 793 líneas borradas
@@ -364,12 +375,12 @@ ir junto a ningún otro cambio.
 |---|---|---|
 | 1 | Enseñar por qué no hay botón visible en el portal de Davoker (§2.1) | pequeño, pero es lo que más te está costando |
 | 2 | Borrar el CSS de GitHub y poner una URL de ejemplo (C-1) | 1 comando + 1 línea |
-| 3 | `SECURITY.md:22` → canal privado de GitHub (C-2) | 1 frase |
+| 3 | `SECURITY.md:22` → canal privado de GitHub (C-2) | **descartada**: ver Fase 1 |
 | 4 | Excluir `*.zip` en `collectComponentFiles` y sacarlos del índice (H-2) | libera 7,95 MB |
 | 5 | Arreglar `build-zips.mjs` para que use la licencia de la colección (H-3) | ~5 líneas |
 | 6 | Portar `lstat`/`realpath` de `generate-catalog.mjs` a `serve.mjs` (H-1) | copiar 2 líneas |
 | 7 | `site.css:741` — quitar el `outline: 0` del buscador | 1 línea |
-| 8 | Las 24 filas de documentación (§4) | mecánico |
+| 8 | Las 16 filas de documentación (§4) | mecánico |
 | 9 | `.gitignore`, `.vercelignore`, `.gitattributes`, ficheros estándar (§8) | mecánico |
 | 10 | Crédito en los 1 018 demos (C-4) | **decisión**: 1 018 ficheros o solo dentro del ZIP |
 | 11 | Reescribir el historial (§9) | **decisión**: force-push en 3 ramas |

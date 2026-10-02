@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/Auditoria.md`](../Auditoria.md)
 (fecha 2026-10-02, commit revisado `39f4e8d`) · **Base:** `1a2e106` + fases 1, 2 y 3 ·
-**Commits:** pendientes
+**Commit que la aplica:** `1379921`
 
 Cierra el hallazgo **principal** (§2.1) y los **seis** de accesibilidad (§6).
 
@@ -119,7 +119,7 @@ medir, o `getComputedStyle` devuelve el color anterior a medias.
 
 ## 5. Siguiente: Fase 5 — documentación y higiene (§4, §8)
 
-- **§4**: las 24 filas de documentación que contradicen al código.
+- **§4**: las 16 filas de documentación que contradicen al código.
 - **§8**: `.gitattributes` (ningún binario declarado), resto de patrones de
   `.gitignore`, ficheros estándar que faltan, y `build-zips.mjs`/`stamp-assets.mjs`
   fuera de los documentos.

@@ -108,11 +108,11 @@ git grep recurso-84b7e44a
 | C-1 — CSS de GitHub | **cerrado** |
 | M-2 — `.env` en local | **cerrado** |
 | C-2 — correos | **descartado** por decisión del mantenedor |
-| H-1, H-3, M-1, M-3 | abiertos → fase 2 |
-| H-2, ZIPs y `.vercelignore` | abiertos → fase 3 |
+| H-1, M-1, M-3 | abiertos → fase 2 |
+| H-2, H-3, ZIPs y `.vercelignore` | abiertos → fase 3 |
 | §2.1 y accesibilidad (§6) | abiertos → fase 4 |
 | §4, §8, código muerto | abiertos → fase 5 |
-| C-4, §9 | abiertos → fase 6 (requieren decisión) |
+| C-3, C-4, §9 | abiertos → fase 6 (requieren decisión) |
 
 ---
 

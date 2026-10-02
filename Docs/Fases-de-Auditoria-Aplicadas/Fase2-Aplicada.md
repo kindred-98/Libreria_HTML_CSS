@@ -1,8 +1,8 @@
 # Fase 2 aplicada — seguridad
 
 **Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/Auditoria.md`](../Auditoria.md)
-(fecha 2026-10-02, commit revisado `39f4e8d`) · **Base:** `1a2e106` (fase 1) · **Commits:**
-pendientes
+(fecha 2026-10-02, commit revisado `39f4e8d`) · **Base:** `1a2e106` (fase 1) ·
+**Commit que la aplica:** `1379921`
 
 Cierra los tres hallazgos de seguridad que no toca la fase 1: H-1, M-1 y M-3.
 [`Fase1-Aplicada.md`](./Fase1-Aplicada.md) dejó constancia de C-1 y M-2.
@@ -12,7 +12,7 @@ Cierra los tres hallazgos de seguridad que no toca la fase 1: H-1, M-1 y M-3.
 ## 1. H-1 — ALTO · `serve.mjs` seguía enlaces simbólicos
 
 **Antes:** `resolveRequest()` contenía la ruta de forma lexical (`path.relative`) y
-después un `stat()` normal seguí enlace y leía lo que hubiera detrás. Un junction dentro
+después un `stat()` normal seguía al enlace y leía lo que hubiera detrás. Un junction dentro
 del repo apuntando a `~/.ssh/id_rsa` se servía con `200`.
 
 **Después:** `Web/scripts/serve.mjs` añade `rutaServible()`, con dos comprobaciones que
@@ -67,7 +67,7 @@ de la sección de verificación.
 | Qué | Cómo |
 |---|---|
 | Acciones fijadas por SHA | `checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09` · `setup-node@a0853c24544627f65ddf259abe73b1d18a591444` |
-| Versión legible | comentario `# v5` junto a cada SHA |
+| Versión legible | comentario `# v7.0.1` / `# v7.0.0` junto a cada SHA |
 | Credenciales | `persist-credentials: false`: ningún paso escribe en el repo |
 | Matriz | `node-version: [20, 22, 24]` con `fail-fast: false` y nombre de job `Validar (Node X)` |
 | Chromium | solo en la pata de Node 24 (`if: matrix.node-version == 24`) |
@@ -77,6 +77,11 @@ memoria: ambos `v5` son etiquetas ligeras que apuntan a un commit, y `v5` de
 `setup-node` coincide con `v5.0.0`. Fijar por SHA es exactamente lo que pide el
 hallazgo; subir a `v7` (la última mayor de ambas) queda fuera de alcance, para no
 mezclar un salto de versión con un cambio de política.
+
+**Actualizado en `28157d2`:** Dependabot abrió `#1` y `#2`, y se fusionaron los dos.
+El workflow sigue fijado por SHA, ahora con `checkout@3d3c42e… # v7.0.1` y
+`setup-node@8207627… # v7.0.0`. La política no cambió: se revisa el SHA, no se toca
+el ancla. El CI pasó con las dos (`Validar sitio` #54, Success, 59 s).
 
 **Por qué Chromium solo en una pata:** lo que varía con la versión de Node es la
 comprobación estática; el navegador que mide el layout es el mismo. Sin el `if`, cada

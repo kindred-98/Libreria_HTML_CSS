@@ -9,6 +9,27 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [La documentacion de la auditoria queda al dia con lo aplicado] - 2026-10-02
+
+- **`Docs/Auditoria.md` corregida sin reescribirla.** Sigue siendo el diagnostico en
+  `39f4e8d`, el commit revisado, y ahora lo dice en la cabecera; el estado actual queda
+  enlazado hacia `Docs/Fases-de-Auditoria-Aplicadas/`. Lo que dejo de ser cierto:
+  «0 dependencias npm» (hay `playwright` en `devDependencies`), «24 filas» en §4 (la
+  tabla tiene 16), la tabla de resumen (decia 4 criticos y 8 altos; ahora los 10
+  hallazgos con ID y las 9 filas sin ID de §6 y §7), `site.css:1761` (era 1753), y el
+  punto 3 de §10, que seguia mandando arreglar C-2, ya descartada.
+- **Erratas**: `declareba`, `se-annuncia`, `anadindo`, `seVEN`, `paraConservarlo`,
+  `infrestimacion`, `via dentro`, `searched con`.
+- **Las seis fases**: decian `Commits: pendientes`; apuntan ya a `1a2e106` (fase 1) y
+  `1379921` (fases 2-6). Fase 1 enrutaba H-3 a la fase 2 -lo cierra la 3- y omitia
+  C-3. Fase 2 anotaba `# v5` junto a los SHA, ahora `# v7.0.1` y `# v7.0.0` tras el
+  merge `28157d2`. Los recuentos de Fase 5 y Fase 6 pasan de «22 modificados, 1 y 11
+  nuevos» a los reales de `1379921`: **24 modificados y 17 anadidos** (los 11 ficheros
+  que componen los 9 estandar de §8, que llevan 3 en `ISSUE_TEMPLATE/`, y los 6
+  documentos de la carpeta).
+- **Comprobaciones**: `npm run validar` (1 018 componentes) y `npm run validar:layout`
+  (115 medidas) pasan, y el CI `Validar sitio` #54 sale Success.
+
 ## [La auditoria del 2026-10-02: las seis fases aplicadas] - 2026-10-02
 
 - **Fase 1, ganancias rapidas.** El fichero de 576 817 bytes que era la portada

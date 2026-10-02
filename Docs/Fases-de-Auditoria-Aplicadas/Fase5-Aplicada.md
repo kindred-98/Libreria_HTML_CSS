@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/Auditoria.md`](../Auditoria.md)
 (fecha 2026-10-02, commit revisado `39f4e8d`) · **Base:** `1a2e106` + fases 1–4 ·
-**Commits:** pendientes
+**Commit que la aplica:** `1379921`
 
 Cierra las **16 filas de documentación** de §4, cinco puntos de §8 y el código muerto
 asociado. Deja dos filas **no reproducibles** y una decisión pendiente (los ficheros
@@ -98,8 +98,8 @@ node Web/scripts/stamp-assets.mjs --force
 node --check             -> stamp-assets.mjs y generate-catalog.mjs: sintaxis ok
 ```
 
-`git status`: **120 borrados** (119 ZIP + `tarjetas/.gitkeep`), **22 modificados**,
-**1 nuevo** (`Docs/Fases-de-Auditoria-Aplicadas/`).
+Al cerrar las seis fases todo fue al commit `1379921`: **120 borrados** (119 ZIP +
+`tarjetas/.gitkeep`), **24 modificados**, **17 añadidos**.
 
 ---
 

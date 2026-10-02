@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/Auditoria.md`](../Auditoria.md)
 (fecha 2026-10-02, commit revisado `39f4e8d`) · **Base:** `1a2e106` + fases 1–5 ·
-**Commits:** pendientes
+**Commit que la aplica:** `1379921`
 
 Cierra las decisiones que se dejaron abiertas (C-4 y §9), los nueve ficheros
 estándar de §8, el hallazgo legal C-3 y comprueba §7 midiendo en vez de creer.
@@ -131,8 +131,10 @@ test-fase4.mjs           -> 12/12 (accesibilidad y portal de Davoker, sin regres
 test-catalog-cache.mjs   -> 1 petición a catalog.json por página
 ```
 
-`git status`: **120 borrados**, **22 modificados**, **11 nuevos** (9 ficheros
-estándar + `PRIVACY`/`CODE_OF_CONDUCT` ya contados + la carpeta `Fases/`).
+En `1379921` (las seis fases en un solo commit): **120 borrados**, **24 modificados**,
+**17 añadidos** — los 11 ficheros que componen los 9 estándar de §8
+(`.github/ISSUE_TEMPLATE/` es un directorio con 3) más los 6 documentos de esta
+carpeta.
 
 ---
 
@@ -141,11 +143,13 @@ estándar + `PRIVACY`/`CODE_OF_CONDUCT` ya contados + la carpeta `Fases/`).
 Todas las filas de §2.1, §3, §4, §6, §7 y §8 están aplicadas o documentadas como
 no reproducibles; §5 queda con C-1, C-3 y C-4 cerrados y C-2 descartada por
 decisión; §9 queda cerrada por decisión de no actuar. **No queda ningún hallazgo
-abierto.**
+abierto.** La única fila sin cerrar del todo es la de §2.2 en
+[`Fase4-Aplicada.md`](./Fase4-Aplicada.md), a la espera del navegador que reportó el
+fallo, pero su causa era la de §2.1 y ya no depende del navegador.
 
 [`CHANGELOG.md`](../../CHANGELOG.md) lleva una entrada de cierre con las seis
 fases; si prefieres una entrada por fase, se parte en seis (el contenido ya está
 escrito en estos ficheros).
 
-Pendiente solo de los `git add` / `git commit` de las fases 1–6, que hace el
-mantenedor.
+Los `git add` / `git commit` de las fases 1–6 ya están hechos: `1a2e106` (fase 1) y
+`1379921` (fases 2–6).

@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/Auditoria.md`](../Auditoria.md)
 (fecha 2026-10-02, commit revisado `39f4e8d`) · **Base:** `1a2e106` + fases 1 y 2 ·
-**Commits:** pendientes
+**Commit que la aplica:** `1379921`
 
 Cierra H-2, H-3 y la parte de `.vercelignore` del §8. Deja constancia también de dos
 cosas que la auditoría daba por hechas y **no se reproducen**, medidas aquí.
