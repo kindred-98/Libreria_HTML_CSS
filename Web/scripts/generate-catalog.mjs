@@ -9,9 +9,10 @@ const repositoryDirectory = path.resolve(scriptDirectory, "../..");
 // DavokerDiseñador agrupa los 119 efectos de texto de davoker. Su portada,
 // DavokerDiseñador/davoker.html, no es un componente: solo se catalogan los
 // index.html, y la abre el filtro de autores dentro de la rejilla.
-// GevendraAutorExterno/ sigue en el repositorio, pero queda FUERA de esta lista:
-// sus 116 demos son de un tercero que no declara licencia y no respondio a los
-// contactos, asi que no se catalogan, no se publican y no se sirven. Ver
+// GevendraAutorExterno/ esta en .gitignore y no esta en el disco de un clon
+// nuevo; en cualquier caso queda FUERA de esta lista: sus 116 demos son de un
+// tercero que no declara licencia y no respondio a los contactos, asi que no se
+// catalogan, no se publican y no se sirven. Ver
 // Docs/THIRD_PARTY_NOTICES.md ("Material retirado").
 const libraryRoots = [
   {
@@ -270,6 +271,12 @@ async function collectComponentFiles(componentDirectory, componentId, currentDir
     }
 
     if (!entry.isFile()) continue;
+    // El ZIP del componente es la SALIDA de build-zips.mjs, no una entrada suya.
+    // Si se empaqueta, cada build mete el ZIP de la anterior dentro de la nueva
+    // y crece sin techo (+24 KB por build): en el repo acabaron 119 de 119 con
+    // hasta 4 niveles de anidamiento y 7,95 MB de los 10,4 MB eran ZIP dentro
+    // de ZIP. Ningun demo necesita un .zip como material de partida.
+    if (entry.name.toLowerCase().endsWith(".zip")) continue;
     const relativePath = path.relative(componentDirectory, entryPath).split(path.sep).join("/");
     const repositoryPath = path.relative(repositoryDirectory, entryPath).split(path.sep).join("/");
     files.push({

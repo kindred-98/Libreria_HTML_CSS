@@ -39,8 +39,13 @@
   var pop = document.getElementById('helpPop');
   var history = [];
 
+  // El resultado se inyecta en html (innerHTML), a veces dentro de un atributo
+  // entrecomillado: data-q="..." . Sin escapar las comillas, quien escribe en el
+  // buscador cierra el atributo y se añade el suyo (onmouseover). & va el
+  // primero; si no, se escaparia dos veces lo que despues generan las demas.
   function esc(str) {
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function mark(text, words) {

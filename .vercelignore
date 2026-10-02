@@ -1,13 +1,29 @@
 # Documentación y herramientas internas: no hace falta en el despliegue.
 # Se publica solo el aviso de licencias, que es de consulta pública.
+#
+# El par `Docs/**` + `!Docs/THIRD_PARTY_NOTICES.md` SÍ funciona, y así se midió
+# (repo de prueba con `git check-ignore -v`): `Docs/**` excluye los hijos, no la
+# carpeta Docs en sí, así que git desciende, lee la negación y el aviso sale.
+# Lo que lo rompería sería excluir la carpeta madre (`Docs/`), porque entonces
+# git ya no desciende y la línea `!` jamás se aplica. No se cambie este patrón
+# sin repetir esa comprobación.
 Docs/**
 !Docs/THIRD_PARTY_NOTICES.md
 .qodo/
 .github/
 .vercel/
+.git/
+# La carpeta no está en git (ver .gitignore), pero si alguien la tiene en disco
+# al desplegar, no sube: su repo de origen no declara licencia.
+GevendraAutorExterno/
 CHANGELOG.md
 CONTRIBUTING.md
 SECURITY.md
+
+# Los .zip NO se excluyen: son el build y los necesita el portal de Davoker.
+# Ahora mismo además no hay ninguno a la hora de subir (dejaron de versionarse
+# en la fase 3 de la auditoría), así que la regla sería inútil arriba y
+# letal si Vercel la aplicara también a los ficheros que genera el build.
 
 # El catálogo completo solo se carga al abrir con file://; en HTTP se usa
 # catalog.json. Se regenera con Web/scripts/generate-catalog.mjs.

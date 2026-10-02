@@ -8,7 +8,7 @@ Biblioteca estática y con búsqueda de demos independientes de interfaces hecho
 
 Los **1018 son descargables**. La aplicación web está separada en `Web/` y se divide en tres páginas —`index.html` (portada), `components.html` (listado y detalle) y `team-core.html` (equipo y donación)—; los demos originales se cargan directamente para mostrar vistas previas reales.
 
-> `GevendraAutorExterno/` **no forma parte del repositorio**: los 116 demos que provee un tercero quedan en el disco local para poder trabajar con ellos, pero están en `.gitignore`, **no se catalogan, no se publican y no se sirven**. Su material no tiene licencia declarada. Ver *Material retirado*.
+> `GevendraAutorExterno/` **no forma parte del repositorio ni del árbol de trabajo**: está en `.gitignore` y no está en el disco de un clon nuevo. Los 116 demos que provee un tercero **no se catalogan, no se publican y no se sirven**, y su material no tiene licencia declarada. Ver *Material retirado*.
 
 ## Características
 
@@ -42,7 +42,7 @@ py -m http.server 8000
 
 Abre <http://localhost:8000/>. La página raíz redirige a `/Web/`. También puedes iniciar Live Server en VS Code desde la raíz del repositorio. El servidor HTTP es recomendable para probar el portapapeles y las descargas ZIP; al abrir con `file://`, la compatibilidad de esas API depende del navegador.
 
-Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio utiliza HTML, CSS y módulos JavaScript.
+Node.js 20 o posterior (lo que declara `engines` en `package.json`) solo hace falta para regenerar el catálogo, para las comprobaciones de CI y para `validar:layout`, que además necesita Chromium (`npx playwright install chromium`). El sitio utiliza HTML, CSS y módulos JavaScript.
 
 ## Estructura
 
@@ -56,14 +56,18 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 |   |   |-- catalog.json        # Índice ligero generado (sin código fuente)
 |   |   |-- catalog.js          # Catálogo completo, solo para abrir con file:// (no se despliega)
 |   |   |-- sources/            # Código de cada componente, se paga al abrir el detalle
-|   |   `-- component-overrides.json
+|   |   |-- component-overrides.json
 |   |   `-- names-es.json        # Nombre en español por nombre inglés, escrito a mano
 |   |-- scripts/
 |   |   |-- app.js              # Búsqueda, filtros, detalle, copia, tema y metadatos
+|   |   |-- build-zips.mjs      # Los 119 ZIP de Davoker (build de Vercel y `npm run zips`)
 |   |   |-- catalog-format.mjs  # Formato compartido por el generador y el validador
 |   |   |-- generate-catalog.mjs
 |   |   |-- serve.mjs           # Servidor estático local, sin dependencias
+|   |   |-- stamp-assets.mjs    # Sella el `?v=` de los assets en el despliegue
 |   |   |-- validate.mjs        # Comprueba que el catálogo cuadra con el disco
+|   |   |-- validar-csp.mjs     # La CSP cubre todos los hosts externos de los demos
+|   |   |-- validar-layout.mjs  # Que ninguna página se sale de lado (usa Chromium)
 |   |   `-- zip.js              # Crea archivos ZIP comprimidos en el navegador
 |   |-- styles/site.css
 |   |-- styles/team-core.css    # Hoja propia de Team Core (solo esa pagina)
@@ -74,12 +78,15 @@ Node.js 18 o posterior solo hace falta para regenerar el catálogo. El sitio uti
 |   |-- sitemap.xml
 |   |-- team-core.html           # Equipo y donación
 |   `-- index.html
-|-- .github/workflows/          # Validación en CI (no despliega)
+|-- .github/                    # CI (workflows/), plantillas de incidencias, CODEOWNERS, Dependabot y FUNDING
 |-- CHANGELOG.md
+|-- CODE_OF_CONDUCT.md          # Convivencia y canal de denuncias
 |-- Docs/
-|   `-- THIRD_PARTY_NOTICES.md   # Procedencia y licencias de los componentes
+|   |-- THIRD_PARTY_NOTICES.md   # Procedencia y licencias de los componentes
+|   `-- (auditorías, planes, notas de sesión y fases aplicadas)
 |-- index.html                  # Entrada a la aplicación web
 |-- LICENSE
+|-- PRIVACY.md                  # Qué datos recoge la web y cuáles no
 `-- README.md
 ```
 
@@ -129,7 +136,7 @@ El inventario completo está en [Docs/THIRD_PARTY_NOTICES.md](Docs/THIRD_PARTY_N
 
 ### Material retirado
 
-`GevendraAutorExterno/` **no forma parte del repositorio**: los 116 demos de un tercero **quedaron fuera del catálogo, del sitio y de las descargas** el 2026-09-30, y además se sacaron del índice de git, así que la carpeta solo existe en el disco local y no se despliega. Los 116 proceden del repositorio público [`gevendra2004/gevstack`](https://github.com/gevendra2004/gevstack), que **no declara licencia** —`LICENSE` devuelve 404, la API de GitHub responde `"license": null` y el `README.md` no incluye términos— y el autor **no respondió** a los contactos hechos para pedirle permiso. Sin licencia no hay permiso de redistribución, ni siquiera sin botón de descarga, así que la opción correcta era no publicar su código: se retiraron también el `LICENSE` MIT que esta carpeta llegó a llevar y el CSS de sus demos que se había copiado a `Web/styles/site.css`. Volver a publicarlos exige su **autorización escrita** o que añada una licencia a su repositorio; cuando la haya, se quita la línea de `.gitignore`, se vuelve a añadir la raíz a `generate-catalog.mjs` y el catálogo recupera los 116 solo.
+`GevendraAutorExterno/` **no forma parte del repositorio**: los 116 demos de un tercero **quedaron fuera del catálogo, del sitio y de las descargas** el 2026-09-30, y además se sacaron del índice de git, así que la carpeta ya no existe ni en el historial ni en el disco de un clon nuevo: está en `.gitignore` y no se despliega. Los 116 proceden del repositorio público [`gevendra2004/gevstack`](https://github.com/gevendra2004/gevstack), que **no declara licencia** —`LICENSE` devuelve 404, la API de GitHub responde `"license": null` y el `README.md` no incluye términos— y el autor **no respondió** a los contactos hechos para pedirle permiso. Sin licencia no hay permiso de redistribución, ni siquiera sin botón de descarga, así que la opción correcta era no publicar su código: se retiraron también el `LICENSE` MIT que esta carpeta llegó a llevar y el CSS de sus demos que se había copiado a `Web/styles/site.css`. Volver a publicarlos exige su **autorización escrita** o que añada una licencia a su repositorio; cuando la haya, se quita la línea de `.gitignore`, se vuelve a añadir la raíz a `generate-catalog.mjs` y el catálogo recupera los 116 solo.
 
 Antes de publicar o distribuir un demo, verifica su procedencia y las condiciones de su código, imágenes, fuentes, iconos y dependencias. Conserva los avisos necesarios, solicita permiso cuando corresponda o excluye el material cuyos derechos no estén claros.
 
@@ -139,19 +146,19 @@ La aplicación es estática y no necesita backend ni base de datos.
 
 ### Vercel
 
-El repositorio incluye [`vercel.json`](./vercel.json) y [`.vercelignore`](./.vercelignore). Configura el proyecto con **Framework Preset: Other** y **Output Directory: `.`** (la raíz del repositorio). El **Build Command no va vacío**: `vercel.json` ya lo fija como `node Web/scripts/generate-catalog.mjs`. Si en el panel lo dejas en blanco, sobrescribes el valor del fichero y el catálogo no se generará.
+El repositorio incluye [`vercel.json`](./vercel.json) y [`.vercelignore`](./.vercelignore). Configura el proyecto con **Framework Preset: Other** y **Output Directory: `.`** (la raíz del repositorio). El **Build Command no va vacío**: `vercel.json` ya lo fija como `node Web/scripts/generate-catalog.mjs && node Web/scripts/stamp-assets.mjs && node Web/scripts/build-zips.mjs`. Si en el panel lo dejas en blanco, sobrescribes el valor del fichero y no se generará ni el catálogo, ni los sellos `?v=`, ni los ZIP.
 
 Se despliega **la raíz del repositorio**, no un subdirectorio: las vistas previas cargan `../CreacionesNuevas/...` y `../creaciones-primium/...`, así que esas carpetas tienen que publicarse también. `vercel.json` redirige `/` → `/Web/` y `/Web` → `/Web/` (sin barra final rompería las rutas relativas), y añade las cabeceras de seguridad: `Content-Security-Policy`, `Strict-Transport-Security`, `Permissions-Policy`, `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy`. El `404.html` de la raíz lo sirve Vercel automáticamente en cualquier dirección que no exista.
 
 La CSP usa `frame-src 'self'`, así que las vistas previas siguen cargando porque viven en el mismo origen. Los demos de terceros van dentro de un `iframe` y **sí** quedan sujetos a esta CSP: cada documento hereda las cabeceras del sitio, así que si la CSP no permite el host del que un demo saca sus imágenes o sus scripts, ese demo se ve roto en producción aunque en local vaya bien.
 
-Por eso la CSP es deliberadamente corta. Los recursos que usaban los demos se bajaron a la carpeta `vendor/` de cada componente, así que solo quedan tres hosts externos: `upload.wikimedia.org` y `commons.wikimedia.org` para las fotos de las galerías, y `api.qrserver.com` para el único componente que genera códigos QR en el momento. `validar-csp.mjs` comprueba esto en cada despliegue: rastrea los recursos externos de los 1018 demos, avisa si alguno no está permitido en la directiva que le toca y también si la CSP permite un host que ya no usa nadie.
+Por eso la CSP es deliberadamente corta. Los recursos que usaban los demos se bajaron a la carpeta `vendor/` de cada componente, y hoy los demos y la aplicación usan **nueve hosts externos**: `upload.wikimedia.org` y `commons.wikimedia.org` para las fotos de las galerías (1 210 usos), `github.com` y `avatars.githubusercontent.com` para enlaces y avatares, `api.qrserver.com` para el único componente que genera códigos QR en el momento, `www.googletagmanager.com`, `www.google-analytics.com` y `region1.google-analytics.com` para la analítica, y `libreria-html-css.vercel.app` (el propio dominio en algún enlace). `validar-csp.mjs` los enumera en cada pasada, comprueba que la directiva que le toca los cubre en cada despliegue y también si la CSP permite un host que ya no usa nadie.
 
 ### El catálogo se genera en el despliegue
 
 `Web/data/catalog.json`, `Web/data/catalog.js` y `Web/data/sources/` son **artefactos generados** y **no están versionados**. Se producen en el build de Vercel, antes de servir nada.
 
-La razón práctica: añadir un demo ya no exige ningún paso manual. Da igual si lo añade una persona o un agente, el catálogo siempre refleja lo que hay en el disco. Y como esos ficheros no se versionan, dos agentes pueden añadir demos a la vez sin que sus cambios choquen sobre los mismos 473 ficheros de `sources/`.
+La razón práctica: añadir un demo ya no exige ningún paso manual. Da igual si lo añade una persona o un agente, el catálogo siempre refleja lo que hay en el disco. Y como esos ficheros no se versionan, dos agentes pueden añadir demos a la vez sin que sus cambios choquen sobre los mismos 1 018 ficheros de `sources/`.
 
 Lo único que hay que recordar en local, antes de abrir el sitio:
 
@@ -171,14 +178,19 @@ También innecesario. Si algún día se usa: raíz del repositorio, y **Build Co
 
 ## Validación continua
 
-El workflow [`validate.yml`](.github/workflows/validate.yml) se ejecuta en cada `push` a `main` y en cada pull request. **No despliega nada**. Ejecuta los mismos dos pasos que el build de Vercel, de modo que si el catálogo falla al generarse o al comprobarse, se ve en GitHub antes de llegar a producción:
+El workflow [`validate.yml`](.github/workflows/validate.yml) se ejecuta en cada `push` a `main` y en cada pull request. **No despliega nada**. Reproduce lo que hace Vercel y lo comprueba, de modo que si el catálogo, el sellado o los ZIP fallan, se ve en GitHub antes de llegar a producción:
 
-1. `node Web/scripts/generate-catalog.mjs` — el mismo comando que ejecuta Vercel.
-2. `node Web/scripts/validate.mjs` — sintaxis e integridad del catálogo ya generado.
+1. `npm ci` — instala lo que dice el lockfile (solo `playwright`, para la comprobación de layout).
+2. `node Web/scripts/generate-catalog.mjs` — el mismo primer comando que ejecuta Vercel.
+3. `node Web/scripts/validate.mjs` — sintaxis e integridad del catálogo ya generado.
+4. `node Web/scripts/validar-csp.mjs` — la CSP cubre todos los hosts externos de los demos.
+5. `node Web/scripts/stamp-assets.mjs --force` — el sellado `?v=` encuentra todos los assets que los HTML referencian.
+6. `node Web/scripts/build-zips.mjs --force` — los 119 ZIP de Davoker se generan sin errores.
+7. `npm run validar:layout` — cinco páginas en 23 anchos con navegador real; solo en una de las versiones de Node, porque es la que instala Chromium.
 
 `validate.mjs` comprueba la sintaxis de todos los `.js`, que cada entrada del catálogo tenga su fichero en `sources/` y viceversa, que cada `preview` apunte a un `index.html` real, que no queden referencias locales rotas, y que **ningún demo del disco falte en el catálogo**. Ese último punto es el que más avisa: un demo nuevo sin indexar no aparece en la web sin ningún otro síntoma.
 
-Usa `actions/checkout@v5` y `actions/setup-node@v5` (ambos ya sobre Node 24) y se fija `ubuntu-24.04` para no depender de la migración de `ubuntu-latest` a Ubuntu 26.
+Se ejecuta sobre la matriz de Node `[20, 22, 24]` (lo que `package.json` promete con `>=20`) en `ubuntu-24.04`, con `fail-fast: false` para ver todas las versiones aunque una falle. Las acciones van **fijadas por SHA** —`actions/checkout` y `actions/setup-node`, con la versión legible en comentario—, porque un tag se puede mover por quien tenga escritura en la acción.
 
 ## Contribuir
 
@@ -191,4 +203,4 @@ node Web/scripts/serve.mjs
 
 Abre <http://localhost:8000/>.
 
-Si quieres añadir un componente o un pull request, lee antes [`CONTRIBUTING.md`](./CONTRIBUTING.md). Si has encontrado un fallo de seguridad, no lo reportes por issue: lee [`SECURITY.md`](./SECURITY.md).
+Si quieres añadir un componente o un pull request, lee antes [`CONTRIBUTING.md`](./CONTRIBUTING.md). Participar implica aceptar el [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md). Si has encontrado un fallo de seguridad, no lo reportes por issue: lee [`SECURITY.md`](./SECURITY.md). Qué datos recoge la web (y cuáles no), en [`PRIVACY.md`](./PRIVACY.md).

@@ -1,6 +1,6 @@
 import http from "node:http";
 import { createHash } from "node:crypto";
-import { readFile, stat } from "node:fs/promises";
+import { lstat, readFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { brotliCompress, constants as zlibConstants, gzip } from "node:zlib";
@@ -11,6 +11,12 @@ const brotliAsync = promisify(brotliCompress);
 
 const repositoryDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const port = Number(process.env.PORT ?? 8000);
+
+// La raiz ya resuelta por el sistema de ficheros, de una vez. Se compara contra
+// realpath(ruta pedida) y no contra la raiz lexical: path.resolve normaliza los
+// "..", no los enlaces de los directorios padres, y en macOS /var es un enlace
+// a /private/var, asi que las dos rutas jamas compartirian prefijo.
+const repositoryRealDirectory = await realpath(repositoryDirectory);
 
 // Vercel manda el CSP de vercel.json en todas las respuestas y aqui no habia
 // cabecera ninguna: un host que el CSP no permite (los avatares de GitHub en
@@ -127,6 +133,32 @@ async function compressBody(body, extension, acceptEncoding) {
   return null;
 }
 
+// Devuelve la ruta que se va a servir (con index.html si era una carpeta) o
+// undefined si no se puede servir. Dos comprobaciones, ninguna sobra:
+//
+//  1. lstat no sigue el enlace, asi que un enlace simbolico (o un junction, que
+//     Node reporta tambien como enlace) se ve tal cual y se rechaza. Un PR podria
+//     añadir uno apuntando a ~/.ssh/id_rsa: un stat normal lo seguia y lo
+//     serviria con 200.
+//  2. realpath resuelve los enlaces de los directorios padres, que la contencion
+//     lexical de resolveRequest no ve: si "Web" fuera un enlace a /etc, la ruta
+//     pedida seria legitima y aun asi saldria del repositorio.
+//
+// Un fichero que no existe lanza aqui (lstat) y el catch del manejador responde
+// 404, igual que antes: denegar y no existir siguen siendo cosas distintas.
+async function rutaServible(ruta) {
+  let info = await lstat(ruta);
+  if (info.isSymbolicLink()) return undefined;
+  if (info.isDirectory()) {
+    ruta = path.join(ruta, "index.html");
+    info = await lstat(ruta);
+    if (info.isSymbolicLink()) return undefined;
+  }
+  const real = await realpath(ruta);
+  const dentro = real === repositoryRealDirectory || real.startsWith(`${repositoryRealDirectory}${path.sep}`);
+  return dentro ? ruta : undefined;
+}
+
 const server = http.createServer(async (request, response) => {
   // Solo lectura: sin esto un POST a un HTML devolvia 200 con el fichero entero.
   if (request.method !== "GET" && request.method !== "HEAD") {
@@ -139,8 +171,12 @@ const server = http.createServer(async (request, response) => {
     return;
   }
   try {
-    const info = await stat(file);
-    if (info.isDirectory()) file = path.join(file, "index.html");
+    const servida = await rutaServible(file);
+    if (!servida) {
+      response.writeHead(403).end("403");
+      return;
+    }
+    file = servida;
     const body = await readFile(file);
     const extension = path.extname(file).toLowerCase();
     const compressed = await compressBody(body, extension, request.headers["accept-encoding"]);

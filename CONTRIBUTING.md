@@ -2,7 +2,7 @@
 
 Gracias por querer añadir algo. Esta guía recoge las convenciones del repositorio para que una contribución se integre sin fricción.
 
-Si has encontrado un fallo de seguridad, no lo reportes aquí: lee [`SECURITY.md`](./SECURITY.md).
+Participar implica aceptar el [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md). Si has encontrado un fallo de seguridad, no lo reportes aquí: lee [`SECURITY.md`](./SECURITY.md).
 
 ## Las tres colecciones
 
@@ -14,7 +14,7 @@ No todas las carpetas son iguales. Cuál eliges determina si el componente puede
 | `creaciones-primium/` | Creaciones en curso, agrupadas por categoría (`botones/`, `animaciones/`, .), con el `LICENSE` MIT de la raíz | **Habilitado** |
 | `DavokerDiseñador/` | Efectos de texto de davoker, con licencia MIT del autor de origen | **Habilitado** |
 
-**No se toca `GevendraAutorExterno/`**: sigue en el repositorio, pero quedó fuera del catálogo y del sitio el 2026-09-30 porque su material no tiene licencia declarada. No se edita, no se cataloga y no se publica. Ver *Material retirado* en el README.
+**No se toca `GevendraAutorExterno/`**: no está en el repositorio (va en `.gitignore`) y sus 116 demos quedaron fuera del catálogo y del sitio el 2026-09-30 porque su material no tiene licencia declarada. No se edita, no se cataloga y no se publica. Ver *Material retirado* en el README.
 
 **Al añadir un componente, la opción correcta es `creaciones-primium/`**, dentro de la categoría que le toque. `CreacionesNuevas/` es el archivo histórico de lo ya publicado.
 
@@ -162,7 +162,7 @@ La decisión de integrar o no es siempre de quien mantiene el repositorio. No ha
 |   |-- scripts/                # app.js, zip.js y los scripts de Node
 |   `-- styles/site.css
 |-- .github/workflows/          # validación en CI, no despliega
-`-- Docs/                        # solo THIRD_PARTY_NOTICES.md
+`-- Docs/                        # THIRD_PARTY_NOTICES.md y documentos de la auditoría
 ```
 
 ## Documentación
@@ -171,3 +171,7 @@ La decisión de integrar o no es siempre de quien mantiene el repositorio. No ha
 - [`Web/README.md`](./Web/README.md) — cómo funciona la aplicación por dentro
 - [`CHANGELOG.md`](./CHANGELOG.md) — registro de cambios
 - [`Docs/THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md) — procedencia y licencias de los componentes
+- [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/) — qué se aplicó de cada fase de la auditoría vigente
+- [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) — convivencia y canal de denuncias
+- [`PRIVACY.md`](./PRIVACY.md) — qué datos recoge la web y cuáles no
+- [`SECURITY.md`](./SECURITY.md) — cómo avisar de un fallo de seguridad

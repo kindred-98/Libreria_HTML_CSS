@@ -38,6 +38,22 @@ if (!forzar && !enVercel) {
 
 const catalog = JSON.parse(await readFile(catalogFile, "utf8"));
 
+// La linea de copyright que la MIT exige conservar en cada copia (C-4): no se
+// inventa un autor, se lee del LICENSE que ya viaja dentro del propio ZIP. Si
+// ese fichero no trae ninguna linea que empiece por "copyright", no se anade
+// nada y el ATTRIBUTION queda como antes.
+function lineaCopyright(textoLicencia) {
+  const coincidencia = textoLicencia.match(/^\s*(copyright[^\r\n]*)$/im);
+  return coincidencia ? coincidencia[1].trim() : "";
+}
+
+// licenseFile viaja como nombre suelto ("LICENSE") y dentro del ZIP como
+// <id>/LICENSE o <coleccion>/LICENSE: la entrada se reconoce por el sufijo.
+function esLicenciaDe(archivePath, licenseFile) {
+  if (!licenseFile) return false;
+  return archivePath === licenseFile || archivePath.endsWith(`/${licenseFile}`);
+}
+
 // El escritor de ZIP minimo: cabecera local + directorio + archivo + CRC32.
 // Se hace a mano y en streaming para no añadir dependencias de npm y no hacer
 // `npm install` (el proyecto no usa dependencias, doc CONTRIBUTING.md:44).
@@ -163,16 +179,35 @@ for (const componente of catalog) {
     if (file.archivePath) archivos.push(file);
   }
   const zip = new ZipWriter();
+  let copyright = "";
   for (const archivo of archivos) {
     const rutaRelativa = archivo.path.replace(/^\.\.\//, "");
     const rutaFisica = path.join(repositoryDirectory, rutaRelativa);
     const bytes = await readFile(rutaFisica);
+    if (!copyright && esLicenciaDe(archivo.archivePath, sourceData.licenseFile)) {
+      copyright = lineaCopyright(bytes.toString("utf8"));
+    }
     zip.agregar(archivo.archivePath, bytes);
   }
-  const rutaLicense = sourceData.licenseFile ?? "../LICENSE";
-  const rutaFisicaLicense = path.join(repositoryDirectory, rutaLicense.replace(/^\.\.\//, ""));
-  const licenseBytes = await readFile(rutaFisicaLicense);
-  zip.agregar("LICENSE", licenseBytes);
+  // Mismo contenido que downloadComponentZip() de app.js, el camino que usan la
+  // ficha y los 899 que no son de davoker: los archivos del componente (un
+  // componente solo es downloadable si files lleva su licenseFile, que
+  // generate-catalog resuelve contra la raiz de la coleccion, y asi sale
+  // LICENSE de davoker y no el de la raiz del repo), el ATTRIBUTION.txt y la
+  // linea de copyright leida de ese LICENSE (C-4: el credito de autoria viaja
+  // dentro del ZIP en vez de en 1 018 HTML).
+  //
+  // Antes se anadia ademas un LICENSE en la RAIZ del ZIP resuelto contra
+  // repositoryDirectory: cada ZIP de davoker llevaba el de kindred-98 (2 237 B)
+  // en vez del suyo (1 085 B), y salian distintos los dos caminos de descarga,
+  // justo lo contrario de lo que promete el comentario de arriba.
+  const atribucion = [
+    `Fuente: ${sourceData.source ?? ""}`,
+    `Licencia: ${sourceData.license ?? ""}`,
+    `Archivo de licencia: ${sourceData.licenseFile ?? ""}`,
+  ];
+  if (copyright) atribucion.push(copyright);
+  zip.agregar(`${componente.id}/ATTRIBUTION.txt`, [...atribucion, ""].join("\n"));
   const zipBytes = zip.bytes();
   await mkdir(path.dirname(destino), { recursive: true });
   await writeFile(destino, zipBytes);
@@ -180,7 +215,7 @@ for (const componente of catalog) {
   catalogoReducido.distributed += 1;
 }
 
-console.log(`Generados ${verificadas.length} ZIPs redistribuibles en Web/zips/`);
+console.log(`Generados ${verificadas.length} ZIPs redistribuibles en DavokerDiseñador/<categoria>/<efecto>/`);
 console.log(`(el catalogo tiene ${catalogoReducido.not_redistributable} componentes no redistribuibles que no se han generado)`);
 const tamanoTotal = verificadas.reduce((acc, v) => acc + v.tamano, 0);
 console.log(`Tamano total: ${tamanoTotal} bytes (~${Math.round(tamanoTotal / 1024)} KB)`);

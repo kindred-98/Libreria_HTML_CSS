@@ -71,7 +71,6 @@ for (const nombre of htmlFiles) {
 
   if (!cambios.size) continue;
 
-  const eol = original.includes("\r\n") ? "\r\n" : "\n";
   const salida = original.replace(CON_VERSION, (todo, apertura, relativa, cierre) => {
     const huella = cambios.get(relativa);
     const selloViejo = todo.slice(todo.indexOf("?v=") + 3, -1);
@@ -82,7 +81,9 @@ for (const nombre of htmlFiles) {
   });
 
   if (salida === original) continue;
-  // Se escribe tal cual, para conservar los finales de linea del fichero.
+  // Se escribe tal cual, para conservar los finales de linea del fichero:
+  // String.replace solo toca los trozos que casan con la regex y respeta el
+  // resto del texto, CRLF incluido.
   await writeFile(rutaHtml, salida, "utf8");
 }
 

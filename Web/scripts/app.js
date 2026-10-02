@@ -50,6 +50,7 @@ const translations = {
     authors: {
       Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
     },
+    skipToContent: "Skip to content",
     brandHome: "HTML and CSS Library home",
     mainNavigation: "Main navigation",
     languageLabel: "Language",
@@ -119,6 +120,7 @@ const translations = {
     browseComponents: "Browse components",
     libraryNote: "Search the details. Open a demo. Make it yours.",
     searchPlaceholder: "Search buttons, cards, effects...",
+    searchLabel: "Search components",
     loadingCollection: "Loading collection...",
     filterByCategory: "Filter by category",
     filterByAuthor: "Filter by author",
@@ -195,6 +197,7 @@ const translations = {
     authors: {
       Davoker: "Davoker", "kindred-98": "kindred-98", fatmaerm: "fatmaerm",
     },
+    skipToContent: "Saltar al contenido",
     brandHome: "Inicio de la biblioteca HTML y CSS",
     mainNavigation: "Navegación principal",
     languageLabel: "Idioma",
@@ -264,6 +267,7 @@ const translations = {
     browseComponents: "Explorar componentes",
     libraryNote: "Busca detalles. Abre un demo. Hazlo tuyo.",
     searchPlaceholder: "Buscar botones, tarjetas, efectos...",
+    searchLabel: "Buscar componentes",
     loadingCollection: "Cargando colección...",
     filterByCategory: "Filtrar por categoría",
     filterByAuthor: "Filtrar por autor",
@@ -1227,10 +1231,20 @@ async function downloadComponentZip(component) {
     `${t("sourceLabel")}: ${component.source}`,
     `${t("licenseLabel")}: ${component.license}`,
     `${t("licenseFileLabel")}: ${component.licenseFile}`,
-  ].join("\n");
+  ];
+  // C-4: el credito de autoria viaja dentro del ZIP. No se inventa un autor:
+  // se lee la linea de copyright del LICENSE que ya forma parte del paquete,
+  // y si no la trae no se anade nada. Tiene que calzar con lo que genera
+  // build-zips.mjs para los 119 de davoker (los dos caminos de descarga).
+  const licenseFile = files.find((file) => file.name === component.licenseFile
+    || file.name.endsWith(`/${component.licenseFile}`));
+  if (licenseFile) {
+    const copyright = new TextDecoder().decode(licenseFile.bytes).match(/^\s*(copyright[^\r\n]*)$/im);
+    if (copyright) attribution.push(copyright[1].trim());
+  }
   files.push({
     name: `${component.id}/ATTRIBUTION.txt`,
-    bytes: new TextEncoder().encode(`${attribution}\n`),
+    bytes: new TextEncoder().encode(`${attribution.join("\n")}\n`),
   });
 
   const archive = await window.createZip(files);

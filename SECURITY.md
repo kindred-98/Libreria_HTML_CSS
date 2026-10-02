@@ -35,24 +35,25 @@ El proyecto no publica releases numeradas: todo el desarrollo ocurre en `main`, 
 
 **Está en el alcance:**
 
-- `Web/scripts/app.js`, `Web/scripts/zip.js` y `Web/styles/site.css`
-- `Web/scripts/generate-catalog.mjs`, `validate.mjs`, `serve.mjs` y `catalog-format.mjs`
+- La aplicación: `Web/scripts/app.js`, `Web/scripts/zip.js` y `Web/styles/site.css`
+- Los ocho scripts de Node de `Web/scripts/`: `generate-catalog.mjs`, `catalog-format.mjs`, `validate.mjs`, `validar-csp.mjs`, `validar-layout.mjs`, `stamp-assets.mjs`, `build-zips.mjs` y `serve.mjs` (con `app.js` y `zip.js` de arriba, los diez ficheros de `Web/scripts/`)
 - `vercel.json`, `.vercelignore` y `.github/workflows/validate.yml`
 - Las páginas: `index.html` raíz, `Web/index.html`, `Web/components.html` y `Web/team-core.html`
-- Cualquier componente de `CreacionesNuevas/` o `creaciones-primium/`
+- Los 119 demos de `DavokerDiseñador/` (incluida su portada `davoker.html`) y los componentes de `CreacionesNuevas/` o `creaciones-primium/`
+- El build de despliegue: el catálogo, el sellado de `?v=` y los ZIP que genera `build-zips.mjs`
 - La generación del catálogo: un `id` malicioso, una ruta que escape del repositorio, o una referencia que permita leer ficheros de fuera
 
 **Queda fuera del alcance:**
 
-- El contenido de `GevendraAutorExterno/`, que es de un tercero y no tiene licencia declarada. La carpeta sigue en el repositorio, pero está **fuera del catálogo y del sitio** desde 2026-09-30: `vercel.json` redirige `/GevendraAutorExterno/...` para que no se sirva. Un problema dentro de uno de ellos se reporta a quien lo haya creado
-- Vulnerabilidades en jQuery, Ionicons o cualquier biblioteca cargada desde un CDN externo. Se reportan a sus mantenedores
+- El contenido de `GevendraAutorExterno/`, que es de un tercero y no tiene licencia declarada. La carpeta **no está en el repositorio ni en el disco de un clon nuevo**: está en `.gitignore` y fuera de `libraryRoots` en `generate-catalog.mjs`, así que no se cataloga, no se sirve y no hay nada que redigir. Un problema dentro de uno de sus demos se reporta a quien lo haya creado
+- Vulnerabilidades en jQuery, Ionicons o cualquier biblioteca cargada desde un CDN externo: **no hay ninguna en el repo** (0 coincidencias), así que esto solo aplica si algún día se añade. Se reportarían a sus mantenedores
 - Los enlaces a terceros. El sitio no aloja ni redirige a ellos
 
 ## Diseño de seguridad relevante
 
 Para que se entienda qué está protegido y qué no:
 
-- **Las vistas previas van en `iframe` con `sandbox="allow-scripts allow-forms allow-popups"`, sin `allow-same-origin`.** Un componente no puede acceder al DOM de la aplicación, ni a sus `localStorage` ni a sus cookies
+- **Las vistas previas van en `iframe` con `sandbox="allow-scripts allow-forms allow-popups allow-downloads"`, sin `allow-same-origin`.** Un componente no puede acceder al DOM de la aplicación, ni a sus `localStorage` ni a sus cookies. `allow-downloads` está ahí para que funcione el botón de descarga de los demos dentro del iframe
 - **Salvedad:** el enlace "abrir en nueva pestaña" de cada detalle carga el componente **en el origen del sitio y sin `sandbox`**. Ahí el componente sí tiene acceso completo a `localStorage`. Es un punto conocido y aceptado
 - **`Content-Security-Policy` en `vercel.json`**, con `frame-src 'self'`. No restringe a los componentes de terceros, porque cada documento dentro de un `iframe` aplica la suya
 - **El proyecto no tiene dependencias de npm**, ni backend, ni base de datos. No hay superficie de ataque convencional

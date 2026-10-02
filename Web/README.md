@@ -1,4 +1,4 @@
-# Aplicación web Component/Field
+# Biblioteca HTML y CSS — aplicación web
 
 Catálogo estático y sin dependencias para los demos independientes de `../CreacionesNuevas/`, `../creaciones-primium/` y `../DavokerDiseñador/`. Los demos originales permanecen separados; la aplicación los indexa sin reescribir su HTML, CSS ni JavaScript.
 
@@ -28,7 +28,7 @@ Abre <http://localhost:8000/>. La página raíz redirige a `/Web/`. También pue
 
 Para abrirla sin servidor, regenera el catálogo y abre `Web/index.html` directamente. `data/catalog.js` contiene el índice y las fuentes locales que necesita esa modalidad. Usa HTTP para probar el portapapeles y las descargas ZIP, ya que su disponibilidad bajo `file://` depende del navegador.
 
-El generador requiere Node.js 18 o posterior. La aplicación usa HTML, CSS, módulos JavaScript y API del navegador; no requiere instalar paquetes ni ejecutar un paso de compilación.
+El generador requiere Node.js 20 o posterior (lo que declara `package.json`). La aplicación usa HTML, CSS, módulos JavaScript y API del navegador; no requiere instalar paquetes ni ejecutar un paso de compilación.
 
 ## Funcionamiento
 
@@ -41,6 +41,7 @@ El generador requiere Node.js 18 o posterior. La aplicación usa HTML, CSS, mód
 - `scripts/zip.js` crea archivos ZIP en el navegador sin paquetes externos.
 - `scripts/serve.mjs` sirve el repositorio por HTTP para probar en local: `node Web/scripts/serve.mjs` y abre <http://localhost:8000/>. No acepta rutas que salgan de la raíz del repositorio.
 - `scripts/stamp-assets.mjs` sella la versión de los assets: en el despliegue sustituye el `?v=` de cada etiqueta que carga un CSS o un script por una huella de ocho caracteres del contenido de ese fichero (`vercel.json` lo llama en `buildCommand` detrás de generar el catálogo). Hace falta porque esas carpetas se sirven con `immutable` y un año de caché, así que sin cambiar el `?v=` un cambio de CSS no llega al navegador. En local no hace nada; `npm run sellar` lo fuerza para ver qué URLs quedarían, y `git checkout` los devuelve. El `?v=` que hay en el HTML del repositorio es solo un marcador legible.
+- `scripts/build-zips.mjs` genera los **119 ZIP de Davoker** junto a cada una de sus demos, con el mismo contenido que la descarga desde el navegador (`LICENSE` de la colección más `ATTRIBUTION.txt`): es el otro paso del `buildCommand` de Vercel y en local se ejecuta con `npm run zips`. Los ZIP no se versionan (van en `.gitignore`), porque si se versionaran cada build empaquetaría el ZIP anterior dentro del nuevo.
 - `scripts/validate.mjs` comprueba que el catálogo cuadre con los demos del disco. No despliega; sale con código 1 si algo no cuadra.
 - `styles/site.css` contiene el tema y el diseño adaptable de la aplicación.
 - La interfaz ofrece inglés y español; guarda el idioma en `localStorage` con la clave `component-field-language`, separada de `component-field-theme`.
@@ -81,12 +82,12 @@ Introduce una fuente y licencia solo después de verificar los derechos de redis
 
 La app es estática: **no necesita backend ni base de datos**.
 
-**Vercel:** usa la raíz del repositorio con `vercel.json` (framework `Other`, sin build command, output `.`). Vercel construye solo; no hay script de build. `vercel.json` redirige `/` → `/Web/`, fija `cleanUrls: false` porque las páginas llevan `.html` explícito, y añade `Content-Security-Policy`, `Strict-Transport-Security`, `Permissions-Policy`, `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy`.
+**Vercel:** usa la raíz del repositorio con `vercel.json` (framework `Other`, output `.`). El build **sí tiene build command**: `node Web/scripts/generate-catalog.mjs && node Web/scripts/stamp-assets.mjs && node Web/scripts/build-zips.mjs`, o sea catálogo, sellado de `?v=` y los 119 ZIP de Davoker. `vercel.json` redirige `/` → `/Web/`, fija `cleanUrls: false` porque las páginas llevan `.html` explícito, y añade `Content-Security-Policy`, `Strict-Transport-Security`, `Permissions-Policy`, `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy`.
 
-La CSP usa `frame-src 'self'`, compatible con las vistas previas porque están en el mismo origen. Los demos de terceros se cargan dentro de un `iframe` y quedan fuera de esta CSP: cada documento aplica la suya, así que siguen pudiendo usar sus recursos remotos.
+La CSP usa `frame-src 'self'`, compatible con las vistas previas porque están en el mismo origen. Los demos cargados dentro de un `iframe` **sí quedan sujetos a esta CSP**: cada documento dentro del iframe hereda las cabeceras del sitio, así que si la CSP no permite el host del que un demo saca sus imágenes o sus scripts, ese demo se ve roto en producción aunque en local vaya bien. Por eso `scripts/validar-csp.mjs` comprueba en cada despliegue que la CSP cubre los nueve hosts externos que usan los demos.
 
-**GitHub Pages:** no se usa. Solo podría publicar la versión filtrada por licencias (los 248 componentes con `redistributable: true`), nunca los 396 que muestra Vercel. El workflow que lo publicaba se eliminó.
+**GitHub Pages:** no se usa. El artefacto que filtraba por licencias se eliminó: hoy los **1 018 componentes** son descargables y solo hay una copia del sitio, la de Vercel. El workflow que lo publicaba se eliminó.
 
-**Netlify:** innecesario. Si algún día se usa, publica la raíz sin build command.
+**Netlify:** innecesario. Si algún día se usa, publica la raíz con el mismo `buildCommand` que `vercel.json`.
 
-**CI:** el workflow [`../.github/workflows/validate.yml`](../.github/workflows/validate.yml) no despliega. Ejecuta los mismos dos pasos que el build de Vercel: generar el catálogo con `scripts/generate-catalog.mjs` y comprobarlo con `scripts/validate.mjs`.
+**CI:** el workflow [`../.github/workflows/validate.yml`](../.github/workflows/validate.yml) no despliega. Instala con `npm ci`, genera el catálogo con `scripts/generate-catalog.mjs` (el mismo primer paso que Vercel) y lo comprueba con `scripts/validate.mjs` y `scripts/validar-csp.mjs`; después ejecuta el sellado y `scripts/build-zips.mjs --force`, los otros dos comandos del build, y cierra con `npm run validar:layout` en un navegador real. Todo eso sobre la matriz de Node `[20, 22, 24]`.

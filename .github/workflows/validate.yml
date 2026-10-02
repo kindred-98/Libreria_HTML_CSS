@@ -19,15 +19,33 @@ concurrency:
 
 jobs:
   validar:
+    name: Validar (Node ${{ matrix.node-version }})
     runs-on: ubuntu-24.04
+    strategy:
+      # Sin fail-fast, una version rota no cancela las demas: se ven todas de una vez.
+      fail-fast: false
+      matrix:
+        # package.json promete "node": ">=20". Con una unica version fija lo que
+        # promete no esta verificado: si el codigo usara una API que solo existe
+        # en 22, en 20 revienta y el CI no lo cuenta.
+        node-version: [20, 22, 24]
     steps:
+      # Fijadas por SHA, no por tag: un tag se puede mover por quien tenga
+      # escritura en el repositorio de la accion, y el CI pasaria a ejecutar
+      # codigo que nadie reviso. El comentario conserva la version legible; es
+      # ademas el formato que dependabot actualiza si se configura el
+      # ecosistema github-actions.
       - name: Check out repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          # El token no hace falta: ningun paso de aqui escribe en el
+          # repositorio, y sin esto se queda en .git/config del clon.
+          persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
-          node-version: 22
+          node-version: ${{ matrix.node-version }}
           # El lockfile es la unica forma de que el CI instale exactamente las
           # mismas versiones que se han probado en local. Con "npm install" y sin
           # lockfile, cada push podia traerse una version distinta de playwright.
@@ -50,14 +68,28 @@ jobs:
       - name: Comprobar el CSP del despliegue
         run: node Web/scripts/validar-csp.mjs
 
+      # El sellado y los ZIP son los otros dos comandos del buildCommand de
+      # Vercel, y hasta aqui solo se habian ejecutado en el despliegue: un HTML
+      # que apunte a un asset inexistente o un demo que cambie de licencia no
+      # se enteraba nadie hasta produccion. Se comprueban aqui, en el mismo
+      # orden y con los mismos argumentos --force con los que los corre Vercel.
+      - name: Comprobar el sellado de assets (mismo comando que Vercel)
+        run: node Web/scripts/stamp-assets.mjs --force
+
+      - name: Comprobar que se generan los ZIP de Davoker (mismo comando que Vercel)
+        run: node Web/scripts/build-zips.mjs --force
+
       # La unica comprobacion que abre un navegador de verdad. Las anteriores son
       # estaticas: miran ficheros, sintaxis, el catalogo y las cabeceras, y
       # ninguna mide lo que se ve. Una pagina que se dibuja 39 px mas ancha de lo
       # que permite la ventana no falla ninguna de ellas. Chromium son ~170 MB
       # en la cache del runner, y el paso va aparte para que se vea en el
-      # log cuanto cuesta.
+      # log cuanto cuesta. Baja una sola vez: lo que varia con la version de Node
+      # es la comprobacion estatica de arriba, no el navegador que la mide.
       - name: Instalar Chromium (para la comprobacion de layout)
+        if: matrix.node-version == 24
         run: npx playwright install --with-deps chromium
 
       - name: Comprobar que ninguna pagina se sale de lado
+        if: matrix.node-version == 24
         run: npm run validar:layout

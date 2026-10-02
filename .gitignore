@@ -2,11 +2,18 @@
 # Vercel los produce en el build ("buildCommand" en vercel.json) y en local se
 # regeneran con: node Web/scripts/generate-catalog.mjs
 # Así el repositorio solo contiene los demos, que es su fuente de verdad, y dos
-# agentes pueden añadir demos a la vez sin tocar los mismos 473 ficheros.
+# agentes pueden añadir demos a la vez sin tocar los mismos 1018 ficheros.
 # component-overrides.json y names-es.json SI se versionan: se editan a mano.
 Web/data/catalog.json
 Web/data/catalog.js
 Web/data/sources/
+
+# ZIPs: son la salida de Web/scripts/build-zips.mjs, que corre en el build de
+# Vercel (buildCommand en vercel.json) y en local con `npm run zips`. No se
+# versionan porque cada build los reescribe: empaquetarlos a si mismos hizo
+# que los 119 de Davoker crecieran 24 KB por build hasta llevar 4 niveles de
+# ZIP dentro de ZIP (Docs/Auditoria.md, H-2).
+*.zip
 
 # Despliegue
 .vercel/
@@ -43,12 +50,33 @@ temp/
 # Herramientas internas de analisis que crean su propia cache
 .qodo/
 
-# GevendraAutorExterno: los demos siguen en el disco para trabajar con ellos,
-# pero no se publican hasta que su autor autorice la redistribucion. Su
-# repositorio de origen (github.com/gevendra2004/gevstack) no declara licencia,
-# asi que de momento queda fuera del repo y fuera del catalogo. Ver la
-# investigacion de procedencia en Docs/THIRD_PARTY_NOTICES.md.
+# GevendraAutorExterno: los demos de un tercero no se publican hasta que su
+# autor autorice la redistribucion. Su repositorio de origen
+# (github.com/gevendra2004/gevstack) no declara licencia, asi que la carpeta no
+# esta ni en git ni en el disco de un clon nuevo: si existe en alguna maquina,
+# es una copia de trabajo suya. Ver la investigacion de procedencia en
+# Docs/THIRD_PARTY_NOTICES.md.
 GevendraAutorExterno/
+
+# Editor y temporales de editor
+*.swp
+*.swo
+*~
+*.orig
+*.rej
+.idea/
+*.iml
+
+# Artefactos de herramientas que este proyecto no usa hoy, pero que un dia
+# podrian aparecer sin querer
+dist/
+build/
+coverage/
+yarn-error.log
+pnpm-debug.log*
+
+# Salida de Web/scripts/build-zips.mjs si alguna vez se desvía a Web/zips/
+Web/zips/
 
 # Sistema
 Thumbs.db

@@ -5,7 +5,54 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 **Documentación relacionada**: [README](./README.md) · plan de fases ([`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md)) · [Web/README.md](./Web/README.md) · [THIRD_PARTY_NOTICES.md](./Docs/THIRD_PARTY_NOTICES.md) · detalle de la sesión del 2026-10-01/02 ([`Docs/Sesion_2026-10-01_02.md`](./Docs/Sesion_2026-10-01_02.md)).
 
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
-[`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md).
+[`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md); las de la auditoría vigente,
+en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
+queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
+
+## [La auditoria del 2026-10-02: las seis fases aplicadas] - 2026-10-02
+
+- **Fase 1, ganancias rapidas.** El fichero de 576 817 bytes que era la portada
+  de GitHub (`CreacionesNuevas/url-qr-code-generator/vendor/recurso-84b7e44a.css`)
+  se borra, el input de ese demo pasa a `https://example.com` y sale de su ZIP
+  (C-1, critico). `serve.mjs` deja de servir nada que empiece por punto, `.env`
+  incluido (M-2).
+- **Fase 2, seguridad.** `serve.mjs` comprueba el enlace simbolico con `lstat()` y
+  lo resuelve con `realpath()` contra la raiz real del repositorio, asi que un
+  enlace a `/etc/passwd` o a otro repositorio ya no se sirve (H-1). `esc()` escapa
+  comillas simples y dobles (M-1), y las acciones del workflow van fijadas por SHA
+  con la matriz de Node `[20, 22, 24]` en lugar de un tag movible (M-3).
+- **Fase 3, ZIPs.** Los 119 ZIP de `DavokerDiseñador/` dejan de versionarse:
+  10,4 MB menos en el repositorio y `catalog.json` ya no los empaqueta (H-2).
+  `build-zips.mjs` los genera ahora en el build con el `LICENSE` de la coleccion,
+  no con el de la raiz (H-3), y cada uno lleva su `ATTRIBUTION.txt`. El par
+  `Docs/**` + `!Docs/THIRD_PARTY_NOTICES.md` de `.vercelignore` se midio con
+  `git check-ignore -v` y funciona: era un falso hallazgo.
+- **Fase 4, portal y accesibilidad.** `davoker.html` explica por que no hay boton
+  visible (sorteo de 12 de 119) y como llegar a la descarga (§2.1). El buscador
+  se queda con `outline` visible y nombre accesible, cada pagina con un unico
+  `<h1>`, la rejilla sin `aria-live` redundante, el salto al contenido traducido
+  al i18n y `.footer-meta` con `--muted`: 7,66:1 en oscuro y 5,49:1 en claro
+  (§6). Pasa `npm run validar:layout`: 5 paginas x 23 anchos.
+- **Fase 5, documentacion e higiene.** Las 16 filas de documentacion de §4
+  corregidas (Node 20, 1 018 descargables, 9 hosts, build de 3 comandos, alcance
+  de SECURITY, Gevendra fuera del repo) mas cinco de la misma clase que aparecieron
+  al pasar. `.gitattributes` declara 12 tipos binarios, `.gitignore` gana 13
+  patrones, el CI ejecuta por fin `stamp-assets.mjs` y `build-zips.mjs` —los dos
+  comandos de Vercel que nunca se probaban fuera de produccion— y se borra el
+  codigo muerto (`const eol`, el `.gitkeep` de `tarjetas/`).
+- **Fase 6, decisiones.** C-4: el credito de autoria viaja dentro del ZIP, en el
+  `ATTRIBUTION.txt`, con la linea de copyright leida del `LICENSE` que ya forma
+  parte del paquete — 119/119 ZIP y 3/3 descargas medidas, una por coleccion.
+  C-3: `LICENSE` ya no cita un `CreacionesNuevas/LICENSE` que nunca existio.
+  Nueve ficheros estandar creados: `CODE_OF_CONDUCT.md` (canal privado de GitHub),
+  `PRIVACY.md`, `.editorconfig`, `.nvmrc`, `CODEOWNERS`, plantillas de incidencia,
+  `dependabot.yml` y `FUNDING.yml`. §9 cerrada: **no se reescribe la historia**
+  (los 9 793 lineas borrados en `d650750` siguen recuperables con `git show`).
+- **Comprobaciones**: `npm run validar` (1 018 componentes, 1 018 descargables),
+  `npm run validar:layout` (115 medidas), las 12 pruebas de accesibilidad del
+  portal y una descarga por coleccion con copyright verificado. Dos filas de la
+  auditoria quedan anotadas como no reproducibles y una, C-2, descartada por
+  decision del mantenedor.
 
 ## [La cabecera no se sale de lado, y ahora el CI lo comprueba con un navegador] - 2026-10-02
 

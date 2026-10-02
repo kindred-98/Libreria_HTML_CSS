@@ -72,7 +72,7 @@ Los 651 componentes de `creaciones-primium/` se crearon para este repositorio: 2
 
 ## Material retirado: `GevendraAutorExterno/` (116 demos)
 
-La carpeta sigue en el repositorio, pero **quedó fuera del catálogo, del sitio y de las descargas el 2026-09-30**. Este apartado queda como constancia de qué era, de dónde venía y por qué no se publica.
+La carpeta **ya no está en el repositorio** (va en `.gitignore`, se sacó del índice de git y un clon nuevo no la trae) y **quedó fuera del catálogo, del sitio y de las descargas el 2026-09-30**. Este apartado queda como constancia de qué era, de dónde venía y por qué no se publica.
 
 **Qué era.** 116 páginas de demo (114 carpetas; `cursors/` aporta tres componentes anidados) que procederían del repositorio público [`gevendra2004/gevstack`](https://github.com/gevendra2004/gevstack) («All Gevstack projects», autor Gevendra Sahu). La atribución se obtuvo comparando el árbol de carpetas local con el del repositorio: **106** coinciden de forma exacta con el nombre de la carpeta de origen y **8** difieren por erratas del propio repositorio (`color-chainging-navigation`, `Order-confirm-anmation`, `Shoping-cart-preloader`, `Sportlight-Text-Animation`, `Tic-tak-toe`, `Trick-&-treat-toggle`, `webgel-liquid-masking`, `Facebook-emoji-reactor`). Un demo, `facebook-emoji-reactions`, coincide además con el proyecto público [facebook-reactions-css](https://github.com/deividmarques/facebook-reactions-css) de Deivid Marques, que tampoco mostraba archivo de licencia.
 
@@ -84,7 +84,7 @@ La carpeta sigue en el repositorio, pero **quedó fuera del catálogo, del sitio
 - Se borraron sus 116 entradas de `Web/data/component-overrides.json`.
 - Se borró el `LICENSE` MIT que esta carpeta había llegado a llevar: era este proyecto otorgando licencia sobre obra ajena.
 - Se borró de `Web/styles/site.css` el bloque `.filter-button--underglow`, que era CSS copiado de su demo `animated-gradient-underglow`.
-- `vercel.json` redirige `/GevendraAutorExterno` y `/GevendraAutorExterno/...` para que su contenido no se sirva aunque la carpeta siga en el repositorio, y le añade `X-Robots-Tag: noindex, nofollow`.
+- Al estar fuera de git no llega a ningún despliegue: `vercel.json` **no** redirige `/GevendraAutorExterno/...` ni le pone `X-Robots-Tag`, porque no hay nada que bloquear. Sus dos únicas redirecciones son `/` → `/Web/` y `/Web` → `/Web/`.
 - De la web desaparecieron su tarjeta en el roster, su nodo en el diagrama y su botón de autor. **Única mención que queda**: el párrafo de *cómo nació* lo cita con un enlace a su repositorio, porque es de donde llegó la idea.
 
 **Lo que sí se permite** (con su material, y con cualquier obra sin licencia): ver un demo en el navegador, navegar por el sitio y copiar el código para **estudio personal**. Lo que no está autorizado es la redistribución: republicar el ZIP, formar parte de un artefacto público o de otro producto, o cambiar la autoría.
@@ -94,7 +94,7 @@ La carpeta sigue en el repositorio, pero **quedó fuera del catálogo, del sitio
 ## Consecuencias asumidas en el proyecto
 
 - El botón **ZIP está habilitado en los 1018 componentes**: los 248 de `CreacionesNuevas/`, los 119 de `DavokerDiseñador/` y los 651 de `creaciones-primium/`. Ninguno queda sin redistribución.
-- El sitio se despliega en **Vercel sirviendo la raíz del repositorio**, que muestra los 1018 componentes y evita que las previews den 404. `vercel.json` bloquea `/GevendraAutorExterno/...` con una redirección permanente, de modo que el material retirado no se sirve aunque la carpeta siga en el repositorio. No existe un artefacto de publicación alternativo: el constructor que filtraba por licencias se eliminó junto con el despliegue en GitHub Pages, para que solo haya una copia del sitio y no se puedan publicar por error los componentes sin permiso de redistribución.
+- El sitio se despliega en **Vercel sirviendo la raíz del repositorio**, que muestra los 1018 componentes y evita que las previews den 404. El material retirado no sube: su carpeta está en `.gitignore` y no está en el historial, así que no forma parte del artefacto de despliegue. No existe un artefacto de publicación alternativo: el constructor que filtraba por licencias se eliminó junto con el despliegue en GitHub Pages, para que solo haya una copia del sitio y no se puedan publicar por error los componentes sin permiso de redistribución.
 - La atribución de origen se muestra en el detalle de cada componente («Source: …»), tanto si está verificado como si no.
 
 ## Autorizar un componente
@@ -107,4 +107,4 @@ La carpeta sigue en el repositorio, pero **quedó fuera del catálogo, del sitio
 
 El `LICENSE` MIT que `GevendraAutorExterno/` llevó entre el 29 y el 30 de septiembre de 2026 se ha borrado: este proyecto no puede conceder licencia sobre material de terceros. Sigue pendiente su autorización **por escrito** (o que añada una licencia a su repositorio) para volver a catalogarlo; mientras tanto, ver *Material retirado*.
 
-El constructor de despliegue publica solo los componentes que cumplen estas condiciones. No marques un componente como autorizado solo porque esté en este repositorio o porque exista la MIT en la raíz. Este documento es un inventario técnico, no asesoramiento legal.
+Hoy no hay ningún constructor que filtre por licencias: el sitio publica los 1018 componentes y la única puerta es la del ZIP, que `generate-catalog.mjs` solo habilita cuando el componente cumple estas condiciones (`downloadable` en el catálogo). No marques un componente como autorizado solo porque esté en este repositorio o porque exista la MIT en la raíz. Este documento es un inventario técnico, no asesoramiento legal.
