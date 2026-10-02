@@ -9,6 +9,24 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [El CI corta las vulnerabilidades de nivel alto] - 2026-10-02
+
+- **`npm audit --audit-level=high` en `.github/workflows/validate.yml` (fase 1.3).**
+  Justo despues de `npm ci`, que es el punto donde ya estan instaladas exactamente
+  las versiones del lockfile. Dependabot avisaba con alertas y con correos, pero no
+  cortaba nada: una vulnerabilidad de nivel alto entraba en `main` y hasta que
+  alguien abria la alerta pasaban semanas.
+- **Solo high y critical.** Con low o medium el ruido seria tan grande que la gente
+  dejaria de mirar el CI, y eso es peor que la propia vulnerabilidad.
+- **El repositorio pasa ahora mismo con 0 vulnerabilidades**, asi que el paso no
+  rompe nada en el primer push. Se comprueba antes de anadirlo, que es lo que
+  toca cuando se mete una comprobacion nueva: si ya fallaba, se anade el paso y
+  se arregla el fondo en el mismo PR.
+- **YAML comprobado con `npx js-yaml`** (exit 0) antes de commitear. Ojo: este
+  workflow solo se dispara en push a `main` y en pull requests, no en ramas, asi
+  que no corre en `Update` hasta que se abra el PR de fusion.
+- **Comprobaciones**: `npm run validar` y `npm run validar:layout` pasan.
+
 ## [La direccion de donacion queda comprobada en el CI] - 2026-10-02
 
 - **Comprobacion 8 en `Web/scripts/validate.mjs` (fase 1.2).** Extrae todas las
