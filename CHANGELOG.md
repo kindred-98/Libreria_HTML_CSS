@@ -25,6 +25,51 @@ queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplica
   antiguos; sacarlos de ahi exige `git filter-repo` y es una decision tuya, no mia
   (fase 9 de [`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md)).
 
+## [Los demos se abren ahora con sandbox y no heredan el origen del sitio] - 2026-10-02
+
+- **`vercel.json` aisa las demos con `sandbox`.** Cuatro politicas nuevas, una por
+  raiz de demo (`/CreacionesNuevas/`, `/creaciones-primium/`, `/DavokerDise%C3%B1ador/`
+  y `/DavokerDiseñador/`), montadas como la politica del sitio mas `sandbox
+  allow-scripts allow-forms allow-popups allow-downloads`. Sin `allow-same-origin`,
+  que es justamente lo que hace que el documento deje de heredar el origen de
+  `libreria-html-css.vercel.app`: sin el, un demo abierto de picar el enlace no puede
+  leer cookies ni `localStorage` del sitio ni reescribir la portada si alguna
+  dependencia de terceros se le va. La politica global `/(.*)` sigue **sin** sandbox,
+  para que la propia web no quede aislada de si misma.
+- **Cubren las 1018 rutas de demo, con 0 excepciones.** Se comprueba en
+  `npm run validar` (`Web/scripts/validar-csp.mjs`): recorre los tres ficheros de demo
+  en disco y comprueba que cada `index.html` cae en algun bloque sandbox. Se ha podido
+  usar el comodin `(.*index\.html)` en vez de escribir las 1018 rutas a mano porque
+  todas, sin ninguna excepcion, terminan en `index.html`. No se apoya en
+  `catalog.json`: es generado, esta en `.gitignore` y la comprobacion tiene que valer
+  en CI sin existir.
+- **Por que cuatro y no copiar las reglas de `Cache-Control`.** Es la decision de la
+  fase: si se hubieran clonado los patrones del bloque de cache se habrian metido en
+  el sandbox `davoker.html` y `transicion.html`, que son paginas del sitio y no demos,
+  y se habria roto el efecto hover de la portada.
+- **La politica del sitio no se ha tocado.** Solo se han insertado los cuatro bloques
+  despues del `/(.*)`, que sigue siendo el primero y sigue igual: los 9 hosts
+  externos siguen permitidos y `frame-ancestors 'self'` no ha cambiado.
+- **`Web/scripts/validar-csp.mjs` deja de elegir el CSP a ciegas.** Buscaba
+  `.find()` el primer `Content-Security-Policy` y daba por hecho que era el global;
+  ahora lo selecciona por `source === "/(.*)"`. Encima pasa a validar el sandbox:
+  que la global no lo lleve, que las cuatro lo lleven, que el texto de cada bloque
+  sea exactamente la global mas el sandbox, y que las 1018 demos queden aisladas.
+- **`Web/scripts/serve.mjs` sirve el CSP por ruta, como Vercel.** Antes hacia
+  `.find()` y mandaba siempre la primera politica, asi que en local las demos no
+  recibian su sandbox y nadie lo notaba. Ahora igual que en produccion: ultima
+  regla que coincida, y contra la ruta **sin query**, porque las vistas previas
+  traen `?previewRevision=` y con el query ninguna regla llegaba a coincidir.
+- **Se ha probado que la comprobacion sirve.** Rompiendo `vercel.json` a proposito
+  los cinco casos fallan con exit 1: sandbox basura, sin ningun bloque sandbox,
+  sandbox en la global («aislaria la propia web»), sin sandbox en un solo bloque
+  («119 de 1018 demos no quedan aisladas») y un `source` duplicado que deja hueco
+  («248 de 1018 demos no quedan aisladas»). Despues `vercel.json` queda identico.
+- **Comprobaciones**: `npm run validar` (1018 componentes, 1018 aisladas) y
+  `npm run validar:layout` (115 medidas) pasan, y el servidor local confirma a mano
+  que `Web/index.html` sale sin sandbox y las demos con, con y sin `?previewRevision=`
+  y con el `%C3%B1` codificado.
+
 ## [El plan de revision de Claude cambia de carpeta] - 2026-10-02
 
 - **`Docs/Claude-Revision-Audi.md/` pasa a `Docs/Claude-Revision-Audi/`.** El nombre

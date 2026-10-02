@@ -163,10 +163,17 @@ function etiquetaEn(texto, posicion) {
 }
 
 const vercel = JSON.parse(await readFile(vercelFile, "utf8"));
-const headerBlock = (vercel.headers ?? []).find((block) =>
-  (block.headers ?? []).some((header) => header.key.toLowerCase() === "content-security-policy")
-);
-const csp = headerBlock?.headers?.find((header) => header.key.toLowerCase() === "content-security-policy")?.value ?? "";
+
+const tieneCsp = (block) => (block.headers ?? []).some((h) => h.key?.toLowerCase() === "content-security-policy");
+const valorCsp = (block) =>
+  (block.headers ?? []).find((h) => h.key?.toLowerCase() === "content-security-policy")?.value ?? "";
+
+// Todos los bloques con CSP, en el orden del fichero. El global es el de
+// source "/(.*)": se busca por su source y no por ser "el primero que tenga
+// CSP", porque anadir un bloque de ruta a continuacion dejaria al validador
+// mirando la politica equivocada sin que nadie se diera cuenta.
+const bloquesCsp = (vercel.headers ?? []).filter(tieneCsp);
+const csp = valorCsp(bloquesCsp.find((block) => block.source === "/(.*)") ?? {});
 
 if (!csp) {
   console.log("aviso: vercel.json no declara Content-Security-Policy, no hay nada que comprobar");
@@ -299,6 +306,67 @@ for (const [directiva, valores] of directivas) {
 const huerfanos = [];
 for (const [host, directiva] of permitidos) {
   if (!usados.has(host)) huerfanos.push(`${directiva} sigue permitiendo ${host}, que ya no usa ningun demo`);
+}
+
+// --- Aislamiento de los demos abiertos directamente -----------------------
+// Un demo que se abre en su propia pestana, sin iframe, solo esta aislado si
+// su ruta trae la directiva sandbox en el CSP. Se comprueba que ese bloque
+// exista, que su politica sea exactamente la global mas el sandbox (si uno de
+// los dos cambia y dejan de coincidir, uno deja de proteger en silencio) y que
+// cubra las demos tal y como las pide el navegador: con la URL ya codificada,
+// que es como llega al servidor.
+const SANDBOX = " sandbox allow-scripts allow-forms allow-popups allow-downloads";
+const llevaSandbox = (valor) => valor.split(";").some((parte) => parte.trim().startsWith("sandbox"));
+const bloquesSandbox = bloquesCsp.filter((block) => llevaSandbox(valorCsp(block)));
+
+if (llevaSandbox(csp)) {
+  failures.push('el CSP global ("/(.*)") no puede llevar sandbox: aislaria la propia web');
+}
+
+const patronesSandbox = [];
+for (const block of bloquesSandbox) {
+  if (block.source === "/(.*)" ) continue;
+  if (valorCsp(block) !== csp + SANDBOX) {
+    failures.push(`la politica del bloque "${block.source}" no es la global mas el sandbox`);
+  }
+  try {
+    patronesSandbox.push(new RegExp(`^${block.source}$`));
+  } catch {
+    failures.push(`el source "${block.source}" no es una expresion regular valida`);
+  }
+}
+
+if (!bloquesSandbox.length) {
+  failures.push("no hay ningun bloque con sandbox: los demos abiertos directamente corren en el origen del sitio");
+} else {
+  const raicesDemo = ["creaciones-primium", "CreacionesNuevas", "DavokerDiseñador"];
+  const demos = [];
+  for (const raiz of raicesDemo) {
+    for (const file of await resourceFiles(path.join(repositoryDirectory, raiz))) {
+      if (path.basename(file) === "index.html") demos.push(file);
+    }
+  }
+  const sinAislar = [];
+  for (const file of demos) {
+    const rel = path.relative(repositoryDirectory, file).split(path.sep).join("/");
+    const pedida = `/${rel.split("/").map(encodeURIComponent).join("/")}`;
+    if (!patronesSandbox.some((re) => re.test(pedida))) sinAislar.push(pedida);
+  }
+  if (sinAislar.length) {
+    failures.push(
+      `${sinAislar.length} de ${demos.length} demos no quedan aisladas, p. ej. ${sinAislar.slice(0, 3).join(", ")}`
+    );
+  } else {
+    console.log(`demos aisladas con sandbox: ${demos.length} de ${demos.length}`);
+  }
+
+  // Las paginas del sitio tienen que quedar fuera: si alguna cae en un bloque
+  // con sandbox, la web entera pasaria a correr en un origen opaco.
+  for (const pagina of ["/Web/index.html", "/Web/components.html", "/Web/team-core.html"]) {
+    if (patronesSandbox.some((re) => re.test(pagina))) {
+      failures.push(`la pagina del sitio ${pagina} queda dentro de un bloque con sandbox`);
+    }
+  }
 }
 
 console.log(`ficheros html/js/css escaneados: ${escaneados}`);

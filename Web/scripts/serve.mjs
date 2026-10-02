@@ -21,11 +21,36 @@ const repositoryRealDirectory = await realpath(repositoryDirectory);
 // Vercel manda el CSP de vercel.json en todas las respuestas y aqui no habia
 // cabecera ninguna: un host que el CSP no permite (los avatares de GitHub en
 // team-core) se veia bien en local y roto en produccion. Sirve igual que alli.
+//
+// Pero no hace falta una sola: vercel.json trae la politica global para todo el
+// sitio y otra con "sandbox" unicamente para las rutas de demo. Si aqui se
+// mandara la misma a todas no habria manera de probar el aislamiento sin
+// desplegar, y ese es justo el cambio que mas facil es romper. Se guardan todas,
+// por source, y se aplica la ultima que coincida, que es como lo resuelve
+// Vercel; asi local y produccion dicen lo mismo.
 const vercelFile = path.join(repositoryDirectory, "vercel.json");
 const vercel = JSON.parse(await readFile(vercelFile, "utf8"));
-const securityPolicy = (vercel.headers ?? [])
-  .flatMap((block) => block.headers ?? [])
-  .find((header) => header.key?.toLowerCase() === "content-security-policy")?.value;
+const cspRules = [];
+for (const block of vercel.headers ?? []) {
+  const valor = (block.headers ?? []).find((h) => h.key?.toLowerCase() === "content-security-policy")?.value;
+  if (!valor) continue;
+  const source = String(block.source);
+  // La sintaxis de parametros de Vercel (":nombre*") no es una regex valida.
+  if (source.includes(":")) continue;
+  try {
+    cspRules.push({ expression: new RegExp(`^${source}$`), valor });
+  } catch (error) {
+    console.warn(`aviso: la regla de CSP "${source}" no es una expresion regular valida (${error.message}).`);
+  }
+}
+
+function cspFor(ruta) {
+  let valor;
+  for (const rule of cspRules) {
+    if (rule.expression.test(ruta)) valor = rule.valor;
+  }
+  return valor;
+}
 
 // Los Cache-Control de vercel.json tambien se sirven aqui. Antes este servidor
 // mandaba "no-cache" en todo, con lo que en local no se cacheaba NADA y la
@@ -187,13 +212,18 @@ const server = http.createServer(async (request, response) => {
     // nada se cachea. Es debil (W/) precisamente porque el mismo fichero se
     // sirve comprimido de dos maneras y con Vary: Accept-Encoding.
     const etag = `W/"${createHash("sha256").update(body).digest("hex").slice(0, 24)}"`;
+    // La ruta sin query: los "source" de vercel.json se apuntan contra la ruta,
+    // y las vistas previas llevan ?previewRevision=, que si no se quita haria que
+    // ninguna regla coincidiera y los demos no recibieran su cabecera sandbox.
+    const ruta = new URL(request.url ?? "/", "http://localhost").pathname;
     const headers = {
       "content-type": contentTypes[extension] ?? "application/octet-stream",
       "cache-control": cacheControlFor(request.url ?? "/"),
       etag,
       vary: "Accept-Encoding",
     };
-    if (securityPolicy) headers["content-security-policy"] = securityPolicy;
+    const policy = cspFor(ruta);
+    if (policy) headers["content-security-policy"] = policy;
     // 304: el cliente ya lo tiene y solo hay que confirmar que no ha cambiado.
     // Sin cuerpo, y con las cabeceras de cache para que actualice su fecha.
     if (request.headers["if-none-match"] === etag) {
