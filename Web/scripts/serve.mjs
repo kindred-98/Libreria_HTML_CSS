@@ -86,8 +86,10 @@ const compressFromBytes = 1024;
 // Carpetas y ficheros que no se sirven: el historial de git entero, los
 // ficheros de configuracion del despliegue y la documentacion interna. Un serve
 // de desarrollo no tiene por que publicarlos, y .git/config puede llevar
-// credenciales si el remoto se clono con token en la URL.
-const noServir = /^\.(?:git|github|qodo|vercel|vscode|idea)(?:\/|$)/;
+// credenciales si el remoto se clono con token en la URL. Cualquier punto
+// inicial basta: una lista cerrada siempre se queda corta (.env, .nvmrc,
+// .editorconfig...), y ninguno de ellos es un recurso que el sitio necesite.
+const noServir = /^\./;
 const noServirTambien = /^(?:Docs|CHANGELOG\.md|CONTRIBUTING\.md|SECURITY\.md|CODE_OF_CONDUCT\.md|vercel\.json|package\.json)(?:\/|$)/;
 
 function resolveRequest(url) {
