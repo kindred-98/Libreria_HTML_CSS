@@ -28,6 +28,13 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 22
+          # El lockfile es la unica forma de que el CI instale exactamente las
+          # mismas versiones que se han probado en local. Con "npm install" y sin
+          # lockfile, cada push podia traerse una version distinta de playwright.
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
 
       # El catalogo no se versiona, asi que este clon parte de cero: se genera
       # aqui igual que lo hara Vercel.
@@ -42,3 +49,15 @@ jobs:
       # produccion se ven rotos y en local no, que es lo que mas confunde.
       - name: Comprobar el CSP del despliegue
         run: node Web/scripts/validar-csp.mjs
+
+      # La unica comprobacion que abre un navegador de verdad. Las anteriores son
+      # estaticas: miran ficheros, sintaxis, el catalogo y las cabeceras, y
+      # ninguna mide lo que se ve. Una pagina que se dibuja 39 px mas ancha de lo
+      # que permite la ventana no falla ninguna de ellas. Chromium son ~170 MB
+      # en la cache del runner, y el paso va aparte para que se vea en el
+      # log cuanto cuesta.
+      - name: Instalar Chromium (para la comprobacion de layout)
+        run: npx playwright install --with-deps chromium
+
+      - name: Comprobar que ninguna pagina se sale de lado
+        run: npm run validar:layout

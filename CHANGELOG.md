@@ -7,6 +7,52 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
 [`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md).
 
+## [La cabecera no se sale de lado, y ahora el CI lo comprueba con un navegador] - 2026-10-02
+
+- **La cabecera se salia de lado y aparece scroll horizontal en la pagina.**
+  Entre 621 y 665 px los cuatro hijos de `.site-header` (marca de 200 px,
+  navegacion de 242 px, selector de idioma de 68 px y boton de tema de 78 px, mas
+  48 px de separaciones) necesitan 636 px y solo hay 558: faltaban 78 px y lo que
+  se salia era el boton de tema, hasta 54 px de scroll. La causa no era un ancho
+  mal puesto sino que la navegacion es un hijo flex con `min-width: auto` de
+  serie, que se niega a encogerse, y el unico corte responsive que la tocaba
+  estaba en 620 px: justo por encima de ese corte la cabecera esta mas cheia que
+  en ningun otro ancho. **Arreglado por estructura, no calibrando pixeles**:
+  la navegacion es ahora el unico trozo elastico (`min-width: 0` y puede partir
+  sus propios enlaces en dos lineas) y la fila tiene `flex-wrap: wrap` como red
+  de seguridad. La marca, el idioma y el tema siguen con `flex: 0 0 auto`. Asi
+  da igual que manana haya un quinto enlace, que "Componentes" sea mas largo o
+  que el visitante tenga el navegador al 125%: los textos crecen, los rellenos no,
+  y la cabecera cede en vez de romperse.
+- **Tambien se salia la URL del repositorio de origen en la historia de Team
+  Core**, a 320 px, 4 px: es una palabra larguisima sin espacios dentro de un
+  `p` con `break-inside: avoid` en un contenedor multicolumna. Con
+  `overflow-wrap: break-word` en `.story-body p`, que solo parte la palabra si no
+  cabe de otra forma.
+- **`validar-layout.mjs`: la primera comprobacion que abre un navegador de
+  verdad.** Las otras (`validate.mjs`, `validar-csp.mjs`) son estaticas —miran
+  ficheros, sintaxis, el catalogo, cabeceras— y ninguna mide lo que se ve: una
+  pagina que se dibuja 54 px mas ancha no falla ninguna. Esta levanta `serve.mjs`
+  en un puerto libre, abre las cinco paginas del sitio en 23 anchos y mide
+  `scrollWidth - clientWidth`, fallando con el nombre del elemento culpable y
+  cuantos pixeles se sale. Solo scroll horizontal; el vertical es lo normal. Si
+  el desborde es a proposito, va en `EXCEPCIONES`, con su motivo, al principio
+  del script.
+  - Comprobado que **detecta**: con el codigo sin arreglar daba 9 fallos en 4
+    paginas (la cabecera a 621 y 640 px, y la historia a 320 px), nombrando
+    `button.theme-toggle` y `span.theme-label`.
+  - Decorre lo recortado al buscar el culpable: el marquee mide 4935 px y no
+    culpa a nadie porque va dentro de un `overflow: hidden`.
+- **Primera dependencia del repositorio, y en `devDependencies`:** `playwright`
+  (1.63.0), con su lockfile versionado para que el CI instale lo mismo que se
+  prueba en local (`npm ci`). El sitio no usa ninguna dependencia en tiempo de
+  ejecucion y nada de esto llega al navegador del visitante. **En Vercel,
+  `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1` en `vercel.json`**, porque si no el
+  `postinstall` se bajaria unos 500 MB de navegadores en cada despliegue.
+- **El CI tiene un paso mas**, con Chromium como paso aparte para que se vea en
+  el log cuanto cuesta. Y `.gitignore` deja de decir que el proyecto no usa
+  dependencias, que ya no era cierto.
+
 ## [Los cuatro nombres del Nexo miden igual y NEXO crece] - 2026-10-02
 
 - **Los nombres de la escena del Nexo (`team-core.html`) miden lo mismo.**

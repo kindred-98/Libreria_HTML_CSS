@@ -173,9 +173,18 @@ input:focus-visible {
   top: 0;
   display: flex;
   min-height: 72px;
+  /* La fila puede partirse en dos lineas. Sin esto, cuando los cuatro hijos no
+     caben (marca + navegacion + idioma + tema) la cabecera no encoge: se
+     desbordan por la derecha y aparece scroll horizontal. Con el `wrap`, lo
+     que no cabe baja a la siguiente linea. Es la red de seguridad, no la
+     solucion: la que de verdad cede espacio es la navegacion (ver `.main-nav`).
+     Afecta a cualquier ancho, y no se nota mientras todo quepa en una linea. */
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 28px;
+  /* Fila de 8px: entre lineas solo, que es lo unico que pasa a existir con el
+     wrap. La columna se queda en 28px. */
+  gap: 8px 28px;
   padding: 0 max(28px, calc((100vw - 1320px) / 2));
   border-bottom: 1px solid var(--line);
   background: color-mix(in srgb, var(--page) 93%, transparent);
@@ -210,7 +219,20 @@ input:focus-visible {
 .main-nav {
   display: flex;
   align-items: center;
-  gap: 30px;
+  /* Unico trozo elastico de la cabecera: es el que cede espacio cuando la
+     fila se aprieta. `min-width: 0` es lo que lo permite, porque un hijo flex
+     trae por defecto `min-width: auto` y se niega a bajar de su contenido: sin
+     esto empujaba al resto hacia fuera en vez de encogerse. Con el wrap de sus
+     propios enlaces, si aun asi no cabe, se parten en dos lineas. La marca, el
+     selector de idioma y el boton de tema llevan `flex: 0 0 auto` y no se
+     deforman nunca.
+
+     Medido: esto y el wrap de la cabecera quitan los 39px que se salian a
+     621px. El gap de fila (6px) es para que al partirse los enlaces no queden
+     separados por los 30px de columna, que es la separacion de escritorio. */
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 6px 30px;
   color: var(--muted);
   font-size: 14px;
   font-weight: 700;
