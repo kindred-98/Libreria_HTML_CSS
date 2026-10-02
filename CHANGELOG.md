@@ -9,21 +9,30 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
-## [Los tres correos personales dejan de salir en la documentacion] - 2026-10-02
+## [La fase 0: los ajustes de GitHub y Vercel quedan cerrados] - 2026-10-02
 
-- **`Docs/` deja de publicar direcciones de correo personales.** Los tres correos que
-  la auditoria enumeraba (uno del mantenedor, otro de un centro educativo y otro de un
-  tercero que no dio permiso) estaban citados en cuatro informes, o sea que la
-  documentacion que denunciaba el problema lo estaba reproducindo. Ahora se siguen
-  describiendo igual, pero sin teclear la direccion: `Docs/Auditoria-2026-09-30.md`,
-  `Docs/Auditoria.md`, `Docs/Plan_de_fases.md` y
-  `Docs/Fases-de-Auditoria-Aplicadas/Fase1-Aplicada.md`.
-- **`SECURITY.md:22` no se toca.** Sigue publicando la direccion hasta la fase 1.5,
-  que lleva un STOP condicionado a activar el reporte privado de vulnerabilidades en
-  GitHub.
-- **La historia no se reescribe.** Los correos siguen en los metadatos de los commits
-  antiguos; sacarlos de ahi exige `git filter-repo` y es una decision tuya, no mia
-  (fase 9 de [`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md)).
+- **Fase 0 completa.** Es la unica de las ocho que no toca un solo fichero del
+  repositorio: se resuelve entera en la interfaz de GitHub y de Vercel. Ahora deja
+  constancia en
+  [`Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase0.md`](./Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase0.md),
+  con lo que quedo configurado, lo que se descarto y por que.
+- **Ruleset `Protege main`, activo.** Lista de bypass vacia, asi que nadie se la
+  salta ni el dueño, y 4 branch rules apuntando solo a `main`: exigir pull request
+  con revision de CODEOWNERS, exigir el check `Validar sitio`, bloquear force-push y
+  bloquear el borrado de la rama. `Restrict updates` esta apagado a proposito, porque
+  hacer merge es actualizar `main` y habria bloqueado hasta la propia fusion.
+- **`Required approving reviews: 0`, a proposito.** `CODEOWNERS` tiene una sola
+  entrada y es el propio autor, y GitHub no cuenta la aprobacion del autor: con 1 no
+  se podria mergear ningun PR en solitario. Cuando entre una segunda persona se sube
+  a 1 y la revision de CODEOWNERS cobra sentido.
+- **Code security y Actions al completo**: push protection, Dependabot alerts con
+  security updates agrupados, dependency graph y **private vulnerability reporting**,
+  que es lo que desbloquea la parada de la fase 1.5. En Actions, permisos del token en
+  solo lectura y aprobacion obligatoria para PRs de forks y colaboradores nuevos.
+- **Sin colaboradores ni secretos.** Se retiro `fatmaerm` y se cancelo la invitacion
+  pendiente de `davoker`, que ni siquiera habia aceptado (los commits de ambos siguen
+  en la historia, nada de esto reescribe git). Y Vercel no tiene ninguna environment
+  variable, asi que los previews de forks no reciben secretos.
 
 ## [Los demos se abren ahora con sandbox y no heredan el origen del sitio] - 2026-10-02
 
@@ -69,6 +78,22 @@ queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplica
   `npm run validar:layout` (115 medidas) pasan, y el servidor local confirma a mano
   que `Web/index.html` sale sin sandbox y las demos con, con y sin `?previewRevision=`
   y con el `%C3%B1` codificado.
+
+## [Los tres correos personales dejan de salir en la documentacion] - 2026-10-02
+
+- **`Docs/` deja de publicar direcciones de correo personales.** Los tres correos que
+  la auditoria enumeraba (uno del mantenedor, otro de un centro educativo y otro de un
+  tercero que no dio permiso) estaban citados en cuatro informes, o sea que la
+  documentacion que denunciaba el problema lo estaba reproducindo. Ahora se siguen
+  describiendo igual, pero sin teclear la direccion: `Docs/Auditoria-2026-09-30.md`,
+  `Docs/Auditoria.md`, `Docs/Plan_de_fases.md` y
+  `Docs/Fases-de-Auditoria-Aplicadas/Fase1-Aplicada.md`.
+- **`SECURITY.md:22` no se toca.** Sigue publicando la direccion hasta la fase 1.5,
+  que lleva un STOP condicionado a activar el reporte privado de vulnerabilidades en
+  GitHub.
+- **La historia no se reescribe.** Los correos siguen en los metadatos de los commits
+  antiguos; sacarlos de ahi exige `git filter-repo` y es una decision tuya, no mia
+  (fase 9 de [`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md)).
 
 ## [El plan de revision de Claude cambia de carpeta] - 2026-10-02
 
