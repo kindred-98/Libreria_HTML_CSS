@@ -9,6 +9,22 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Los tres correos personales dejan de salir en la documentacion] - 2026-10-02
+
+- **`Docs/` deja de publicar direcciones de correo personales.** Los tres correos que
+  la auditoria enumeraba (uno del mantenedor, otro de un centro educativo y otro de un
+  tercero que no dio permiso) estaban citados en cuatro informes, o sea que la
+  documentacion que denunciaba el problema lo estaba reproducindo. Ahora se siguen
+  describiendo igual, pero sin teclear la direccion: `Docs/Auditoria-2026-09-30.md`,
+  `Docs/Auditoria.md`, `Docs/Plan_de_fases.md` y
+  `Docs/Fases-de-Auditoria-Aplicadas/Fase1-Aplicada.md`.
+- **`SECURITY.md:22` no se toca.** Sigue publicando la direccion hasta la fase 1.5,
+  que lleva un STOP condicionado a activar el reporte privado de vulnerabilidades en
+  GitHub.
+- **La historia no se reescribe.** Los correos siguen en los metadatos de los commits
+  antiguos; sacarlos de ahi exige `git filter-repo` y es una decision tuya, no mia
+  (fase 9 de [`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md)).
+
 ## [El plan de revision de Claude cambia de carpeta] - 2026-10-02
 
 - **`Docs/Claude-Revision-Audi.md/` pasa a `Docs/Claude-Revision-Audi/`.** El nombre

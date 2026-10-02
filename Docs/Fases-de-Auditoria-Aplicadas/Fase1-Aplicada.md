@@ -56,8 +56,9 @@ La forma correcta es `/^\./`.
 ## 2. Qué no se hizo, y por qué
 
 - **C-2 — correos personales publicados.** Descartada a petición del mantenedor: la
-  dirección (`angelecheniq@gmail.com`) ya está publicada por él en otros sitios, así que
-  `SECURITY.md:22` se queda como está y también las citas en `Docs/`.
+  dirección ya estaba publicada por él en otros sitios. Las citas en `Docs/` se
+  retiraron el 2026-10-02; `SECURITY.md:22` sigue pendiente para la fase 1.5 y el
+  correo sigue en el historial de commits, que esta fase no toca.
 - **§2.1, H-1, H-2, H-3, M-1, M-3, §4, §6, §7, §8, C-3, C-4 y §9** no se tocan en esta
   fase: les corresponden las fases 2 a 6.
 

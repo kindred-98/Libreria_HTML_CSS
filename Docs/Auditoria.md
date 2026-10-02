@@ -250,9 +250,9 @@ Arreglo: borrarlo y poner `https://example.com` (que ya es el `placeholder`).
 
 ### C-2 — ALTO · Correos personales publicados
 
-- `angelecheniq@gmail.com` en **65 de 78 commits**, y además en `SECURITY.md:22` como
-  canal de contacto.
-- `bjr18325@educastur.es`, correo de un centro educativo, en los metadatos de 2 commits
+- Una dirección de correo personal del mantenedor en **65 de 78 commits**, y además en
+  `SECURITY.md:22` como canal de contacto.
+- Un correo de centro educativo, en los metadatos de 2 commits
   de `fatmaerm` que **no son ancestros de `main` pero sí están en
   `refs/remotes/origin/fatmaerm/main`**, una referencia remota publicada.
 

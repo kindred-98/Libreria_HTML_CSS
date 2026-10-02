@@ -278,8 +278,8 @@ ficheros: sigue en los commits antiguos.
 
 | Qué | Dónde |
 |---|---|
-| `gevendra04@gmail.com`, correo de un tercero | Commits como `e83efa5` |
-| Correo `bjr18325@educastur.es` de una contribuidora | Metadatos de 2 commits |
+| Correo personal de un tercero | Commits como `e83efa5` |
+| Correo personal de una contribuidora, de un centro educativo | Metadatos de 2 commits |
 | ~1 700 líneas de notas internas | Recuperables desde `d650750` |
 | Rutas absolutas con nombre de usuario | Varios ficheros ya borrados |
 
@@ -294,7 +294,7 @@ asumible, pero es una decisión del que mantiene el proyecto, no un cambio de
 código, y **no se hace junto con ninguna otra fase**.
 
 **Lo que sí se puede arreglar sin reescribir nada**, y conviene hacerlo antes:
-`SECURITY.md:22` publica `angelecheniq@gmail.com`. En un repo público, una
+`SECURITY.md:22` publica una dirección de correo personal. En un repo público, una
 dirección personal sin entidad detrás es la causa más típica de acoso. Lo
 razonable es sustituirla por el canal privado de avisos de GitHub, que ya está
 descrito en el mismo fichero.

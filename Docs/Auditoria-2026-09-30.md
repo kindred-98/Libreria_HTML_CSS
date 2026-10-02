@@ -341,8 +341,8 @@ limpia reescribiendo la historia.
 
 | Qué | Dónde | Nota |
 |---|---|---|
-| `gevendra04@gmail.com`, correo de un tercero | `BibliotecaDeHtml_CSS/…` y `GevendraAutorExterno/…` en commits como `e83efa5` | El material ya no está en el repo. Sigue siendo el correo de una persona que no dio permiso para que se publicara |
-| Correo `bjr18325@educastur.es` de una contribuidora | Metadatos de 2 commits | El proyecto ya usa `noreply` en 11 commits; lo coherente es que use el mismo |
+| Correo personal de un tercero (retirado de este informe) | `BibliotecaDeHtml_CSS/…` y `GevendraAutorExterno/…` en commits como `e83efa5` | El material ya no está en el repo. Sigue siendo el correo de una persona que no dio permiso para que se publicara |
+| Correo personal de una contribuidora, de un centro educativo (retirado de este informe) | Metadatos de 2 commits | El proyecto ya usa `noreply` en 11 commits; lo coherente es que use el mismo |
 | ~1 700 líneas de notas internas | `Docs/Prompt/…`, `Docs/auditoria/…`, `Docs/Opencode/Plan.md`, `Docs/trabajo_a_medio/…` | Borrados en `d650750`, recuperables |
 | Rutas absolutas con nombre de usuario | `Docs/trabajo_a_medio/formularios-79-traspaso.md`, `Docs/auditoria/tercera-auditoria-tarjetas.md` | `C:\Users\mañana\`, `C:\Users\angel\`. **En el árbol actual no hay ninguna** |
 
@@ -357,8 +357,8 @@ git filter-repo --path Docs --path-glob '!Docs/THIRD_PARTY_NOTICES.md' --invert-
 Reescribir la historia cambia todos los hash, así que los clones existentes
 tienen que volver a clonarse. Con 67 commits y tres personas, es asumible.
 
-**Lo que sí se puede arreglar sin reescribir:** `SECURITY.md` publica
-`angelecheniq@gmail.com`, y el propio párrafo reconoce que es un problema y lo
+**Lo que sí se puede arreglar sin reescribir:** `SECURITY.md` publica una
+dirección de correo personal, y el propio párrafo reconoce que es un problema y lo
 deja sin resolver. En un repositorio público, una dirección personal sin
 entidad detrás es la causa más típica de acoso moderado. Lo razonable es
 sustituirla por el canal privado de avisos de GitHub, que ya está descrito en el
