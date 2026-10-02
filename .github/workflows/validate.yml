@@ -54,6 +54,15 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      # Dependabot avisa con alertas y con correos, pero no corta nada: una
+      # vulnerabilidad de nivel alto seguia entrando en main y hasta que alguien
+      # abria la alerta podian pasar semanas. Aqui falla el CI en el mismo push,
+      # que es cuando todavia es barato de arreglar. Solo high y critical: con
+      # low o medium el ruido seria tal que la gente dejaria de mirar el CI, y eso
+      # es peor que la vulnerabilidad.
+      - name: Comprobar vulnerabilidades de dependencias
+        run: npm audit --audit-level=high
+
       # El catalogo no se versiona, asi que este clon parte de cero: se genera
       # aqui igual que lo hara Vercel.
       - name: Generar el catalogo (mismo comando que el build de Vercel)

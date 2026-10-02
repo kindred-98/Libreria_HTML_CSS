@@ -9,6 +9,163 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [SECURITY.md deja de publicar el correo personal] - 2026-10-02
+
+- **Fase 1.5.** El parrafo «Alternativa por correo» de `SECURITY.md:22` se
+  sustituye por un enlace directo a
+  `https://github.com/kindred-98/Libreria_HTML_CSS/security/advisories/new`. El
+  STOP de la fase pedia activar antes el reporte privado de vulnerabilidades en
+  GitHub, y ya esta activo, asi que se podia hacer.
+- **La unica otra aparicion no se toca, y se avisa.** El correo sigue en
+  `Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md:110`, que es donde el plan
+  ordena literalmente ejecutar ese mismo `grep`. Cambiarlo dejaria la instruccion
+  inutil; es documentacion del hallazgo, igual que pasaba con los informes de la
+  auditoria.
+- **Sigue en el historial de git: 7 commits** contienen la cadena. Sacarla de
+  ahi exige `git filter-repo` y es una decision del mantenedor, fase 9 del plan.
+  Esta fase no reescribe nada.
+- **Verificado**: `git grep -rn "angelecheniq"` devuelve solo la orden del plan,
+  el enlace esta en `SECURITY.md` una sola vez, responde `302` hacia
+  `github.com/login?return_to=...advisories/new` (o sea que existe y pide login,
+  que es lo que tiene que ver alguien que va a reportar), y `npm run validar` +
+  `npm run validar:layout` pasan.
+
+## [CodeQL entra a analizar el codigo en cada PR] - 2026-10-02
+
+- **Workflow nuevo `.github/workflows/codeql.yml` (fase 1.4).** Se ejecuta en push
+  a `main`, en pull requests y cada lunes a las 04:17 UTC, para el lenguaje
+  `javascript-typescript`, con `contents: read` y `security-events: write`, que es
+  lo minimo: el workflow no despliega nada ni escribe en el repositorio.
+- **Acciones fijadas por SHA con el tag legible en el comentario**, igual que
+  `validate.yml`. Resueltas con `git ls-remote --tags` contra los repositorios
+  oficiales: `actions/checkout` v7.0.1 (`3d3c42e5...`, la misma que ya usa el
+  otro workflow) y `github/codeql-action` v4.38.2 (`2892aa5e...`, el **commit**
+  al que apunta el tag anotado, no el tag, que `uses:` no aceptaria).
+- **`build-mode: none`**: JavaScript no se compila, el extractor lee el codigo
+  tal cual esta, y un autobuild solo anadiria cola sin analizar nada mas.
+- **No se corrige nada de lo que encuentre.** El sitio son 1018 demos de terceros
+  mas los scripts propios, y reescribir `innerHTML` en cientos de ficheros ajenos
+  es una decision del mantenedor, no de un workflow. La fase pide contarlo por
+  tipo en el informe, y para eso hace falta la primera ejecucion.
+- **Aprovecha para lo que la Fase 0 dejo a medias**: con CodeQL dando resultados,
+  la regla **Require code scanning results** del ruleset ya se podria activar
+  despues, que es la que estaba apagada porque sin resultados bloqueaba todo merge.
+- **Comprobaciones**: YAML validado con `npx js-yaml` (exit 0), los tres SHAs con
+  40 hexadecimales, y `npm run validar` (1018 componentes) + `npm run
+  validar:layout` (115 medidas) pasan.
+
+## [El CI corta las vulnerabilidades de nivel alto] - 2026-10-02
+
+- **`npm audit --audit-level=high` en `.github/workflows/validate.yml` (fase 1.3).**
+  Justo despues de `npm ci`, que es el punto donde ya estan instaladas exactamente
+  las versiones del lockfile. Dependabot avisaba con alertas y con correos, pero no
+  cortaba nada: una vulnerabilidad de nivel alto entraba en `main` y hasta que
+  alguien abria la alerta pasaban semanas.
+- **Solo high y critical.** Con low o medium el ruido seria tan grande que la gente
+  dejaria de mirar el CI, y eso es peor que la propia vulnerabilidad.
+- **El repositorio pasa ahora mismo con 0 vulnerabilidades**, asi que el paso no
+  rompe nada en el primer push. Se comprueba antes de anadirlo, que es lo que
+  toca cuando se mete una comprobacion nueva: si ya fallaba, se anade el paso y
+  se arregla el fondo en el mismo PR.
+- **YAML comprobado con `npx js-yaml`** (exit 0) antes de commitear. Ojo: este
+  workflow solo se dispara en push a `main` y en pull requests, no en ramas, asi
+  que no corre en `Update` hasta que se abra el PR de fusion.
+- **Comprobaciones**: `npm run validar` y `npm run validar:layout` pasan.
+
+## [La direccion de donacion queda comprobada en el CI] - 2026-10-02
+
+- **Comprobacion 8 en `Web/scripts/validate.mjs` (fase 1.2).** Extrae todas las
+  cadenas `0x` seguidas de 40 hexadecimales de `Web/index.html`,
+  `Web/components.html`, `Web/team-core.html` y `Web/scripts/app.js` y falla si
+  alguna es distinta de la constante `donationAddress`, o si falta en alguna de
+  las tres paginas. `app.js` se lee pero no se exige, que es lo que pide el plan.
+- **La constante se copio de `Web/index.html`, no se tecleo.** Es lo que hace
+  util el check: si un dia cambias la cartera en un sitio y no en los otros, el
+  pie de una pagina queda apuntando a otra y los donativos se pierden sin que se
+  note al mirarla. Y si se cuela una direccion de tercero, acaban en un
+  desconocido. El error mas comun aqui es accidental, no malicioso, y por eso
+  tiene que cortarlo el CI.
+- **`/Web/scripts/` ya esta protegido por CODEOWNERS**, o sea que tocar la
+  constante a proposito tambien exige revision. El check cubre el caso contrario:
+  cambiarla sin querer.
+- **Se ha probado que falla cuando debe.** Cuatro roturas a proposito, con los
+  ficheros restaurados identicos despues: otra direccion en `components.html`
+  (dos fallos: no la contiene y trae una distinta), la direccion borrada de
+  `team-core.html`, una segunda direccion metida en `app.js` y las dos de
+  `app.js` cambiadas. Las cuatro salen con exit 1.
+- **Comprobaciones**: `npm run validar` (1018 componentes, 1018 aisladas) y
+  `npm run validar:layout` (115 medidas) pasan.
+
+## [La fase 0: los ajustes de GitHub y Vercel quedan cerrados] - 2026-10-02
+
+- **Fase 0 completa.** Es la unica de las ocho que no toca un solo fichero del
+  repositorio: se resuelve entera en la interfaz de GitHub y de Vercel. Ahora deja
+  constancia en
+  [`Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase0.md`](./Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase0.md),
+  con lo que quedo configurado, lo que se descarto y por que.
+- **Ruleset `Protege main`, activo.** Lista de bypass vacia, asi que nadie se la
+  salta ni el dueño, y 4 branch rules apuntando solo a `main`: exigir pull request
+  con revision de CODEOWNERS, exigir el check `Validar sitio`, bloquear force-push y
+  bloquear el borrado de la rama. `Restrict updates` esta apagado a proposito, porque
+  hacer merge es actualizar `main` y habria bloqueado hasta la propia fusion.
+- **`Required approving reviews: 0`, a proposito.** `CODEOWNERS` tiene una sola
+  entrada y es el propio autor, y GitHub no cuenta la aprobacion del autor: con 1 no
+  se podria mergear ningun PR en solitario. Cuando entre una segunda persona se sube
+  a 1 y la revision de CODEOWNERS cobra sentido.
+- **Code security y Actions al completo**: push protection, Dependabot alerts con
+  security updates agrupados, dependency graph y **private vulnerability reporting**,
+  que es lo que desbloquea la parada de la fase 1.5. En Actions, permisos del token en
+  solo lectura y aprobacion obligatoria para PRs de forks y colaboradores nuevos.
+- **Sin colaboradores ni secretos.** Se retiro `fatmaerm` y se cancelo la invitacion
+  pendiente de `davoker`, que ni siquiera habia aceptado (los commits de ambos siguen
+  en la historia, nada de esto reescribe git). Y Vercel no tiene ninguna environment
+  variable, asi que los previews de forks no reciben secretos.
+
+## [Los demos se abren ahora con sandbox y no heredan el origen del sitio] - 2026-10-02
+
+- **`vercel.json` aisa las demos con `sandbox`.** Cuatro politicas nuevas, una por
+  raiz de demo (`/CreacionesNuevas/`, `/creaciones-primium/`, `/DavokerDise%C3%B1ador/`
+  y `/DavokerDiseñador/`), montadas como la politica del sitio mas `sandbox
+  allow-scripts allow-forms allow-popups allow-downloads`. Sin `allow-same-origin`,
+  que es justamente lo que hace que el documento deje de heredar el origen de
+  `libreria-html-css.vercel.app`: sin el, un demo abierto de picar el enlace no puede
+  leer cookies ni `localStorage` del sitio ni reescribir la portada si alguna
+  dependencia de terceros se le va. La politica global `/(.*)` sigue **sin** sandbox,
+  para que la propia web no quede aislada de si misma.
+- **Cubren las 1018 rutas de demo, con 0 excepciones.** Se comprueba en
+  `npm run validar` (`Web/scripts/validar-csp.mjs`): recorre los tres ficheros de demo
+  en disco y comprueba que cada `index.html` cae en algun bloque sandbox. Se ha podido
+  usar el comodin `(.*index\.html)` en vez de escribir las 1018 rutas a mano porque
+  todas, sin ninguna excepcion, terminan en `index.html`. No se apoya en
+  `catalog.json`: es generado, esta en `.gitignore` y la comprobacion tiene que valer
+  en CI sin existir.
+- **Por que cuatro y no copiar las reglas de `Cache-Control`.** Es la decision de la
+  fase: si se hubieran clonado los patrones del bloque de cache se habrian metido en
+  el sandbox `davoker.html` y `transicion.html`, que son paginas del sitio y no demos,
+  y se habria roto el efecto hover de la portada.
+- **La politica del sitio no se ha tocado.** Solo se han insertado los cuatro bloques
+  despues del `/(.*)`, que sigue siendo el primero y sigue igual: los 9 hosts
+  externos siguen permitidos y `frame-ancestors 'self'` no ha cambiado.
+- **`Web/scripts/validar-csp.mjs` deja de elegir el CSP a ciegas.** Buscaba
+  `.find()` el primer `Content-Security-Policy` y daba por hecho que era el global;
+  ahora lo selecciona por `source === "/(.*)"`. Encima pasa a validar el sandbox:
+  que la global no lo lleve, que las cuatro lo lleven, que el texto de cada bloque
+  sea exactamente la global mas el sandbox, y que las 1018 demos queden aisladas.
+- **`Web/scripts/serve.mjs` sirve el CSP por ruta, como Vercel.** Antes hacia
+  `.find()` y mandaba siempre la primera politica, asi que en local las demos no
+  recibian su sandbox y nadie lo notaba. Ahora igual que en produccion: ultima
+  regla que coincida, y contra la ruta **sin query**, porque las vistas previas
+  traen `?previewRevision=` y con el query ninguna regla llegaba a coincidir.
+- **Se ha probado que la comprobacion sirve.** Rompiendo `vercel.json` a proposito
+  los cinco casos fallan con exit 1: sandbox basura, sin ningun bloque sandbox,
+  sandbox en la global («aislaria la propia web»), sin sandbox en un solo bloque
+  («119 de 1018 demos no quedan aisladas») y un `source` duplicado que deja hueco
+  («248 de 1018 demos no quedan aisladas»). Despues `vercel.json` queda identico.
+- **Comprobaciones**: `npm run validar` (1018 componentes, 1018 aisladas) y
+  `npm run validar:layout` (115 medidas) pasan, y el servidor local confirma a mano
+  que `Web/index.html` sale sin sandbox y las demos con, con y sin `?previewRevision=`
+  y con el `%C3%B1` codificado.
+
 ## [Los tres correos personales dejan de salir en la documentacion] - 2026-10-02
 
 - **`Docs/` deja de publicar direcciones de correo personales.** Los tres correos que

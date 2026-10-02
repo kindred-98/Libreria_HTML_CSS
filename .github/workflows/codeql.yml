@@ -1,0 +1,66 @@
+name: CodeQL
+
+# Analisis estatico del codigo. No despliega ni escribe nada: traduce el codigo a
+# una base de datos, lanza consultas sobre los flujos de datos y deja los avisos
+# en la pestana Security del repositorio.
+#
+# El sitio son 1018 demos de terceros mas los scripts propios, asi que va a salir
+# mucho ruido (innerHTML y similares). En esta fase NO se corrige: lo que se pide
+# es contarlo por tipo, porque reescribir demos ajenos es una decision del
+# mantenedor y no de un workflow. Ademas un demo abierto con sandbox no tiene
+# a donde irse, y un innerHTML internado en 500 ficheros ajenos solo anade
+# ruido al diff.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    # Semanal. Los cron del lunes a las 00:00 UTC se apilan con los de todo el
+    # mundo y el job espera en cola; un hueco medio da el mismo resultado sin la
+    # espera, y detecta vulnerabilidades publicadas aunque nadie toque el repo.
+    - cron: "17 4 * * 1"
+
+# El minimo que necesita: leer el repositorio y subir los resultados. Un
+# workflow que no despliega nada pidiendo permisos de mas es codigo que corre
+# con tu token.
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analizar (javascript-typescript)
+    runs-on: ubuntu-24.04
+    steps:
+      # Fijadas por SHA, no por tag: un tag se puede mover por quien tenga
+      # escritura en el repositorio de la accion, y el workflow pasaria a
+      # ejecutar codigo que nadie reviso. El comentario conserva la version
+      # legible y es ademas el formato que dependabot actualiza si se configura
+      # el ecosistema github-actions.
+      #   git ls-remote --tags https://github.com/github/codeql-action.git
+      #   git ls-remote --tags https://github.com/actions/checkout.git
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # El token no hace falta: ningun paso de aqui escribe en el
+          # repositorio, y sin esto se queda en .git/config del clon.
+          persist-credentials: false
+
+      - name: Inicializar CodeQL
+        uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          languages: javascript-typescript
+          # Los lenguajes interpretados no se compilan: el extractor lee el
+          # codigo tal cual esta, asi que no hay build que hacer. Un autobuild
+          # aqui solo anadiria minutos de cola sin analizar nada mas.
+          build-mode: none
+
+      - name: Analizar
+        uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          category: "/language:javascript-typescript"

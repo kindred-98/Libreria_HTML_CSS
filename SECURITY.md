@@ -19,7 +19,7 @@ El proyecto no publica releases numeradas: todo el desarrollo ocurre en `main`, 
 2. Activa **Advanced Security → Private vulnerability reporting** si no lo está.
 3. Usa **Report a vulnerability** para enviar el reporte.
 
-**Alternativa por correo:** `angelecheniq@gmail.com`. Ten en cuenta que esa dirección ya es pública en el historial de commits, así que aparecerá en spam. Si prefieres, cambia la de este fichero por una dirección dedicada antes de publicar.
+**No hay alternativa por correo.** La única vía es el reporte privado de GitHub: **[Report a vulnerability](https://github.com/kindred-98/Libreria_HTML_CSS/security/advisories/new)**. Así el aviso llega solo a quien mantiene el repositorio, sin pasar por una bandeja de entrada ni por la lista de direcciones que ya circula.
 
 **No abras un issue público** para reportar un fallo de seguridad. Un issue es visible para todo el mundo de inmediato, y alguien podría copiar el fallo antes de que haya un arreglo.
 
