@@ -9,6 +9,30 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [La direccion de donacion queda comprobada en el CI] - 2026-10-02
+
+- **Comprobacion 8 en `Web/scripts/validate.mjs` (fase 1.2).** Extrae todas las
+  cadenas `0x` seguidas de 40 hexadecimales de `Web/index.html`,
+  `Web/components.html`, `Web/team-core.html` y `Web/scripts/app.js` y falla si
+  alguna es distinta de la constante `donationAddress`, o si falta en alguna de
+  las tres paginas. `app.js` se lee pero no se exige, que es lo que pide el plan.
+- **La constante se copio de `Web/index.html`, no se tecleo.** Es lo que hace
+  util el check: si un dia cambias la cartera en un sitio y no en los otros, el
+  pie de una pagina queda apuntando a otra y los donativos se pierden sin que se
+  note al mirarla. Y si se cuela una direccion de tercero, acaban en un
+  desconocido. El error mas comun aqui es accidental, no malicioso, y por eso
+  tiene que cortarlo el CI.
+- **`/Web/scripts/` ya esta protegido por CODEOWNERS**, o sea que tocar la
+  constante a proposito tambien exige revision. El check cubre el caso contrario:
+  cambiarla sin querer.
+- **Se ha probado que falla cuando debe.** Cuatro roturas a proposito, con los
+  ficheros restaurados identicos despues: otra direccion en `components.html`
+  (dos fallos: no la contiene y trae una distinta), la direccion borrada de
+  `team-core.html`, una segunda direccion metida en `app.js` y las dos de
+  `app.js` cambiadas. Las cuatro salen con exit 1.
+- **Comprobaciones**: `npm run validar` (1018 componentes, 1018 aisladas) y
+  `npm run validar:layout` (115 medidas) pasan.
+
 ## [La fase 0: los ajustes de GitHub y Vercel quedan cerrados] - 2026-10-02
 
 - **Fase 0 completa.** Es la unica de las ocho que no toca un solo fichero del

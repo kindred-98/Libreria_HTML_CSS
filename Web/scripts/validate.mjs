@@ -173,6 +173,37 @@ for (const htmlFile of htmlFiles) {
   }
 }
 
+// 8. La direccion de donacion tiene que ser la misma en las tres paginas del
+//    sitio y en app.js. Si alguien cambia una sola, el pie queda apuntando a otra
+//    cartera y los donativos se pierden; y si se cuela una direccion de tercero,
+//    acaban en un desconocido. Se comprueba en CI porque lo comun es el cambio
+//    accidental, no el malicioso, y un error asi no se nota al mirar la pagina.
+//    La constante se copio de Web/index.html, no se tecleo de memoria.
+const donationAddress = "0xa8f0230135b4f6a959358be3e8e8531f3551fa81";
+const donationFiles = [
+  path.join(repositoryDirectory, "Web", "index.html"),
+  path.join(repositoryDirectory, "Web", "components.html"),
+  path.join(repositoryDirectory, "Web", "team-core.html"),
+  path.join(repositoryDirectory, "Web", "scripts", "app.js"),
+];
+for (const donationFile of donationFiles) {
+  const relative = path.relative(repositoryDirectory, donationFile);
+  if (!(await exists(donationFile))) {
+    fail("donacion", `${relative} no existe`);
+    continue;
+  }
+  const texto = await readFile(donationFile, "utf8");
+  const found = [...texto.matchAll(/0x[a-fA-F0-9]{40}/g)].map((match) => match[0]);
+  // Las tres paginas tienen que llevarla; app.js solo se lee, no se exige.
+  if (donationFile.toLowerCase().endsWith(".html") && !found.includes(donationAddress)) {
+    fail("donacion", `${relative} no contiene la direccion de donacion ${donationAddress}`);
+  }
+  // Nadie puede traer otra, venga de donde venga.
+  for (const address of new Set(found.filter((value) => value !== donationAddress))) {
+    fail("donacion", `${relative} contiene ${address}, distinta de la esperada ${donationAddress}`);
+  }
+}
+
 for (const note of notes) console.log(`info  ${note}`);
 
 if (failures.length) {
