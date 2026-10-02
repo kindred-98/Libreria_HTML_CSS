@@ -9,6 +9,27 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [SECURITY.md deja de publicar el correo personal] - 2026-10-02
+
+- **Fase 1.5.** El parrafo «Alternativa por correo» de `SECURITY.md:22` se
+  sustituye por un enlace directo a
+  `https://github.com/kindred-98/Libreria_HTML_CSS/security/advisories/new`. El
+  STOP de la fase pedia activar antes el reporte privado de vulnerabilidades en
+  GitHub, y ya esta activo, asi que se podia hacer.
+- **La unica otra aparicion no se toca, y se avisa.** El correo sigue en
+  `Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md:110`, que es donde el plan
+  ordena literalmente ejecutar ese mismo `grep`. Cambiarlo dejaria la instruccion
+  inutil; es documentacion del hallazgo, igual que pasaba con los informes de la
+  auditoria.
+- **Sigue en el historial de git: 7 commits** contienen la cadena. Sacarla de
+  ahi exige `git filter-repo` y es una decision del mantenedor, fase 9 del plan.
+  Esta fase no reescribe nada.
+- **Verificado**: `git grep -rn "angelecheniq"` devuelve solo la orden del plan,
+  el enlace esta en `SECURITY.md` una sola vez, responde `302` hacia
+  `github.com/login?return_to=...advisories/new` (o sea que existe y pide login,
+  que es lo que tiene que ver alguien que va a reportar), y `npm run validar` +
+  `npm run validar:layout` pasan.
+
 ## [CodeQL entra a analizar el codigo en cada PR] - 2026-10-02
 
 - **Workflow nuevo `.github/workflows/codeql.yml` (fase 1.4).** Se ejecuta en push
