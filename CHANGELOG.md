@@ -9,6 +9,30 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [CodeQL entra a analizar el codigo en cada PR] - 2026-10-02
+
+- **Workflow nuevo `.github/workflows/codeql.yml` (fase 1.4).** Se ejecuta en push
+  a `main`, en pull requests y cada lunes a las 04:17 UTC, para el lenguaje
+  `javascript-typescript`, con `contents: read` y `security-events: write`, que es
+  lo minimo: el workflow no despliega nada ni escribe en el repositorio.
+- **Acciones fijadas por SHA con el tag legible en el comentario**, igual que
+  `validate.yml`. Resueltas con `git ls-remote --tags` contra los repositorios
+  oficiales: `actions/checkout` v7.0.1 (`3d3c42e5...`, la misma que ya usa el
+  otro workflow) y `github/codeql-action` v4.38.2 (`2892aa5e...`, el **commit**
+  al que apunta el tag anotado, no el tag, que `uses:` no aceptaria).
+- **`build-mode: none`**: JavaScript no se compila, el extractor lee el codigo
+  tal cual esta, y un autobuild solo anadiria cola sin analizar nada mas.
+- **No se corrige nada de lo que encuentre.** El sitio son 1018 demos de terceros
+  mas los scripts propios, y reescribir `innerHTML` en cientos de ficheros ajenos
+  es una decision del mantenedor, no de un workflow. La fase pide contarlo por
+  tipo en el informe, y para eso hace falta la primera ejecucion.
+- **Aprovecha para lo que la Fase 0 dejo a medias**: con CodeQL dando resultados,
+  la regla **Require code scanning results** del ruleset ya se podria activar
+  despues, que es la que estaba apagada porque sin resultados bloqueaba todo merge.
+- **Comprobaciones**: YAML validado con `npx js-yaml` (exit 0), los tres SHAs con
+  40 hexadecimales, y `npm run validar` (1018 componentes) + `npm run
+  validar:layout` (115 medidas) pasan.
+
 ## [El CI corta las vulnerabilidades de nivel alto] - 2026-10-02
 
 - **`npm audit --audit-level=high` en `.github/workflows/validate.yml` (fase 1.3).**
