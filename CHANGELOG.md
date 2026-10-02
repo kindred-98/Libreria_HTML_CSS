@@ -9,6 +9,15 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [El plan de revision de Claude cambia de carpeta] - 2026-10-02
+
+- **`Docs/Claude-Revision-Audi.md/` pasa a `Docs/Claude-Revision-Audi/`.** El nombre
+  anterior acababa en `.md`, pero lo que ahi dentro habia era una carpeta con un
+  fichero, no un documento, y hacer `Docs/algo.md` lo convertia en un callejon al
+  navegarlo desde GitHub. Sigue dentro `PLAN-MEJORAS-OPENCODE.md` con el mismo texto:
+  solo cambia el fin de linea, que `* text=auto` de `.gitattributes` normaliza igual
+  y por eso el diff sale como un cambio de nombre puro.
+
 ## [La documentacion de la auditoria queda al dia con lo aplicado] - 2026-10-02
 
 - **`Docs/Auditoria.md` corregida sin reescribirla.** Sigue siendo el diagnostico en
