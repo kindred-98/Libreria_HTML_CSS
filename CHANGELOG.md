@@ -9,6 +9,31 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Movimiento: prefers-reduced-motion en 171 demos (fase 6.3)] - 2026-10-03
+
+- Nuevo `Web/scripts/add-reduced-motion.mjs`, **idempotente** y con marcador
+  `/* reduced-motion (Fase 6) */`. Tres modos: `--dry-run` (solo informe, el
+  que viene por defecto), `--piloto` (10 Effects + 10 Animations) y `--todos`.
+- Informe sobre los 1.018 demos: **722 ya escuchaban la preferencia**, 96 de la
+  categoria Loaders (fuera), **171 con movimiento CSS**, 14 que solo animan
+  desde JavaScript y 15 sin movimiento. El piloto de 16 demos salio verde en
+  `validar:demos`, se presento a Angel y con su visto bueno se aplico al resto.
+- **171 demos actualizados**: 127 Effects, 10 Other, 10 Controls, 7 Cards,
+  6 Animations, 5 Navigation, 5 Buttons y 1 Forms. El bloque no apaga la
+  animacion: la deja en 0,01 ms, que basta para que el navegador la de por
+  resuelta y se vea el estado final sin el recorrido.
+- **Fuera los 96 Loaders**, donde la animacion es la informacion, y **fuera los
+  14 demos que solo animan desde JavaScript** (`requestAnimationFrame`, `canvas`,
+  `setInterval`): un `animation-duration` no afecta a nada dibujado a mano.
+  Quedan anotados como trabajo futuro en `Fase6.md`.
+- `CONTRIBUTING.md` estrena la **regla 7** con el bloque, sus dos excepciones y
+  la forma de detectar los que faltan.
+- `validate.mjs` gana el apartado 9: **aviso, no fallo**, para los componentes
+  que animan con CSS sin escuchar la preferencia. Hoy sale 0 avisos; se verifico
+  que el aviso aparece quitando el bloque de un demo a mano.
+- Verificado en verde: `validar`, `validar:layout`, `validar:a11y`,
+  `validar:encabezados` y `validar:demos` (1018 demos, 0 con fallos).
+
 ## [Encabezados: los 7 demos que saltaban de h1 a h3 (fase 6.2)] - 2026-10-03
 
 - Nuevo `Web/scripts/validar-encabezados.mjs` y `npm run validar:encabezados`:

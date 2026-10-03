@@ -45,6 +45,23 @@ creaciones-primium/botones/animated-dial-button/
 
 **6. Cada componente es independiente.** Se abre directamente en el navegador, con su HTML, CSS y JavaScript. No puede depender de nada externo salvo una fuente o una biblioteca vía CDN, y en ese caso con la versión **fijada** (`@5.5.2`), nunca `@5` a secas.
 
+**7. Respeta `prefers-reduced-motion`.** Si tu componente anima con CSS (`@keyframes`, `animation` o `transition`), termina su hoja de estilos con este bloque:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+```
+
+No apaga la animación: la deja en 0,01 ms, así el navegador la da por resuelta y se ve el estado final sin el recorrido. Hay personas a las que ese recorrido les provoca mareo, y el sistema operativo ya les ha preguntado si quieren menos movimiento. Las dos excepciones son los componentes de la categoría **Loaders**, donde la animación *es* la información, y los que solo animan desde JavaScript, que necesitan `window.matchMedia("(prefers-reduced-motion: reduce)").matches` en su script.
+
+`node Web/scripts/validate.mjs` avisa (no falla) de los componentes que animan con CSS sin este bloque. Para añadirlo en bloque a los que faltan: `node Web/scripts/add-reduced-motion.mjs --dry-run`.
+
 ## Después de añadir el componente
 
 ```powershell

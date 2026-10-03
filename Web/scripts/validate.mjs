@@ -204,6 +204,60 @@ for (const donationFile of donationFiles) {
   }
 }
 
+// 9. Aviso, no fallo: un demo que anima con CSS y no escucha
+//    `prefers-reduced-motion`. No corta el CI porque no es una rotura: es una
+//    comodidad que se puede llegar a necesitar mas alla de este repositorio y
+//    porque los demos que solo animan desde JavaScript no se pueden resolver con
+//    CSS. Sirve para que un demo nuevo no se cuele sin el bloque que ya tienen
+//    todos los demas. La categoria Loaders queda fuera: ahi la animacion es la
+//    informacion.
+const warnings = [];
+const catalogFolder = new Map();
+for (const component of catalog) {
+  const folder = component.folder
+    ?? (typeof component.preview === "string"
+      ? component.preview.replace(/^\.\.\//, "").replace(/\/index\.html$/, "")
+      : null);
+  if (folder) catalogFolder.set(component.id, folder);
+}
+for (const component of catalog) {
+  if (component.category === "Loaders") continue;
+  const folder = catalogFolder.get(component.id);
+  if (!folder) continue;
+  const directory = path.join(repositoryDirectory, folder);
+  // `exists()` comprueba `isFile()`, asi que no sirve aqui: lo que hay que
+  // comprobar es que la carpeta del demo este en disco.
+  let entradas;
+  try {
+    entradas = await readdir(directory, { withFileTypes: true });
+  } catch {
+    continue;
+  }
+
+  let css = "";
+  for (const entry of entradas) {
+    if (entry.isFile() && entry.name.toLowerCase().endsWith(".css")) {
+      css += await readFile(path.join(directory, entry.name), "utf8");
+    }
+  }
+  if (!css) {
+    const page = await readFile(path.join(directory, "index.html"), "utf8");
+    css = [...page.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]).join("\n");
+  }
+  const limpio = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  const animaConCSS = /@keyframes\b/.test(limpio)
+    || /\banimation(?:-\w+)?\s*:/.test(limpio)
+    || /\btransition(?:-\w+)?\s*:/.test(limpio);
+  if (animaConCSS && !/prefers-reduced-motion/.test(css)) warnings.push(component.id);
+}
+if (warnings.length) {
+  const lista = warnings.slice(0, 20).join(", ") + (warnings.length > 20 ? ", ..." : "");
+  console.log(
+    `AVISO: ${warnings.length} demo(s) animan con CSS sin escuchar prefers-reduced-motion: ${lista}\n`
+    + "       Anade el bloque de Web/scripts/add-reduced-motion.mjs (ver CONTRIBUTING, regla 7).",
+  );
+}
+
 for (const note of notes) console.log(`info  ${note}`);
 
 if (failures.length) {
