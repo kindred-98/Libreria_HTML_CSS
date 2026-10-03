@@ -84,6 +84,19 @@ jobs:
       - name: Comprobar que los demos no saltan de nivel en sus encabezados
         run: npm run validar:encabezados
 
+      # Validacion del HTML de las paginas del sitio (no de los demos: estan
+      # generados a mano por autores distintos y imponerles una norma ajena
+      # reventaria el CI en el primer push). Arregla doctype, etiquetas sin
+      # nombre accesible y atributos redundantes.
+      - name: Comprobar el HTML de las paginas del sitio
+        run: npm run validar:html
+
+      # Enlaces relativos y anclas de las paginas del sitio. Un href mal
+      # escrito no rompe la pagina, solo lleva a un 404 cuando alguien hace
+      # clic, y eso es exactamente lo que no se descubre hasta produccion.
+      - name: Comprobar los enlaces y las anclas del sitio
+        run: npm run validar:enlaces
+
       # El sellado y los ZIP son los otros dos comandos del buildCommand de
       # Vercel, y hasta aqui solo se habian ejecutado en el despliegue: un HTML
       # que apunte a un asset inexistente o un demo que cambie de licencia no
@@ -119,6 +132,16 @@ jobs:
       - name: Comprobar la accesibilidad de las paginas del sitio
         if: matrix.node-version == 24
         run: npm run validar:a11y
+
+      # Lighthouse sobre las mismas tres paginas: rendimiento >= 80 y el resto
+      # >= 95, con el preset desktop (lo justifica el propio script). Es el
+      # unico paso que pone numero a lo que cuesta pintar la pagina y a si los
+      # motores de busqueda la entienden; lo anterior contesta si se puede usar
+      # y si no se sale de lado. Reutiliza el Chromium de los pasos anteriores
+      # y tarda unos 35 s.
+      - name: Medir las paginas con Lighthouse
+        if: matrix.node-version == 24
+        run: npm run validar:lighthouse
 
       # Abre los 1.018 demos de verdad, con el sandbox de produccion. Es el
       # unico paso que mide lo que ve el visitante: las anteriores son

@@ -9,6 +9,45 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Calidad del CI: HTML, enlaces, sitemap y Lighthouse (fases 7.3, 7.4 y 7.6)] - 2026-10-03
+
+- **`html-validate` 11.16.1** con `npm run validar:html` sobre `Web/*.html`,
+  `404.html` y `index.html`: las paginas del sitio, no los 1.018 demos. Arreglos
+  para que pasara: los 5 doctypes pasan a `<!DOCTYPE html>` (con `--fix`), la
+  portada gana `role="group"` en el resumen lateral, los dos botones del
+  carrusel tienen nombre accesible propio (`Go back` / `Advance`, que es
+  ademas el valor por defecto que pone `app.js` al cambiar de idioma), se
+  quita el `for` redundante de la etiqueta de busqueda y `team-core.html` lleva
+  el comentario de desactivacion antes del `scrolling="no"` del iframe.
+- **`Web/scripts/validar-enlaces.mjs`** y `npm run validar:enlaces`: comprueba
+  que los `href` y `src` relativos de las 5 paginas apuntan a un fichero que
+  existe y que los `#ancla` (en la misma pagina o en otra) tienen su `id`.
+  46 destinos locales y 18 externos. Paso en el CI de las tres versiones de
+  Node.
+- **`Web/scripts/comprobar-enlaces-externos.mjs`** con `npm run
+  enlaces:externos` y el workflow `.github/workflows/enlaces-externos.yml`:
+  `schedule` (`17 6 * * 1`, lunes) y `workflow_dispatch`, con
+  `continue-on-error`, sin `npm ci` (solo usa API del navegador de Node) y
+  **sin bloquear PRs**. 11 URLs de fuera, todas en 200, ~6 s. Las de
+  `localhost` se saltan.
+- **`Web/scripts/generar-sitemap.mjs`** con `npm run sitemap`: añade
+  `<lastmod>` a las tres URLs con `git log -1 --format=%cs` y **omite la
+  etiqueta si git no tiene historial** (clon superficial en Vercel) en lugar
+  de inventar la fecha. Idempotente, y ya entra al final del `buildCommand` de
+  `vercel.json`.
+- **`Web/scripts/validar-lighthouse.mjs`** con `npm run validar:lighthouse`
+  (apartado 7.6, opcional): las 3 paginas con `lighthouse` 13.5.0, umbrales
+  **rendimiento >= 80 y accesibilidad, buenas practicas y SEO >= 95**.
+  Resultado: portada 99/100/100/100, componentes 86/95/100/100 y team core
+  100/100/100/100. ~35 s, paso del job de Node 24 en el CI.
+- El 7.6 se activo porque la condicion del plan se cumplia: la secuencia
+  completa del job mas largo dura ~5 min 16 s en local, y con Lighthouse
+  ~6 min, por debajo de los 15 minutos que pide el plan.
+- Mide con el **preset desktop**, no con el movil que trae Lighthouse por
+  defecto: el resto de comprobaciones del repositorio miden a 1350 px y el
+  throttling movil parpadearia +-5 puntos entre pasadas. Los valores moviles
+  medidos (76-81) quedan en `Fase7.md`.
+
 ## [Duplicados y las dependencias de las nuevas comprobaciones (fase 7.2)] - 2026-10-03
 
 - Nuevo `Web/scripts/detectar-duplicados.mjs` y `npm run duplicados`: calcula
