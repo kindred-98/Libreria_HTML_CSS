@@ -9,6 +9,20 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [El lomo del Mobius deja de pintarse con NaN] - 2026-10-03
+
+- **Fase 4, error de consola.**
+  `animaciones-mobius-infinity-loop/script.js` declaraba el buffer de la curva
+  central como `new Float64Array(SEG + 1)`, pero lo rellena por parejas x/y
+  con `C[i * 2]` y `C[i * 2 + 1]`. Un `Float64Array` no crece al escribir
+  fuera de rango, asi que desde la i = 85 las lecturas devolvian `undefined`,
+  `fmt()` les ponia `"NaN"` y Chromium se quejaba del atributo `d` del
+  `<path>` del lomo y de su halo.
+- Buffer a `(SEG + 1) * 2`, igual que `P` y `Pm`. Comprobado abriendo el demo:
+  **2 paths con `NaN` antes, ninguno despues**.
+- Su entrada sale de `Web/data/smoke-baseline.json`, que queda **vacia**: se
+  cumplen los dos criterios de aceptacion de la Fase 4.
+
 ## [Dos demos que reventaban al cargar] - 2026-10-03
 
 - **Fase 4, excepciones.** `formularios-plan-cancellation-flow/script.js`

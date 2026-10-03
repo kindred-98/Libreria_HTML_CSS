@@ -48,7 +48,11 @@
   const S = new Float64Array(SEG + 1);
   const Pm = new Float64Array((SEG + 1) * 2);
   const Zm = new Float64Array(SEG + 1);
-  const C = new Float64Array(SEG + 1);
+  // C se guarda por parejas x/y, igual que P y Pm: con (SEG + 1) solo cabian
+  // las x, los Float64Array no crecen al escribir fuera de rango y las
+  // lecturas de la i = 85 en adelante devolvian undefined. fmt() les ponia
+  // "NaN" y el navegador quejaba del atributo d del <path> del lomo.
+  const C = new Float64Array((SEG + 1) * 2);
   const Zc = new Float64Array(SEG + 1);
 
   function rot(x, y, z, ax, ay, az, out) {
