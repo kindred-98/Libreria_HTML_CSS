@@ -9,6 +9,12 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Constancia de la fase 6 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase6.md` reune los tres
+  apartados (6.1, 6.2 y 6.3), el informe del piloto de movimiento reducido, los
+  criterios de aceptacion —ya los cuatro en verde— y el siguiente paso.
+
 ## [Movimiento: prefers-reduced-motion en 171 demos (fase 6.3)] - 2026-10-03
 
 - Nuevo `Web/scripts/add-reduced-motion.mjs`, **idempotente** y con marcador
