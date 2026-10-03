@@ -9,6 +9,17 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Constancia de la fase 2 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase2.md` recoge las dos
+  subfases aplicadas y fusionadas en el PR #4 (`06daa83`): la regex de los
+  bloques de codigo de `markdown-preview-live` y el QR de
+  `url-qr-code-generator` generado en local con `qrcode-generator` v2.0.4
+  incrustado en `vendor/`.
+- Incluye la prueba antes/despues de la 2.1, las cinco comprobaciones en modo
+  offline de la 2.2, la tabla de los seis ficheros que entran en el ZIP, los
+  tres criterios de aceptacion y las cinco desviaciones respecto al plan.
+
 ## [El generador de QR deja de mandar la URL a un tercero] - 2026-10-03
 
 - **Fase 2.2.** `CreacionesNuevas/url-qr-code-generator/` ya no llama a
