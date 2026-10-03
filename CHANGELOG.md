@@ -9,6 +9,19 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Constancia de la fase 1 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase1.md` recoge las cinco
+  subfases aplicadas y fusionadas en el PR #3 (`ff215a2`): las cuatro politicas
+  de `sandbox` para las 1018 rutas de demo, el test de la direccion de
+  donacion, `npm audit` en el CI, el workflow de CodeQL con las acciones
+  fijadas por SHA y el `SECURITY.md` sin correo personal.
+- Incluye las nueve pruebas negativas, la verificacion `curl` contra el preview
+  y contra produccion, el recuento de las 9 alertas de CodeQL que abrio `main`
+  y las dos desviaciones respecto al plan: los patrones `.*index\.html` y los
+  nombres reales de los status checks (`Validar (Node 20/22/24)`, no
+  `Validar sitio`).
+
 ## [El correo personal sale tambien del plan de fases] - 2026-10-03
 
 - **Ampliacion de la 1.5.** En
