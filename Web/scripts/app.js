@@ -1601,7 +1601,12 @@ function openConsentBanner() {
   reject.type = "button";
   reject.dataset.consent = "deny";
   reject.dataset.i18n = "consentReject";
-  const accept = createElement("button", "button");
+  // Acepta lleva button-primary y no .button a secas: .button no fija
+  // background, asi que el navegador pone el gris por defecto de los controles
+  // (rgb(107, 107, 107)) sobre el --surface-raised del aviso, y eso da
+  // 2,21:1 con el texto heredado. El primario usa --accent sobre --accent-ink,
+  // que pasa AA en los dos temas.
+  const accept = createElement("button", "button button-primary");
   accept.type = "button";
   accept.dataset.consent = "grant";
   accept.dataset.i18n = "consentAccept";

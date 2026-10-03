@@ -9,6 +9,31 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Accesibilidad: axe-core en las paginas del sitio (fase 6.1)] - 2026-10-03
+
+- **`@axe-core/playwright` 4.13.0** como `devDependency` con version exacta y
+  lockfile actualizado. `CONTRIBUTING.md` corregido: la regla 5 decia que el
+  proyecto no tenia dependencias ni debia empezar a tenerlas, pero `playwright`
+  ya estaba.
+- Nuevo `Web/scripts/validar-a11y.mjs` y `npm run validar:a11y`: abre
+  `index.html`, `components.html` y `team-core.html` en un navegador de verdad
+  y los analiza en los dos idiomas y los dos temas (12 pasadas). **Corta con
+  violaciones `serious` y `critical`**; `moderate` y `minor` solo se informan.
+  Comprueba ademas que al tabular un boton y un enlace cambian de aspecto
+  (`:focus-visible` visible).
+- **Alcance: las paginas del sitio.** Las vistas previas de `components.html`
+  cargan demos dentro de un iframe, y esas incidencias se listan con el prefijo
+  `vista previa:` sin cortar: si cortaran, el CI dependiria de que el catalogo
+  no ruede un demo nuevo con un fallo.
+- **Arreglos propuestos por axe:** `.component-number` y `.warp-card-caption`
+  usaban `--quiet` (3,90:1 en claro y 4,14:1 en oscuro) y pasan a `--muted`
+  (6,06:1 y 7,06:1), el mismo motivo que ya tenia documentado `.footer-meta`.
+  Y el boton Aceptar de las cookies no llevaba ningun `background`, asi que
+  pintaba el gris por defecto del navegador (`rgb(107, 107, 107)`) con 2,21:1
+  sobre el aviso: pasa a `button-primary`.
+- El paso **Comprobar la accesibilidad de las paginas del sitio** entra al job
+  de Node 24 del CI, detras del de layout y reutilizando su Chromium.
+
 ## [Fase 5 descartada: las imagenes de Wikimedia se quedan fuera] - 2026-10-03
 
 - **Decision de Angel tras el STOP que marca el plan.** El inventario (5.1) dio

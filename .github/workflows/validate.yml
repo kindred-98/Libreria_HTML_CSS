@@ -103,6 +103,16 @@ jobs:
         if: matrix.node-version == 24
         run: npm run validar:layout
 
+      # Axe-core sobre las tres paginas del sitio en los dos idiomas y los dos
+      # temas. Las anteriores miden anchos y ficheros; esta es la unica que
+      # contesta si el sitio se puede usar sin raton ni vision: nombres
+      # accesibles, contraste de los 9 px del catalogo, orden de encabezados.
+      # Corta con serious y critical; moderate y minor solo se informan.
+      # Reutiliza el Chromium del paso anterior.
+      - name: Comprobar la accesibilidad de las paginas del sitio
+        if: matrix.node-version == 24
+        run: npm run validar:a11y
+
       # Abre los 1.018 demos de verdad, con el sandbox de produccion. Es el
       # unico paso que mide lo que ve el visitante: las anteriores son
       # estaticas y un demo que revienta en runtime no las hacia fallar.
