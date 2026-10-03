@@ -24,7 +24,6 @@
  *   - maximo 2 peticiones por segundo
  *   - reintentos con espera creciente ante un 429
  */
-import { createHash } from "node:crypto";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -177,7 +176,7 @@ async function cargarCache() {
 // --- Programa ----------------------------------------------------------------
 
 const { imagenes, paginas, literales, ficheros } = await leerInventario();
-const urls = [...imagenes.keys()].sort();
+const urls = [...imagenes.keys()].sort((a, b) => a.localeCompare(b));
 
 const porDemo = new Map();
 for (const registro of imagenes.values()) {

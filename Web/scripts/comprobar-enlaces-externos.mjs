@@ -76,7 +76,7 @@ const lista = [...urls.keys()]
       return false;
     }
   })
-  .sort();
+  .sort((a, b) => a.localeCompare(b));
 console.log(`info  ${lista.length} urls externas en ${FUENTES.length} fuentes`);
 
 const rotas = [];

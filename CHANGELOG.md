@@ -38,6 +38,28 @@ queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplica
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Arregla los seis fallos de fiabilidad de SonarCloud y la duplicacion del servidor] - 2026-10-03
+
+- Los seis issues que SonarCloud marcaba como *failure* son tres `sort()` sin
+  comparador (en `localizar-imagenes.mjs`, `comprobar-enlaces-externos.mjs` y
+  `smoke-demos.mjs`) y tres `getAttribute`/`setAttribute` por `data-*` en
+  `validar-a11y.mjs`, sustituidos por `.dataset` con la misma semantica
+  (`data-probe-foco` -> `dataset.probeFoco`; cuando no esta, `?? null` para
+  conservar el `=== null` que ya tenia la comprobacion).
+- Tambien se quito el `import { createHash } from "node:crypto"` que
+  `localizar-imagenes.mjs` arrastraba sin usar desde la fase 5.
+- Para bajar la duplicacion, las 42 lineas identicas de `puertoLibre` +
+  `arrancarServidor` que tenian `validar-a11y.mjs` y `validar-lighthouse.mjs`
+  pasan a `Web/scripts/lib/servidor.mjs`. Los dos importan de ahi, y se
+  borran las copias locales con sus imports asociados (`spawn`, `net`,
+  `path`, `fileURLToPath`).
+- Verificado en verde: `validar`, `validar:encabezados`, `validar:html` (en
+  Node 20/22/24), `validar:enlaces`, `duplicados` (sigue en 0),
+  `enlaces:externos`, `sitemap`, `validar:a11y` (sin `serious`/`critical` en
+  12 pasadas) y `validar:lighthouse` (97/86/100).
+- `SonarCloud Code Analysis` **no es check requerido** por el ruleset, asi
+  que no bloquea el merge; este commit lo deja en verde.
+
 ## [Constancia de la fase 7 cerrada] - 2026-10-03
 
 - `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md` reune los seis

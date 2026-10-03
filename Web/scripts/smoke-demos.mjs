@@ -303,7 +303,7 @@ for (const entrada of catalogo) {
   const fallos = [...registro.fallos.values()].sort((a, b) =>
     a.tipo.localeCompare(b.tipo) || a.mensaje.localeCompare(b.mensaje),
   );
-  const externos = [...registro.externos.keys()].sort();
+  const externos = [...registro.externos.keys()].sort((a, b) => a.localeCompare(b));
   if (fallos.length) conFallos += 1;
   for (const fallo of fallos) porTipo[fallo.tipo] = (porTipo[fallo.tipo] ?? 0) + 1;
   if (externos.length) {

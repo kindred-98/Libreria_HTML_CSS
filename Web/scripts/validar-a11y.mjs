@@ -33,14 +33,9 @@
  *
  * En el CI hace falta el navegador: `npx playwright install --with-deps chromium`.
  */
-import { spawn } from "node:child_process";
-import net from "node:net";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { AxeBuilder } from "@axe-core/playwright";
-
-const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
+import { puertoLibre, arrancarServidor } from "./lib/servidor.mjs";
 
 // Solo las paginas del sitio. Los 1.018 demos no entran: cada uno es un
 // experimento de CSS con sus propias reglas, y medirlos con las mismas
@@ -65,49 +60,6 @@ const INFORMAN = new Set(["moderate", "minor"]);
 // portada pasa por el conmutador de idioma, el de tema, la navegacion, el
 // carrusel y el pie: con 40 se cubre sobrado.
 const TABULACIONES = 40;
-
-async function puertoLibre() {
-  const fijado = Number(process.env.PORT ?? 0);
-  if (fijado) return fijado;
-  return new Promise((resolve, reject) => {
-    const sonda = net.createServer();
-    sonda.on("error", reject);
-    sonda.listen(0, "127.0.0.1", () => {
-      const { port } = sonda.address();
-      sonda.close(() => resolve(port));
-    });
-  });
-}
-
-function arrancarServidor(puerto) {
-  return new Promise((resolve, reject) => {
-    const proceso = spawn(process.execPath, [path.join(scriptDirectory, "serve.mjs")], {
-      env: { ...process.env, PORT: String(puerto) },
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    let salida = "";
-    let arrancado = false;
-    const listo = () => {
-      if (arrancado) return;
-      arrancado = true;
-      resolve(proceso);
-    };
-    proceso.stdout.on("data", (trozo) => {
-      salida += trozo;
-      if (salida.includes("Sirviendo el repositorio")) listo();
-    });
-    proceso.stderr.on("data", (trozo) => { salida += trozo; });
-    proceso.on("error", reject);
-    proceso.on("exit", (codigo) => {
-      if (!arrancado) {
-        reject(new Error(`serve.mjs no arranco en el puerto ${puerto} (codigo ${codigo}):\n${salida.trim()}`));
-      }
-    });
-    setTimeout(() => {
-      if (!arrancado) reject(new Error(`serve.mjs no arranco en 15 s en el puerto ${puerto}:\n${salida.trim()}`));
-    }, 15000).unref();
-  });
-}
 
 const fallos = [];
 const avisos = [];
@@ -238,7 +190,7 @@ async function comprobarFoco(pestana) {
         !el.disabled
       );
     });
-    visibles.forEach((el, i) => el.setAttribute("data-probe-foco", String(i)));
+    visibles.forEach((el, i) => { el.dataset.probeFoco = String(i); });
     const leer = (el) => {
       const s = getComputedStyle(el);
       return JSON.stringify({
@@ -251,7 +203,7 @@ async function comprobarFoco(pestana) {
     };
     const muestra = {};
     for (const el of visibles.slice(0, 8)) {
-      muestra[el.getAttribute("data-probe-foco")] = {
+      muestra[el.dataset.probeFoco] = {
         etiqueta: `${el.tagName.toLowerCase()}${el.className ? "." + String(el.className).trim().split(/\s+/)[0] : ""}`,
         texto: (el.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 40),
         estilo: leer(el),
@@ -269,7 +221,7 @@ async function comprobarFoco(pestana) {
     const actual = await pestana.evaluate((muestras) => {
       const el = document.activeElement;
       if (!el || el === document.body) return null;
-      const clave = el.getAttribute("data-probe-foco");
+      const clave = el.dataset.probeFoco ?? null;
       if (clave === null || !(clave in muestras)) return null;
       const s = getComputedStyle(el);
       return {
