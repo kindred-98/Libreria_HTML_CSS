@@ -9,6 +9,20 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Reclasificacion de la categoria Other (fase 7.1)] - 2026-10-03
+
+- 35 de los 36 demos que estaban en `Other` pasan a una categoria existente,
+  usando el campo `category` de `Web/data/component-overrides.json` y sin
+  renombrar ninguna carpeta. La tabla `id -> categoria` esta en
+  `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`.
+- Queda uno solo en `Other`: `dev-console-easter-egg`, que no tiene interfaz
+  y se dispara desde la consola del navegador; es el unico que no encaja en
+  ninguna categoria.
+- Recuento nuevo del catalogo: Effects 201, Navigation 161, Animations 101,
+  Cards 96, Loaders 96, Galleries 95, Controls 93, Buttons 89, Forms 85 y
+  Other 1.
+- `npm run catalogo` regenerado y `npm run validar` en verde.
+
 ## [Constancia de la fase 6 cerrada] - 2026-10-03
 
 - `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase6.md` reune los tres
