@@ -9,6 +9,32 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [1.0.0] - 2026-10-03
+
+- Version inicial del catalogo, tras aplicar las fases 0 a 7 del plan de la
+  auditoria: cabeceras y seguridad, wallet, CI, comprobaciones automaticas de
+  layout, accesibilidad, encabezados y movimiento reducido, y calidad del CI
+  con html-validate, control de enlaces, sitemap y Lighthouse.
+- Cada fase tiene su propia entrada mas abajo, de mas reciente a mas antigua.
+- El tag y la release no se crean desde aqui: el comando `gh release create`
+  queda en
+  [`Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`](./Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md),
+  para que lo ejecute Angel una vez la PR este en `main`.
+
+## [Constancia de la fase 7 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md` reune los seis
+  apartados (7.1 a 7.6, incluido el opcional), la tabla completa de los 35
+  demos reclasificados, el motivo del unico que sigue en «Other», el resultado
+  del detector de duplicados, los umbrales de Lighthouse y los criterios de
+  aceptacion, ya los siete en verde.
+- Con esto cierran las ocho fases del plan. La 5 quedo cancelada por Angel
+  (87,26 MB por encima del umbral de 40 MB).
+- La tabla «Registro de avance» del
+  [`PLAN-MEJORAS-OPENCODE.md`](./Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md)
+  queda rellena: siete fases hechas y una cancelada, con la PR como unico
+  paso pendiente.
+
 ## [Calidad del CI: HTML, enlaces, sitemap y Lighthouse (fases 7.3, 7.4 y 7.6)] - 2026-10-03
 
 - **`html-validate` 11.16.1** con `npm run validar:html` sobre `Web/*.html`,

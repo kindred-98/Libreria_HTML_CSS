@@ -302,14 +302,19 @@ Sobre las 3 páginas del sitio, con umbrales mínimos: accesibilidad, buenas pr�
 
 | Fase | Quién | Estado | PR |
 |---|---|---|---|
-| 0. GitHub y Vercel | Ángel | ☐ | n/a |
-| 1. Cabeceras, wallet, CI, SECURITY | OpenCode | ☐ | |
-| 2. Bugs (markdown, QR) | OpenCode | ☐ | |
-| 3. Test de humo | OpenCode | ☐ | |
-| 4. Arreglos del humo | OpenCode | ☐ | |
-| 5. Imágenes de Wikimedia | OpenCode | ☐ | |
-| 6. Accesibilidad | OpenCode | ☐ | |
-| 7. Contenido y calidad | OpenCode | ☐ | |
+| 0. GitHub y Vercel | Ángel | ✅ | n/a |
+| 1. Cabeceras, wallet, CI, SECURITY | OpenCode | ✅ | pendiente |
+| 2. Bugs (markdown, QR) | OpenCode | ✅ | pendiente |
+| 3. Test de humo | OpenCode | ✅ | pendiente |
+| 4. Arreglos del humo | OpenCode | ✅ | pendiente |
+| 5. Imágenes de Wikimedia | OpenCode | ❌ cancelada (Ángel) | n/a |
+| 6. Accesibilidad | OpenCode | ✅ | pendiente |
+| 7. Contenido y calidad | OpenCode | ✅ | pendiente |
+
+Todo lo aplicado está en `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/`
+(`Fase0.md` a `Fase7.md`). La fase 5 se canceló: 87,26 MB por encima del
+umbral de 40 MB. Todas las fases están en la rama `Update`; la PR es el único
+paso que queda.
 
 ## Estado esperado al terminar (para la re-auditoría)
 
