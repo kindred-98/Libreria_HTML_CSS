@@ -48,7 +48,6 @@ y que la cabecera CSP del despliegue permite:
   Commons enlazadas desde los demos (hotlink, no copias): Wikimedia ve tu IP
   igual que en cualquier web que cargue una imagen suya.
 - `github.com` y `avatars.githubusercontent.com` — imágenes de algunos demos.
-- `api.qrserver.com` — un demo generador de códigos QR.
 - `www.googletagmanager.com`, `www.google-analytics.com` y
   `region1.google-analytics.com` — solo con tu aceptación.
 

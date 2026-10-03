@@ -62,6 +62,21 @@ La web se maqueta con dos familias publicadas por Google Fonts, **Manrope** (var
 
 **Fuera del alcance de la licencia.** La OFL no se aplica a los documentos creados con la fuente: el HTML, el CSS y el JS originales de este sitio siguen bajo la `LICENSE` de la raíz, y el copyright de la fuente no dice nada sobre ellos.
 
+## Librería incrustada: `qrcode-generator` (MIT)
+
+`CreacionesNuevas/url-qr-code-generator/` dibuja sus códigos QR **en local** con [`kazuhikoarase/qrcode-generator`](https://github.com/kazuhikoarase/qrcode-generator) **v2.0.4**, incrustada en la carpeta `vendor/` del componente:
+
+| Fichero | Qué es |
+|---|---|
+| `vendor/qrcode.js` | la librería sin modificar (56 694 B), el build UMD `dist/qrcode.js` del paquete |
+| `vendor/LICENSE-qrcode-generator` | la MIT íntegra, *Copyright (c) 2009 Kazuhiko Arase* |
+
+**Por qué está aquí.** Antes la demo mandaba la URL del visitante a `https://api.qrserver.com/v1/create-qr-code/` para que un tercero le devolviera el QR dibujado. Eso hacía que el sitio enviara datos a un dominio ajeno, que el demo no funcionara sin conexión y que la CSP tuviera que abrir `img-src` para ese host. Ahora el QR se genera en el propio navegador y se entrega como data URL dentro del `<img>`, algo que el `img-src data:` ya permitía: la demo ya no habla con ningún servicio externo.
+
+**Procedencia y verificación.** El paquete se obtuvo con `npm pack qrcode-generator` (v2.0.4, `"license": "MIT"` en su `package.json`) y solo se copiaron esos dos ficheros: el resto del tarball —tests, experimentos y builds SJIS/ESM— no viaja. El tarball **no incluye** el archivo `LICENSE`, así que su texto se tomó del repositorio de origen ([`master/LICENSE`](https://raw.githubusercontent.com/kazuhikoarase/qrcode-generator/master/LICENSE)) y coincide con la cabecera que la propia librería ya traía dentro de `qrcode.js`: *Licensed under the MIT license*.
+
+**Qué exige la MIT aquí.** Conservar el aviso de copyright y la licencia en cada copia. Los dos ficheros viven dentro de `vendor/`, forman parte de la lista `files` del componente en `Web/data/sources/url-qr-code-generator.json` y por tanto entran en su ZIP de descarga; `npm run validar` comprueba que `missingReferences` de esa entrada sigue vacío.
+
 ## Estado de distribución
 
 Los 248 componentes de `CreacionesNuevas/` están autorizados: el catálogo los marca con `license: "MIT"`, `redistributable: true`, `licenseFile: "LICENSE"` y `source` apuntando a este repositorio. Sus descargas ZIP incluyen el `LICENSE` del componente y un `ATTRIBUTION.txt` generado en el momento de la descarga.
