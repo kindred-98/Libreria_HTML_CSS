@@ -9,6 +9,24 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Inventario de las imagenes de Wikimedia] - 2026-10-03
+
+- **Fase 5.1.** Nuevo `Web/scripts/localizar-imagenes.mjs` con modo
+  `--dry-run`: recorre los html, css y js de las tres carpetas de demos,
+  extrae las URLs unicas de `upload.wikimedia.org`, mide cada una con una
+  peticion HEAD (User-Agent propio, 2 por segundo, reintentos con espera
+  creciente ante un 429), agrupa por demo y detecta las referencias que no
+  son una URL literal.
+- **Resultado: 416 URLs unicas, 860 referencias, 86 demos y 87,26 MB**, que
+  suman 150,17 MB una vez repartidos por carpeta (cada demo guarda su copia).
+  **Se superan los 40 MB que marca el plan, asi que la descarga se detiene**
+  hasta que Angel decida.
+- **0 referencias construidas**: todas son URL literales, asi que reescribirlas
+  sera mecanico. Quedan ademas 465 fichas de Commons, que son enlaces de
+  atribucion y no imagenes que bajar.
+- `Web/data/inventario-imagenes.json` y `Web/data/imagenes-head.json` (cache
+  de las HEAD, para no repetir 4 minutos de medicion) van al `.gitignore`.
+
 ## [Constancia de la fase 4 cerrada] - 2026-10-03
 
 - `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase4.md` recoge los dos
