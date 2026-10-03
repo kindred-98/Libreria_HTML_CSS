@@ -9,6 +9,85 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [El generador de QR deja de mandar la URL a un tercero] - 2026-10-03
+
+- **Fase 2.2.** `CreacionesNuevas/url-qr-code-generator/` ya no llama a
+  `api.qrserver.com`: la URL del visitante deja de salir del navegador. En su
+  sitio se incrusta `qrcode-generator` v2.0.4 (MIT, Kazuhiko Arase) en
+  `vendor/qrcode.js` junto con `vendor/LICENSE-qrcode-generator`, y
+  `script.js` dibuja el QR en local y lo entrega como data URL de
+  `image/gif`, que el `img-src data:` del CSP ya permitia. `index.html` carga
+  la libreria con `defer` antes que `script.js`.
+- **El paquete se bajo con `npm pack`** y solo se copiaron esos dos ficheros;
+  el tarball no trae `LICENSE`, asi que el texto MIT se tomo del repositorio
+  de origen, donde coincide con la cabecera que la libreria ya llevaba dentro
+  de `qrcode.js`. Queda inventariado en `Docs/THIRD_PARTY_NOTICES.md`.
+- **`img-src` pierde `https://api.qrserver.com` en los cinco bloques CSP** de
+  `vercel.json` y su entrada sale de la tabla `RELEVANCE` en
+  `validar-csp.mjs`. Senal que disparo el cambio, antes de tocar nada:
+
+  ```text
+  SOBRANTE: img-src sigue permitiendo api.qrserver.com, que ya no usa ningun demo
+  ```
+
+- **`README.md` pasa de nueve hosts externos a ocho y `PRIVACY.md` deja de
+  citar ese tercero**, que ya no recibe nada.
+- **Probado con Playwright en modo offline**: QR en
+  `data:image/gif;base64,...` con **0 peticiones externas y 0 errores de
+  pagina**, mensaje `URL too long for a QR code` cuando la libreria lanza
+  `code length overflow. (20020>18672)`, vuelta a funcionar despues del error
+  y descarga del `qrcode.gif` disparada.
+- **Sin dependencias nuevas**: solo `devDependencies.playwright`, que ya
+  estaba. `grep -rn "qrserver"` en `*.js`, `*.html` y `*.css` no devuelve
+  nada; lo unico que queda es documentacion.
+
+## [Los bloques de codigo del markdown-preview-live ya se renderizan] - 2026-10-03
+
+- **Fase 2.1.** En `CreacionesNuevas/markdown-preview-live/script.js` la regex
+  del bloque con tres acentos pasa de `` /[sS]*?/ `` a `` /[\s\S]*?/ ``. Con
+  `[sS]` solo coincidian las letras *s* y *S*, asi que un bloque multilinea
+  nunca se reconocia: el demo lo rompia con la regla de codigo en linea y el
+  usuario veia las comillas invertidas en crudo en vez de `<pre><code>`.
+- **El orden no se toca y ahora lo dice un comentario.** El escape de `&`, `<`
+  y `>` sigue siendo lo primero de `parse()`, y ese comentario deja constancia
+  de que es lo que impide que `<img src=x onerror=...>` se ejecute en un demo
+  que vuelca a `innerHTML`.
+- **Probado con Playwright** (ya era `devDependency`, sin añadir dependencias):
+
+  ```text
+  ANTES  <pre><code> presente: false   salida: <code>`</code>js\nconst x = 42;...
+  DESPUES <pre><code> presente: true   salida: <pre><code>js\nconst x = 42;\n...  </code></pre>
+
+  XSS en las dos versiones: &lt;img src=x onerror=alert(1)&gt;
+                            elementos <img>: 0 · alert() disparado: 0
+  ```
+
+## [Constancia de la fase 1 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase1.md` recoge las cinco
+  subfases aplicadas y fusionadas en el PR #3 (`ff215a2`): las cuatro politicas
+  de `sandbox` para las 1018 rutas de demo, el test de la direccion de
+  donacion, `npm audit` en el CI, el workflow de CodeQL con las acciones
+  fijadas por SHA y el `SECURITY.md` sin correo personal.
+- Incluye las nueve pruebas negativas, la verificacion `curl` contra el preview
+  y contra produccion, el recuento de las 9 alertas de CodeQL que abrio `main`
+  y las dos desviaciones respecto al plan: los patrones `.*index\.html` y los
+  nombres reales de los status checks (`Validar (Node 20/22/24)`, no
+  `Validar sitio`).
+
+## [El correo personal sale tambien del plan de fases] - 2026-10-03
+
+- **Ampliacion de la 1.5.** En
+  `Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md:110` el correo se
+  sustituye por el marcador `<correo-personal-del-mantenedor>`. La orden del
+  `grep` sigue funcionando con el marcador, asi que la instruccion no se rompe.
+- **Estado**: `git grep` con la cadena del correo ya no encuentra el plan. Lo
+  unico que queda es el propio CHANGELOG, cuyas entradas anteriores documentan
+  el hallazgo, igual que pasaba con los informes de la auditoria.
+- **Ficheros vivos del repositorio: 0 apariciones.** El correo sigue en 7
+  commits del historial; sacarlo de ahi exige `git filter-repo` y sigue siendo
+  la fase 9 del plan.
+
 ## [SECURITY.md deja de publicar el correo personal] - 2026-10-02
 
 - **Fase 1.5.** El parrafo «Alternativa por correo» de `SECURITY.md:22` se
