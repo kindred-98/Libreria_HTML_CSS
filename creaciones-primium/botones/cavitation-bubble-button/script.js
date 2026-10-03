@@ -46,7 +46,11 @@
   }
 
   function render(now) {
-    var t = (now - t0) / 1000;
+    // El primer frame puede traer una marca de tiempo anterior a t0 (Chromium
+    // reutiliza la del frame en curso, que empiezo antes que este guion), y con
+    // t negativo `gen` sale -1, que es el centinela de B.gen: no se inicializa
+    // B.x/B.y y la linea de dibujo revienta al leer .toFixed de undefined.
+    var t = Math.max(0, (now - t0) / 1000);
     var peak = 0;
     var live = 0;
     var hot = 0;

@@ -9,6 +9,21 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Dos demos que reventaban al cargar] - 2026-10-03
+
+- **Fase 4, excepciones.** `formularios-plan-cancellation-flow/script.js`
+  registraba oyentes sobre `el("motivo")`, pero `motivo` es un grupo de radios
+  y no tiene control unico: sus miembros ya se enlazan mas abajo, con
+  `pintar(CAMPOS[0])`. Ahora se comprueba que haya control antes de registrar.
+- **`botones-cavitation-bubble-button/script.js`** leia `.toFixed` de
+  `undefined` en unas 11 de cada 40 cargas. El primer frame de Chromium puede
+  traer una marca de tiempo anterior a `t0` (reutiliza la del frame en curso),
+  `t` salia negativa y `gen` coincidia con el centinela `-1` de `B.gen`, de
+  modo que `B.x` y `B.y` no se inicializaban. El tiempo se acota a 0.
+- Las dos entradas salen de `Web/data/smoke-baseline.json` en este mismo
+  commit, como manda el plan. Comprobado con 40 recargas del mismo demo:
+  **11 fallos antes, 0 despues**.
+
 ## [Constancia de la fase 3 cerrada] - 2026-10-03
 
 - `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase3.md` recoge la fase
