@@ -9,6 +9,19 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [El correo personal sale tambien del plan de fases] - 2026-10-03
+
+- **Ampliacion de la 1.5.** En
+  `Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md:110` el correo se
+  sustituye por el marcador `<correo-personal-del-mantenedor>`. La orden del
+  `grep` sigue funcionando con el marcador, asi que la instruccion no se rompe.
+- **Estado**: `git grep` con la cadena del correo ya no encuentra el plan. Lo
+  unico que queda es el propio CHANGELOG, cuyas entradas anteriores documentan
+  el hallazgo, igual que pasaba con los informes de la auditoria.
+- **Ficheros vivos del repositorio: 0 apariciones.** El correo sigue en 7
+  commits del historial; sacarlo de ahi exige `git filter-repo` y sigue siendo
+  la fase 9 del plan.
+
 ## [SECURITY.md deja de publicar el correo personal] - 2026-10-02
 
 - **Fase 1.5.** El parrafo «Alternativa por correo» de `SECURITY.md:22` se

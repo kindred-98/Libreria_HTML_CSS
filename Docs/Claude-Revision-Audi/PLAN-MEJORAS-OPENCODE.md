@@ -107,7 +107,7 @@ Con ~1.000 demos CodeQL puede generar muchos avisos informativos (`innerHTML` y 
 ### 1.5 `SECURITY.md` sin correo personal
 
 **STOP:** haz esto solo si Ángel confirma que activó el reporte privado de vulnerabilidades (Fase 0). Después:
-- `grep -rn "angelecheniq" .` en todo el repo (excluye `.git`) y sustituye en `SECURITY.md` el párrafo "Alternativa por correo" por un enlace a `https://github.com/kindred-98/Libreria_HTML_CSS/security/advisories/new`.
+- `grep -rn "<correo-personal-del-mantenedor>" .` en todo el repo (excluye `.git`) y sustituye en `SECURITY.md` el párrafo "Alternativa por correo" por un enlace a `https://github.com/kindred-98/Libreria_HTML_CSS/security/advisories/new`.
 - Si el correo aparece en otros ficheros, lista cada aparición en el informe y no los cambies sin avisar.
 - Nota para el informe: el correo seguirá en el historial de git. Eso no se arregla con esta fase.
 
