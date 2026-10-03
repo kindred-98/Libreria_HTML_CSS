@@ -165,7 +165,7 @@ async function clasificar(indexAbsoluto) {
         partes.push(await readFile(path.join(path.dirname(indexAbsoluto), entrada.name), "utf8"));
       }
     }
-    const enLinea = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map((m) => m[1]);
+    const enLinea = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\b[^>]*>/gi)].map((m) => m[1]);
     return partes.concat(enLinea).join("\n");
   })();
 

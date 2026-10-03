@@ -144,10 +144,21 @@ son el mismo componente. Tiempo: ~14 s.
 
 ### 4.1 `html-validate` sobre las páginas del sitio
 
-`html-validate` **11.16.1** (versión exacta) y `npm run validar:html`:
+`html-validate` **10.17.0** (versión exacta) y `npm run validar:html`:
 `Web/*.html`, `404.html` y `index.html`. **No** se aplica a los 1.018 demos —
 están hechos a mano por autores distintos e imponerles una norma ajena
 reventaría el CI en el primer push.
+
+> **Bajada de 11.16.0 a 10.17.0.** La primera versión instalada fue la 11, y
+> en la PR el job de **Node 20 falló a los 17 s** con
+> `TypeError: fs.globSync is not a function`: `fs.globSync` solo existe desde
+> Node 22, y `html-validate@11` lo usa en su expansión de ficheros (pide
+> `^22.22.0 || >= 24.8.0`). Como su paso corre en **los tres** jobs, eso
+> reventaba uno de los tres checks requeridos. `html-validate@10.17.0` pide
+> `^20.19.0 || ^22.16.0 || >= 24.0.0` y valida igual: comprobado a mano con
+> `npx node@20`, `node@22` y `node@24`, los tres en EXIT 0, y con un fichero
+> de prueba para confirmar que las reglas siguen cazando (`doctype-style`,
+> `element-required-attributes`, `attr-quotes`).
 
 Arreglos para que pasara:
 
@@ -190,6 +201,24 @@ Paso en el CI **en las tres versiones de Node** (es estático y tarda 1,3 s).
 
 11 URLs de fuera (las de `localhost`/`127.0.0.1` se saltan), todas en 200, ~6
 segundos. Intenta `HEAD` y, si el servidor lo rechaza, repite con `GET`.
+
+### 4.4 Los tres avisos nuevos de CodeQL
+
+La PR abierta levantó **3 alertas nuevas de nivel *high*** en ficheros que
+escribió esta misma fase. No son checks requeridos, pero salían en rojo y los
+cambios eran de una línea, así que se arreglaron en el mismo commit que la
+bajada de `html-validate`:
+
+| Fichero | Regla | Cambio |
+|---|---|---|
+| `add-reduced-motion.mjs` | Bad HTML filtering regexp | el cierre pasa a `<\/script\b[^>]*>`, que sí casa con `</script >` |
+| `detectar-duplicados.mjs` | Incomplete multi-character sanitization | el `replace` de `<!--` va en bucle hasta que ya no cambia |
+| `validar-encabezados.mjs` | Incomplete multi-character sanitization | igual: un solo `replace` dejaba `<!--` suelto con comentarios anidados |
+
+El bucle no cambia el resultado en los ficheros de este repo (que no tienen
+comentarios anidados): lo que hace es que `<!--` no pueda sobrevivir, que es
+lo que exige la regla. Los **9 avisos de CodeQL anteriores** siguen como
+estaban: fuera del plan, decidido no tocar.
 
 ---
 
@@ -363,7 +392,7 @@ fallo) y no lo corren. Está anotado en `CONTRIBUTING.md` regla 5.
 | `npm run validar:layout` | ✅ 5 páginas × 23 anchos |
 | `npm run validar:a11y` | ✅ 0 `serious`/`critical` en 12 pasadas |
 | `npm run validar:encabezados` | ✅ 1018 recorridos, 0 saltos |
-| `npm run validar:html` | ✅ EXIT 0 |
+| `npm run validar:html` | ✅ EXIT 0 en Node 20, 22 y 24 |
 | `npm run validar:enlaces` | ✅ 46 locales + 18 externos, 0 rotos |
 | `npm run validar:lighthouse` | ✅ 3 páginas, 4 categorías |
 | `npm run validar:demos` | ✅ 1018/1018, 0 fallos |

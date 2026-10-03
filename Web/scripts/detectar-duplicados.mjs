@@ -54,7 +54,15 @@ async function buscarDemos(directorio) {
 function quitarComentarios(contenido, tipo) {
   let limpio = contenido;
   if (tipo === "html" || tipo === "css") limpio = limpio.replace(/\/\*[\s\S]*?\*\//g, "");
-  if (tipo === "html") limpio = limpio.replace(/<!--[\s\S]*?-->/g, "");
+  if (tipo === "html") {
+    // En bucle: un solo replace deja `<!--` suelto cuando hay comentarios
+    // anidados o pegados, y eso es lo que marca CodeQL.
+    let anterior;
+    do {
+      anterior = limpio;
+      limpio = limpio.replace(/<!--[\s\S]*?-->/g, "");
+    } while (limpio !== anterior);
+  }
   if (tipo === "js") {
     // Los `//` de `https://` no son comentarios: se salta cualquier barra
     // precedida de dos puntos o de otra barra.

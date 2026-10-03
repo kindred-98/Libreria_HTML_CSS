@@ -21,6 +21,23 @@ queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplica
   [`Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`](./Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md),
   para que lo ejecute Angel una vez la PR este en `main`.
 
+## [Arregla el CI de Node 20 y los tres avisos nuevos de CodeQL] - 2026-10-03
+
+- La PR fallo en uno de los checks requeridos, `Validar (Node 20)`, a los 17 s:
+  `html-validate` 11.x usa `fs.globSync`, que **solo existe desde Node 22**
+  (la 11.x pide `^22.22.0 || >= 24.8.0`), y su paso corre en los tres jobs.
+  Se baja a **10.17.0** (`^20.19.0 || ^22.16.0 || >= 24.0.0`), que valida
+  igual: comprobado con `npx node@20`, `node@22` y `node@24`, los tres en
+  EXIT 0, y con un fichero de prueba para confirmar que las reglas siguen
+  cazando (`doctype-style`, `element-required-attributes`, `attr-quotes`).
+- Los tres avisos *high* nuevos de CodeQL en scripts de esta misma fase, con
+  los cambios que sugeria el propio bot: el cierre de `<script>` en
+  `add-reduced-motion.mjs`, y el `replace` de `<!--` en bucle hasta que ya no
+  cambia en `detectar-duplicados.mjs` y `validar-encabezados.mjs`.
+- Verificado en verde: `validar`, `validar:encabezados`, `validar:html` en las
+  tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
+  `validar:lighthouse` (99/86/100).
+
 ## [Constancia de la fase 7 cerrada] - 2026-10-03
 
 - `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md` reune los seis

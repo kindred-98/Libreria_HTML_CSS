@@ -60,8 +60,14 @@ for (const raiz of RAICES) {
 
     // Los comentarios se quitan antes de leer: un `<!-- <h3> -->` de muestra no
     // es un encabezado, y contarlos daria un falso positivo que nadie sabria
-    // por que aparecia.
-    const limpio = html.replace(/<!--[\s\S]*?-->/g, "");
+    // por que aparecia. En bucle, por lo mismo que en `detectar-duplicados`:
+    // un solo replace no vacia comentarios anidados y deja `<!--` suelto.
+    let limpio = html;
+    let previo;
+    do {
+      previo = limpio;
+      limpio = limpio.replace(/<!--[\s\S]*?-->/g, "");
+    } while (limpio !== previo);
     const niveles = [...limpio.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1]));
     if (!niveles.length) continue;
     conEncabezados += 1;
