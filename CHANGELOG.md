@@ -9,6 +9,27 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Duplicados y las dependencias de las nuevas comprobaciones (fase 7.2)] - 2026-10-03
+
+- Nuevo `Web/scripts/detectar-duplicados.mjs` y `npm run duplicados`: calcula
+  el hash del contenido normalizado (HTML, CSS y JS sin comentarios ni
+  espacios) y una similitud por tokens, e informa de los pares a partir de
+  0,90. **Solo informa: no borra nada y siempre sale con 0.** Tarda ~14 s.
+- Resultado: **0 demos con hash identico y 0 pares por encima de 0,90**. El
+  maximo real de la biblioteca es **0,726**,
+  `DavokerDiseñador/matrix/conejo` contra `matrix/dodge`, que comparten
+  plantilla y no duplicado.
+- Se ignoran los tokens presentes en mas de la mitad de los demos (509 de
+  1018): de otro modo todos parecerian iguales por compartir `div`, `class` y
+  las mismas utilidades.
+- `package.json` y `package-lock.json` estrenan los scripts y las
+  `devDependencies` de los apartados que siguen: `validar:html`,
+  `validar:enlaces`, `enlaces:externos`, `sitemap` y `validar:lighthouse`, con
+  `html-validate` 11.16.1, `lighthouse` 13.5.0 y `chrome-launcher` 1.2.2.
+  `npm audit --audit-level=high` sigue en **0 vulnerabilidades**.
+- `CONTRIBUTING.md` regla 5 ampliada con las cinco y con el detalle de que
+  `lighthouse` 13 pide Node ≥ 22.19.
+
 ## [Reclasificacion de la categoria Other (fase 7.1)] - 2026-10-03
 
 - 35 de los 36 demos que estaban en `Other` pasan a una categoria existente,
