@@ -77,6 +77,13 @@ jobs:
       - name: Comprobar el CSP del despliegue
         run: node Web/scripts/validar-csp.mjs
 
+      # Estructura de encabezados de los demos: si de h1 se salta a h3, un lector
+      # de pantalla anuncia un h2 que no existe y el indice deja de reflejar lo
+      # que se ve. Es estatico y tarda menos de un segundo, asi que corre en las
+      # tres versiones como las demas comprobaciones de ficheros.
+      - name: Comprobar que los demos no saltan de nivel en sus encabezados
+        run: npm run validar:encabezados
+
       # El sellado y los ZIP son los otros dos comandos del buildCommand de
       # Vercel, y hasta aqui solo se habian ejecutado en el despliegue: un HTML
       # que apunte a un asset inexistente o un demo que cambie de licencia no

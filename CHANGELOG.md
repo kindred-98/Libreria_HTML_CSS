@@ -9,6 +9,25 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Encabezados: los 7 demos que saltaban de h1 a h3 (fase 6.2)] - 2026-10-03
+
+- Nuevo `Web/scripts/validar-encabezados.mjs` y `npm run validar:encabezados`:
+  recorre el `index.html` de los 1.018 demos, saca los encabezados en orden (sin
+  contar los comentarios) y anota todo nivel que suba de mas de uno. Sale con
+  codigo 1 si hay alguno.
+- **Detecta exactamente los 7 ids que preveia el plan**, todos con el mismo
+  patron (`h1` seguido de `h3` dentro del visor): `aurora-album`, `cat-studio`,
+  `coffee-stage`, `fogwood-diagram`, `fruits-finder`, `nightcity-film` y
+  `rooftops-board`.
+- **Los 7 arreglados:** el `h3` pasa a `h2`, la convencion que ya usan los
+  demas demos de la categoria (`h1, h2, h3`). **Sin cambios de CSS:** las siete
+  clases de titulo (`.page__name`, `.hv-name`, `.vp-name`, `.ins-name`,
+  `.rv-name` y `.vw-name`) fijan `font-size`, `margin` y `font-weight` a mano, y
+  el unico selector por etiqueta que existe (`h1,h2,h3` de `aurora-album`) ya
+  incluye el `h2`, asi que el aspecto no cambia.
+- El paso **Comprobar que los demos no saltan de nivel en sus encabezados**
+  entra al CI en las tres versiones de Node.
+
 ## [Accesibilidad: axe-core en las paginas del sitio (fase 6.1)] - 2026-10-03
 
 - **`@axe-core/playwright` 4.13.0** como `devDependency` con version exacta y
