@@ -193,7 +193,10 @@ CAMPOS.forEach(f => {
     }
     return;
   }
+  // `motivo` no tiene un control unico: es un grupo de radios y sus miembros
+  // se enlazan mas abajo, asi que aqui no hay nada que registrar.
   const control = el(f.id);
+  if (!control) return;
   control.addEventListener("blur", () => pintar(f));
   control.addEventListener("input", () => {
     if (control.closest(".campo").dataset.estado === "error") pintar(f);

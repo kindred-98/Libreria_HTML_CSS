@@ -41,9 +41,26 @@ creaciones-primium/botones/animated-dial-button/
 
 **4. Cuida las mayúsculas y minúsculas del nombre de carpeta.** Este es el error que más problemas ha causado. El catálogo construye la ruta de la vista previa a partir del nombre en disco, así que si `Mi-Boton/` está en el repositorio como `Mi-Boton` y en el catálogo como `mi-boton`, la vista previa da 404 en Linux y **no se nota en Windows**, porque el sistema de archivos no distingue mayúsculas. Escribe siempre en minúsculas y comprueba con `git ls-files` que coincide.
 
-**5. Sin dependencias.** El proyecto no tiene `dependencies` ni `devDependencies`, y no debe empezar a tenerlas. Todo el JavaScript es vanilla y vive en la carpeta del componente o en `Web/scripts/`.
+**5. Sin dependencias en los componentes.** Los demos no llevan `dependencies` ni `devDependencies`, y no deben empezar a tenerlas: todo el JavaScript es vanilla y vive en la carpeta del componente. Las únicas `devDependencies` del repositorio son las de las comprobaciones automáticas de `Web/scripts/` (`playwright`, `@axe-core/playwright`, `html-validate`, `lighthouse` y `chrome-launcher`) y no se añade ninguna más sin decidirlo. `lighthouse` 13 exige Node ≥ 22.19, así que en el CI solo se ejecuta en el job de Node 24; el resto de jobs lo instalan sin más.
 
 **6. Cada componente es independiente.** Se abre directamente en el navegador, con su HTML, CSS y JavaScript. No puede depender de nada externo salvo una fuente o una biblioteca vía CDN, y en ese caso con la versión **fijada** (`@5.5.2`), nunca `@5` a secas.
+
+**7. Respeta `prefers-reduced-motion`.** Si tu componente anima con CSS (`@keyframes`, `animation` o `transition`), termina su hoja de estilos con este bloque:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+```
+
+No apaga la animación: la deja en 0,01 ms, así el navegador la da por resuelta y se ve el estado final sin el recorrido. Hay personas a las que ese recorrido les provoca mareo, y el sistema operativo ya les ha preguntado si quieren menos movimiento. Las dos excepciones son los componentes de la categoría **Loaders**, donde la animación *es* la información, y los que solo animan desde JavaScript, que necesitan `window.matchMedia("(prefers-reduced-motion: reduce)").matches` en su script.
+
+`node Web/scripts/validate.mjs` avisa (no falla) de los componentes que animan con CSS sin este bloque. Para añadirlo en bloque a los que faltan: `node Web/scripts/add-reduced-motion.mjs --dry-run`.
 
 ## Después de añadir el componente
 

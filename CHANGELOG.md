@@ -9,6 +9,354 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [1.0.0] - 2026-10-03
+
+- Version inicial del catalogo, tras aplicar las fases 0 a 7 del plan de la
+  auditoria: cabeceras y seguridad, wallet, CI, comprobaciones automaticas de
+  layout, accesibilidad, encabezados y movimiento reducido, y calidad del CI
+  con html-validate, control de enlaces, sitemap y Lighthouse.
+- Cada fase tiene su propia entrada mas abajo, de mas reciente a mas antigua.
+- El tag y la release no se crean desde aqui: el comando `gh release create`
+  queda en
+  [`Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`](./Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md),
+  para que lo ejecute Angel una vez la PR este en `main`.
+
+## [Arregla el CI de Node 20 y los tres avisos nuevos de CodeQL] - 2026-10-03
+
+- La PR fallo en uno de los checks requeridos, `Validar (Node 20)`, a los 17 s:
+  `html-validate` 11.x usa `fs.globSync`, que **solo existe desde Node 22**
+  (la 11.x pide `^22.22.0 || >= 24.8.0`), y su paso corre en los tres jobs.
+  Se baja a **10.17.0** (`^20.19.0 || ^22.16.0 || >= 24.0.0`), que valida
+  igual: comprobado con `npx node@20`, `node@22` y `node@24`, los tres en
+  EXIT 0, y con un fichero de prueba para confirmar que las reglas siguen
+  cazando (`doctype-style`, `element-required-attributes`, `attr-quotes`).
+- Los tres avisos *high* nuevos de CodeQL en scripts de esta misma fase, con
+  los cambios que sugeria el propio bot: el cierre de `<script>` en
+  `add-reduced-motion.mjs`, y el `replace` de `<!--` en bucle hasta que ya no
+  cambia en `detectar-duplicados.mjs` y `validar-encabezados.mjs`.
+- Verificado en verde: `validar`, `validar:encabezados`, `validar:html` en las
+  tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
+  `validar:lighthouse` (99/86/100).
+
+## [Arregla los seis fallos de fiabilidad de SonarCloud y la duplicacion del servidor] - 2026-10-03
+
+- Los seis issues que SonarCloud marcaba como *failure* son tres `sort()` sin
+  comparador (en `localizar-imagenes.mjs`, `comprobar-enlaces-externos.mjs` y
+  `smoke-demos.mjs`) y tres `getAttribute`/`setAttribute` por `data-*` en
+  `validar-a11y.mjs`, sustituidos por `.dataset` con la misma semantica
+  (`data-probe-foco` -> `dataset.probeFoco`; cuando no esta, `?? null` para
+  conservar el `=== null` que ya tenia la comprobacion).
+- Tambien se quito el `import { createHash } from "node:crypto"` que
+  `localizar-imagenes.mjs` arrastraba sin usar desde la fase 5.
+- Para bajar la duplicacion, las 42 lineas identicas de `puertoLibre` +
+  `arrancarServidor` que tenian `validar-a11y.mjs` y `validar-lighthouse.mjs`
+  pasan a `Web/scripts/lib/servidor.mjs`. Los dos importan de ahi, y se
+  borran las copias locales con sus imports asociados (`spawn`, `net`,
+  `path`, `fileURLToPath`).
+- Verificado en verde: `validar`, `validar:encabezados`, `validar:html` (en
+  Node 20/22/24), `validar:enlaces`, `duplicados` (sigue en 0),
+  `enlaces:externos`, `sitemap`, `validar:a11y` (sin `serious`/`critical` en
+  12 pasadas) y `validar:lighthouse` (97/86/100).
+- `SonarCloud Code Analysis` **no es check requerido** por el ruleset, asi
+  que no bloquea el merge; este commit lo deja en verde.
+
+## [Constancia de la fase 7 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md` reune los seis
+  apartados (7.1 a 7.6, incluido el opcional), la tabla completa de los 35
+  demos reclasificados, el motivo del unico que sigue en «Other», el resultado
+  del detector de duplicados, los umbrales de Lighthouse y los criterios de
+  aceptacion, ya los siete en verde.
+- Con esto cierran las ocho fases del plan. La 5 quedo cancelada por Angel
+  (87,26 MB por encima del umbral de 40 MB).
+- La tabla «Registro de avance» del
+  [`PLAN-MEJORAS-OPENCODE.md`](./Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md)
+  queda rellena: siete fases hechas y una cancelada, con la PR como unico
+  paso pendiente.
+
+## [Calidad del CI: HTML, enlaces, sitemap y Lighthouse (fases 7.3, 7.4 y 7.6)] - 2026-10-03
+
+- **`html-validate` 11.16.1** con `npm run validar:html` sobre `Web/*.html`,
+  `404.html` y `index.html`: las paginas del sitio, no los 1.018 demos. Arreglos
+  para que pasara: los 5 doctypes pasan a `<!DOCTYPE html>` (con `--fix`), la
+  portada gana `role="group"` en el resumen lateral, los dos botones del
+  carrusel tienen nombre accesible propio (`Go back` / `Advance`, que es
+  ademas el valor por defecto que pone `app.js` al cambiar de idioma), se
+  quita el `for` redundante de la etiqueta de busqueda y `team-core.html` lleva
+  el comentario de desactivacion antes del `scrolling="no"` del iframe.
+- **`Web/scripts/validar-enlaces.mjs`** y `npm run validar:enlaces`: comprueba
+  que los `href` y `src` relativos de las 5 paginas apuntan a un fichero que
+  existe y que los `#ancla` (en la misma pagina o en otra) tienen su `id`.
+  46 destinos locales y 18 externos. Paso en el CI de las tres versiones de
+  Node.
+- **`Web/scripts/comprobar-enlaces-externos.mjs`** con `npm run
+  enlaces:externos` y el workflow `.github/workflows/enlaces-externos.yml`:
+  `schedule` (`17 6 * * 1`, lunes) y `workflow_dispatch`, con
+  `continue-on-error`, sin `npm ci` (solo usa API del navegador de Node) y
+  **sin bloquear PRs**. 11 URLs de fuera, todas en 200, ~6 s. Las de
+  `localhost` se saltan.
+- **`Web/scripts/generar-sitemap.mjs`** con `npm run sitemap`: añade
+  `<lastmod>` a las tres URLs con `git log -1 --format=%cs` y **omite la
+  etiqueta si git no tiene historial** (clon superficial en Vercel) en lugar
+  de inventar la fecha. Idempotente, y ya entra al final del `buildCommand` de
+  `vercel.json`.
+- **`Web/scripts/validar-lighthouse.mjs`** con `npm run validar:lighthouse`
+  (apartado 7.6, opcional): las 3 paginas con `lighthouse` 13.5.0, umbrales
+  **rendimiento >= 80 y accesibilidad, buenas practicas y SEO >= 95**.
+  Resultado: portada 99/100/100/100, componentes 86/95/100/100 y team core
+  100/100/100/100. ~35 s, paso del job de Node 24 en el CI.
+- El 7.6 se activo porque la condicion del plan se cumplia: la secuencia
+  completa del job mas largo dura ~5 min 16 s en local, y con Lighthouse
+  ~6 min, por debajo de los 15 minutos que pide el plan.
+- Mide con el **preset desktop**, no con el movil que trae Lighthouse por
+  defecto: el resto de comprobaciones del repositorio miden a 1350 px y el
+  throttling movil parpadearia +-5 puntos entre pasadas. Los valores moviles
+  medidos (76-81) quedan en `Fase7.md`.
+
+## [Duplicados y las dependencias de las nuevas comprobaciones (fase 7.2)] - 2026-10-03
+
+- Nuevo `Web/scripts/detectar-duplicados.mjs` y `npm run duplicados`: calcula
+  el hash del contenido normalizado (HTML, CSS y JS sin comentarios ni
+  espacios) y una similitud por tokens, e informa de los pares a partir de
+  0,90. **Solo informa: no borra nada y siempre sale con 0.** Tarda ~14 s.
+- Resultado: **0 demos con hash identico y 0 pares por encima de 0,90**. El
+  maximo real de la biblioteca es **0,726**,
+  `DavokerDiseñador/matrix/conejo` contra `matrix/dodge`, que comparten
+  plantilla y no duplicado.
+- Se ignoran los tokens presentes en mas de la mitad de los demos (509 de
+  1018): de otro modo todos parecerian iguales por compartir `div`, `class` y
+  las mismas utilidades.
+- `package.json` y `package-lock.json` estrenan los scripts y las
+  `devDependencies` de los apartados que siguen: `validar:html`,
+  `validar:enlaces`, `enlaces:externos`, `sitemap` y `validar:lighthouse`, con
+  `html-validate` 11.16.1, `lighthouse` 13.5.0 y `chrome-launcher` 1.2.2.
+  `npm audit --audit-level=high` sigue en **0 vulnerabilidades**.
+- `CONTRIBUTING.md` regla 5 ampliada con las cinco y con el detalle de que
+  `lighthouse` 13 pide Node ≥ 22.19.
+
+## [Reclasificacion de la categoria Other (fase 7.1)] - 2026-10-03
+
+- 35 de los 36 demos que estaban en `Other` pasan a una categoria existente,
+  usando el campo `category` de `Web/data/component-overrides.json` y sin
+  renombrar ninguna carpeta. La tabla `id -> categoria` esta en
+  `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`.
+- Queda uno solo en `Other`: `dev-console-easter-egg`, que no tiene interfaz
+  y se dispara desde la consola del navegador; es el unico que no encaja en
+  ninguna categoria.
+- Recuento nuevo del catalogo: Effects 201, Navigation 161, Animations 101,
+  Cards 96, Loaders 96, Galleries 95, Controls 93, Buttons 89, Forms 85 y
+  Other 1.
+- `npm run catalogo` regenerado y `npm run validar` en verde.
+
+## [Constancia de la fase 6 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase6.md` reune los tres
+  apartados (6.1, 6.2 y 6.3), el informe del piloto de movimiento reducido, los
+  criterios de aceptacion —ya los cuatro en verde— y el siguiente paso.
+
+## [Movimiento: prefers-reduced-motion en 171 demos (fase 6.3)] - 2026-10-03
+
+- Nuevo `Web/scripts/add-reduced-motion.mjs`, **idempotente** y con marcador
+  `/* reduced-motion (Fase 6) */`. Tres modos: `--dry-run` (solo informe, el
+  que viene por defecto), `--piloto` (10 Effects + 10 Animations) y `--todos`.
+- Informe sobre los 1.018 demos: **722 ya escuchaban la preferencia**, 96 de la
+  categoria Loaders (fuera), **171 con movimiento CSS**, 14 que solo animan
+  desde JavaScript y 15 sin movimiento. El piloto de 16 demos salio verde en
+  `validar:demos`, se presento a Angel y con su visto bueno se aplico al resto.
+- **171 demos actualizados**: 127 Effects, 10 Other, 10 Controls, 7 Cards,
+  6 Animations, 5 Navigation, 5 Buttons y 1 Forms. El bloque no apaga la
+  animacion: la deja en 0,01 ms, que basta para que el navegador la de por
+  resuelta y se vea el estado final sin el recorrido.
+- **Fuera los 96 Loaders**, donde la animacion es la informacion, y **fuera los
+  14 demos que solo animan desde JavaScript** (`requestAnimationFrame`, `canvas`,
+  `setInterval`): un `animation-duration` no afecta a nada dibujado a mano.
+  Quedan anotados como trabajo futuro en `Fase6.md`.
+- `CONTRIBUTING.md` estrena la **regla 7** con el bloque, sus dos excepciones y
+  la forma de detectar los que faltan.
+- `validate.mjs` gana el apartado 9: **aviso, no fallo**, para los componentes
+  que animan con CSS sin escuchar la preferencia. Hoy sale 0 avisos; se verifico
+  que el aviso aparece quitando el bloque de un demo a mano.
+- Verificado en verde: `validar`, `validar:layout`, `validar:a11y`,
+  `validar:encabezados` y `validar:demos` (1018 demos, 0 con fallos).
+
+## [Encabezados: los 7 demos que saltaban de h1 a h3 (fase 6.2)] - 2026-10-03
+
+- Nuevo `Web/scripts/validar-encabezados.mjs` y `npm run validar:encabezados`:
+  recorre el `index.html` de los 1.018 demos, saca los encabezados en orden (sin
+  contar los comentarios) y anota todo nivel que suba de mas de uno. Sale con
+  codigo 1 si hay alguno.
+- **Detecta exactamente los 7 ids que preveia el plan**, todos con el mismo
+  patron (`h1` seguido de `h3` dentro del visor): `aurora-album`, `cat-studio`,
+  `coffee-stage`, `fogwood-diagram`, `fruits-finder`, `nightcity-film` y
+  `rooftops-board`.
+- **Los 7 arreglados:** el `h3` pasa a `h2`, la convencion que ya usan los
+  demas demos de la categoria (`h1, h2, h3`). **Sin cambios de CSS:** las siete
+  clases de titulo (`.page__name`, `.hv-name`, `.vp-name`, `.ins-name`,
+  `.rv-name` y `.vw-name`) fijan `font-size`, `margin` y `font-weight` a mano, y
+  el unico selector por etiqueta que existe (`h1,h2,h3` de `aurora-album`) ya
+  incluye el `h2`, asi que el aspecto no cambia.
+- El paso **Comprobar que los demos no saltan de nivel en sus encabezados**
+  entra al CI en las tres versiones de Node.
+
+## [Accesibilidad: axe-core en las paginas del sitio (fase 6.1)] - 2026-10-03
+
+- **`@axe-core/playwright` 4.13.0** como `devDependency` con version exacta y
+  lockfile actualizado. `CONTRIBUTING.md` corregido: la regla 5 decia que el
+  proyecto no tenia dependencias ni debia empezar a tenerlas, pero `playwright`
+  ya estaba.
+- Nuevo `Web/scripts/validar-a11y.mjs` y `npm run validar:a11y`: abre
+  `index.html`, `components.html` y `team-core.html` en un navegador de verdad
+  y los analiza en los dos idiomas y los dos temas (12 pasadas). **Corta con
+  violaciones `serious` y `critical`**; `moderate` y `minor` solo se informan.
+  Comprueba ademas que al tabular un boton y un enlace cambian de aspecto
+  (`:focus-visible` visible).
+- **Alcance: las paginas del sitio.** Las vistas previas de `components.html`
+  cargan demos dentro de un iframe, y esas incidencias se listan con el prefijo
+  `vista previa:` sin cortar: si cortaran, el CI dependiria de que el catalogo
+  no ruede un demo nuevo con un fallo.
+- **Arreglos propuestos por axe:** `.component-number` y `.warp-card-caption`
+  usaban `--quiet` (3,90:1 en claro y 4,14:1 en oscuro) y pasan a `--muted`
+  (6,06:1 y 7,06:1), el mismo motivo que ya tenia documentado `.footer-meta`.
+  Y el boton Aceptar de las cookies no llevaba ningun `background`, asi que
+  pintaba el gris por defecto del navegador (`rgb(107, 107, 107)`) con 2,21:1
+  sobre el aviso: pasa a `button-primary`.
+- El paso **Comprobar la accesibilidad de las paginas del sitio** entra al job
+  de Node 24 del CI, detras del de layout y reutilizando su Chromium.
+
+## [Fase 5 descartada: las imagenes de Wikimedia se quedan fuera] - 2026-10-03
+
+- **Decision de Angel tras el STOP que marca el plan.** El inventario (5.1) dio
+  **87,26 MB** frente a los **40 MB** que fija el plan: el repositorio pasaria
+  de 63,63 MiB a unos 151 MiB y el arbol de trabajo de 85,3 MB a 235 MB, con
+  binarias que no se borran del historial. Se le presentaron cuatro opciones y
+  descarto la fase.
+- **No se descarga ni se reescribe nada.** Las 416 imagenes siguen en
+  `upload.wikimedia.org`, ningun demo recibe `CREDITS.md` y el CSP no se toca:
+  `upload.wikimedia.org` y `commons.wikimedia.org` siguen en `img-src` porque
+  `validar-csp` sigue viendolos usados.
+- **Restriccion nueva descubierta:** Wikimedia solo sirve miniaturas en anchos
+  estandar (`20 40 60 120 250 330 500 960 1280 1920 3840`); `640px` y `480px`
+  devuelven 400. Se midio el unico ancho util por debajo, **500px = 26,84 MB**,
+  que si cabria en el umbral pero se notaria en los lightbox a pantalla
+  completa, donde las galerias pintan las fotos con `object-fit: contain`.
+- **`Web/scripts/localizar-imagenes.mjs` se conserva** como herramienta de
+  auditoria: `--dry-run` sigue sirviendo para volver a medir.
+- Quedan sin cubrir los criterios de la fase y del «estado esperado» que
+  dependen de dejar de hacer hotlinking. Detalle en
+  `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase5.md`.
+
+## [Inventario de las imagenes de Wikimedia] - 2026-10-03
+
+- **Fase 5.1.** Nuevo `Web/scripts/localizar-imagenes.mjs` con modo
+  `--dry-run`: recorre los html, css y js de las tres carpetas de demos,
+  extrae las URLs unicas de `upload.wikimedia.org`, mide cada una con una
+  peticion HEAD (User-Agent propio, 2 por segundo, reintentos con espera
+  creciente ante un 429), agrupa por demo y detecta las referencias que no
+  son una URL literal.
+- **Resultado: 416 URLs unicas, 860 referencias, 86 demos y 87,26 MB**, que
+  suman 150,17 MB una vez repartidos por carpeta (cada demo guarda su copia).
+  **Se superan los 40 MB que marca el plan, asi que la descarga se detiene**
+  hasta que Angel decida.
+- **0 referencias construidas**: todas son URL literales, asi que reescribirlas
+  sera mecanico. Quedan ademas 465 fichas de Commons, que son enlaces de
+  atribucion y no imagenes que bajar.
+- `Web/data/inventario-imagenes.json` y `Web/data/imagenes-head.json` (cache
+  de las HEAD, para no repetir 4 minutos de medicion) van al `.gitignore`.
+
+## [Constancia de la fase 4 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase4.md` recoge los dos
+  commits de la fase (`0750085` y `8495576`): las dos excepciones de la linea
+  base y el `<path>` del Mobius que se pintaba con `NaN`.
+- Incluye la causa raiz de cada uno, la comprobacion antes/despues (40
+  recargas de `cavitation-bubble-button`: **11 fallos antes, 0 despues**) y
+  los cinco criterios de aceptacion, todos cumplidos: linea base vacia y
+  `validar:demos` + `validar` en verde.
+
+## [El lomo del Mobius deja de pintarse con NaN] - 2026-10-03
+
+- **Fase 4, error de consola.**
+  `animaciones-mobius-infinity-loop/script.js` declaraba el buffer de la curva
+  central como `new Float64Array(SEG + 1)`, pero lo rellena por parejas x/y
+  con `C[i * 2]` y `C[i * 2 + 1]`. Un `Float64Array` no crece al escribir
+  fuera de rango, asi que desde la i = 85 las lecturas devolvian `undefined`,
+  `fmt()` les ponia `"NaN"` y Chromium se quejaba del atributo `d` del
+  `<path>` del lomo y de su halo.
+- Buffer a `(SEG + 1) * 2`, igual que `P` y `Pm`. Comprobado abriendo el demo:
+  **2 paths con `NaN` antes, ninguno despues**.
+- Su entrada sale de `Web/data/smoke-baseline.json`, que queda **vacia**: se
+  cumplen los dos criterios de aceptacion de la Fase 4.
+
+## [Dos demos que reventaban al cargar] - 2026-10-03
+
+- **Fase 4, excepciones.** `formularios-plan-cancellation-flow/script.js`
+  registraba oyentes sobre `el("motivo")`, pero `motivo` es un grupo de radios
+  y no tiene control unico: sus miembros ya se enlazan mas abajo, con
+  `pintar(CAMPOS[0])`. Ahora se comprueba que haya control antes de registrar.
+- **`botones-cavitation-bubble-button/script.js`** leia `.toFixed` de
+  `undefined` en unas 11 de cada 40 cargas. El primer frame de Chromium puede
+  traer una marca de tiempo anterior a `t0` (reutiliza la del frame en curso),
+  `t` salia negativa y `gen` coincidia con el centinela `-1` de `B.gen`, de
+  modo que `B.x` y `B.y` no se inicializaban. El tiempo se acota a 0.
+- Las dos entradas salen de `Web/data/smoke-baseline.json` en este mismo
+  commit, como manda el plan. Comprobado con 40 recargas del mismo demo:
+  **11 fallos antes, 0 despues**.
+
+## [Constancia de la fase 3 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase3.md` recoge la fase
+  aplicada en el commit `28704f3`: el script de test de humo, su linea base
+  versionada y el paso que se anade al CI de Node 24.
+- Incluye las cifras de la primera pasada (1.018 demos, **3 con fallos** y 85
+  con peticiones externas, con la lista completa), los dos intentos fallidos
+  que costaron entender, el demo intermitente y las cinco desviaciones
+  respecto al plan.
+
+## [Test de humo: los 1.018 demos abiertos de verdad] - 2026-10-03
+
+- **Fase 3.1.** Nuevo `Web/scripts/smoke-demos.mjs` y `npm run validar:demos`:
+  levanta `serve.mjs` en un puerto libre y abre cada entrada del catalogo en un
+  iframe con **el mismo sandbox de produccion** (`allow-scripts allow-forms
+  allow-popups`, sin `allow-same-origin`), que es lo que ve el visitante,
+  incluidos los demos que revientan por usar `localStorage` en un origen
+  opaco. Concurrencia 6, espera `load` + 1 s.
+- **Wrapper `404.html`**: el iframe necesita una pagina de este mismo origen
+  porque el `frame-ancestors 'self'` del demo no lo permite desde otro, y
+  404.html es la unica cuyo guion es sincrono y no vuelve a ejecutarse. El
+  cuerpo se limpia antes y despues de cada demo para anotar cada peticion
+  contra el demo al que pertenece y no contra el siguiente.
+- **Todo lo externo se aborta** con `page.route` y se anota aparte, para que el
+  resultado no dependa de la red: ahora mismo solo `upload.wikimedia.org`,
+  desde **85 demos** (cifra estable; las peticiones rondan las 540 y varian
+  porque el corte es aleatorio). Esa lista es la entrada de la Fase 5.
+- **Salidas**: `Web/data/smoke-report.json` (informe) en `.gitignore` y
+  `Web/data/smoke-baseline.json` (linea base) versionada.
+- **Linea base: 1.018 demos, 3 con fallos y 1.015 limpios** (el plan ordena
+  parar si superan 100): `animaciones-mobius-infinity-loop`, con error de
+  consola porque un `<path>` se dibuja con `NaN`, mas
+  `formularios-plan-cancellation-flow` y `botones-cavitation-bubble-button`,
+  con excepciones. 3 min 22 s en local.
+- **Los mensajes se normalizan antes de comparar** (puerto del servidor, query
+  `?previewRevision=...`, digitos de runtime y recorte a 40 caracteres en
+  consola y excepcion): sin eso la comparacion con la linea base es ruido puro
+  y el CI parpadea.
+- **CI**: paso "Abrir los demos (test de humo)" en el job de Node 24, tras
+  `validar:layout`, reutilizando el Chromium ya instalado.
+- `botones-cavitation-bubble-button` falla de forma intermitente: la linea base
+  lo incluye, asi que se ve como aviso cuando no salta y como fallo nuevo si
+  alguien regenera la linea base en una pasada tranquila.
+
+## [Constancia de la fase 2 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase2.md` recoge las dos
+  subfases aplicadas y fusionadas en el PR #4 (`06daa83`): la regex de los
+  bloques de codigo de `markdown-preview-live` y el QR de
+  `url-qr-code-generator` generado en local con `qrcode-generator` v2.0.4
+  incrustado en `vendor/`.
+- Incluye la prueba antes/despues de la 2.1, las cinco comprobaciones en modo
+  offline de la 2.2, la tabla de los seis ficheros que entran en el ZIP, los
+  tres criterios de aceptacion y las cinco desviaciones respecto al plan.
+
 ## [El generador de QR deja de mandar la URL a un tercero] - 2026-10-03
 
 - **Fase 2.2.** `CreacionesNuevas/url-qr-code-generator/` ya no llama a

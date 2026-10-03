@@ -77,6 +77,26 @@ jobs:
       - name: Comprobar el CSP del despliegue
         run: node Web/scripts/validar-csp.mjs
 
+      # Estructura de encabezados de los demos: si de h1 se salta a h3, un lector
+      # de pantalla anuncia un h2 que no existe y el indice deja de reflejar lo
+      # que se ve. Es estatico y tarda menos de un segundo, asi que corre en las
+      # tres versiones como las demas comprobaciones de ficheros.
+      - name: Comprobar que los demos no saltan de nivel en sus encabezados
+        run: npm run validar:encabezados
+
+      # Validacion del HTML de las paginas del sitio (no de los demos: estan
+      # generados a mano por autores distintos y imponerles una norma ajena
+      # reventaria el CI en el primer push). Arregla doctype, etiquetas sin
+      # nombre accesible y atributos redundantes.
+      - name: Comprobar el HTML de las paginas del sitio
+        run: npm run validar:html
+
+      # Enlaces relativos y anclas de las paginas del sitio. Un href mal
+      # escrito no rompe la pagina, solo lleva a un 404 cuando alguien hace
+      # clic, y eso es exactamente lo que no se descubre hasta produccion.
+      - name: Comprobar los enlaces y las anclas del sitio
+        run: npm run validar:enlaces
+
       # El sellado y los ZIP son los otros dos comandos del buildCommand de
       # Vercel, y hasta aqui solo se habian ejecutado en el despliegue: un HTML
       # que apunte a un asset inexistente o un demo que cambie de licencia no
@@ -102,3 +122,34 @@ jobs:
       - name: Comprobar que ninguna pagina se sale de lado
         if: matrix.node-version == 24
         run: npm run validar:layout
+
+      # Axe-core sobre las tres paginas del sitio en los dos idiomas y los dos
+      # temas. Las anteriores miden anchos y ficheros; esta es la unica que
+      # contesta si el sitio se puede usar sin raton ni vision: nombres
+      # accesibles, contraste de los 9 px del catalogo, orden de encabezados.
+      # Corta con serious y critical; moderate y minor solo se informan.
+      # Reutiliza el Chromium del paso anterior.
+      - name: Comprobar la accesibilidad de las paginas del sitio
+        if: matrix.node-version == 24
+        run: npm run validar:a11y
+
+      # Lighthouse sobre las mismas tres paginas: rendimiento >= 80 y el resto
+      # >= 95, con el preset desktop (lo justifica el propio script). Es el
+      # unico paso que pone numero a lo que cuesta pintar la pagina y a si los
+      # motores de busqueda la entienden; lo anterior contesta si se puede usar
+      # y si no se sale de lado. Reutiliza el Chromium de los pasos anteriores
+      # y tarda unos 35 s.
+      - name: Medir las paginas con Lighthouse
+        if: matrix.node-version == 24
+        run: npm run validar:lighthouse
+
+      # Abre los 1.018 demos de verdad, con el sandbox de produccion. Es el
+      # unico paso que mide lo que ve el visitante: las anteriores son
+      # estaticas y un demo que revienta en runtime no las hacia fallar.
+      # Compara contra Web/data/smoke-baseline.json (versionada) y solo corta
+      # si aparece un fallo NUEVO, no por los que ya estan catalogados.
+      # Reutiliza el Chromium del paso anterior; solo en Node 24 para no
+      # triplicar ~3-4 minutos por cada una de las tres versiones.
+      - name: Abrir los demos (test de humo)
+        if: matrix.node-version == 24
+        run: npm run validar:demos
