@@ -9,6 +9,28 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Fase 5 descartada: las imagenes de Wikimedia se quedan fuera] - 2026-10-03
+
+- **Decision de Angel tras el STOP que marca el plan.** El inventario (5.1) dio
+  **87,26 MB** frente a los **40 MB** que fija el plan: el repositorio pasaria
+  de 63,63 MiB a unos 151 MiB y el arbol de trabajo de 85,3 MB a 235 MB, con
+  binarias que no se borran del historial. Se le presentaron cuatro opciones y
+  descarto la fase.
+- **No se descarga ni se reescribe nada.** Las 416 imagenes siguen en
+  `upload.wikimedia.org`, ningun demo recibe `CREDITS.md` y el CSP no se toca:
+  `upload.wikimedia.org` y `commons.wikimedia.org` siguen en `img-src` porque
+  `validar-csp` sigue viendolos usados.
+- **Restriccion nueva descubierta:** Wikimedia solo sirve miniaturas en anchos
+  estandar (`20 40 60 120 250 330 500 960 1280 1920 3840`); `640px` y `480px`
+  devuelven 400. Se midio el unico ancho util por debajo, **500px = 26,84 MB**,
+  que si cabria en el umbral pero se notaria en los lightbox a pantalla
+  completa, donde las galerias pintan las fotos con `object-fit: contain`.
+- **`Web/scripts/localizar-imagenes.mjs` se conserva** como herramienta de
+  auditoria: `--dry-run` sigue sirviendo para volver a medir.
+- Quedan sin cubrir los criterios de la fase y del «estado esperado» que
+  dependen de dejar de hacer hotlinking. Detalle en
+  `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase5.md`.
+
 ## [Inventario de las imagenes de Wikimedia] - 2026-10-03
 
 - **Fase 5.1.** Nuevo `Web/scripts/localizar-imagenes.mjs` con modo
