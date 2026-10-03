@@ -9,6 +9,16 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Constancia de la fase 4 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase4.md` recoge los dos
+  commits de la fase (`0750085` y `8495576`): las dos excepciones de la linea
+  base y el `<path>` del Mobius que se pintaba con `NaN`.
+- Incluye la causa raiz de cada uno, la comprobacion antes/despues (40
+  recargas de `cavitation-bubble-button`: **11 fallos antes, 0 despues**) y
+  los cinco criterios de aceptacion, todos cumplidos: linea base vacia y
+  `validar:demos` + `validar` en verde.
+
 ## [El lomo del Mobius deja de pintarse con NaN] - 2026-10-03
 
 - **Fase 4, error de consola.**
