@@ -9,6 +9,40 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Test de humo: los 1.018 demos abiertos de verdad] - 2026-10-03
+
+- **Fase 3.1.** Nuevo `Web/scripts/smoke-demos.mjs` y `npm run validar:demos`:
+  levanta `serve.mjs` en un puerto libre y abre cada entrada del catalogo en un
+  iframe con **el mismo sandbox de produccion** (`allow-scripts allow-forms
+  allow-popups`, sin `allow-same-origin`), que es lo que ve el visitante,
+  incluidos los demos que revientan por usar `localStorage` en un origen
+  opaco. Concurrencia 6, espera `load` + 1 s.
+- **Wrapper `404.html`**: el iframe necesita una pagina de este mismo origen
+  porque el `frame-ancestors 'self'` del demo no lo permite desde otro, y
+  404.html es la unica cuyo guion es sincrono y no vuelve a ejecutarse. El
+  cuerpo se limpia antes y despues de cada demo para anotar cada peticion
+  contra el demo al que pertenece y no contra el siguiente.
+- **Todo lo externo se aborta** con `page.route` y se anota aparte, para que el
+  resultado no dependa de la red: ahora mismo solo `upload.wikimedia.org`,
+  desde **85 demos** (cifra estable; las peticiones rondan las 540 y varian
+  porque el corte es aleatorio). Esa lista es la entrada de la Fase 5.
+- **Salidas**: `Web/data/smoke-report.json` (informe) en `.gitignore` y
+  `Web/data/smoke-baseline.json` (linea base) versionada.
+- **Linea base: 1.018 demos, 3 con fallos y 1.015 limpios** (el plan ordena
+  parar si superan 100): `animaciones-mobius-infinity-loop`, con error de
+  consola porque un `<path>` se dibuja con `NaN`, mas
+  `formularios-plan-cancellation-flow` y `botones-cavitation-bubble-button`,
+  con excepciones. 3 min 22 s en local.
+- **Los mensajes se normalizan antes de comparar** (puerto del servidor, query
+  `?previewRevision=...`, digitos de runtime y recorte a 40 caracteres en
+  consola y excepcion): sin eso la comparacion con la linea base es ruido puro
+  y el CI parpadea.
+- **CI**: paso "Abrir los demos (test de humo)" en el job de Node 24, tras
+  `validar:layout`, reutilizando el Chromium ya instalado.
+- `botones-cavitation-bubble-button` falla de forma intermitente: la linea base
+  lo incluye, asi que se ve como aviso cuando no salta y como fallo nuevo si
+  alguien regenera la linea base en una pasada tranquila.
+
 ## [Constancia de la fase 2 cerrada] - 2026-10-03
 
 - `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase2.md` recoge las dos

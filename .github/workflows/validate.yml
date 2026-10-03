@@ -102,3 +102,14 @@ jobs:
       - name: Comprobar que ninguna pagina se sale de lado
         if: matrix.node-version == 24
         run: npm run validar:layout
+
+      # Abre los 1.018 demos de verdad, con el sandbox de produccion. Es el
+      # unico paso que mide lo que ve el visitante: las anteriores son
+      # estaticas y un demo que revienta en runtime no las hacia fallar.
+      # Compara contra Web/data/smoke-baseline.json (versionada) y solo corta
+      # si aparece un fallo NUEVO, no por los que ya estan catalogados.
+      # Reutiliza el Chromium del paso anterior; solo en Node 24 para no
+      # triplicar ~3-4 minutos por cada una de las tres versiones.
+      - name: Abrir los demos (test de humo)
+        if: matrix.node-version == 24
+        run: npm run validar:demos
