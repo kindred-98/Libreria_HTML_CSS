@@ -9,6 +9,16 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Constancia de la fase 3 cerrada] - 2026-10-03
+
+- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase3.md` recoge la fase
+  aplicada en el commit `28704f3`: el script de test de humo, su linea base
+  versionada y el paso que se anade al CI de Node 24.
+- Incluye las cifras de la primera pasada (1.018 demos, **3 con fallos** y 85
+  con peticiones externas, con la lista completa), los dos intentos fallidos
+  que costaron entender, el demo intermitente y las cinco desviaciones
+  respecto al plan.
+
 ## [Test de humo: los 1.018 demos abiertos de verdad] - 2026-10-03
 
 - **Fase 3.1.** Nuevo `Web/scripts/smoke-demos.mjs` y `npm run validar:demos`:
