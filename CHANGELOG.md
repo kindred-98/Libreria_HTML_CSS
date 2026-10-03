@@ -9,6 +9,27 @@ Cada fase terminada se registra aquí con su fecha. Las fases están definidas e
 en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
 queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
 
+## [Los bloques de codigo del markdown-preview-live ya se renderizan] - 2026-10-03
+
+- **Fase 2.1.** En `CreacionesNuevas/markdown-preview-live/script.js` la regex
+  del bloque con tres acentos pasa de `` /[sS]*?/ `` a `` /[\s\S]*?/ ``. Con
+  `[sS]` solo coincidian las letras *s* y *S*, asi que un bloque multilinea
+  nunca se reconocia: el demo lo rompia con la regla de codigo en linea y el
+  usuario veia las comillas invertidas en crudo en vez de `<pre><code>`.
+- **El orden no se toca y ahora lo dice un comentario.** El escape de `&`, `<`
+  y `>` sigue siendo lo primero de `parse()`, y ese comentario deja constancia
+  de que es lo que impide que `<img src=x onerror=...>` se ejecute en un demo
+  que vuelca a `innerHTML`.
+- **Probado con Playwright** (ya era `devDependency`, sin añadir dependencias):
+
+  ```text
+  ANTES  <pre><code> presente: false   salida: <code>`</code>js\nconst x = 42;...
+  DESPUES <pre><code> presente: true   salida: <pre><code>js\nconst x = 42;\n...  </code></pre>
+
+  XSS en las dos versiones: &lt;img src=x onerror=alert(1)&gt;
+                            elementos <img>: 0 · alert() disparado: 0
+  ```
+
 ## [Constancia de la fase 1 cerrada] - 2026-10-03
 
 - `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase1.md` recoge las cinco
