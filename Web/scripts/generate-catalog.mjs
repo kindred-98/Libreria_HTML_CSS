@@ -119,11 +119,12 @@ function readAttribute(tag, attribute) {
 function cleanText(value) {
   return value
     .replace(/<[^<>]*>/g, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;|&apos;/gi, "'")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
+    // Una sola pasada para los cinco entidades: encadenar `&amp; -> &` y luego
+    // `&lt; -> <` da doble descodificacion (`&amp;lt;` acaba en `<` cuando
+    // tendria que ser `&lt;`), que es justo el patron que CodeQL marca como
+    // "Double escaping or unescaping".
+    .replace(/&(amp|lt|gt|quot|#39|apos);/gi, (_, nombre) =>
+      ({ amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'", apos: "'" })[nombre.toLowerCase()])
     .replace(/\s+/g, " ")
     .trim();
 }

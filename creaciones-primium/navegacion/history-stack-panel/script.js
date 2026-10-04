@@ -44,19 +44,40 @@
   }
 
   function render() {
-    var out = "";
+    // Se construye cada <li><a>...</a></li> con createElement para que los
+    // textos (titulo, fecha, tipo, etc.) se inserten con textContent: antes
+    // era una concatenacion que terminaba en `stack.innerHTML = out`, lo que
+    // CodeQL marcaba como "DOM text reinterpreted as HTML".
+    stack.replaceChildren();
     for (var k = 0; k < entries.length; k++) {
       var e = entries[k];
-      var cur = k === pos ? ' aria-current="true"' : "";
-      out += '<li class="' + (k > pos ? "is-future" : "") + '">' +
-        '<a href="#' + e.id + '" data-i="' + k + '"' + cur + '>' +
-        '<span class="stack__n">' + String(k + 1).padStart(2, "0") + "</span>" +
-        '<span><span class="stack__t">' + e.title + "</span>" +
-        '<span class="stack__d">' + e.date + " · " + e.kind + "</span></span>" +
-        '<span class="stack__k">' + (k > pos ? "ahead" : k === pos ? "here" : "back") + "</span>" +
-        "</a></li>";
+      var li = document.createElement("li");
+      if (k > pos) li.className = "is-future";
+      var a = document.createElement("a");
+      a.href = "#" + e.id;
+      a.setAttribute("data-i", String(k));
+      if (k === pos) a.setAttribute("aria-current", "true");
+      var num = document.createElement("span");
+      num.className = "stack__n";
+      num.textContent = String(k + 1).padStart(2, "0");
+      var envol = document.createElement("span");
+      var titulo = document.createElement("span");
+      titulo.className = "stack__t";
+      titulo.textContent = e.title;
+      var detalle = document.createElement("span");
+      detalle.className = "stack__d";
+      detalle.textContent = e.date + " · " + e.kind;
+      envol.appendChild(titulo);
+      envol.appendChild(detalle);
+      var estado = document.createElement("span");
+      estado.className = "stack__k";
+      estado.textContent = k > pos ? "ahead" : k === pos ? "here" : "back";
+      a.appendChild(num);
+      a.appendChild(envol);
+      a.appendChild(estado);
+      li.appendChild(a);
+      stack.appendChild(li);
     }
-    stack.innerHTML = out;
     histN.textContent = String(entries.length);
     posNow.textContent = String(pos + 1);
     posAll.textContent = String(entries.length);

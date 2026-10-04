@@ -47,7 +47,10 @@
       }
     }
     if (count) {
-      count.innerHTML = 'Showing ' + shown + ' of ' + total + ' classes' +
+      // textContent en vez de innerHTML: el contenido son numeros y la
+      // longitud de la sesion, pero CodeQL no lo sabe y marcaba la cadena
+      // como "DOM text reinterpreted as HTML".
+      count.textContent = 'Showing ' + shown + ' of ' + total + ' classes' +
         (len ? ' · ' + len + ' sessions' : ' · any length');
     }
     if (none) none.hidden = shown !== 0;

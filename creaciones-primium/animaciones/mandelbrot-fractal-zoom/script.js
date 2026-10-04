@@ -248,8 +248,10 @@ function render(sec,cam){
 }
 
 function exp3(v){
-  const e=v.toExponential(2);
-  return e.replace("e+","e").replace("e-","e-");
+  // Solo se quita el `+` de los exponentes positivos: `1.23e+5` -> `1.23e5`.
+  // El segundo replace de antes era un no-op (`"e-"` -> `"e-"`) y era justo
+  // lo que CodeQL marcaba como "Replacement of a substring with itself".
+  return v.toExponential(2).replace("e+", "e");
 }
 
 let t0=0,tPrev=0,frame=0,raf=0,fpsAcc=0,fpsN=0,fpsShow=60;

@@ -35,12 +35,31 @@
   totalEl.textContent = String(MSG.length).padStart(2, '0');
   wpmEl.textContent = Math.round(1200 / UNIT) + ' wpm';
 
-  function addLine(cls, html) {
+  // Construye una linea del registro. El segundo argumento puede ser:
+  //   - una cadena: se inserta tal cual como texto (sin HTML);
+  //   - una funcion que recibe el <p> y le anade hijos con createElement:
+  //     asi el codigo morse se puede envolver en <b> sin pasar por innerHTML.
+  // Antes iba con `p.innerHTML = html` y el codigo morse se concatenaba como
+  // `'<b>' + line + '</b>'`: aunque la entrada es solo puntos y rayas, CodeQL
+  // lo marca como "DOM text reinterpreted as HTML".
+  function addLine(cls, contenido) {
     var p = document.createElement('p');
     if (cls) p.className = cls;
-    p.innerHTML = html;
+    if (typeof contenido === 'function') {
+      contenido(p);
+    } else {
+      p.textContent = contenido;
+    }
     log.appendChild(p);
     while (log.children.length > 14) log.removeChild(log.firstChild);
+  }
+  // Helper para envolver texto en <b> sin pasar por innerHTML.
+  function lineaNegrita(texto) {
+    return function (p) {
+      var b = document.createElement('b');
+      b.textContent = texto;
+      p.appendChild(b);
+    };
   }
 
   function buildSteps() {
@@ -138,7 +157,7 @@
       }
     }
     if (s.t === 'word') {
-      if (line) addLine('rx', '<b>' + line + '</b>');
+      if (line) addLine('rx', lineaNegrita(line));
       line = '';
     }
     stepIx++;
@@ -147,7 +166,7 @@
 
   function finish() {
     running = false;
-    if (line) addLine('rx', '<b>' + line + '</b>');
+    if (line) addLine('rx', lineaNegrita(line));
     addLine('t', stamp() + ' \ end of message \ ' + sent + ' elements');
     addLine('sys', 'loop open \ awaiting key');
     echo.textContent = 'press the key to transmit';

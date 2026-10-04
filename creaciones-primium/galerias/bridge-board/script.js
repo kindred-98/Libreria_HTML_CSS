@@ -49,13 +49,25 @@
     spread.textContent = hi - lo;
     document.documentElement.style.setProperty("--spread", hi - lo);
 
-    var rows = order.map(function (el) {
-      return "<li class=\"ledger__row" + (order.indexOf(el) === focus ? " is-on" : "") + "\">" +
-        "<b>" + el.querySelector(".slot__no").textContent + "</b>" +
-        "<span>" + el.querySelector(".slot__name").textContent + "</span>" +
-        "<i>" + load(el) + " / 5</i></li>";
-    }).join("");
-    ledger.innerHTML = rows;
+    // Se construye cada <li> con createElement y se le anade al ledger:
+    // antes era una cadena concatenada en `ledger.innerHTML = rows`, y CodeQL
+    // marcaba "DOM text reinterpreted as HTML" al ver el `.slot__name` del
+    // HTML del propio demo.
+    ledger.replaceChildren();
+    order.forEach(function (el) {
+      var li = document.createElement("li");
+      li.className = "ledger__row" + (order.indexOf(el) === focus ? " is-on" : "");
+      var num = document.createElement("b");
+      num.textContent = el.querySelector(".slot__no").textContent;
+      var nombre = document.createElement("span");
+      nombre.textContent = el.querySelector(".slot__name").textContent;
+      var carga = document.createElement("i");
+      carga.textContent = load(el) + " / 5";
+      li.appendChild(num);
+      li.appendChild(nombre);
+      li.appendChild(carga);
+      ledger.appendChild(li);
+    });
   }
 
   function repack() {

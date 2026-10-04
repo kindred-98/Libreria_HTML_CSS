@@ -4,8 +4,14 @@ function addTag(val){
   val=val.trim();
   if(!val||[...tags.querySelectorAll('.chip')].some(c=>c.dataset.v===val))return;
   const chip=document.createElement('span');chip.className='chip';chip.dataset.v=val;
-  chip.innerHTML=val+' <button>×</button>';
-  chip.querySelector('button').addEventListener('click',()=>chip.remove());
+  // El valor del chip sale de un input del usuario: se inserta con
+  // textContent, no con innerHTML, para que "<script>" o un evento inline no
+  // se ejecuten. La equis del boton se crea tambien por DOM.
+  chip.textContent = val + ' ';
+  const cerrar = document.createElement('button');
+  cerrar.textContent = '×';
+  cerrar.addEventListener('click', () => chip.remove());
+  chip.appendChild(cerrar);
   tags.appendChild(chip);
 }
 input.addEventListener('keydown',e=>{
