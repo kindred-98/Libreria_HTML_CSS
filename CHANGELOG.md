@@ -38,6 +38,44 @@ queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplica
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Resuelve los nueve avisos de CodeQL en `Security and quality > Code scanning`] - 2026-10-03
+
+CodeQL en `main` tenia nueve avisos abiertos (uno de ellos era un *no-op*,
+seis eran escrituras con `innerHTML` cuyo contenido podria re-interpretarse
+como HTML, y dos eran escapados incompletos o encadenados mal). Se arreglan
+asi:
+
+- **`Web/scripts/generate-catalog.mjs`** (`cleanText`): el descodificador
+  encadenado `&amp; -> &`, `&lt; -> <` hacia doble descodificacion sobre
+  entradas ya re-escapadas (`&amp;lt;` acababa en `<` cuando deberia ser
+  `&lt;`). Se sustituye por un unico `replace` con tabla de
+  `&(amp|lt|gt|quot|#39|apos);` -> caracter.
+- **`creaciones-primium/animaciones/mandelbrot-fractal-zoom/script.js`**
+  (`exp3`): el segundo `.replace("e-", "e-")` era un no-op y es lo que
+  CodeQL marcaba como "Replacement of a substring with itself". Se quita.
+- **`creaciones-primium/formularios/guild-application-long/script.js`**: la
+  linea que ponia `etiqueta.textContent.replace('*', '')` se sustituye por
+  `etiqueta.textContent.split('*').join('')`, que sigue quitando los
+  asteriscos de los marcadores de obligatoriedad pero no dispara el patron
+  "Incomplete string escaping" de CodeQL.
+- **Seis `innerHTML` de demos** se rehacen con `createElement` +
+  `textContent` (o `replaceChildren` + `appendChild` para los bucles):
+  `CreacionesNuevas/file-upload-dropzone-modern`, `tag-input-chip-form`,
+  `creaciones-primium/galerias/bridge-board`,
+  `creaciones-primium/navegacion/history-stack-panel`,
+  `creaciones-primium/navegacion/segment-glass-ios` y
+  `creaciones-primium/botones/morse-telegraph-button` (en este ultimo
+  `addLine` cambia de firma: ahora admite un texto plano o una funcion
+  constructora para los `<b>` del codigo morse, y se anade un helper
+  `lineaNegrita`).
+- Los `innerHTML = ''` que quedan en esos ficheros son para vaciar
+  contenedores y no meten contenido nuevo: el analizador no los trata
+  como avisos.
+- Verificado en verde: `validar`, `validar:encabezados`, `validar:html` (en
+  Node 20/22/24), `validar:enlaces`, `duplicados` (sigue en 0),
+  `enlaces:externos`, `sitemap`, `validar:demos` (1018/1018, 0 fallos) y
+  `validar:lighthouse` (97/85/100).
+
 ## [Arregla los seis fallos de fiabilidad de SonarCloud y la duplicacion del servidor] - 2026-10-03
 
 - Los seis issues que SonarCloud marcaba como *failure* son tres `sort()` sin

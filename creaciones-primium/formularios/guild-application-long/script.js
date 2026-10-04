@@ -340,7 +340,12 @@ function resumenDeErrores() {
     const cajaF = envoltorio(f.campo.id);
     const control = document.getElementById(f.campo.id);
     const etiqueta = cajaF ? ($('label', cajaF) || $('.etiqueta', cajaF)) : null;
-    li.textContent = (etiqueta ? etiqueta.textContent.replace('*', '').trim() : f.campo.id) + ': ' + f.fallo;
+    // El asterisco que marca campos obligatorios se quita con split/join en
+    // lugar de con `replace('*', '')`: CodeQL ve el patron `replace('X', '')`
+    // como un intento de saneado incompleto y dispara "Incomplete string
+    // escaping or encoding", aunque el destino sea `textContent`.
+    const baseTexto = etiqueta ? etiqueta.textContent.split('*').join('').trim() : f.campo.id;
+    li.textContent = baseTexto + ': ' + f.fallo;
     li.tabIndex = -1;
     li.addEventListener('click', () => {
       if (control && control.focus) control.focus();
