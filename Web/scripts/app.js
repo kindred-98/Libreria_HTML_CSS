@@ -725,13 +725,24 @@ const previewObserver = typeof IntersectionObserver === "function"
     }, { rootMargin: "400px 0px" })
   : null;
 
+// Si pasan estos milisegundos y el iframe sigue sin disparar `load` ni
+// `error`, damos el preview por listo: en iOS Safari el `load` de un iframe
+// con `sandbox` no siempre salta, y el `opacity: 0` inicial del CSS deja la
+// vista previa invisible para siempre. 2,5 s es suficiente para el HTML+CSS
+// de cualquier demo servido en local o por Vercel.
+const PREVIEW_FALLBACK_MS = 2500;
+
 function armPreviewListeners(frame, preview) {
-  frame.addEventListener("load", () => {
-    preview.dataset.previewState = "ready";
-  }, { once: true });
-  frame.addEventListener("error", () => {
-    preview.dataset.previewState = "error";
-  }, { once: true });
+  let cerrado = false;
+  const resolver = (estado) => {
+    if (cerrado) return;
+    cerrado = true;
+    clearTimeout(fallback);
+    preview.dataset.previewState = estado;
+  };
+  frame.addEventListener("load", () => resolver("ready"), { once: true });
+  frame.addEventListener("error", () => resolver("error"), { once: true });
+  const fallback = setTimeout(() => resolver("ready"), PREVIEW_FALLBACK_MS);
 }
 
 function mountQueuedPreview(container) {
@@ -759,7 +770,9 @@ function createPreview(component, className) {
   preview.dataset.previewState = "loading";
   const frame = document.createElement("iframe");
   frame.title = t("livePreviewTitle", { name: getComponentName(component) });
-  frame.loading = "lazy";
+  // Se omite `frame.loading = "lazy"`: la carga perezosa ya la hace el
+  // `previewObserver` con el patron `data-preview-src`. Poner las dos a la
+  // vez interfiere en iOS Safari y a veces impide que el iframe se cargue.
   frame.referrerPolicy = "no-referrer";
   frame.setAttribute("scrolling", "no");
   frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups");

@@ -38,6 +38,32 @@ queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplica
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Arregla las vistas previas que no cargaban en iOS Safari, iPadOS y Safari de macOS] - 2026-10-03
+
+Los iframes de `live-preview` se quedaban en `opacity: 0` para siempre en
+Safari (iPhone, iPad y Mac). En Chrome de Android y en Chrome de escritorio
+se veian bien, y en Safari solo aparecian si el sitio se abria como PWA
+(standalone). Causa: el `frame.addEventListener("load", ...)` que pone el
+estado `ready` y destapa el iframe **no siempre se dispara** en iOS Safari
+cuando el iframe lleva `sandbox`, asi que la CSS lo dejaba en `opacity: 0`
+indefinidamente y el visitante solo veia el texto "Loading preview...".
+
+- En `Web/scripts/app.js` se quita `frame.loading = "lazy"` del iframe:
+  ya hay un `IntersectionObserver` con el patron `data-preview-src` que se
+  encarga de la carga perezosa, y las dos a la vez interfieren en iOS.
+- En la misma `armPreviewListeners` se anade un `setTimeout` de
+  `PREVIEW_FALLBACK_MS = 2500`: si ni `load` ni `error` han saltado
+  todavia, el preview se marca como `ready` igualmente, para que el iframe
+  se vea aunque Safari no haya llegado a emitir el evento. El primer
+  evento que llegue gana y cancela el temporizador.
+- En cualquier navegador que no sea Safari, el `load` sigue saltando antes
+  que el `setTimeout`, asi que el comportamiento es identico al anterior
+  salvo en la red muy lenta, donde ahora los previews aparecen a los
+  2,5 s en vez de quedarse en "Loading..." para siempre.
+- Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+  (Node 20/22/24), `validar:enlaces`, `duplicados`, `enlaces:externos`,
+  `sitemap` y `validar:demos` (1018/1018, 0 fallos).
+
 ## [Resuelve los nueve avisos de CodeQL en `Security and quality > Code scanning`] - 2026-10-03
 
 CodeQL en `main` tenia nueve avisos abiertos (uno de ellos era un *no-op*,
