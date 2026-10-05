@@ -725,11 +725,11 @@ const previewObserver = typeof IntersectionObserver === "function"
     }, { rootMargin: "400px 0px" })
   : null;
 
-// Si pasan estos milisegundos y el iframe sigue sin disparar `load` ni
-// `error`, damos el preview por listo: en iOS Safari el `load` de un iframe
-// con `sandbox` no siempre salta, y el `opacity: 0` inicial del CSS deja la
-// vista previa invisible para siempre. 2,5 s es suficiente para el HTML+CSS
-// de cualquier demo servido en local o por Vercel.
+// Red de seguridad para el texto del overlay. El iframe ya no depende de este
+// evento para verse (esta siempre en `opacity: 1`, lo oculta el `::after`
+// opaco), asi que esto solo evita que se quede escrito el "Loading preview..."
+// si en algun motor el `load` no llegara a saltar. El primer evento que llegue
+// gana y cancela el temporizador.
 const PREVIEW_FALLBACK_MS = 2500;
 
 function armPreviewListeners(frame, preview) {
@@ -770,9 +770,9 @@ function createPreview(component, className) {
   preview.dataset.previewState = "loading";
   const frame = document.createElement("iframe");
   frame.title = t("livePreviewTitle", { name: getComponentName(component) });
-  // Se omite `frame.loading = "lazy"`: la carga perezosa ya la hace el
-  // `previewObserver` con el patron `data-preview-src`. Poner las dos a la
-  // vez interfiere en iOS Safari y a veces impide que el iframe se cargue.
+  // Sin `loading = "lazy"`: la carga perezosa ya la hace el `previewObserver`
+  // con el patron `data-preview-src`, y poner las dos a la vez solo anade una
+  // segunda condicion de red sin ganar nada.
   frame.referrerPolicy = "no-referrer";
   frame.setAttribute("scrolling", "no");
   frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups");
@@ -1839,6 +1839,12 @@ function installDavokerTransitionBridge() {
   // terminar) el iframe se centra en la ventana. Sin recorrido de sobra, que
   // aqui es el caso normal porque el portal se ve a 90vh con su propio scroll.
   window.addEventListener("message", (evento) => {
+    // Lo primero es de quien viene el mensaje. Sin esto, cualquier pagina
+    // abierta en otra pestana (o cualquier sitio que embeba este) podria
+    // mandar un "davoker-transicion" y mover el scroll del portal. El origen
+    // se comprueba contra el de esta misma pagina porque el iframe del portal
+    // es de este sitio.
+    if (evento.origin !== window.location.origin) return;
     if (!evento.data || typeof evento.data !== "object") return;
     if (evento.data.type !== "davoker-transicion") return;
     if (!elements.davokerFrame) return;

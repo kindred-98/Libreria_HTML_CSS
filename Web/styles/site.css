@@ -1109,15 +1109,23 @@ input:focus-visible {
 }
 
 /* Hueco de la portada de davoker: con su autor elegido el iframe ocupa el sitio
-   de la rejilla y baja con scroll propio, con el mismo borde que las tarjetas. */
+   de la rejilla y baja con scroll propio, con el mismo borde que las tarjetas.
+
+   Cada `vh` va seguido de su `dvh`. En iOS y iPadOS `vh` es el viewport mas
+   alto (el de la barra de direcciones desplegada), asi que un alto en `vh` se
+   sale por abajo justo cuando el visitante tiene la barra oculta. `dvh` sigue a
+   la barra en vez de ignorarla. Se declara `vh` primero para que un iOS viejo,
+   que no conoce `dvh`, se quede con la regla que si entiende y descarte la otra. */
 .davoker-portal {
   min-height: 72vh;
+  min-height: 72dvh;
 }
 
 .davoker-frame {
   display: block;
   width: 100%;
   min-height: 90vh;
+  min-height: 90dvh;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--surface);
@@ -1243,9 +1251,15 @@ input:focus-visible {
   position: relative;
 }
 
+/* El iframe NUNCA debe ponerse en `opacity: 0`. En iOS/iPadOS Safari y en Safari
+   de macOS, WebKit descarta la capa de un iframe totalmente transparente y no
+   llega a pintar su contenido. Como el `src` se asigna cuando el iframe ya esta
+   invisible, la vista previa se queda en blanco aunque el evento `load` salte y
+   `data-preview-state` llegue a `ready`: es un fallo de pintado, no de carga, y por
+   eso se ve solo en WebKit y por eso en modo standalone (PWA) si funcionaba.
+   El ocultado lo hace el `::after` opaco de abajo, que si se pinta siempre. */
 .live-preview iframe {
-  opacity: 0;
-  transition: opacity 160ms ease;
+  opacity: 1;
 }
 
 .live-preview::after {
@@ -1261,10 +1275,6 @@ input:focus-visible {
   font-size: 10px;
   pointer-events: none;
   transition: opacity 160ms ease;
-}
-
-.live-preview[data-preview-state="ready"] iframe {
-  opacity: 1;
 }
 
 .live-preview[data-preview-state="ready"]::after {
@@ -1501,6 +1511,7 @@ input:focus-visible {
 
 .detail-view {
   min-height: 70vh;
+  min-height: 70dvh;
   padding-block: 52px 88px;
 }
 
@@ -1824,13 +1835,20 @@ input:focus-visible {
 }
 
 /* Aviso de consentimiento. Va sobre el pie, en una sola barra, y solo existe
-   hasta que se contesta: despues se borra del DOM. */
+   hasta que se contesta: despues se borra del DOM. Los `env(safe-area-inset-*)`
+   son los huecos que reserva el notch y la barra de inicio: sin ellos, en iPhone
+   el borde de abajo cae debajo del indicador de gesto y en horizontal los lados
+   quedan bajo el notch. Donde no exista `env()`, el valor vale 0 y el margen
+   original se respeta igual. */
 .consent-banner {
   position: fixed;
   z-index: 40;
   right: 16px;
+  right: calc(16px + env(safe-area-inset-right));
   bottom: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
   left: 16px;
+  left: calc(16px + env(safe-area-inset-left));
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1863,7 +1881,9 @@ input:focus-visible {
   position: fixed;
   z-index: 30;
   right: 20px;
+  right: calc(20px + env(safe-area-inset-right));
   bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom));
   padding: 11px 15px;
   transform: translateY(12px);
   border: 1px solid var(--line);

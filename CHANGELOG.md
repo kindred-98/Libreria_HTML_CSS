@@ -21,6 +21,55 @@ queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplica
   [`Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`](./Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md),
   para que lo ejecute Angel una vez la PR este en `main`.
 
+## [Arregla los previews en blanco de iOS/iPadOS y el viewport movil de Safari] - 2026-10-05
+
+Los iframes de `live-preview` se veian en blanco en iOS, iPadOS y Safari de
+macOS. En Chrome de Android y en el de escritorio se veian bien. El sintoma
+venia del arreglo del 2026-10-03 (`hace visibles los iframes de vista previa en
+safari de ios y macos`), que ataco el momento de la carga cuando el problema era
+de pintado.
+
+- **La causa**: `Web/styles/site.css` declaraba `opacity: 0` en `.live-preview
+  iframe`, y `app.js` asigna `frame.src` cuando el iframe ya es totalmente
+  transparente. WebKit descarta la capa de un iframe completamente transparente y
+  no llega a pintar su contenido; como la decision se toma al montar, subir
+  despues a `opacity: 1` no fuerza el repintado. El preview se quedaba en blanco
+  aunque `load` saltara y `data-preview-state` llegara a `ready`: un fallo de
+  pintado, no de carga. En Chrome un iframe transparente se compone sin problema,
+  de ahi que alli se viera bien.
+- **Por que se sabe que no era la carga**: los dos unicos iframes que si
+  funcionan (la demo de warp de `Web/team-core.html` y el portal Davoker de
+  `Web/components.html`) son exactamente los que **no** estan bajo
+  `.live-preview`, los unicos que nunca reciben `opacity: 0`. Y en modo
+  standalone (anadir a pantalla de inicio) si se veian, porque un `WKWebView`
+  standalone usa otra ruta de renderizado: un fallo de red o de cabeceras no se
+  arreglaria por abrir el sitio como PWA.
+- **El arreglo**: el iframe ya no se pone nunca en `opacity: 0`. Lo oculta el
+  `::after` opaco de siempre (`--surface-preview`, `#d9ded1`/`#e3e7df`, sin
+  alfa), que si se pinta siempre. Se quitan el `transition: opacity` del iframe y
+  la regla `[data-preview-state="ready"] iframe`, que queda redundante.
+- El `setTimeout` de `PREVIEW_FALLBACK_MS` se queda, pero ya no es lo que hace
+  visible el preview: solo evita que se quede escrito el "Loading preview..." si
+  en algun motor el `load` no llegara a saltar. Se corrigen los comentarios de
+  `armPreviewListeners` y de `createPreview`, que atribuian el fallo al `load`.
+- **Viewport y zonas seguras**, que en iOS se notaban al usar el portal Davoker y
+  los avisos fijos. Cada `vh` va seguido de su `dvh` (`.davoker-portal`,
+  `.davoker-frame`, `.detail-view`): en iOS `vh` es el viewport mas alto, asi que
+  el iframe de `90vh` se salia por abajo justo con la barra de direcciones
+  oculta. Se declara `vh` antes que `dvh` para que un iOS viejo, que no conoce
+  `dvh`, se quede con la regla que si entiende. Y `.consent-banner` y `.toast`,
+  fijos a `16px` y `20px` del borde, caian bajo el indicador de inicio: ahora
+  suman `env(safe-area-inset-*)`, que vale 0 donde no exista `env()`.
+- **Pendiente de comprobar en un iPhone o iPad reales**: aqui solo hay Chromium, y
+  ni `validar:demos` ni `validar:layout` pueden detectar un fallo de pintado de
+  WebKit, porque ninguno abre WebKit. Ojo al probar: `vercel.json` sirve
+  `Web/styles/` y `Web/scripts/` con `max-age=31536000, immutable`, asi que Safari
+  sirvira la CSS vieja desde su cache y el arreglo no se vera sin borrar los
+  datos del sitio o abrir en Incognito.
+- Verificado en verde: `validar` (1018/1018), `validar:layout` (5 paginas x 23
+  anchos, 115 medidas) y `validar:demos` (1018/1018, 0 fallos). Ninguno de los
+  tres cubre WebKit.
+
 ## [Arregla el CI de Node 20 y los tres avisos nuevos de CodeQL] - 2026-10-03
 
 - La PR fallo en uno de los checks requeridos, `Validar (Node 20)`, a los 17 s:
