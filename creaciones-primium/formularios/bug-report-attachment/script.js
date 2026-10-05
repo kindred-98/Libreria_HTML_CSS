@@ -88,7 +88,7 @@ function extension(nombre) {
 
 function tonoDe(nombre) {
   let h = 0;
-  for (let i = 0; i < nombre.length; i++) h = (h * 31 + nombre.charCodeAt(i)) >>> 0;
+  for (let i = 0; i < nombre.length; i++) h = (h * 31 + nombre.codePointAt(i)) >>> 0;
   const t = TONOS[h % TONOS.length];
   const u = TONOS[(h >> 3) % TONOS.length];
   return "linear-gradient(150deg, rgb(" + t[0] + "," + t[1] + "," + t[2] + "), rgb(" + u[0] + "," + u[1] + "," + u[2] + "))";

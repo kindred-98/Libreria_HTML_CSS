@@ -42,7 +42,7 @@
     return box.children;
   }
 
-  scopes.forEach(bars);
+  scopes.forEach((...args) => bars(...args));
   var ladder = segs(document.querySelector('.ladder'), 18);
   var meterBoxes = document.querySelectorAll('.meter');
   var meters = Array.prototype.map.call(meterBoxes, function (m) {

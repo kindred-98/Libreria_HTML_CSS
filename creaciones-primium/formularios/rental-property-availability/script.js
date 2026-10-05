@@ -72,7 +72,7 @@ const CAMPOS = [
     etiqueta: "Teléfono de contacto",
     vacio: "Falta un teléfono donde te puedan llamar.",
     error: "Debe ser un número español de nueve cifras, entre 600 y 799.",
-    prueba: v => /^[6-7][\d]{8}$/.test(v.replace(/[\s.-]/g, ""))
+    prueba: v => /^[6-7]\d{8}$/.test(v.replace(/[\s.-]/g, ""))
   },
   {
     id: "fianza", tipo: "check",

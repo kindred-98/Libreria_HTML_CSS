@@ -53,7 +53,7 @@ const CAMPOS = [
     etiqueta: "Security code",
     vacio: "The three digits on the back are needed to prove the card is yours.",
     error: "Three digits, or four on an American Express card.",
-    prueba: v => /^[\d]{3,4}$/.test(v)
+    prueba: v => /^\d{3,4}$/.test(v)
   },
   {
     id: "facturacion",
@@ -79,7 +79,7 @@ let restante = 0;
 function el(id) { return document.getElementById(id); }
 
 function digitos(v) {
-  return v.replace(/[^0-9]/g, "");
+  return v.replace(/\D/g, "");
 }
 
 function marcaDe(v) {
@@ -125,7 +125,7 @@ function luhn(v) {
 }
 
 function caducidadValida(v) {
-  if (!/^[\d]{2}\/[\d]{2}$/.test(v)) return false;
+  if (!/^\d{2}\/\d{2}$/.test(v)) return false;
   const mes = Number(v.slice(0, 2));
   const anio = 2000 + Number(v.slice(3, 5));
   if (mes < 1 || mes > 12) return false;
@@ -150,7 +150,7 @@ function textoError(f) {
     if (digitos(valor).length < 13) return f.corta;
     return f.error;
   }
-  if (f.id === "caduca" && !/^[\d]{2}\/[\d]{2}$/.test(valor)) return f.formato;
+  if (f.id === "caduca" && !/^\d{2}\/\d{2}$/.test(valor)) return f.formato;
   return f.error;
 }
 

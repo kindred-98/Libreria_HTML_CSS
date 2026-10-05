@@ -57,7 +57,7 @@ function valorPorcion() {
 
 function tonoDe(nombre) {
   let suma = 0;
-  for (let k = 0; k < nombre.length; k++) suma += nombre.charCodeAt(k);
+  for (let k = 0; k < nombre.length; k++) suma += nombre.codePointAt(k);
   return TONES[suma % TONES.length];
 }
 

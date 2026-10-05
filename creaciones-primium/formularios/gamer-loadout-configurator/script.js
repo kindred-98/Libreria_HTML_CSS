@@ -274,8 +274,8 @@ function sincronizarCelda(inp) {
   const v = inp.value;
   if (c === "A") filas[i].a = v.slice(0, 18);
   else if (c === "B") filas[i].b = v;
-  else if (c === "C") filas[i].c = v.replace(/[^0-9]/g, "").slice(0, 2);
-  else if (c === "D") filas[i].d = v.replace(/[^0-9]/g, "").slice(0, 1);
+  else if (c === "C") filas[i].c = v.replace(/\D/g, "").slice(0, 2);
+  else if (c === "D") filas[i].d = v.replace(/\D/g, "").slice(0, 1);
   else filas[i].e = v.slice(0, 20);
   if (inp.value !== filas[i][c.toLowerCase()]) inp.value = filas[i][c.toLowerCase()];
   pintarMetricas();

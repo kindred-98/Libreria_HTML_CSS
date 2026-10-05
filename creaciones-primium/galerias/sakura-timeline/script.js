@@ -127,7 +127,7 @@
     a.addEventListener("click", function (e) {
       e.preventDefault();
       var n = Number.parseInt(a.getAttribute("href").slice(4), 10) - 1;
-      if (isNaN(n)) return;
+      if (Number.isNaN(n)) return;
       goTo(n);
       st[n].focus();
     });

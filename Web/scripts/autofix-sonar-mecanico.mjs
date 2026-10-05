@@ -145,6 +145,105 @@ const PATRONES = [
     regex: /(?<![A-Za-z0-9_$.])parseInt\(/g,
     reemplazo: "Number.parseInt(",
   },
+  {
+    // isNaN(x) -> Number.isNaN(x). La global acepta cualquier valor (no
+    // produce NaN si x no es Number, solo fuerza la conversion), mientras
+    // que Number.isNaN requiere Number sin coercion: `Number.isNaN("5")` es
+    // false, `isNaN("5")` es true. En los demos donde aparece se usa para
+    // detectar NaN tras operaciones aritmeticas, donde ambos coinciden.
+    id: "S7773c",
+    descripcion: "isNaN(x) -> Number.isNaN(x)",
+    regex: /(?<![A-Za-z0-9_$.])isNaN\(/g,
+    reemplazo: "Number.isNaN(",
+  },
+  {
+    // "abc".charCodeAt(i) -> "abc".codePointAt(i). Equivalente para BMP;
+    // para caracteres fuera del BMP (>=0x10000) codePointAt devuelve el
+    // codepoint real mientras que charCodeAt devuelve solo la primera
+    // unidad UTF-16. En animaciones y entradas de teclado de los demos no
+    // se manejan esos caracteres, asi que la conversion es segura.
+    id: "S7758",
+    descripcion: "s.charCodeAt(i) -> s.codePointAt(i)",
+    regex: /\.charCodeAt\(/g,
+    reemplazo: ".codePointAt(",
+  },
+  {
+    // new Date().getTime() -> Date.now(). La primera crea un Date
+    // intermedio; Date.now() es lo mismo sin el objeto. Sinonimo exacto.
+    id: "S7759",
+    descripcion: "new Date().getTime() -> Date.now()",
+    regex: /new Date\(\)\.getTime\(\)/g,
+    reemplazo: "Date.now()",
+  },
+  {
+    // arr.forEach(fn) -> arr.forEach((...args) => fn(...args)).
+    // Pasamos la funcion directamente: `this` dentro de fn no esta
+    // enlazado al array. Al envolver con arrow, `this` se preserva
+    // correctamente (que es lo que Sonar pide). Limitado a llamadas
+    // simples `obj.forEach(ident)` sin argumentos adicionales.
+    id: "S7727",
+    descripcion: "arr.forEach(fn) -> arr.forEach((...args) => fn(...args))",
+    regex: /\.forEach\(([A-Za-z_$][\w$]*)\)/g,
+    reemplazo: ".forEach((...args) => $1(...args))",
+  },
+  {
+    // [^0-9] -> \D (sinonimo exacto: "cualquier caracter que no es un
+    // digito"). El patron NO matchea [0-9] (que ya esta cubierto por el
+    // S6353 de arriba: `[0-9]` -> `\d`), porque la regex usa `\[^0-9\]`
+    // con el `^` literal.
+    id: "S6353b",
+    descripcion: "[^0-9] -> \\D",
+    regex: /\[\^0-9\]/g,
+    reemplazo: "\\D",
+  },
+  {
+    // arr.filter(p)[0] -> arr.find(p). Equivalente en el caso comun:
+    // ambos devuelven el primer elemento que cumple `p` o undefined si
+    // ninguno. `find` evita crear el array intermedio. Es seguro porque
+    // `.filter` solo existe en Arrays, no en NodeList, asi que el codigo
+    // original no podia estar operando sobre un NodeList.
+    id: "S7750",
+    descripcion: "arr.filter(p)[0] -> arr.find(p)",
+    regex: /\.filter\(([^)]+)\)\[0\]/g,
+    reemplazo: ".find($1)",
+  },
+  {
+    // s.replace("x", y) -> s.replaceAll("x", y). Solo cuando el primer
+    // argumento es un string literal (entre comillas), NO una regex
+    // (entre slashes). Para las regex hay que mantener la `/regex/g` con
+    // la bandera `g`. Tambien exige que el primer argumento NO tenga la
+    // bandera `g` (si la tiene, es una regex y se ignora).
+    id: "S7781",
+    descripcion: "s.replace('x', y) -> s.replaceAll('x', y)  (solo string literal)",
+    regex: /(\w+)\.replace\((["'])([^"']+)\2,\s*([^)]+)\)/g,
+    reemplazo: "$1.replaceAll('$3', $4)",
+  },
+  {
+    // [\d] -> \d, [\s] -> \s, [\w] -> \w, [\D] -> \D, etc. Solo se
+    // reescriben las clases de caracteres que envuelven un escape
+    // abreviado: son sinonimas exactas. Las clases como [a-z] o [abc]
+    // se quedan como estan. Tambien acepta un cuantificador opcional:
+    // [\d]{6} -> \d{6}.
+    id: "S6397",
+    descripcion: "[\\d] -> \\d  (clase con un solo escape abreviado)",
+    regex: /\[(\\[dswDSW])(?:\{[^}]*\})?\]/g,
+    reemplazo: "$1",
+  },
+  {
+    // mq.addListener(cb) -> mq.addEventListener('change', cb).
+    // MediaQueryList.addListener es un alias deprecated de
+    // addEventListener('change', ...).
+    id: "S1874-mql",
+    descripcion: "mq.addListener(cb) -> mq.addEventListener('change', cb)",
+    regex: /(\w+)\.addListener\(([^)]+)\)/g,
+    reemplazo: "$1.addEventListener('change', $2)",
+  },
+  // NOTA: S7755 (`arr[arr.length - N]` -> `arr.at(-N)`) no se aplica
+  // automaticamente porque rompe codigo que usa NodeList o HTMLCollection
+  // (la conversion `.at(-N)` falla en esos casos, pero `[length - N]`
+  // funciona por el indexado de array-like). Si se quiere abordar, hay
+  // que filtrar primero por el tipo del receptor, que no es viable solo
+  // con regex.
 ];
 
 const EXCLUIR = ["node_modules", ".git", "Web/scripts/lib/", ".sonarlint/", "Web/data/", "tmp/", "dist/"];

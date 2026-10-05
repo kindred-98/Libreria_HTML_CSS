@@ -139,7 +139,7 @@ function cuerpoLinea(i) {
 function validaFecha(v) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
   const d = new Date(v);
-  if (isNaN(d.getTime())) return false;
+  if (Number.isNaN(d.getTime())) return false;
   const hoy = new Date();
   return d <= hoy && d.getFullYear() >= hoy.getFullYear() - 2;
 }
@@ -147,7 +147,7 @@ function validaFecha(v) {
 function validaImporte(v) {
   const limpio = v.replace(/\./g, "");
   if (!/^\d{1,6}(,\d{1,2})?$/.test(limpio)) return false;
-  const n = Number(limpio.replace(",", "."));
+  const n = Number(limpio.replaceAll(',', "."));
   return n >= 0.01 && n <= 9999.99;
 }
 

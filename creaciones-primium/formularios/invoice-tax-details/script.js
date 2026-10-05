@@ -31,7 +31,7 @@ const CAMPOS = [
     prueba: v => {
       const tipo = el("tipo-id").value;
       if (!tipo) return false;
-      if (tipo === "CIF") return /^B[0-9A-Z][\d]{6}[0-9A-J]$/.test(v) || /^[A-HJUV][\d]{8}$/.test(v);
+      if (tipo === "CIF") return /^B[0-9A-Z]\d{6}[0-9A-J]$/.test(v) || /^[A-HJUV]\d{8}$/.test(v);
       const formato = tipo === "NIF" ? /^\d{8}[A-Z]$/ : /^[XYZ]\d{7}[A-Z]$/;
       if (!formato.test(v)) return false;
       let numero = v;
@@ -210,7 +210,7 @@ el("numero-id").addEventListener("input", () => {
   let v = el("numero-id").value.toUpperCase().replace(/\s/g, "");
   if (tipo === "CIF") v = v.replace(/[^0-9A-Z]/g, "");
   else if (tipo === "NIE") v = v.replace(/[^0-9XYZ]/g, "");
-  else v = v.replace(/[^0-9]/g, "");
+  else v = v.replace(/\D/g, "");
   el("numero-id").value = v;
   // Ternario simplificado: CIF y el resto permiten el mismo limite de 9 caracteres.
   el("numero-id").maxLength = 9;
@@ -245,7 +245,7 @@ function problemas() {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintar);
+  CAMPOS.forEach((...args) => pintar(...args));
   const fallos = problemas();
 
   if (fallos.length > 0) {

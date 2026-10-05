@@ -145,7 +145,7 @@ function fallo(f) {
 }
 
 function pintarCampo(id) {
-  const f = CAMPOS.filter(x => x.id === id)[0];
+  const f = CAMPOS.find(x => x.id === id);
   const nodoCampo = el(id);
   if (!f || !nodoCampo) return "";
   const env = nodoCampo.closest(".campo");

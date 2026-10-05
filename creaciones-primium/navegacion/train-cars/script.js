@@ -37,7 +37,7 @@
     var gap = Math.round(m.cw * 0.22);
     var mid = track.clientWidth / 2;
     var x = Number.parseFloat(consist.style.getPropertyValue('--x'));
-    if (isNaN(x)) x = mid - centreOf(cur);
+    if (Number.isNaN(x)) x = mid - centreOf(cur);
     consist.style.setProperty('--x', x.toFixed(1) + 'px');
     coupler.style.setProperty('--cx',
       (centreOf(cur) + (m.cw + gap) / 2 + x - mid).toFixed(1) + 'px');
@@ -49,7 +49,7 @@
     var gap = Math.round(m.cw * 0.22);
     var mid = track.clientWidth / 2;
     var from = Number.parseFloat(consist.style.getPropertyValue('--x'));
-    if (isNaN(from)) from = 0;
+    if (Number.isNaN(from)) from = 0;
     var to = mid - centreOf(cur);
     var t0 = 0;
     yard.classList.add('is-slack');

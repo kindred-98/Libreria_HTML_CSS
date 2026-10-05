@@ -6,7 +6,7 @@ const figStack = document.querySelector("#figStack");
 const figStack2 = document.querySelector("#figStack2");
 const figGap = document.querySelector("#figGap");
 const figTravel = document.querySelector("#figTravel");
-const status = document.querySelector("#status");
+const statusEl = document.querySelector("#status");
 
 if (input && box && stack) {
   const TRAVEL_MM = 0.45;
@@ -41,7 +41,7 @@ if (input && box && stack) {
     if (figStack2) figStack2.textContent = stackMm.toFixed(1);
     if (figGap) figGap.textContent = gapMm.toFixed(1);
     if (figTravel) figTravel.textContent = travelMm.toFixed(1);
-    if (status) status.textContent = `Assembly open ${travelMm.toFixed(1)} millimetres`;
+    if (statusEl) status.textContent = `Assembly open ${travelMm.toFixed(1)} millimetres`;
 
     input.setAttribute("aria-valuetext", `${value} percent, ${travelMm.toFixed(1)} millimetres`);
   };

@@ -74,7 +74,7 @@ function el(id) { return document.getElementById(id); }
 
 function dinero(n) { return n.toFixed(2).replace(".", ",") + " EUR"; }
 
-function pieza(id) { return TODAS.filter(p => p.id === id)[0]; }
+function pieza(id) { return TODAS.find(p => p.id === id); }
 
 function elegidas() {
   const fuera = [];

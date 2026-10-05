@@ -298,7 +298,7 @@ el("numero").addEventListener("input", () => {
   const grupos = [];
   for (let i = 0; i < v.length; i += 4) grupos.push(v.slice(i, i + 4));
   el("numero").value = grupos.join(" ");
-  if (CAMPOS.filter(f => f.id === "cvc")[0].id === "cvc") {
+  if (CAMPOS.find(f => f.id === "cvc").id === "cvc") {
     const marca = detectaMarca(v);
     el("cvc").maxLength = marca === "amex" ? 4 : 3;
   }

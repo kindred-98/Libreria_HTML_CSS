@@ -105,7 +105,7 @@ function pintarHoras() {
   vacio.textContent = "Elige una hora";
   hora.appendChild(vacio);
   HORAS_BASE.forEach(h => {
-    const ocupados = clave ? (h.ocupados + (Number(clave.slice(-2)) + h.et.charCodeAt(0)) % 4) % 8 : h.ocupados;
+    const ocupados = clave ? (h.ocupados + (Number(clave.slice(-2)) + h.et.codePointAt(0)) % 4) % 8 : h.ocupados;
     const opcion = document.createElement("option");
     opcion.value = h.v;
     opcion.textContent = h.et + (ocupados > 6 ? " · casi lleno" : ocupados > 4 ? " · quedan pocas" : "");
@@ -179,7 +179,7 @@ const CAMPOS = [
     etiqueta: "Teléfono",
     vacio: "Necesitamos un teléfono para el recordatorio.",
     error: "Debe ser un número español de nueve cifras, entre 600 y 799.",
-    prueba: v => /^[6-7][\d]{8}$/.test(v.replace(/[\s.-]/g, ""))
+    prueba: v => /^[6-7]\d{8}$/.test(v.replace(/[\s.-]/g, ""))
   },
   {
     id: "correo",

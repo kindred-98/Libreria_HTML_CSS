@@ -94,7 +94,7 @@ if (rowsBox && trims.length) {
 
   rowsBox.addEventListener("focusout", focusOut);
 
-  const measure = () => trims.forEach(paint);
+  const measure = () => trims.forEach((...args) => paint(...args));
 
   window.addEventListener("resize", measure);
 

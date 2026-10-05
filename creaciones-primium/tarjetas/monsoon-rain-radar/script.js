@@ -115,7 +115,7 @@ function runCount(node) {
 buildCells();
 buildDrops();
 applyExpo();
-counts.forEach(runCount);
+counts.forEach((...args) => runCount(...args));
 
 window.setTimeout(function () {
   card.classList.add("is-settled");

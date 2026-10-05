@@ -294,7 +294,7 @@ CAMPOS.forEach(f => {
   });
 });
 
-el("nivel").addEventListener("input", () => { el("nivel").value = el("nivel").value.replace(/[^0-9]/g, "").slice(0, 3); });
+el("nivel").addEventListener("input", () => { el("nivel").value = el("nivel").value.replace(/\D/g, "").slice(0, 3); });
 
 el("logPublico").addEventListener("change", () => {
   el("logPublico").closest(".fila-campo").dataset.estado = el("logPublico").checked ? "ok" : "neutro";
@@ -303,7 +303,7 @@ el("logPublico").addEventListener("change", () => {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintar);
+  CAMPOS.forEach((...args) => pintar(...args));
   const fallos = CAMPOS.filter(f => fallo(f) !== "");
 
   if (fallos.length > 0) {

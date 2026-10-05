@@ -80,7 +80,7 @@ function pintarPlanes() {
 }
 
 function planActual() {
-  return PLANES.filter(p => p.id === planElegido)[0] || null;
+  return PLANES.find(p => p.id === planElegido) || null;
 }
 
 function abrirPlanes(abrir) {

@@ -67,7 +67,7 @@ function validaCampo(l, clave) {
     return "";
   }
   if (clave === "coste") {
-    if (typeof l.coste !== "number" || isNaN(l.coste)) return "A number with at most two decimals.";
+    if (typeof l.coste !== "number" || Number.isNaN(l.coste)) return "A number with at most two decimals.";
     if (l.coste < 0 || l.coste > 9999.99) return "Between 0 and 9999,99.";
     return "";
   }
@@ -241,7 +241,7 @@ function confirmar(mover) {
   if (col.tipo === "entero") {
     if (/^\d+$/.test(crudo)) l[col.clave] = Number(crudo);
   } else if (col.tipo === "decimal") {
-    const normal = crudo.replace(",", ".");
+    const normal = crudo.replaceAll(',', ".");
     if (/^\d{1,5}(\.\d{1,2})?$/.test(normal)) l.coste = Number(normal);
   } else {
     l[col.clave] = crudo.toUpperCase();

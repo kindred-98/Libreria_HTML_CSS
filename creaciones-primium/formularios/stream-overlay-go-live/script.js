@@ -449,7 +449,7 @@ function entrarEnAire() {
   el("envivoClave").textContent = clave;
   el("envivoId").textContent = String(Math.floor(10000000 + Math.random() * 89999999));
   el("envivoCategoria").textContent = el("categoria").options[el("categoria").selectedIndex].text;
-  el("envivoCalidad").textContent = el("monitorBitrate").textContent.replace(" target", "") + ", 1080p60";
+  el("envivoCalidad").textContent = el("monitorBitrate").textContent.replaceAll(' target', "") + ", 1080p60";
   el("envivoTitulo").textContent = el("titulo").value.trim();
 
   document.querySelector(".escena").hidden = true;

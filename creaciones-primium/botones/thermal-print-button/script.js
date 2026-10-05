@@ -34,7 +34,7 @@
   var lh=20;
   function measure(){
     var v=Number.parseFloat(getComputedStyle(unit).getPropertyValue("--lh"));
-    if(v&&!isNaN(v))lh=v;
+    if(v&&!Number.isNaN(v))lh=v;
   }
   measure();
   window.addEventListener("resize",measure);

@@ -292,7 +292,7 @@ const CAMPOS = [
     vacio: "A mobile number, in case the room is running late.",
     error: "Nine to fifteen digits, the plus sign and spaces allowed.",
     prueba: v => {
-      const d = v.replace(/[^0-9]/g, "");
+      const d = v.replace(/\D/g, "");
       return d.length >= 9 && d.length <= 15;
     }
   },
@@ -349,7 +349,7 @@ function problemas() {
 
 el("hora").addEventListener("change", e => {
   st.hora = e.target.value;
-  pintar(CAMPOS.filter(f => f.id === "hora")[0]);
+  pintar(CAMPOS.find(f => f.id === "hora"));
 });
 
 el("servicio").addEventListener("change", e => {
@@ -370,7 +370,7 @@ el("personas").addEventListener("input", () => {
 });
 
 ["servicio", "personas", "hora", "nombre", "telefono", "correo"].forEach(id => {
-  el(id).addEventListener("blur", () => pintar(CAMPOS.filter(f => f.id === id)[0]));
+  el(id).addEventListener("blur", () => pintar(CAMPOS.find(f => f.id === id)));
 });
 
 CAMPOS.filter(f => f.id === "nombre" || f.id === "telefono" || f.id === "correo").forEach(f => {
@@ -386,7 +386,7 @@ el("avisos").addEventListener("change", () => {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintar);
+  CAMPOS.forEach((...args) => pintar(...args));
   const fallos = problemas();
 
   if (fallos.length > 0) {
@@ -418,7 +418,7 @@ function terminar() {
   el("confirmadaSala").textContent = sala.nombre;
   el("confirmadaCuando").textContent = DIAS_SEMANA[st.dia].largo.slice(0, 3) + " at " + st.hora;
   el("confirmadaGente").textContent = st.personas + (st.personas === 1 ? " person" : " people");
-  el("confirmadaTitulo").textContent = "See you at " + sala.nombre.replace("The ", "");
+  el("confirmadaTitulo").textContent = "See you at " + sala.nombre.replaceAll('The ', "");
   el("confirmadaLead").textContent = el("nombre").value.trim() + ", " + st.personas +
     (st.personas === 1 ? " person" : " people") + " on " + DIAS_SEMANA[st.dia].largo.toLowerCase() +
     " at " + st.hora + ", " + SERVICIOS[st.servicio].texto.toLowerCase() +

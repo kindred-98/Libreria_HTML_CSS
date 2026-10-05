@@ -79,7 +79,7 @@ const CAMPOS = [
     etiqueta: "Licence number",
     vacio: "",
     error: "Three capitals, four digits and one capital, like FED-4021-E.",
-    prueba: v => v === "" || /^[A-Z]{3}-[\d]{4}-[A-Z]$/.test(v)
+    prueba: v => v === "" || /^[A-Z]{3}-\d{4}-[A-Z]$/.test(v)
   },
   {
     id: "nacimiento",
@@ -124,7 +124,7 @@ function iniciales() {
 function tono() {
   const semilla = (el("nombre").value + el("apellidos").value).toLowerCase();
   let suma = 0;
-  for (let k = 0; k < semilla.length; k++) suma += semilla.charCodeAt(k);
+  for (let k = 0; k < semilla.length; k++) suma += semilla.codePointAt(k);
   return TONES[suma % TONES.length];
 }
 
@@ -277,7 +277,7 @@ function pintarTodo() {
   const control = el(id);
   control.addEventListener("input", () => {
     if (id === "nacimiento" || id === "altura") {
-      control.value = control.value.replace(/[^0-9]/g, "").slice(0, 4);
+      control.value = control.value.replace(/\D/g, "").slice(0, 4);
     }
     if (id === "licencia") {
       control.value = control.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 11);

@@ -1,5 +1,5 @@
 const dial = document.getElementById("safeDial");
-const status = document.getElementById("safeStatus");
+const statusEl = document.getElementById("safeStatus");
 let rot = 0;
 dial.addEventListener("click", () => {
   rot += 45;

@@ -37,7 +37,7 @@
   var all = document.querySelectorAll(".mini__input");
   var miniCapW = 20;
   for (var node of all) {
-    minis.push({ input: node, cap: document.getElementById("cap-" + node.id.replace("min-", "")) });
+    minis.push({ input: node, cap: document.getElementById("cap-" + node.id.replaceAll('min-', "")) });
   }
 
   function sweep() {

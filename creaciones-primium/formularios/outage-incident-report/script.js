@@ -51,7 +51,7 @@ const CAMPOS = [
     prueba: v => {
       if (v === "") return false;
       const fecha = new Date(v);
-      if (isNaN(fecha.getTime())) return false;
+      if (Number.isNaN(fecha.getTime())) return false;
       return fecha.getTime() <= Date.now() + 60000;
     }
   },
@@ -74,7 +74,7 @@ const CAMPOS = [
     etiqueta: "Phone for the callback",
     vacio: "Leave a number the on call engineer can ring back.",
     error: "Digits, spaces, plus and dashes only, between 8 and 18 characters.",
-    prueba: v => /^\+?[\d][0-9 -]{6,17}$/.test(v)
+    prueba: v => /^\+?\d[0-9 -]{6,17}$/.test(v)
   }
 ];
 
@@ -188,7 +188,7 @@ function pintarImpacto() {
 }
 
 function mascaraTelefono(valor) {
-  const limpio = valor.replace(/[^0-9]/g, "");
+  const limpio = valor.replace(/\D/g, "");
   if (limpio.length <= 4) return limpio;
   return limpio.slice(-4).replace(/^/, "ending ");
 }

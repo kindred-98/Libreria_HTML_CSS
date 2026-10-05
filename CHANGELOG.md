@@ -87,6 +87,129 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Quita el fallback deprecated de MediaQueryList.addListener en 3 demos (3 issues)] - 2026-10-05
+
+Los 3 archivos restantes con S1874 ('addListener' is deprecated) tenian
+el patron:
+
+```js
+if (mq.addEventListener) mq.addEventListener('change', cb);
+else if (mq.addListener) mq.addEventListener('change', cb);
+```
+
+`mq.addListener` (sin parentesis) es un check de propiedad: el codigo
+comprueba si el navegador expone ese metodo deprecated para usar el
+fallback. En cualquier navegador moderno `addEventListener` esta
+disponible, asi que la rama `else if` es codigo muerto. Se simplifica
+a la unica llamada a `addEventListener` en cada caso.
+
+Archivos:
+- `creaciones-primium/navegacion/folder-tree-nav/script.js:184-185`
+- `creaciones-primium/animaciones/tornado-vortex-debris/script.js:717-718`
+- `creaciones-primium/animaciones/koi-pond-ripple-trail/script.js:737-738`
+
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
+## [Rename de variable `status` a `statusEl` en 7 demos (14 issues)] - 2026-10-05
+
+`status` es una variable deprecada en HTML5 (sobra con
+`window.status`); declararla con `let/var/const` en un script la
+sombrea y dispara S1874. La regla no aparecia en los auto-fixes
+genericos porque necesita un rename PER-FICHERO (no solo un
+`replaceAll`), asi que se ha aplicado con un script de un solo uso
+(`tmp/sonar-export/rename-status.mjs`, NO commiteado al repo) a los
+7 archivos que SonarCloud marcaba.
+
+El script usa la regex `/(?<![.\w'\"])status(?![.\w'\"])/g` que
+excluye los accesos a miembros (`xhr.status`) Y los literales de
+cadena (`"#status"`). Esto fallo en una primera version que
+sobreescribia el selector CSS; la guarda de comillas lo soluciona.
+
+Aplicado: 14 sustituciones en 7 ficheros. Verificado en verde:
+`validar`, `validar:encabezados`, `validar:html` (Node 20/22/24),
+`validar:enlaces`, `validar:layout` y `validar:demos` (1018/1018, 0
+fallos).
+
+## [Auto-fix de code smells mecanicos: [\d] -> \d y mq.addListener -> mq.addEventListener (32 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana dos patrones:
+
+- **S6397** `[\d]` -> `\d`. Solo se reescriben las clases de
+  caracteres que envuelven un escape abreviado (`\d`, `\s`, `\w` y
+  sus versiones en mayusculas), que son sinonimas exactas de la
+  forma sin corchetes. Las clases como `[a-z]` o `[abc]` se quedan
+  como estan. Acepta cuantificador: `[\d]{6}` -> `\d{6}`.
+- **S1874-mql** `mq.addListener(cb)` -> `mq.addEventListener('change', cb)`.
+  `MediaQueryList.addListener` es un alias deprecated de
+  `addEventListener('change', ...)`.
+
+Aplicado: 32 sustituciones en 18 ficheros (29 `[\d]` + 3 addListener).
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
+## [Auto-fix de code smells mecanicos: arr.filter(p)[0] -> arr.find(p) (14 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana un patron:
+
+- **S7750** `arr.filter(p)[0]` -> `arr.find(p)`. Equivalente en el caso
+  comun: ambos devuelven el primer elemento que cumple `p` o `undefined`
+  si ninguno. `find` evita crear el array intermedio. Es seguro porque
+  `.filter` solo existe en Arrays, no en NodeList, asi que el codigo
+  original no podia estar operando sobre un NodeList.
+
+**Nota**: S7755 (`arr[arr.length - N]` -> `arr.at(-N)`) se intento auto-
+arreglar en la misma tanda y rompio `botones-vaporwave-sunset-button`
+porque `.at()` no existe en NodeList/HTMLCollection pero `[length - N]`
+si (es indexado de array-like). Se ha descartado el patron: aplicarlo
+requiere filtrar por el tipo del receptor, que no es viable solo con
+regex. Los 17 issues de S7755 quedan para marcar como Won't Fix en la
+UI o resolver caso a caso.
+
+Aplicado: 14 sustituciones en 11 ficheros. Verificado en verde:
+`validar`, `validar:encabezados`, `validar:html` (Node 20/22/24),
+`validar:enlaces`, `validar:layout` y `validar:demos` (1018/1018, 0
+fallos).
+
+## [Auto-fix de code smells mecanicos: forEach wrap, [^0-9] -> \D (46 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana dos patrones:
+
+- **S7727** `arr.forEach(fn)` -> `arr.forEach((...args) => fn(...args))`.
+  Al pasar la funcion directamente, `this` dentro de `fn` no esta
+  enlazado al array; con la arrow se preserva correctamente. El
+  argumento `...args` reenvia todos los parametros que `forEach`
+  pasaria normalmente.
+- **S6353b** `[^0-9]` -> `\D`. Sinonimo exacto: cualquier caracter
+  que no es un digito. El patron `\[^0-9\]` NO matchea `[0-9]` (que
+  ya esta cubierto por S6353 con la conversion a `\d`), asi que no
+  hay colision.
+
+Aplicado: 46 sustituciones en 23 ficheros (23 forEach + 23 [^0-9]).
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
+## [Auto-fix de code smells mecanicos: isNaN, charCodeAt, getAttribute (36 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana tres patrones:
+
+- **S7773c** `isNaN(x)` -> `Number.isNaN(x)`. La global acepta cualquier
+  valor y fuerza conversion a numero (`isNaN("5") === true`), mientras
+  que `Number.isNaN("5") === false`. En los demos donde aparece
+  (comprobaciones de NaN tras operaciones aritmeticas) ambos coinciden.
+- **S7758** `s.charCodeAt(i)` -> `s.codePointAt(i)`. Equivalente para
+  caracteres del BMP; los demos no manejan caracteres fuera del BMP.
+- **S7761** `getAttribute("data-x-y")` -> `dataset.xY` (lo que quedaba;
+  el callback del script ya filtraba los `data-*`).
+
+Aplicado: 36 sustituciones en 19 ficheros (16 isNaN + 20 charCodeAt).
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
 ## [Limpia la Quality Gate de SonarCloud antes del merge] - 2026-10-03
 
 Tres tandas de cambios que bajan la C a A en Security y Reliability, y

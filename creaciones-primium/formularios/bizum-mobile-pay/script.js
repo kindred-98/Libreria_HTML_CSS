@@ -26,7 +26,7 @@ const CAMPOS = [
     error: "Un número entre 0,01 y 5000,00 con coma o punto decimal.",
     prueba: v => {
       if (!/^\d{1,4}([.,]\d{1,2})?$/.test(v)) return false;
-      const n = Number(v.replace(",", "."));
+      const n = Number(v.replaceAll(',', "."));
       return n >= 0.01 && n <= 5000;
     }
   }
@@ -40,7 +40,7 @@ function euros(n) {
 
 function valorImporte() {
   const v = el("importe").value.trim();
-  return Number(v.replace(",", "."));
+  return Number(v.replaceAll(',', "."));
 }
 
 function pintar(f) {
@@ -75,8 +75,8 @@ function actualizarJustificante() {
   const imp = el("importe").value.trim();
   el("jDesde").textContent = tel ? "Bizum " + "+34 " + tel.replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3") : "Cuenta Bizum sin definir";
   el("jHacia").textContent = alias || "Alias sin definir";
-  el("jImporte").textContent = imp && !isNaN(valorImporte()) ? euros(valorImporte()) : "sin definir";
-  el("totalVivo").textContent = imp && !isNaN(valorImporte()) ? euros(valorImporte()) : "24,90 €";
+  el("jImporte").textContent = imp && !Number.isNaN(valorImporte()) ? euros(valorImporte()) : "sin definir";
+  el("totalVivo").textContent = imp && !Number.isNaN(valorImporte()) ? euros(valorImporte()) : "24,90 €";
 }
 
 CAMPOS.forEach(f => {
@@ -109,7 +109,7 @@ el("importe").addEventListener("input", () => {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintar);
+  CAMPOS.forEach((...args) => pintar(...args));
   const fallos = problemas();
 
   if (fallos.length > 0) {

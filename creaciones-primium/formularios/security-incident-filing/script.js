@@ -119,7 +119,7 @@ const CAMPOS = [
     etiqueta: "Phone for the callback",
     vacio: "At SEV1 and SEV2 somebody rings you back inside the hour.",
     error: "Digits with spaces, plus and dashes, eight to eighteen characters.",
-    prueba: v => /^\+?[\d][0-9 -]{6,17}$/.test(v)
+    prueba: v => /^\+?\d[0-9 -]{6,17}$/.test(v)
   }
 ];
 
@@ -205,7 +205,7 @@ function enmascararTelefono(v) {
   if (/[^\d\s+\-]/.test(v)) return "not a phone number";
   const ultimos = v.replace(/[^\d]/g, "").slice(-3);
   if (ultimos.length < 3) return v;
-  return v.replace(/\d(?=[^0-9]*$)/, "•");
+  return v.replace(/\d(?=\D*$)/, "•");
 }
 
 function refrescar() {

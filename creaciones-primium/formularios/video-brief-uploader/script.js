@@ -287,7 +287,7 @@ function pintaLista(clave) {
 }
 
 function pintaTodo() {
-  Object.keys(ZONAS).forEach(pintaLista);
+  Object.keys(ZONAS).forEach((...args) => pintaLista(...args));
   pintaAvance();
 }
 

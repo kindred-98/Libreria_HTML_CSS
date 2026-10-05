@@ -22,7 +22,7 @@ function valorCodigo() {
 }
 
 function codigoCompleto() {
-  return /^[\d]{6}$/.test(valorCodigo());
+  return /^\d{6}$/.test(valorCodigo());
 }
 
 function textoErrorCodigo() {
@@ -80,7 +80,7 @@ function pintarMotivo() {
 }
 
 function repartir(texto, desde) {
-  const digitos = texto.replace(/[^0-9]/g, "");
+  const digitos = texto.replace(/\D/g, "");
   for (let k = 0; k < digitos.length && desde + k < casillas.length; k++) {
     casillas[desde + k].value = digitos[k];
   }
@@ -95,7 +95,7 @@ function repartir(texto, desde) {
 
 casillas.forEach((c, i) => {
   c.addEventListener("input", () => {
-    c.value = c.value.replace(/[^0-9]/g, "").slice(0, 1);
+    c.value = c.value.replace(/\D/g, "").slice(0, 1);
     casillas.forEach(x => x.classList.toggle("llena", x.value !== ""));
     if (envCodigo.dataset.estado === "error") pintarCodigo();
     if (c.value !== "" && i < casillas.length - 1) casillas[i + 1].focus();
@@ -134,7 +134,7 @@ pegar.addEventListener("click", () => {
     return;
   }
   navigator.clipboard.readText().then(texto => {
-    const digitos = texto.replace(/[^0-9]/g, "");
+    const digitos = texto.replace(/\D/g, "");
     if (digitos.length === 0) {
       casillas[0].focus();
       return;

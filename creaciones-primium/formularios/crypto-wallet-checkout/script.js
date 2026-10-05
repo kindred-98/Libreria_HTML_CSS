@@ -32,7 +32,7 @@ const CAMPOS = [
     error: "Un número entre 0,0001 y 2 ETH, con coma o punto decimal.",
     prueba: v => {
       if (!/^\d{1,2}([.,]\d{1,8})?$/.test(v)) return false;
-      const n = Number(v.replace(",", "."));
+      const n = Number(v.replaceAll(',', "."));
       return n >= 0.0001 && n <= 2;
     }
   },
@@ -109,14 +109,14 @@ function actualizarTicket() {
   const bruto = 112;
   const c = el("cantidad").value.trim().replace(",", ".");
   const n = Number(c);
-  const envio = !isNaN(n) && n > 0 ? n : 112.57 / PRECIO_ETH;
+  const envio = !Number.isNaN(n) && n > 0 ? n : 112.57 / PRECIO_ETH;
   const total = envio * PRECIO_ETH + r.gas;
   el("comision").textContent = euros(r.gas);
   el("deslizamiento").textContent = String(r.slip).replace(".", ",") + " %";
   el("ticketGas").textContent = euros(r.gas);
   el("ticketSlide").textContent = String(r.slip).replace(".", ",") + " %";
   el("ticketTotal").textContent = euros(total);
-  el("equivaleEur").textContent = euros(isNaN(n) ? 0 : n * PRECIO_ETH);
+  el("equivaleEur").textContent = euros(Number.isNaN(n) ? 0 : n * PRECIO_ETH);
   el("precioEth").textContent = PRECIO_ETH.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ").replace(".", ",") + " €";
   return { envio: envio, total: total, red: r, bruto: bruto };
 }
@@ -196,7 +196,7 @@ function arrancarReloj() {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintar);
+  CAMPOS.forEach((...args) => pintar(...args));
   const fallos = problemas();
 
   if (fallos.length > 0) {

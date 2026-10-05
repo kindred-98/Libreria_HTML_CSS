@@ -67,14 +67,14 @@ Array.prototype.forEach.call(document.querySelectorAll(".plan__cta"), function (
     Array.prototype.forEach.call(document.querySelectorAll(".plan__cta"), function (other) {
       other.setAttribute("aria-pressed", "false");
       if (other !== button && !on) {
-        other.textContent = other.textContent.replace("Held \u00b7 ", "");
+        other.textContent = other.textContent.replaceAll('Held \u00b7 ', "");
       }
     });
     button.setAttribute("aria-pressed", on ? "false" : "true");
     if (on) {
-      button.textContent = button.textContent.replace("Held \u00b7 ", "");
+      button.textContent = button.textContent.replaceAll('Held \u00b7 ', "");
     } else {
-      button.textContent = "Held \u00b7 " + button.textContent.replace("Held \u00b7 ", "");
+      button.textContent = "Held \u00b7 " + button.textContent.replaceAll('Held \u00b7 ', "");
     }
   });
 });

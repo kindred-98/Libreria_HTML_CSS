@@ -20,7 +20,7 @@
 
   function bearingOf(blip) {
     var value = Number.parseFloat((blip.style.getPropertyValue('--b') || '0').replace('deg', ''));
-    return isNaN(value) ? 0 : value;
+    return Number.isNaN(value) ? 0 : value;
   }
 
   function paint(index) {

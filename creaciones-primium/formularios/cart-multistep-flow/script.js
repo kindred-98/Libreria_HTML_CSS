@@ -39,7 +39,7 @@ const CAMPOS = [
     etiqueta: "Teléfono",
     vacio: "Necesitamos un teléfono para coordinar la entrega.",
     error: "Debe ser un móvil español de nueve cifras, del 600 al 799.",
-    prueba: v => /^[6-7][\d]{8}$/.test(v.replace(/[\s.-]/g, ""))
+    prueba: v => /^[6-7]\d{8}$/.test(v.replace(/[\s.-]/g, ""))
   },
   {
     id: "direccion", panel: 2,

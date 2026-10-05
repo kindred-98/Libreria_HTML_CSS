@@ -295,8 +295,8 @@ CAMPOS.forEach(f => {
   });
 });
 
-el("miValor").addEventListener("input", () => { el("miValor").value = el("miValor").value.replace(/[^0-9]/g, "").slice(0, 5); });
-el("suValor").addEventListener("input", () => { el("suValor").value = el("suValor").value.replace(/[^0-9]/g, "").slice(0, 5); });
+el("miValor").addEventListener("input", () => { el("miValor").value = el("miValor").value.replace(/\D/g, "").slice(0, 5); });
+el("suValor").addEventListener("input", () => { el("suValor").value = el("suValor").value.replace(/\D/g, "").slice(0, 5); });
 
 form.addEventListener("submit", e => {
   e.preventDefault();
