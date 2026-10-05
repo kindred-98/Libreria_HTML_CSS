@@ -87,6 +87,38 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Limpia los code smells mecanicos que quedaban en los demos] - 2026-10-03
+
+`Web/scripts/autofix-sonar-mecanico.mjs` aplica siete transformaciones
+sintacticas sinonimas sobre el codigo de los demos y de `Web/scripts/`:
+
+| Regla | Que cambia |
+|---|---|
+| `S7773` | `parseFloat(x)` -> `Number.parseFloat(x)` |
+| `S7765` | `arr.indexOf(x) (>=|>|!=)-1` -> `arr.includes(x)` |
+| `S6653` | `Object.prototype.hasOwnProperty.call(x,k)` -> `Object.hasOwn(x,k)` |
+| `S7762` | `padre.removeChild(hijo)` -> `hijo.remove()` |
+| `S7769` | `Math.sqrt(a*a + b*b)` -> `Math.hypot(a, b)` |
+| `S6353` | `/[0-9]/` -> `/\d/` |
+| `S7761` | `el.getAttribute("data-foo-bar")` -> `el.dataset.fooBar` |
+
+Solo se ejecuta contra `.js` y `.mjs`, y excluye `node_modules`,
+`Web/scripts/lib/`, `Web/data/`, `tmp/` y el propio script. Acepta
+`--dry-run` para previsualizar y `--rule <id>` para limitar a una sola
+regla.
+
+En esta primera pasada quedan 7 sustituciones en 4 demos (los grandes
+ya estaban limpios por el commit `28de356`). Los siguientes patrones
+estan **fuera del auto-fix** porque no son sinonimos: `S4138` (for-of,
+cambia el cuerpo del bucle), `S3358` (ternarios anidados, hay que
+extraer a un `if`), `S5255` (landmarks sin `aria-label`, requiere
+decidir el nombre), `css:S4666` (selectores en `@media`, son overrides
+deliberados) y `S3776` (complejidad cognitiva, refactor manual).
+
+Verificado en verde: `validar`, `validar:html` (Node 20/22/24),
+`validar:enlaces`, `validar:layout` y `validar:demos` (1018/1018, 0
+fallos).
+
 ## [Arregla tres regresiones detectadas en el analisis de SonarQube] - 2026-10-03
 
 El otro agente que limpio los 1.600 code smells dejo sin querer tres

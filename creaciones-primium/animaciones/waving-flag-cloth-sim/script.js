@@ -245,7 +245,7 @@
       b = linkB[k];
       dx = posX[b] - posX[a];
       dy = posY[b] - posY[a];
-      dist = Math.sqrt(dx * dx + dy * dy);
+      dist = Math.hypot(dx, dy);
       if (dist < 0.0001) continue;
       s = linkK[k];
       diff = ((dist - linkR[k]) / dist) * s;
@@ -574,7 +574,7 @@
     btn.addEventListener("click", function () {
       Array.prototype.forEach.call(buttons, function (other) { other.classList.remove("is-on"); });
       btn.classList.add("is-on");
-      windLevel = parseFloat(btn.dataset.wind) || 1;
+      windLevel = Number.parseFloat(btn.dataset.wind) || 1;
     });
   });
 

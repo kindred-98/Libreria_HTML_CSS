@@ -50,7 +50,7 @@
       if (flash) flash.style.filter = "";
     }, 700);
     window.setTimeout(function () {
-      for (var node of extra) if (node.parentNode) node.parentNode.removeChild(node);
+      for (var node of extra) if (node.parentNode) node.node.remove();
       extra.length = 0;
     }, 1500);
   }

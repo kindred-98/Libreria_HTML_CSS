@@ -101,7 +101,7 @@
         "translate(" + f.cx + "," + f.cy + ") rotate(" + gr.toFixed(2) + ") translate(" +
         (-f.cx).toFixed(2) + "," + (-f.cy).toFixed(2) + ") translate(" +
         gx.toFixed(2) + "," + gy.toFixed(2) + ")");
-      var d = Math.sqrt(gx * gx + gy * gy);
+      var d = Math.hypot(gx, gy);
       if (d > maxT) maxT = d;
     }
 

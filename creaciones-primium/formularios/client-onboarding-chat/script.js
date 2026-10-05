@@ -427,7 +427,7 @@ function montarMulti(p) {
   SERVICIOS.forEach(s => {
     const b = nodo("button", "marca");
     b.type = "button";
-    b.setAttribute("aria-pressed", st.servicios.indexOf(s.clave) > -1 ? "true" : "false");
+    b.setAttribute("aria-pressed", st.servicios.includes(s.clave) ? "true" : "false");
     b.appendChild(nodo("span", "marca__punto"));
     const txt = nodo("span");
     txt.appendChild(document.createTextNode(s.texto));
@@ -692,7 +692,7 @@ function pintarDossier() {
     ["Head count", TAMANOS.filter(t => t.clave === st.tamano).map(t => t.texto)[0] || ""],
     ["VAT", st.iva],
     ["Billing contact", st.correo],
-    ["Scope", SERVICIOS.filter(s => st.servicios.indexOf(s.clave) > -1).map(s => s.texto).join(", ")],
+    ["Scope", SERVICIOS.filter(s => st.servicios.includes(s.clave)).map(s => s.texto).join(", ")],
     ["Go live", st.arranque ? fechaLarga(st.arranque) : ""]
   ].forEach(par => {
     const div = document.createElement("div");
