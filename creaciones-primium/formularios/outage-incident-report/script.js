@@ -74,7 +74,7 @@ const CAMPOS = [
     etiqueta: "Phone for the callback",
     vacio: "Leave a number the on call engineer can ring back.",
     error: "Digits, spaces, plus and dashes only, between 8 and 18 characters.",
-    prueba: v => /^\+?[\d][0-9 -]{6,17}$/.test(v)
+    prueba: v => /^\+?\d[0-9 -]{6,17}$/.test(v)
   }
 ];
 

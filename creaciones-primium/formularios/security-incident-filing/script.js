@@ -119,7 +119,7 @@ const CAMPOS = [
     etiqueta: "Phone for the callback",
     vacio: "At SEV1 and SEV2 somebody rings you back inside the hour.",
     error: "Digits with spaces, plus and dashes, eight to eighteen characters.",
-    prueba: v => /^\+?[\d][0-9 -]{6,17}$/.test(v)
+    prueba: v => /^\+?\d[0-9 -]{6,17}$/.test(v)
   }
 ];
 

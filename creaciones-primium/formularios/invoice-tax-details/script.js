@@ -31,7 +31,7 @@ const CAMPOS = [
     prueba: v => {
       const tipo = el("tipo-id").value;
       if (!tipo) return false;
-      if (tipo === "CIF") return /^B[0-9A-Z][\d]{6}[0-9A-J]$/.test(v) || /^[A-HJUV][\d]{8}$/.test(v);
+      if (tipo === "CIF") return /^B[0-9A-Z]\d{6}[0-9A-J]$/.test(v) || /^[A-HJUV]\d{8}$/.test(v);
       const formato = tipo === "NIF" ? /^\d{8}[A-Z]$/ : /^[XYZ]\d{7}[A-Z]$/;
       if (!formato.test(v)) return false;
       let numero = v;

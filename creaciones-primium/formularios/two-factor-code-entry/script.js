@@ -21,7 +21,7 @@ const CAMPOS = [
     error: "Ese código no es válido. Revisa el orden de las cifras.",
     prueba: () => {
       const v = casillas.map(c => c.value).join("");
-      return v.length === 6 && /^[\d]{6}$/.test(v);
+      return v.length === 6 && /^\d{6}$/.test(v);
     }
   },
   {

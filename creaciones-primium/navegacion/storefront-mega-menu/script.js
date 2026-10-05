@@ -10,7 +10,7 @@
 
   function close(returnFocus) {
     if (!openId) return;
-    var button = document.getElementById(openId.replace('mega-', 'cat-'));
+    var button = document.getElementById(openId.replaceAll('mega-', 'cat-'));
     var panel = document.getElementById(openId);
     if (panel) panel.hidden = true;
     if (button) button.setAttribute('aria-expanded', 'false');

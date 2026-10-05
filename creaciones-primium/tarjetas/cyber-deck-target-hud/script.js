@@ -2,7 +2,7 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 const figures = Array.from(document.querySelectorAll("[data-final]"));
 
 function scramble(text) {
-  return text.replace(/[\d]/g, function () {
+  return text.replace(/\d/g, function () {
     return String(Math.floor(Math.random() * 10));
   });
 }

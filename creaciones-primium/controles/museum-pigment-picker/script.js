@@ -20,7 +20,7 @@ if (box) {
 
   const show = (option) => {
     const bare = option.dataset.hex ?? "1c4f8f";
-    const hex = `#${bare.replace("#", "")}`;
+    const hex = `#${bare.replaceAll('#', "")}`;
     apply(hex, option.dataset.name, option.dataset.sub, bare, options.indexOf(option) + 1);
   };
 
@@ -48,8 +48,8 @@ if (box) {
   const showMix = () => {
     const value = mix?.value ?? "#7a4bb5";
     if (mixChip) mixChip.style.background = value;
-    if (mixHex) mixHex.textContent = value.replace("#", "");
-    apply(value, "Custom mix", "hand ground", value.replace("#", ""), 7);
+    if (mixHex) mixHex.textContent = value.replaceAll('#', "");
+    apply(value, "Custom mix", "hand ground", value.replaceAll('#', ""), 7);
   };
 
   mix?.addEventListener("input", showMix);

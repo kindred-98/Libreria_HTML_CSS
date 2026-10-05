@@ -26,7 +26,7 @@ const CAMPOS = [
     error: "Un número entre 0,01 y 5000,00 con coma o punto decimal.",
     prueba: v => {
       if (!/^\d{1,4}([.,]\d{1,2})?$/.test(v)) return false;
-      const n = Number(v.replace(",", "."));
+      const n = Number(v.replaceAll(',', "."));
       return n >= 0.01 && n <= 5000;
     }
   }
@@ -40,7 +40,7 @@ function euros(n) {
 
 function valorImporte() {
   const v = el("importe").value.trim();
-  return Number(v.replace(",", "."));
+  return Number(v.replaceAll(',', "."));
 }
 
 function pintar(f) {

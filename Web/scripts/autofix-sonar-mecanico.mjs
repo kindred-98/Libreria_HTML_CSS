@@ -207,6 +207,37 @@ const PATRONES = [
     regex: /\.filter\(([^)]+)\)\[0\]/g,
     reemplazo: ".find($1)",
   },
+  {
+    // s.replace("x", y) -> s.replaceAll("x", y). Solo cuando el primer
+    // argumento es un string literal (entre comillas), NO una regex
+    // (entre slashes). Para las regex hay que mantener la `/regex/g` con
+    // la bandera `g`. Tambien exige que el primer argumento NO tenga la
+    // bandera `g` (si la tiene, es una regex y se ignora).
+    id: "S7781",
+    descripcion: "s.replace('x', y) -> s.replaceAll('x', y)  (solo string literal)",
+    regex: /(\w+)\.replace\((["'])([^"']+)\2,\s*([^)]+)\)/g,
+    reemplazo: "$1.replaceAll('$3', $4)",
+  },
+  {
+    // [\d] -> \d, [\s] -> \s, [\w] -> \w, [\D] -> \D, etc. Solo se
+    // reescriben las clases de caracteres que envuelven un escape
+    // abreviado: son sinonimas exactas. Las clases como [a-z] o [abc]
+    // se quedan como estan. Tambien acepta un cuantificador opcional:
+    // [\d]{6} -> \d{6}.
+    id: "S6397",
+    descripcion: "[\\d] -> \\d  (clase con un solo escape abreviado)",
+    regex: /\[(\\[dswDSW])(?:\{[^}]*\})?\]/g,
+    reemplazo: "$1",
+  },
+  {
+    // mq.addListener(cb) -> mq.addEventListener('change', cb).
+    // MediaQueryList.addListener es un alias deprecated de
+    // addEventListener('change', ...).
+    id: "S1874-mql",
+    descripcion: "mq.addListener(cb) -> mq.addEventListener('change', cb)",
+    regex: /(\w+)\.addListener\(([^)]+)\)/g,
+    reemplazo: "$1.addEventListener('change', $2)",
+  },
   // NOTA: S7755 (`arr[arr.length - N]` -> `arr.at(-N)`) no se aplica
   // automaticamente porque rompe codigo que usa NodeList o HTMLCollection
   // (la conversion `.at(-N)` falla en esos casos, pero `[length - N]`

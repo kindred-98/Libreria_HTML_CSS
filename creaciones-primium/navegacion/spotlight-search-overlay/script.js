@@ -166,7 +166,7 @@
     emblemFor(item.g, item.t);
     prevTitle.textContent = item.t;
     prevBody.textContent = item.b;
-    prevHint.textContent = 'Opens ' + item.to.replace('#', 'the section ') + '.';
+    prevHint.textContent = 'Opens ' + item.to.replaceAll('#', 'the section ') + '.';
   }
 
   function render(list) {

@@ -418,7 +418,7 @@ function terminar() {
   el("confirmadaSala").textContent = sala.nombre;
   el("confirmadaCuando").textContent = DIAS_SEMANA[st.dia].largo.slice(0, 3) + " at " + st.hora;
   el("confirmadaGente").textContent = st.personas + (st.personas === 1 ? " person" : " people");
-  el("confirmadaTitulo").textContent = "See you at " + sala.nombre.replace("The ", "");
+  el("confirmadaTitulo").textContent = "See you at " + sala.nombre.replaceAll('The ', "");
   el("confirmadaLead").textContent = el("nombre").value.trim() + ", " + st.personas +
     (st.personas === 1 ? " person" : " people") + " on " + DIAS_SEMANA[st.dia].largo.toLowerCase() +
     " at " + st.hora + ", " + SERVICIOS[st.servicio].texto.toLowerCase() +

@@ -48,7 +48,7 @@ const CAMPOS = [
     etiqueta: "Código de descuento",
     vacio: "Escribe un código para probar el descuento.",
     error: "Ese código no existe. Prueba con VERANO-20, BIENVEN-15, MADRUG-30 o LIBROS-10.",
-    prueba: v => /^[A-Z]{6}-[\d]{2}$/.test(v) && cupónActivo() !== null
+    prueba: v => /^[A-Z]{6}-\d{2}$/.test(v) && cupónActivo() !== null
   },
   {
     id: "importe",
@@ -141,7 +141,7 @@ function refrescarVivo() {
   const validoImporte = CAMPOS[1].prueba(importe.value.trim());
   const fechaValida = CAMPOS[2].prueba(fecha.value.trim());
 
-  const formato = /^[A-Z]{6}-[\d]{2}$/.test(codigo.value);
+  const formato = /^[A-Z]{6}-\d{2}$/.test(codigo.value);
   const existe = cupon !== null;
   const cumpleImporte = existe && validoImporte && bruto >= cupon.minimo;
   const cumpleCaduca = existe && fechaValida;

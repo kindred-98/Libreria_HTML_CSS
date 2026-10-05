@@ -46,7 +46,7 @@ const CAMPOS = [
     etiqueta: "Precio",
     vacio: "Pon un precio de venta, aunque sea de una pieza suelta.",
     error: "Entre 1 € y 99.999 €, con coma para los decimales.",
-    prueba: v => /^\d{1,5}(,\d{1,2})?$/.test(v) && Number(v.replace(",", ".")) >= 1 && Number(v.replace(",", ".")) <= 99999
+    prueba: v => /^\d{1,5}(,\d{1,2})?$/.test(v) && Number(v.replaceAll(',', ".")) >= 1 && Number(v.replaceAll(',', ".")) <= 99999
   },
   {
     id: "provincia",
@@ -223,10 +223,10 @@ function cuenta() {
     ? "linear-gradient(90deg, #5fd39a, #9ae8c2)"
     : "linear-gradient(90deg, #f0a500, #ffc94d)";
   el("precioAntes").textContent = CAMPOS[3].prueba(precio.value.trim())
-    ? "Precio de tablón: " + dinero(Number(precio.value.replace(",", ".")) * 0.9)
+    ? "Precio de tablón: " + dinero(Number(precio.value.replaceAll(',', ".")) * 0.9)
     : "Sin precio válido";
   el("miniaturaPrecio").textContent = CAMPOS[3].prueba(precio.value.trim())
-    ? dinero(Number(precio.value.replace(",", ".")))
+    ? dinero(Number(precio.value.replaceAll(',', ".")))
     : "Sin precio";
   el("miniaturaTitulo").textContent = t.trim() || "Sin título";
   let lugar = "sin municipio";
@@ -295,7 +295,7 @@ function completar() {
   const ref = "AP-" + String(Math.floor(100000 + Math.random() * 900000));
   el("publicadoRef").textContent = ref;
   el("publicadoCategoria").textContent = categoria.options[categoria.selectedIndex].text;
-  el("publicadoPrecio").textContent = dinero(Number(precio.value.replace(",", ".")));
+  el("publicadoPrecio").textContent = dinero(Number(precio.value.replaceAll(',', ".")));
   el("publicadoLugar").textContent = municipio.value.trim() + ", " + provincia.options[provincia.selectedIndex].text;
   el("publicadoTitulo").textContent = "Publicado: " + tituloAnuncio.value.trim();
   el("publicadoTexto").textContent = "El anuncio con la referencia " + ref + " ya está visible para quien compra en " +

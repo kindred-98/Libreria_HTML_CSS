@@ -79,7 +79,7 @@ const CAMPOS = [
     etiqueta: "Licence number",
     vacio: "",
     error: "Three capitals, four digits and one capital, like FED-4021-E.",
-    prueba: v => v === "" || /^[A-Z]{3}-[\d]{4}-[A-Z]$/.test(v)
+    prueba: v => v === "" || /^[A-Z]{3}-\d{4}-[A-Z]$/.test(v)
   },
   {
     id: "nacimiento",

@@ -147,7 +147,7 @@ function validaFecha(v) {
 function validaImporte(v) {
   const limpio = v.replace(/\./g, "");
   if (!/^\d{1,6}(,\d{1,2})?$/.test(limpio)) return false;
-  const n = Number(limpio.replace(",", "."));
+  const n = Number(limpio.replaceAll(',', "."));
   return n >= 0.01 && n <= 9999.99;
 }
 

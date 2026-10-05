@@ -241,7 +241,7 @@ function confirmar(mover) {
   if (col.tipo === "entero") {
     if (/^\d+$/.test(crudo)) l[col.clave] = Number(crudo);
   } else if (col.tipo === "decimal") {
-    const normal = crudo.replace(",", ".");
+    const normal = crudo.replaceAll(',', ".");
     if (/^\d{1,5}(\.\d{1,2})?$/.test(normal)) l.coste = Number(normal);
   } else {
     l[col.clave] = crudo.toUpperCase();

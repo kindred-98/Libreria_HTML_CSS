@@ -22,7 +22,7 @@ function valorCodigo() {
 }
 
 function codigoCompleto() {
-  return /^[\d]{6}$/.test(valorCodigo());
+  return /^\d{6}$/.test(valorCodigo());
 }
 
 function textoErrorCodigo() {

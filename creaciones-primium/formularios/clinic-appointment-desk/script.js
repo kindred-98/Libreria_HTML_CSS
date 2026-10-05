@@ -91,7 +91,7 @@ const CAMPOS = [
     etiqueta: "Phone",
     vacio: "Without a number the reminder text has nowhere to go.",
     error: "Between 8 and 18 characters, digits with spaces, plus and dashes.",
-    prueba: v => /^\+?[\d][0-9 -]{6,17}$/.test(v)
+    prueba: v => /^\+?\d[0-9 -]{6,17}$/.test(v)
   },
   {
     id: "motivo",
@@ -276,7 +276,7 @@ function pintarResumen() {
   [
     "Reminder text forty eight hours before",
     nueva.checked ? "Ten extra minutes on the day for the records" : "Free to move up to twenty four hours ahead",
-    clinico === null ? "Room assigned when the clinician is picked" : "Room " + clinico.consulta.replace("Room ", "").replace("Surgery ", "surgery ").replace("Gym ", "gym ") + " on the ground floor"
+    clinico === null ? "Room assigned when the clinician is picked" : "Room " + clinico.consulta.replaceAll('Room ', "").replace("Surgery ", "surgery ").replace("Gym ", "gym ") + " on the ground floor"
   ].forEach(texto => {
     const li = document.createElement("li");
     li.textContent = texto;
@@ -464,7 +464,7 @@ form.addEventListener("submit", e => {
   const espDatos = ESPECIALIDADES[especialidad.value];
   const clinico = clinicianActual();
   const referencia = "RV-" + String(Math.floor(100000 + Math.random() * 900000));
-  const sala = clinico.consulta.replace("Room ", "");
+  const sala = clinico.consulta.replaceAll('Room ', "");
   const minutos = espDatos.min + (nueva.checked ? 10 : 0);
   const aviso = nueva.checked ? " Please arrive ten minutes early so reception can open the record." : "";
 

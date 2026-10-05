@@ -715,7 +715,7 @@ function onMQ(){
 }
 
 if(mq.addEventListener)mq.addEventListener('change',onMQ);
-else if(mq.addListener)mq.addListener(onMQ);
+else if(mq.addListener)mq.addEventListener('change', onMQ);
 
 resize();
 if(mq.matches)still();

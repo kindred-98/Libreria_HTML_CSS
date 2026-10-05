@@ -66,7 +66,7 @@ const CAMPOS = [
     etiqueta: "Company tax number",
     vacio: "Without a tax number the league cannot pay a company account at all.",
     error: "Two upper case letters and nine digits, like GB123456789.",
-    prueba: v => /^[A-Z]{2}[\d]{9}$/.test(v),
+    prueba: v => /^[A-Z]{2}\d{9}$/.test(v),
     soloSi: "equipo"
   },
   {
@@ -123,7 +123,7 @@ function paisIban(v) {
 
 function ibanValido(v) {
   const d = digitosIban(v).toUpperCase();
-  if (!/^[A-Z]{2}[\d]{2}[A-Z0-9]{10,30}$/.test(d)) return false;
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(d)) return false;
   const p = d.substring(0, 2);
   if (!Object.hasOwn(PAISES, p)) return false;
   const rango = TALLAS[p];

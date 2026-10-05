@@ -20,7 +20,7 @@ const CAMPOS = [
     etiqueta: "Total de la mesa",
     vacio: "Escribe el total de la mesa para poder repartirlo.",
     error: "Usa un importe entre 5,00 € y 500,00 € con coma para los decimales.",
-    prueba: v => coincideDinero(v) && Number(v.replace(",", ".")) >= 5 && Number(v.replace(",", ".")) <= 500
+    prueba: v => coincideDinero(v) && Number(v.replaceAll(',', ".")) >= 5 && Number(v.replaceAll(',', ".")) <= 500
   },
   {
     id: "grupo",
@@ -37,7 +37,7 @@ PLATOS.forEach(p => {
     etiqueta: p.nombre,
     vacio: "Escribe 0,00 si nadie pidió este plato.",
     error: "Importe máximo 500,00 € con dos decimales, por ejemplo 12,50.",
-    prueba: v => coincideDinero(v) && Number(v.replace(",", ".")) <= 500
+    prueba: v => coincideDinero(v) && Number(v.replaceAll(',', ".")) <= 500
   });
 });
 
@@ -46,7 +46,7 @@ function coincideDinero(v) {
 }
 
 function aNumero(v) {
-  return Number(v.replace(",", ".")) || 0;
+  return Number(v.replaceAll(',', ".")) || 0;
 }
 
 function dinero(n) {

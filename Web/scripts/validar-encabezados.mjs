@@ -82,7 +82,7 @@ for (const raiz of RAICES) {
     }
     if (saltos.length) {
       const id = path.relative(repositoryDirectory, absolute).split(path.sep).join("/");
-      fallos.push(`${id.replace("/index.html", "")}: ${saltos.join(", ")}`);
+      fallos.push(`${id.replaceAll('/index.html', "")}: ${saltos.join(", ")}`);
     }
   }
 }

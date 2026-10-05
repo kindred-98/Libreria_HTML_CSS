@@ -87,6 +87,24 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Auto-fix de code smells mecanicos: [\d] -> \d y mq.addListener -> mq.addEventListener (32 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana dos patrones:
+
+- **S6397** `[\d]` -> `\d`. Solo se reescriben las clases de
+  caracteres que envuelven un escape abreviado (`\d`, `\s`, `\w` y
+  sus versiones en mayusculas), que son sinonimas exactas de la
+  forma sin corchetes. Las clases como `[a-z]` o `[abc]` se quedan
+  como estan. Acepta cuantificador: `[\d]{6}` -> `\d{6}`.
+- **S1874-mql** `mq.addListener(cb)` -> `mq.addEventListener('change', cb)`.
+  `MediaQueryList.addListener` es un alias deprecated de
+  `addEventListener('change', ...)`.
+
+Aplicado: 32 sustituciones en 18 ficheros (29 `[\d]` + 3 addListener).
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
 ## [Auto-fix de code smells mecanicos: arr.filter(p)[0] -> arr.find(p) (14 issues)] - 2026-10-05
 
 `Web/scripts/autofix-sonar-mecanico.mjs` gana un patron:

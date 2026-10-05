@@ -32,7 +32,7 @@ const CAMPOS = [
     error: "Un número entre 0,0001 y 2 ETH, con coma o punto decimal.",
     prueba: v => {
       if (!/^\d{1,2}([.,]\d{1,8})?$/.test(v)) return false;
-      const n = Number(v.replace(",", "."));
+      const n = Number(v.replaceAll(',', "."));
       return n >= 0.0001 && n <= 2;
     }
   },

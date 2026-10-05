@@ -18,7 +18,7 @@ const CAMPOS = [
     etiqueta: "Six digit code",
     vacio: "Type the six digits your guard app is showing.",
     error: "That code is not one of ours. Read the order again, the app rotates it every thirty seconds.",
-    prueba: () => /^[\d]{6}$/.test(codigoActual())
+    prueba: () => /^\d{6}$/.test(codigoActual())
   },
   {
     id: "motivo",
