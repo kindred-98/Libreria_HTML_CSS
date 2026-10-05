@@ -87,6 +87,38 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Arregla tres regresiones detectadas en el analisis de SonarQube] - 2026-10-03
+
+El otro agente que limpio los 1.600 code smells dejo sin querer tres
+regresiones que el informe paralelo (`Docs/Hallazgos_agente_paralelo_2026-10-05.md`)
+ya habia marcado. Se arreglan aqui:
+
+- **`.github/workflows/validate.yml`**: el step de `setup-node` perdio la
+  indentacion al reescribir un bloque de comentarios: `cache: npm` se
+  quedo a 6 espacios y dejo de ser hijo de `with:`. Con eso el YAML no
+  parseaba (`yaml.parser.ParserError`) y GitHub Actions no llegaba a cargar
+  el workflow, asi que **ninguna de las validaciones del CI corria** en
+  los pushes. Se devuelve a 10 espacios y los comentarios tambien.
+- **`Web/components.html`**: el sandbox del iframe del portal de Davoker
+  llevaba `allow-scripts allow-same-origin allow-forms ...`. La pareja
+  `allow-scripts + allow-same-origin` neutraliza el sandbox: el demo
+  puede quitarse el atributo desde su propio script y acceder al
+  `localStorage` del padre (incluido el consentimiento de cookies). Es
+  justo lo que `Web/scripts/validate.mjs` documenta como motivo del
+  sandbox. Se quita `allow-same-origin`; el resto se mantiene.
+- **`creaciones-primium/botones/wireframe-hud-lock-button/styles.css`**:
+  `.tag` perdio el `top:50%` al compactar el CSS. Con `position:absolute`
+  y `transform: translate(-50%,-50%)` sin top, la pieza quedaba centrada
+  sobre si misma en vez de sobre el contenedor. Se devuelve el `top:50%`.
+
+El receptor de `postMessage` del Davoker (línea 1847 de `app.js`) ya
+validaba `evento.origin`, asi que el quitar `allow-same-origin` no rompe
+el puente con `transicion.html`.
+
+Verificado en verde: `validar`, `validar:html` (Node 20/22/24),
+`validar:enlaces`, `validar:layout` y `validar:demos` (1018/1018, 0
+fallos).
+
 ## [Arregla las vistas previas que no cargaban en iOS Safari, iPadOS y Safari de macOS] - 2026-10-03
 
 Los iframes de `live-preview` se quedaban en `opacity: 0` para siempre en
