@@ -196,6 +196,23 @@ const PATRONES = [
     regex: /\[\^0-9\]/g,
     reemplazo: "\\D",
   },
+  {
+    // arr.filter(p)[0] -> arr.find(p). Equivalente en el caso comun:
+    // ambos devuelven el primer elemento que cumple `p` o undefined si
+    // ninguno. `find` evita crear el array intermedio. Es seguro porque
+    // `.filter` solo existe en Arrays, no en NodeList, asi que el codigo
+    // original no podia estar operando sobre un NodeList.
+    id: "S7750",
+    descripcion: "arr.filter(p)[0] -> arr.find(p)",
+    regex: /\.filter\(([^)]+)\)\[0\]/g,
+    reemplazo: ".find($1)",
+  },
+  // NOTA: S7755 (`arr[arr.length - N]` -> `arr.at(-N)`) no se aplica
+  // automaticamente porque rompe codigo que usa NodeList o HTMLCollection
+  // (la conversion `.at(-N)` falla en esos casos, pero `[length - N]`
+  // funciona por el indexado de array-like). Si se quiere abordar, hay
+  // que filtrar primero por el tipo del receptor, que no es viable solo
+  // con regex.
 ];
 
 const EXCLUIR = ["node_modules", ".git", "Web/scripts/lib/", ".sonarlint/", "Web/data/", "tmp/", "dist/"];

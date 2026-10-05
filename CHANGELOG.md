@@ -87,6 +87,29 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Auto-fix de code smells mecanicos: arr.filter(p)[0] -> arr.find(p) (14 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana un patron:
+
+- **S7750** `arr.filter(p)[0]` -> `arr.find(p)`. Equivalente en el caso
+  comun: ambos devuelven el primer elemento que cumple `p` o `undefined`
+  si ninguno. `find` evita crear el array intermedio. Es seguro porque
+  `.filter` solo existe en Arrays, no en NodeList, asi que el codigo
+  original no podia estar operando sobre un NodeList.
+
+**Nota**: S7755 (`arr[arr.length - N]` -> `arr.at(-N)`) se intento auto-
+arreglar en la misma tanda y rompio `botones-vaporwave-sunset-button`
+porque `.at()` no existe en NodeList/HTMLCollection pero `[length - N]`
+si (es indexado de array-like). Se ha descartado el patron: aplicarlo
+requiere filtrar por el tipo del receptor, que no es viable solo con
+regex. Los 17 issues de S7755 quedan para marcar como Won't Fix en la
+UI o resolver caso a caso.
+
+Aplicado: 14 sustituciones en 11 ficheros. Verificado en verde:
+`validar`, `validar:encabezados`, `validar:html` (Node 20/22/24),
+`validar:enlaces`, `validar:layout` y `validar:demos` (1018/1018, 0
+fallos).
+
 ## [Auto-fix de code smells mecanicos: forEach wrap, [^0-9] -> \D (46 issues)] - 2026-10-05
 
 `Web/scripts/autofix-sonar-mecanico.mjs` gana dos patrones:

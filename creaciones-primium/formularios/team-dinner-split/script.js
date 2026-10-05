@@ -40,7 +40,7 @@ function el(id) { return document.getElementById(id); }
 
 function dinero(n) { return n.toFixed(2).replace(".", ",") + " EUR"; }
 
-function plato(id) { return PLATOS.filter(p => p.id === id)[0]; }
+function plato(id) { return PLATOS.find(p => p.id === id); }
 
 function total() {
   return PLATOS.reduce((s, p) => s + p.precio, 0);
@@ -181,7 +181,7 @@ function pagoDe(p) {
 }
 
 function cambiar(idGuest, idPlato, delta) {
-  const g = gente.filter(p => p.id === idGuest)[0];
+  const g = gente.find(p => p.id === idGuest);
   const pl = plato(idPlato);
   const actual = g.platos[idPlato] || 0;
   if (delta > 0 && actual >= pl.raciones) return;

@@ -98,7 +98,7 @@ function alternarCaptura(id, boton) {
   const fila = boton.closest(".fila");
   fila.dataset.capturando = "1";
   boton.querySelector("span:last-child").textContent = "press a key";
-  anunciar("Listening for a key on " + ACCIONES.filter(a => a.id === id)[0].accion);
+  anunciar("Listening for a key on " + ACCIONES.find(a => a.id === id).accion);
   boton.focus();
 }
 
@@ -119,7 +119,7 @@ function asignar(id, tecla) {
   boton.dataset.capturando = "0";
   salirCaptura();
   pintarFila(id);
-  anunciar(ACCIONES.filter(a => a.id === id)[0].accion + " bound to " + tecla);
+  anunciar(ACCIONES.find(a => a.id === id).accion + " bound to " + tecla);
   boton.focus();
 }
 
@@ -141,10 +141,10 @@ function pintarFila(id) {
   boton.setAttribute("aria-describedby", err.id);
   if (dup) {
     err.textContent = "That key is already used by another action. Pick a different one.";
-    boton.setAttribute("aria-label", ACCIONES.filter(a => a.id === id)[0].accion + ": duplicated key, press Enter to rebind");
+    boton.setAttribute("aria-label", ACCIONES.find(a => a.id === id).accion + ": duplicated key, press Enter to rebind");
   } else {
     err.textContent = "";
-    boton.setAttribute("aria-label", ACCIONES.filter(a => a.id === id)[0].accion +
+    boton.setAttribute("aria-label", ACCIONES.find(a => a.id === id).accion +
       (vacia ? ": no key bound yet, press Enter to bind one" : ": bound to " + boton.dataset.tecla + ", press Enter to rebind"));
   }
   return dup || vacia;

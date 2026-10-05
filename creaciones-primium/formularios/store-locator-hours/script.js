@@ -349,7 +349,7 @@ function problemas() {
 
 el("hora").addEventListener("change", e => {
   st.hora = e.target.value;
-  pintar(CAMPOS.filter(f => f.id === "hora")[0]);
+  pintar(CAMPOS.find(f => f.id === "hora"));
 });
 
 el("servicio").addEventListener("change", e => {
@@ -370,7 +370,7 @@ el("personas").addEventListener("input", () => {
 });
 
 ["servicio", "personas", "hora", "nombre", "telefono", "correo"].forEach(id => {
-  el(id).addEventListener("blur", () => pintar(CAMPOS.filter(f => f.id === id)[0]));
+  el(id).addEventListener("blur", () => pintar(CAMPOS.find(f => f.id === id)));
 });
 
 CAMPOS.filter(f => f.id === "nombre" || f.id === "telefono" || f.id === "correo").forEach(f => {

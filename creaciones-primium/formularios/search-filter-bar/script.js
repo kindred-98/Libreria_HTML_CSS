@@ -178,7 +178,7 @@ function pintar() {
     conteo.textContent = filtrados.length + (filtrados.length === 1 ? " page matches" : " pages match") +
       (st.buscado && texto ? " for " + consulta.value.trim() : " as you type") +
       (st.gratis ? ", free only" : "") +
-      (st.vista !== "todo" ? ", in " + VISTAS.filter(v => v.clave === st.vista)[0].texto.toLowerCase() : "");
+      (st.vista !== "todo" ? ", in " + VISTAS.find(v => v.clave === st.vista).texto.toLowerCase() : "");
     limpiar.hidden = false;
   }
   return filtrados.length;

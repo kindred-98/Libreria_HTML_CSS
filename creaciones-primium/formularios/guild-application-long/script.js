@@ -49,7 +49,7 @@ const CAMPOS = [
 ];
 
 const TOTAL_PESO = CAMPOS.reduce((a, c) => a + c.peso, 0);
-const porId = id => CAMPOS.filter(c => c.id === id)[0];
+const porId = id => CAMPOS.find(c => c.id === id);
 const tocados = {};
 
 const falloDe = campo => {
