@@ -69,7 +69,7 @@ function asignado() {
 
 function tonoDe(n) {
   let suma = 0;
-  for (let k = 0; k < n.length; k++) suma += n.charCodeAt(k);
+  for (let k = 0; k < n.length; k++) suma += n.codePointAt(k);
   return TONES[suma % TONES.length];
 }
 

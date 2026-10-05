@@ -182,7 +182,7 @@ function modulo97(iban) {
   let resto = 0;
   for (let i = 0; i < reordenado.length; i++) {
     const c = reordenado.charAt(i);
-    const digitos = /[\d]/.test(c) ? c : String(c.charCodeAt(0) - 55);
+    const digitos = /[\d]/.test(c) ? c : String(c.codePointAt(0) - 55);
     for (let k = 0; k < digitos.length; k++) {
       resto = (resto * 10 + Number(digitos.charAt(k))) % 97;
     }
@@ -235,8 +235,8 @@ function actualizarIban() {
 function actualizarTotal() {
   const cuota = Number(el("cuota").value.replace(",", "."));
   const cuotas = Number(el("cuotas").value);
-  const ok1 = !isNaN(cuota) && cuota > 0;
-  const ok2 = !isNaN(cuotas) && cuotas > 0;
+  const ok1 = !Number.isNaN(cuota) && cuota > 0;
+  const ok2 = !Number.isNaN(cuotas) && cuotas > 0;
   el("totalMandato").textContent = ok1 && ok2 ? euros(cuota * cuotas) : "0,00 €";
   const per = el("periodicidad").value;
   el("formulaTotal").textContent = ok2 ? "= C7 &times; " + cuotas : "= C7 &times; C8";

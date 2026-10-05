@@ -133,7 +133,7 @@ function ibanValido(v) {
   for (let k = 0; k < movido.length; k++) {
     const c = movido.charAt(k);
     if (c >= "0" && c <= "9") numerically += c;
-    else numerically += String(c.charCodeAt(0) - 55);
+    else numerically += String(c.codePointAt(0) - 55);
   }
   let resto = 0;
   for (let k = 0; k < numerically.length; k += 7) {

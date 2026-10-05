@@ -51,7 +51,7 @@ const CAMPOS = [
     prueba: v => {
       if (v === "") return false;
       const fecha = new Date(v);
-      if (isNaN(fecha.getTime())) return false;
+      if (Number.isNaN(fecha.getTime())) return false;
       return fecha.getTime() <= Date.now() + 60000;
     }
   },

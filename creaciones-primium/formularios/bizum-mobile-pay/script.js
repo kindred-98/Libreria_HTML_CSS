@@ -75,8 +75,8 @@ function actualizarJustificante() {
   const imp = el("importe").value.trim();
   el("jDesde").textContent = tel ? "Bizum " + "+34 " + tel.replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3") : "Cuenta Bizum sin definir";
   el("jHacia").textContent = alias || "Alias sin definir";
-  el("jImporte").textContent = imp && !isNaN(valorImporte()) ? euros(valorImporte()) : "sin definir";
-  el("totalVivo").textContent = imp && !isNaN(valorImporte()) ? euros(valorImporte()) : "24,90 €";
+  el("jImporte").textContent = imp && !Number.isNaN(valorImporte()) ? euros(valorImporte()) : "sin definir";
+  el("totalVivo").textContent = imp && !Number.isNaN(valorImporte()) ? euros(valorImporte()) : "24,90 €";
 }
 
 CAMPOS.forEach(f => {

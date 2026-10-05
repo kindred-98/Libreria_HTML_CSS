@@ -31,7 +31,7 @@
     var out = [];
     for (var prop of props) {
       var v = Number.parseFloat(cs.getPropertyValue(prop));
-      out.push(isNaN(v) ? 0 : v);
+      out.push(Number.isNaN(v) ? 0 : v);
     }
     return out;
   }

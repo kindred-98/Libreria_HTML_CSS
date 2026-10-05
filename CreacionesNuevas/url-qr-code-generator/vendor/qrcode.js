@@ -738,7 +738,7 @@ var qrcode = function() {
     'default' : function(s) {
       var bytes = [];
       for (var i = 0; i < s.length; i += 1) {
-        var c = s.charCodeAt(i);
+        var c = s.codePointAt(i);
         bytes.push(c & 0xff);
       }
       return bytes;
@@ -789,12 +789,12 @@ var qrcode = function() {
       return unicodeMap;
     }();
 
-    var unknownChar = '?'.charCodeAt(0);
+    var unknownChar = '?'.codePointAt(0);
 
     return function(s) {
       var bytes = [];
       for (var i = 0; i < s.length; i += 1) {
-        var c = s.charCodeAt(i);
+        var c = s.codePointAt(i);
         if (c < 128) {
           bytes.push(c);
         } else {
@@ -1649,7 +1649,7 @@ var qrcode = function() {
 
     var chatToNum = function(c) {
       if ('0' <= c && c <= '9') {
-        return c.charCodeAt(0) - '0'.charCodeAt(0);
+        return c.codePointAt(0) - '0'.codePointAt(0);
       }
       throw 'illegal char :' + c;
     };
@@ -1697,9 +1697,9 @@ var qrcode = function() {
     var getCode = function(c) {
 
       if ('0' <= c && c <= '9') {
-        return c.charCodeAt(0) - '0'.charCodeAt(0);
+        return c.codePointAt(0) - '0'.codePointAt(0);
       } else if ('A' <= c && c <= 'Z') {
-        return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+        return c.codePointAt(0) - 'A'.codePointAt(0) + 10;
       } else {
         switch (c) {
         case ' ' : return 36;
@@ -1848,7 +1848,7 @@ var qrcode = function() {
 
     _this.writeString = function(s) {
       for (var i = 0; i < s.length; i += 1) {
-        _this.writeByte(s.charCodeAt(i) );
+        _this.writeByte(s.codePointAt(i) );
       }
     };
 
@@ -1977,7 +1977,7 @@ var qrcode = function() {
           continue;
         }
 
-        _buffer = (_buffer << 6) | decode(c.charCodeAt(0) );
+        _buffer = (_buffer << 6) | decode(c.codePointAt(0) );
         _buflen += 6;
       }
 
@@ -2254,7 +2254,7 @@ var qrcode = function() {
     function toUTF8Array(str) {
       var utf8 = [];
       for (var i=0; i < str.length; i++) {
-        var charcode = str.charCodeAt(i);
+        var charcode = str.codePointAt(i);
         if (charcode < 0x80) utf8.push(charcode);
         else if (charcode < 0x800) {
           utf8.push(0xc0 | (charcode >> 6),
@@ -2272,7 +2272,7 @@ var qrcode = function() {
           // subtracting 0x10000 and splitting the
           // 20 bits of 0x0-0xFFFFF into two halves
           charcode = 0x10000 + (((charcode & 0x3ff)<<10)
-            | (str.charCodeAt(i) & 0x3ff));
+            | (str.codePointAt(i) & 0x3ff));
           utf8.push(0xf0 | (charcode >>18),
               0x80 | ((charcode>>12) & 0x3f),
               0x80 | ((charcode>>6) & 0x3f),

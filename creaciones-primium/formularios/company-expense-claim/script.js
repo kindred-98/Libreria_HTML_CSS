@@ -139,7 +139,7 @@ function cuerpoLinea(i) {
 function validaFecha(v) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
   const d = new Date(v);
-  if (isNaN(d.getTime())) return false;
+  if (Number.isNaN(d.getTime())) return false;
   const hoy = new Date();
   return d <= hoy && d.getFullYear() >= hoy.getFullYear() - 2;
 }

@@ -67,7 +67,7 @@ function validaCampo(l, clave) {
     return "";
   }
   if (clave === "coste") {
-    if (typeof l.coste !== "number" || isNaN(l.coste)) return "A number with at most two decimals.";
+    if (typeof l.coste !== "number" || Number.isNaN(l.coste)) return "A number with at most two decimals.";
     if (l.coste < 0 || l.coste > 9999.99) return "Between 0 and 9999,99.";
     return "";
   }

@@ -87,6 +87,24 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Auto-fix de code smells mecanicos: isNaN, charCodeAt, getAttribute (36 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana tres patrones:
+
+- **S7773c** `isNaN(x)` -> `Number.isNaN(x)`. La global acepta cualquier
+  valor y fuerza conversion a numero (`isNaN("5") === true`), mientras
+  que `Number.isNaN("5") === false`. En los demos donde aparece
+  (comprobaciones de NaN tras operaciones aritmeticas) ambos coinciden.
+- **S7758** `s.charCodeAt(i)` -> `s.codePointAt(i)`. Equivalente para
+  caracteres del BMP; los demos no manejan caracteres fuera del BMP.
+- **S7761** `getAttribute("data-x-y")` -> `dataset.xY` (lo que quedaba;
+  el callback del script ya filtraba los `data-*`).
+
+Aplicado: 36 sustituciones en 19 ficheros (16 isNaN + 20 charCodeAt).
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
 ## [Limpia la Quality Gate de SonarCloud antes del merge] - 2026-10-03
 
 Tres tandas de cambios que bajan la C a A en Security y Reliability, y

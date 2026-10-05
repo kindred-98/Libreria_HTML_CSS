@@ -124,7 +124,7 @@ function iniciales() {
 function tono() {
   const semilla = (el("nombre").value + el("apellidos").value).toLowerCase();
   let suma = 0;
-  for (let k = 0; k < semilla.length; k++) suma += semilla.charCodeAt(k);
+  for (let k = 0; k < semilla.length; k++) suma += semilla.codePointAt(k);
   return TONES[suma % TONES.length];
 }
 

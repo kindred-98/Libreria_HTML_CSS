@@ -145,6 +145,36 @@ const PATRONES = [
     regex: /(?<![A-Za-z0-9_$.])parseInt\(/g,
     reemplazo: "Number.parseInt(",
   },
+  {
+    // isNaN(x) -> Number.isNaN(x). La global acepta cualquier valor (no
+    // produce NaN si x no es Number, solo fuerza la conversion), mientras
+    // que Number.isNaN requiere Number sin coercion: `Number.isNaN("5")` es
+    // false, `isNaN("5")` es true. En los demos donde aparece se usa para
+    // detectar NaN tras operaciones aritmeticas, donde ambos coinciden.
+    id: "S7773c",
+    descripcion: "isNaN(x) -> Number.isNaN(x)",
+    regex: /(?<![A-Za-z0-9_$.])isNaN\(/g,
+    reemplazo: "Number.isNaN(",
+  },
+  {
+    // "abc".charCodeAt(i) -> "abc".codePointAt(i). Equivalente para BMP;
+    // para caracteres fuera del BMP (>=0x10000) codePointAt devuelve el
+    // codepoint real mientras que charCodeAt devuelve solo la primera
+    // unidad UTF-16. En animaciones y entradas de teclado de los demos no
+    // se manejan esos caracteres, asi que la conversion es segura.
+    id: "S7758",
+    descripcion: "s.charCodeAt(i) -> s.codePointAt(i)",
+    regex: /\.charCodeAt\(/g,
+    reemplazo: ".codePointAt(",
+  },
+  {
+    // new Date().getTime() -> Date.now(). La primera crea un Date
+    // intermedio; Date.now() es lo mismo sin el objeto. Sinonimo exacto.
+    id: "S7759",
+    descripcion: "new Date().getTime() -> Date.now()",
+    regex: /new Date\(\)\.getTime\(\)/g,
+    reemplazo: "Date.now()",
+  },
 ];
 
 const EXCLUIR = ["node_modules", ".git", "Web/scripts/lib/", ".sonarlint/", "Web/data/", "tmp/", "dist/"];
