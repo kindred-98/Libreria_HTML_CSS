@@ -20,8 +20,8 @@
   }
 
   function bars(scope) {
-    var n = parseInt(scope.dataset.bar, 10);
-    var sd = parseInt(scope.dataset.seed, 10) || 1;
+    var n = Number.parseInt(scope.dataset.bar, 10);
+    var sd = Number.parseInt(scope.dataset.seed, 10) || 1;
     var frag = document.createDocumentFragment();
     for (var i = 0; i < n; i++) {
       var b = document.createElement('i');
@@ -46,7 +46,7 @@
   var ladder = segs(document.querySelector('.ladder'), 18);
   var meterBoxes = document.querySelectorAll('.meter');
   var meters = Array.prototype.map.call(meterBoxes, function (m) {
-    return segs(m, parseInt(m.dataset.seg, 10));
+    return segs(m, Number.parseInt(m.dataset.seg, 10));
   });
   var mainSegs = meters[meters.length - 1];
 

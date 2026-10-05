@@ -42,7 +42,7 @@
   }
 
   function paint() {
-    var raw = parseInt(input.value, 10);
+    var raw = Number.parseInt(input.value, 10);
     if (!isFinite(raw)) {
       raw = 0;
     }
@@ -109,7 +109,7 @@
 
   function setValue(next) {
     var clamped = Math.min(1000, Math.max(0, Math.round(next)));
-    if (clamped === parseInt(input.value, 10)) {
+    if (clamped === Number.parseInt(input.value, 10)) {
       return;
     }
     input.value = String(clamped);
@@ -141,7 +141,7 @@
     var key = event.key;
     if (key === " " || key === "Spacebar") {
       event.preventDefault();
-      var raw = parseInt(input.value, 10) || 0;
+      var raw = Number.parseInt(input.value, 10) || 0;
       var step = 1000 / (DETENTS - 1);
       setValue(Math.round(raw / step) * step);
       click();

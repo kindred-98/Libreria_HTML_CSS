@@ -1,7 +1,6 @@
 (function () {
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var hud = document.getElementById("hud");
-  var stage = document.getElementById("stage");
   var target = document.getElementById("target");
   var ring = document.getElementById("ring");
   var ring2 = document.getElementById("ring2");

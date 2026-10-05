@@ -25,7 +25,7 @@
     flyStatus.textContent = STATUS[i].name;
     var radios = menu.querySelectorAll('[role="menuitemradio"]');
     for (var radio of radios) {
-      radio.setAttribute("aria-checked", parseInt(radio.dataset.status, 10) === i ? "true" : "false");
+      radio.setAttribute("aria-checked", Number.parseInt(radio.dataset.status, 10) === i ? "true" : "false");
     }
   }
 
@@ -94,7 +94,7 @@
     var item = e.target.closest ? e.target.closest(".mi") : null;
     if (!item) return;
     if (item.getAttribute("role") === "menuitemradio") {
-      setStatus(parseInt(item.dataset.status, 10));
+      setStatus(Number.parseInt(item.dataset.status, 10));
     }
     if ("act" in item.dataset) {
       var card = fly.querySelector(".fly__card");

@@ -138,17 +138,17 @@
     var lang = LANGS[k];
     var slots = document.querySelectorAll("[data-i18n]");
     for (const slot of slots) {
-      var i = parseInt(slot.dataset.i18n, 10);
+      var i = Number.parseInt(slot.dataset.i18n, 10);
       if (lang.strings[i] !== undefined) slot.textContent = lang.strings[i];
     }
     var rich = document.querySelectorAll("[data-i18n-html]");
     for (const node of rich) {
-      var j = parseInt(node.dataset.i18nHtml, 10);
+      var j = Number.parseInt(node.dataset.i18nHtml, 10);
       if (lang.strings[j] !== undefined) node.innerHTML = lang.strings[j];
     }
     var aria = document.querySelector("[data-i18n-aria]");
     if (aria) {
-      var a = parseInt(aria.dataset.i18nAria, 10);
+      var a = Number.parseInt(aria.dataset.i18nAria, 10);
       if (lang.strings[a] !== undefined) {
         aria.setAttribute("aria-label", lang.code.toUpperCase() + " · " + lang.native + " · " + lang.strings[a]);
       }

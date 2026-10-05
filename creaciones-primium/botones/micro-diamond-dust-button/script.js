@@ -5,7 +5,7 @@
 
   var rig = btns.map(function (btn, bi) {
     var face = btn.querySelector(".sk__face");
-    var n = parseInt(face.dataset.dust, 10) || 20;
+    var n = Number.parseInt(face.dataset.dust, 10) || 20;
     var dia = [];
     for (var i = 0; i < n; i++) {
       var el = document.createElement("i");

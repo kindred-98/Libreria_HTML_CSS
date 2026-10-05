@@ -86,7 +86,7 @@
   pad.addEventListener("click",function(e){
     var b=e.target.closest?e.target.closest(".tk"):null;
     if(!b)return;
-    var k=parseInt(b.dataset.k,10);
+    var k=Number.parseInt(b.dataset.k,10);
     if(k>=1&&k<=6)fire(k-1);
   });
 

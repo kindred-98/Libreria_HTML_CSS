@@ -41,8 +41,8 @@
 
   function read() {
     var parts = String(input.value || "00:00").split(":");
-    var h = parseInt(parts[0], 10);
-    var m = parseInt(parts[1], 10);
+    var h = Number.parseInt(parts[0], 10);
+    var m = Number.parseInt(parts[1], 10);
     if (!isFinite(h) || h < 0) {
       h = 0;
     }
@@ -64,7 +64,7 @@
   function spin(part, index) {
     var strip = PARTS[part].drum;
     var drum = strip.parentNode;
-    var prev = parseInt(strip.style.getPropertyValue("--i"), 10);
+    var prev = Number.parseInt(strip.style.getPropertyValue("--i"), 10);
     var steps = isFinite(prev) ? Math.abs(index - prev) : 1;
     strip.style.transitionDuration = still ? "0ms" : Math.min(760, 250 + steps * 34) + "ms";
     strip.style.setProperty("--i", String(index));

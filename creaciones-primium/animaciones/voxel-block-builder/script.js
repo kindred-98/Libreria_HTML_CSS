@@ -87,9 +87,9 @@ function pad(v, w) {
 }
 
 function shade(hex, k) {
-  const r = Math.min(255, Math.round(parseInt(hex.slice(1, 3), 16) * k));
-  const g = Math.min(255, Math.round(parseInt(hex.slice(3, 5), 16) * k));
-  const b = Math.min(255, Math.round(parseInt(hex.slice(5, 7), 16) * k));
+  const r = Math.min(255, Math.round(Number.parseInt(hex.slice(1, 3), 16) * k));
+  const g = Math.min(255, Math.round(Number.parseInt(hex.slice(3, 5), 16) * k));
+  const b = Math.min(255, Math.round(Number.parseInt(hex.slice(5, 7), 16) * k));
   return 'rgb(' + r + ',' + g + ',' + b + ')';
 }
 

@@ -160,7 +160,7 @@
     if (e.key === "Escape") { closeMap(true); return; }
     if (/^[1-6]$/.test(e.key)) {
       e.preventDefault();
-      jump(parseInt(e.key, 10) - 1);
+      jump(Number.parseInt(e.key, 10) - 1);
     }
   });
 

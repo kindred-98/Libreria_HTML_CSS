@@ -85,7 +85,7 @@ function driftLamp() {
   window.setTimeout(driftLamp, 40);
 }
 
-counts.forEach(runCount);
+counts.forEach(n => runCount(n));
 tally();
 driftLamp();
 

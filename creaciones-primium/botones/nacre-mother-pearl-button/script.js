@@ -17,9 +17,9 @@
     setTimeout(function(){p.classList.remove("is-hit")},150);
   }
 
-  for(var pl of plates){
-    (function(p){
-      p.addEventListener("click",function(){rip(p)});
+  for (let pl of plates) {
+    (function (p) {
+      p.addEventListener("click", function () { rip(p); });
     })(pl);
   }
 

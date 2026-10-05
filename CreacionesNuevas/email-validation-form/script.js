@@ -1,5 +1,5 @@
 const inp=document.getElementById('vemail');
-const status=document.getElementById('vstatus');
+const estado=document.getElementById('vstatus');
 const hints=document.getElementById('vhints');
 const rules={
   nonempty:v=>v.length>0,
@@ -21,5 +21,5 @@ inp.addEventListener('input',()=>{
   inp.className='vinput '+clase;
   let marca='';
   if(v)marca=valid?'✅':'❌';
-  status.textContent=marca;
+  estado.textContent=marca;
 });

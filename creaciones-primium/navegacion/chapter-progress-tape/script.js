@@ -83,12 +83,12 @@
   });
 
   function scaleBy(step) {
-    var n = parseInt(out.textContent, 10) + step;
+    var n = Number.parseInt(out.textContent, 10) + step;
     if (n < 1) n = 1;
     if (n > 24) n = 24;
     out.textContent = String(n);
     ylds.forEach(function (b) {
-      var base = parseInt(b.dataset.base || '1', 10);
+      var base = Number.parseInt(b.dataset.base || '1', 10);
       b.textContent = String(Math.max(1, Math.round(base * n / 4)));
     });
   }

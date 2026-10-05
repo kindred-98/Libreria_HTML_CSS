@@ -126,7 +126,7 @@
   Array.prototype.forEach.call(document.querySelectorAll('a[href^="#st-"]'), function (a) {
     a.addEventListener("click", function (e) {
       e.preventDefault();
-      var n = parseInt(a.getAttribute("href").slice(4), 10) - 1;
+      var n = Number.parseInt(a.getAttribute("href").slice(4), 10) - 1;
       if (isNaN(n)) return;
       goTo(n);
       st[n].focus();

@@ -36,7 +36,7 @@
     var count = 0;
     var items = linesEl.querySelectorAll(".line");
     for (const item of items) {
-      var q = parseInt(item.querySelector("[data-qty]").dataset.qty, 10) || 0;
+      var q = Number.parseInt(item.querySelector("[data-qty]").dataset.qty, 10) || 0;
       sum += Number.parseFloat(item.dataset.price) * q;
       count += q;
     }
@@ -56,7 +56,7 @@
     var line = btn.closest(".line");
     if (!line) return;
     var num = line.querySelector("[data-qty]");
-    var q = parseInt(num.dataset.qty, 10) || 0;
+    var q = Number.parseInt(num.dataset.qty, 10) || 0;
     if ("drop" in btn.dataset) {
       line.classList.add("is-gone");
       var wait = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 260;
@@ -66,7 +66,7 @@
       }, wait);
       return;
     }
-    var step = parseInt(btn.dataset.step, 10);
+    var step = Number.parseInt(btn.dataset.step, 10);
     q += step;
     if (q < 0) q = 0;
     num.dataset.qty = String(q);
@@ -84,7 +84,7 @@
     var line = btn.closest(".line");
     var step = e.key === "ArrowRight" ? 1 : -1;
     var num = line.querySelector("[data-qty]");
-    var q = Math.max(0, (parseInt(num.dataset.qty, 10) || 0) + step);
+    var q = Math.max(0, (Number.parseInt(num.dataset.qty, 10) || 0) + step);
     num.dataset.qty = String(q);
     num.textContent = String(q);
     var less = line.querySelector('[data-step="-1"]');

@@ -136,6 +136,15 @@ const PATRONES = [
     regex: /\[\]\.slice\.call\(/g,
     reemplazo: "Array.prototype.slice.call(",
   },
+  {
+    // parseInt(x, r) -> Number.parseInt(x, r). Variante de S7773. Es seguro
+    // porque ambas funciones se comportan igual (la Number.* es solo un
+    // traslado del global al namespace).
+    id: "S7773b",
+    descripcion: "parseInt(x) -> Number.parseInt(x)",
+    regex: /(?<![A-Za-z0-9_$.])parseInt\(/g,
+    reemplazo: "Number.parseInt(",
+  },
 ];
 
 const EXCLUIR = ["node_modules", ".git", "Web/scripts/lib/", ".sonarlint/", "Web/data/", "tmp/", "dist/"];

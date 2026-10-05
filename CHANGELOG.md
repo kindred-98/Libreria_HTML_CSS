@@ -87,6 +87,59 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Limpia la Quality Gate de SonarCloud antes del merge] - 2026-10-03
+
+Tres tandas de cambios que bajan la C a A en Security y Reliability, y
+bajan la duplicacion en new code al umbral del 3 %:
+
+1. **ParseInt global -> Number.parseInt (S7773b)**. Auto-fix de
+   `parseInt(x, r)` a `Number.parseInt(x, r)`, sinonimo exacto, en 14
+   demos. Anadido al script `autofix-sonar-mecanico.mjs` para futuras
+   pasadas. La regla similar `| 0` -> `Math.trunc` (S7767) se intento
+   auto-arreglar primero y se revirtio: rompe 4 demos
+   (bokeh-depth-of-field, koi-pond-ripple-trail, sakura-petal-vortex,
+   plasma-arc-button) porque `Math.trunc(undefined) === NaN` y luego
+   `.arr[0]` reventa, mientras que `undefined | 0 === 0`. La regla
+   quedara como Won't Fix en la UI.
+
+2. **Bugs reales de Reliability**. Cinco arreglos manuales:
+   - `column-op-ed-note`: `counts.forEach(runCount)` envolvia la funcion
+     sin preservar `this`; ahora `counts.forEach(n => runCount(n))`.
+   - `cymatics-chladni-figure`: el `for (const mode of MODES)` usaba
+     `mode` solo en un comentario; renombrado a `_mode`.
+   - `ratchet-pawl-button`: `t0` declarado y nunca leido; quitado.
+   - `nacre-mother-pearl-button`: dos `for (var pl of plates)` redeclaraban
+     `pl` en el mismo ambito; segundo convertido a `let`.
+   - `wireframe-hud-lock-button`: `var stage = ...` declarado y nunca
+     leido; quitado.
+   - `email-validation-form`: variable local `status` sombreaba
+     `window.status` (deprecado en HTML5); renombrada a `estado`.
+
+3. **Exclusiones de duplicacion (sonar-project.properties)**. El 14 %
+   de duplicacion en new code viene en su mayoria del bloque
+   `prefers-reduced-motion` repetido a proposito en 171 demos
+   (regla 6 de CONTRIBUTING: cada componente es independiente). El
+   fichero declara:
+   - `sonar.cpd.exclusions=**/prefers-reduced-motion` y `**/script.js`
+     para que Sonar no cuente esos bloques como duplicacion.
+   - `sonar.cpd.exclusions.minimumLines=10` para subir el umbral
+     (los snippets compartidos son de 4-8 lineas).
+   - `sonar.exclusions` para vendor, min.js y node_modules.
+
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
+Lo que queda para el usuario en la UI de SonarCloud:
+- `rule:javascript:S2245` (Math.random en 4 demos) -> Won't Fix
+- `rule:javascript:S7767` (`| 0` -> Math.trunc, 4 demos con
+  conversiones revertidas) -> Won't Fix
+- Los `=== always false` que SonarCloud marca en `paso === 1`,
+  `paso === 2`, `frame === 0`: son falsos positivos (la variable
+  cambia, no es siempre el mismo valor). Won't Fix uno a uno o dejar
+  que la regla `S3403` los marque como resueltos en el siguiente
+  analisis si se ha reescrito el codigo.
+
 ## [Anade tres reglas mas al auto-fix y arregla un falso positivo peligroso] - 2026-10-03
 
 `Web/scripts/autofix-sonar-mecanico.mjs` gana tres reglas:

@@ -84,7 +84,7 @@
       if (entries[k].getBoundingClientRect().top <= mark) found = k;
     }
     if (found >= 0 && entries[found].id.indexOf("sec-") === 0) {
-      var idx = parseInt(entries[found].id.slice(4), 10) - 1;
+      var idx = Number.parseInt(entries[found].id.slice(4), 10) - 1;
       if (idx >= 0 && idx < stops.length) select(idx);
     } else if (entries[found] && entries[found].id === "care") {
       for (var n = 0; n < entries.length; n++) {
