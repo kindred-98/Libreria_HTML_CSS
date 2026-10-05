@@ -65,7 +65,7 @@
     var loopTop = loop.getBoundingClientRect().top;
     var trackTop = track.getBoundingClientRect().top;
     var raw = -(trackTop - loopTop);
-    if (!isFinite(raw)) {
+    if (!Number.isFinite(raw)) {
       return phase;
     }
     return ((raw % H) + H) % H;

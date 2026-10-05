@@ -176,9 +176,9 @@ function problemas() {
 
 function nombreTecla(e) {
   const c = e.code || "";
-  if (c.indexOf("Key") === 0) return c.slice(3);
-  if (c.indexOf("Digit") === 0) return c.slice(5);
-  if (c.indexOf("Numpad") === 0) return "Num " + c.slice(6);
+  if (c.startsWith('Key')) return c.slice(3);
+  if (c.startsWith('Digit')) return c.slice(5);
+  if (c.startsWith('Numpad')) return "Num " + c.slice(6);
   if (SIMBOLOS[c]) return SIMBOLOS[c];
   return e.key.length === 1 ? e.key.toUpperCase() : e.key;
 }

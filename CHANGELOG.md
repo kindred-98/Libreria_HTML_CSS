@@ -87,6 +87,162 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Deja el CLS de la pagina de componentes en 0 quitando el salto del pie] - 2026-10-06
+
+En el preset movil de Lighthouse, `Web/components.html` medía **CLS 0,29**.
+Medido con un `PerformanceObserver` de `layout-shift` puro (y con la misma
+medicion antes y despues del cambio), el 97% del problema era un solo
+elemento: el `<footer class="site-footer">`, que saltaba de `y=481` a
+fuera del viewport.
+
+- **Por que**: `#component-grid` llega **vacia** en el HTML y se rellena
+  con el catalogo en `app.js`, que va con `defer`. En el primer pintado
+  hay sitio para el pie justo debajo de la cabecera; cuando entran las
+  nueve tarjetas de la pagina (3.353 px) el pie se va a `y=4.081` y ese
+  salto vale 0,247 de CLS.
+- **Arreglo**: `min-height: 60vh` / `60dvh` en `.component-grid`, siguiendo
+  el mismo doble patron `vh` + `dvh` que ya usa `.davoker-portal` para
+  iOS. El pie arranca ya fuera del viewport y al crecer la rejilla sigue
+  fuera: no hay desplazamiento que medir. Con una pagina completa de
+  tarjetas el alto final (3.353 px) supera holgadamente los 60vh, asi
+  que en pantalla no se nota nada. Si el autor elegido es Davoker la
+  rejilla se oculta (`elements.grid.hidden = true`) y la regla no aplica.
+- **Medido antes/despues, preset movil**: CLS de la rejilla **0,254 ->
+  0,0065** (lo que queda son 4 px que se mueve toda la cabecera al
+  entrar, repartidos en cinco fuentes de 0,0065); puntuacion de
+  Lighthouse **76 -> 86**. En escritorio, `.component-grid` pasa de
+  **86 a 100** y el CLS queda en 0,0040.
+- Verificado en verde: `validar`, `validar:layout` (5 paginas x 23
+  anchos), `validar:a11y` (sin violaciones serious/critical),
+  `validar:html`, `validar:enlaces`, `validar:encabezados`, `duplicados`
+  y `validar:lighthouse` (99/100/100 en las tres paginas).
+- Las huellas `?v=` de `site.css` y de `app.js` se re-sellan con
+  `npm run sellar`: sin cambiar la de `site.css` el `Cache-Control:
+  immutable` de un ano serviria el CSS antiguo a todo el mundo que ya
+  tenga la pagina cacheada. La de `app.js` estaba desactualizada
+  respecto a su propio contenido (`ae876329` frente al real `ca0109dd`).
+
+## [Hace responsivos los 119 showcases de Davoker (texto que se salia de la caja en movil)] - 2026-10-06
+
+En movil, dentro del apartado de Davoker, letras grandes como `BENGALA`
+o `extraccion` se salian de su caja y tiraban la pagina hacia la
+derecha. La causa estaba en la maquetacion de los 119 `index.html` de
+`DavokerDiseñador/**/`:
+
+- **Cero `@media` en los 119 ficheros** y cuatro tamanos fijos en `rem`:
+  `h1` 2.6rem, `.grande` 3rem, `.mediano` 1.6rem, mas `padding: 2rem`
+  en `body` y en `.demo`. Con un iframe de ~360px, `3rem` de texto en
+  negrita ocupa ~270px dentro de una caja de ~230px: se desborda.
+- **Arreglo con `clamp()` en vez de `@media`**, porque el showcase se
+  ve en tres sitios distintos (suelto, en el portal de Davoker y en un
+  iframe): `clamp(1.75rem, 11vw, 3rem)` para `.grande`,
+  `clamp(1.05rem, 6.5vw, 1.6rem)` para `.mediano`,
+  `clamp(1.5rem, 9vw, 2.6rem)` para `h1`, `clamp(1rem, 5vw, 2rem)` en
+  `body` y `clamp(.75rem, 4.5vw, 2rem)` en `.demo`. En escritorio el
+  valor maximo es identico al anterior: nada cambia a partir de ~700px.
+- **Red de seguridad**: `overflow-x: hidden` en `body` (se propaga al
+  viewport) para que ningun efecto con letras muy largas pueda abrir
+  scroll horizontal. El `overflow-x: auto` de los `<pre>` sigue
+  funcionando por ser contenedor anidado.
+- `davoker.html` y `transicion.html` no hacen falta: el primero ya
+  recorta dentro de la muestra (`overflow: hidden` en un circulo de
+  200px) y el segundo no declara ni un ancho fijo ni un `nowrap`.
+
+Verificado en verde: `validar`, `validar:layout` (5 paginas x 23
+anchos), `validar:encabezados`, `validar:html`, `validar:enlaces`,
+`validar:a11y` (sin violaciones serious/critical), `validar:demos`
+(1018/1018) y `duplicados` (0).
+
+## [Auto-fix: S5869 (char class duplicada), S6557, S7773-isfinite, S7759, S7719 (12 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana dos patrones y se
+arregla un duplicado en uno existente:
+
+- **S5869** "Remove duplicates in this character class". El regex
+  S6582 del propio script tenia `?` dos veces en la clase
+  `[,);\]?:&|?]`. Se elimina el duplicado: ahora `[,);\]?:&|]`.
+- **S6557** `s.indexOf("x") === 0` -> `s.startsWith("x")`. Sinonimo
+  exacto: ambos buscan desde el principio. Solo aplica al caso
+  `=== 0` (prefijo), no a busquedas de inclusion.
+- **S7773-isfinite** `isFinite(x)` -> `Number.isFinite(x)`. Sinonimo
+  exacto para argumentos numericos.
+- **S7759** `new Date().getTime()` -> `Date.now()`. Reaplicado: los 8
+  casos del re-analisis post-merge.
+- **S7719** `new Date(x).getTime()` -> `x.getTime()`. Si x ya es un
+  Date, envolver en `new Date()` es redundante.
+
+**S1940** (invertir operandos en comparaciones) se intento pero se
+descarto: 3296 hits en una sola pasada y rompio 5 demos
+(`tarjetas-cyber-deck-target-hud`, `home-energy-meter`,
+`pipeline-notify-timeline`, `street-net-access-card`,
+`lofi-study-session-player`). El reorden `a > b` -> `b < a` cambia
+la semantica cuando uno de los operandos es string (coercion
+implicita) y rompe la pista visual del orden del bucle. Queda en
+`autofix-sonar-mecanico.mjs` documentado como "no auto-arreglable".
+
+Aplicado: 5 startsWith + 7 isFinite + 0 Date.now nuevos + 0
+getTime redundante + el fix del duplicado en el script =
+**12 issues nuevas** (el resto de los 18 del conteo previo ya
+estaban arreglados en commits anteriores). Verificado en verde:
+`validar`, `validar:encabezados`, `validar:html` (Node 20/22/24),
+`validar:enlaces`, `validar:layout` y `validar:demos` (1018/1018, 0
+fallos).
+
+## [Arregla la vulnerabilidad S5145 y 5 BUGs reales (1 VULN + 5 BUG)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana tres patrones y se
+arregla un duplicado en uno existente:
+
+- **S5869** "Remove duplicates in this character class". El regex
+  S6582 del propio script tenia `?` dos veces en la clase
+  `[,);\]?:&|?]`. Se elimina el duplicado: ahora `[,);\]?:&|]`.
+- **S6557** `s.indexOf("x") === 0` -> `s.startsWith("x")`. Sinonimo
+  exacto: ambos buscan desde el principio. Solo aplica al caso
+  `=== 0` (prefijo), no a busquedas de inclusion.
+- **S7773-isfinite** `isFinite(x)` -> `Number.isFinite(x)`. Sinonimo
+  exacto para argumentos numericos (que es el caso en los demos).
+- **S7759** `new Date().getTime()` -> `Date.now()`. Reaplicado: los 8
+  casos del re-analisis post-merge.
+- **S7719** `new Date(x).getTime()` -> `x.getTime()`. Si x ya es un
+  Date, envolver en `new Date()` es redundante (crea un objeto
+  identico al argumento).
+
+Aplicado: 5 startsWith + 0 getTime redundante (ya estaban) =
+**5 sustituciones nuevas**, mas el fix del duplicado en el script.
+Verificado en verde: `validar`, `validar:encabezados`,
+`validar:html` (Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
+## [Arregla la vulnerabilidad S5145 y 5 BUGs reales (1 VULN + 5 BUG)] - 2026-10-05
+
+- **Vulnerabilidad**: `Web/scripts/exportar-incidencias-sonar.mjs:126`
+  (S5145, Log Injection via unsanitized user input). El `error.message`
+  de la API de SonarCloud podia traer newlines o caracteres de control
+  y contaminar el log. Se sanea con `replace(/[\r\n\t\v\f\0]+/g, " ")` y
+  `slice(0, 200)` antes de escribirlo en consola.
+- **CSS S4657 (x2)**: propiedades sobreescritas por el shorthand `font`:
+  - `creaciones-primium/navegacion/numbered-section-ledger/styles.css`:
+    `font-style:normal` en `.ch__t i`.
+  - `creaciones-primium/navegacion/omnibox-jump-bar/styles.css`:
+    `line-height:1.15` en `.brand__t` (el shorthand `font` ya lo define).
+- **CSS S4656 (x2)**: propiedad duplicada en la misma regla:
+  - `creaciones-primium/galerias/lake-phone/styles.css`: `display:block`
+    y `display:-webkit-box` en `.entry__name` (se conserva el segundo
+    que es el que aplica el line-clamp).
+  - `creaciones-primium/botones/wireframe-hud-lock-button/styles.css`:
+    `top:50%` duplicado en `.tag` con `top:calc(...)` (se conserva
+    el calc, que es la version responsive). El `top:50%` lo introdujo
+    el fix del `.tag` en el commit `090ca05` sin tener en cuenta
+    que ya existia un `top` posterior.
+- **JS S6959**: `PREGUNTAS.reduce(...)` en
+  `creaciones-primium/formularios/team-pulse-survey/script.js:160` sin
+  valor inicial. Se pasa `PREGUNTAS[0]` para que el primer paso del
+  reduce no opere sobre `undefined`.
+
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
 ## [Quita el fallback deprecated de MediaQueryList.addListener en 3 demos (3 issues)] - 2026-10-05
 
 Los 3 archivos restantes con S1874 ('addListener' is deprecated) tenian

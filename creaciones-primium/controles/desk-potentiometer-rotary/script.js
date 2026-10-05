@@ -43,7 +43,7 @@
 
   function paint() {
     var raw = Number.parseInt(input.value, 10);
-    if (!isFinite(raw)) {
+    if (!Number.isFinite(raw)) {
       raw = 0;
     }
     var ratio = Math.min(1, Math.max(0, raw / 1000));

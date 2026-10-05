@@ -157,7 +157,7 @@ form.addEventListener("submit", e => {
   let suma = 0;
   PREGUNTAS.forEach(p => { suma += elegida(p.id); });
   const promedio = suma / PREGUNTAS.length;
-  const baja = PREGUNTAS.reduce((a, p) => elegida(p.id) < elegida(a.id) ? p : a);
+  const baja = PREGUNTAS.reduce((a, p) => elegida(p.id) < elegida(a.id) ? p : a, PREGUNTAS[0]);
 
   el("entPromedio").textContent = decimal(promedio);
   el("entBaja").textContent = baja.id.slice(1) + ", " + elegida(baja.id) + " of 5";

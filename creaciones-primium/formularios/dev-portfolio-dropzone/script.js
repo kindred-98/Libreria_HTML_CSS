@@ -241,7 +241,7 @@ function anadir(lista) {
     if (piezas.length + admitidos.length >= MAX_PIEZAS) return;
     if (f.size > MAX_PESO * 1048576) { rechazados += 1; return; }
     if (ACCEPTADOS.includes(extension(f.name))) { rechazados += 1; return; }
-    const url = f.type.indexOf("image/") === 0 ? URL.createObjectURL(f) : "";
+    const url = f.type.startsWith('image/') ? URL.createObjectURL(f) : "";
     admitidos.push({ nombre: f.name, peso: f.size, estado: "subiendo", progreso: 0, intentos: 0, motivo: "", url: url });
   });
   piezas = piezas.concat(admitidos);
