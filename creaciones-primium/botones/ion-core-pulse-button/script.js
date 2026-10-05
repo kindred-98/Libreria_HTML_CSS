@@ -75,13 +75,13 @@
   window.addEventListener("resize", function () {
     w = btn.offsetWidth || 260;
     h = btn.offsetHeight || 92;
-    for (var k = 0; k < nodes.length; k++) {
-      nodes[k].style.setProperty("--prx", (w * rnd(0.26, 0.4)).toFixed(1) + "px");
-      nodes[k].style.setProperty("--pry", (h * rnd(0.14, 0.34)).toFixed(1) + "px");
+    for (var node of nodes) {
+      node.style.setProperty("--prx", (w * rnd(0.26, 0.4)).toFixed(1) + "px");
+      node.style.setProperty("--pry", (h * rnd(0.14, 0.34)).toFixed(1) + "px");
     }
   });
 
-  var prev = 0, t = 0, last = -1;
+  var prev = 0, t = 0;
   function frame(ts) {
     var now = performance.now();
     var dt = prev ? Math.min(60, ts - prev) : 16;
@@ -104,7 +104,6 @@
       var volt = 4.2 + drift * 0.22;
       kv.textContent = volt.toFixed(2) + " kV";
       c2.textContent = (Math.abs(drift) * 3.4).toFixed(2) + " e/s";
-      last = volt;
     }
     window.requestAnimationFrame(frame);
   }

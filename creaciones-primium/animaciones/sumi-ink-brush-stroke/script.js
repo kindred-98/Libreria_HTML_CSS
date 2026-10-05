@@ -170,8 +170,7 @@ if (lenOut && measure && typeof measure.getTotalLength === 'function') {
 let shown = '';
 
 function paint(p) {
-  for (let i = 0; i < TRACKS.length; i += 1) {
-    const t = TRACKS[i];
+  for (const t of TRACKS) {
     if (!t.el) continue;
     const v = sample(t.stops, p, t.ease);
     if (t.kind === 'op') t.el.style.opacity = v.toFixed(3);
@@ -180,9 +179,9 @@ function paint(p) {
   }
   if (phaseOut) {
     let name = STAGES[0][1];
-    for (let i = 0; i < STAGES.length; i += 1) {
-      if (p < STAGES[i][0]) {
-        name = STAGES[i][1];
+    for (const stage of STAGES) {
+      if (p < stage[0]) {
+        name = stage[1];
         break;
       }
     }

@@ -28,11 +28,11 @@
     if (focus) tabs[index].focus();
   }
 
-  for (var i = 0; i < tabs.length; i++) {
-    tabs[i].addEventListener('click', function () {
+  for (const tab of tabs) {
+    tab.addEventListener('click', function () {
       select(tabs.indexOf(this), false);
     });
-    tabs[i].addEventListener('keydown', function (event) {
+    tab.addEventListener('keydown', function (event) {
       var here = tabs.indexOf(this);
       var next = null;
       switch (event.key) {
@@ -42,7 +42,7 @@
         case 'End': next = tabs.length - 1; break;
         case 'ArrowDown': next = here + 1; break;
         case 'ArrowUp': next = here - 1; break;
-        default: next = null;
+        default: break;
       }
       if (next === null) return;
       event.preventDefault();
@@ -51,9 +51,9 @@
     });
   }
 
-  for (var g = 0; g < goto.length; g++) {
-    goto[g].addEventListener('click', function (event) {
-      var id = this.getAttribute('data-goto');
+  for (const jump of goto) {
+    jump.addEventListener('click', function (event) {
+      var id = this.dataset.goto;
       var index = tabs.map(function (t) { return t.id; }).indexOf(id);
       if (index < 0) return;
       event.preventDefault();

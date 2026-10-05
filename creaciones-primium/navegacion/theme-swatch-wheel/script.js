@@ -20,7 +20,6 @@
   var sheets = Array.prototype.slice.call(document.querySelectorAll(".sheet"));
   var buttons = [];
   var current = 0;
-  var cursor = 0;
   var isOpen = false;
   var backFocus = null;
   var pending = false;
@@ -65,14 +64,13 @@
   function setCursor(k) {
     if (k < 0) k = buttons.length - 1;
     if (k >= buttons.length) k = 0;
-    cursor = k;
     for (var n = 0; n < buttons.length; n++) buttons[n].setAttribute("tabindex", n === k ? "0" : "-1");
     buttons[k].focus();
   }
 
   function apply(k) {
     var t = THEMES[k];
-    document.documentElement.setAttribute("data-theme", t.id);
+    document.documentElement.dataset.theme = t.id;
     proofName.textContent = t.name;
     hubName.textContent = t.name;
     ptr.style.transform = "rotate(" + (90 + k * 90) + "deg)";
@@ -81,16 +79,15 @@
       if (n === k) buttons[n].setAttribute("tabindex", "0");
     }
     current = k;
-    cursor = k;
     flash.classList.remove("go");
-    void flash.offsetWidth;
+    flash.getBoundingClientRect();
     flash.classList.add("go");
-    if (store) { try { store.setItem("proofTheme", t.id); } catch (e) { } }
+    if (store) { try { store.setItem("proofTheme", t.id); } catch {} }
   }
 
   function focusables() {
     var out = [];
-    for (var n = 0; n < buttons.length; n++) if (buttons[n].offsetParent !== null) out.push(buttons[n]);
+    for (const btn of buttons) if (btn.offsetParent !== null) out.push(btn);
     if (closeBtn.offsetParent !== null) out.push(closeBtn);
     return out;
   }
@@ -148,14 +145,14 @@
     pending = false;
     var markY = window.innerHeight * 0.36;
     var now = "";
-    for (var k = 0; k < sheets.length; k++) {
-      if (sheets[k].getBoundingClientRect().top <= markY) now = sheets[k].id;
+    for (const sheet of sheets) {
+      if (sheet.getBoundingClientRect().top <= markY) now = sheet.id;
     }
-    for (var n = 0; n < navLinks.length; n++) {
-      if (navLinks[n].getAttribute("href") === "#" + now) navLinks[n].setAttribute("aria-current", "true");
-      else navLinks[n].removeAttribute("aria-current");
+    for (const link of navLinks) {
+      if (link.getAttribute("href") === "#" + now) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
     }
-    for (var s = 0; s < sheets.length; s++) sheets[s].classList.toggle("is-here", sheets[s].id === now);
+    for (const s of sheets) s.classList.toggle("is-here", s.id === now);
   }
 
   function queue() {

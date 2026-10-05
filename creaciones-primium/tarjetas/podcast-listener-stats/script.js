@@ -14,7 +14,7 @@ function bump(node, cls) {
     return;
   }
   node.classList.remove(cls);
-  void node.offsetWidth;
+  node.getBoundingClientRect();
   node.classList.add(cls);
 }
 

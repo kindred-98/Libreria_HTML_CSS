@@ -108,7 +108,7 @@
   document.getElementById("v-prev").addEventListener("click", function () { openAt((at - 1 + TOTAL) % TOTAL); });
   document.getElementById("v-next").addEventListener("click", function () { openAt((at + 1) % TOTAL); });
   document.getElementById("v-close").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   strip.addEventListener("keydown", function (e) {
     var k = e.key;

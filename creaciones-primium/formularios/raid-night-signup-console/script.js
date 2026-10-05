@@ -40,7 +40,7 @@ const CAMPOS = [
     valor: () => el("clase").value.trim().toLowerCase(),
     vacio: "Type the spec, Tab completes it.",
     error: "That class does not exist in this patch. Tab completes the eight that do.",
-    prueba: v => CLASES.indexOf(v) > -1
+    prueba: v => CLASES.includes(v)
   },
   {
     id: "nivel",
@@ -56,7 +56,7 @@ const CAMPOS = [
     valor: () => el("rol").value.trim().toLowerCase(),
     vacio: "Say whether you take a tank, a healer or a damage slot.",
     error: "TANK, HEALER or DAMAGE. Nothing else is a role in this raid.",
-    prueba: v => ROLES.indexOf(v) > -1
+    prueba: v => ROLES.includes(v)
   },
   {
     id: "asistencia",
@@ -64,7 +64,7 @@ const CAMPOS = [
     valor: () => el("asistencia").value.trim().toLowerCase(),
     vacio: "SI, QUIZA or NO.",
     error: "The console only understands SI, QUIZA and NO.",
-    prueba: v => ASISTENCIAS.indexOf(v) > -1
+    prueba: v => ASISTENCIAS.includes(v)
   },
   {
     id: "carga",
@@ -74,7 +74,7 @@ const CAMPOS = [
     error: "That is not in the vault. Space separated tokens, at least two, all of them known.",
     prueba: v => {
       const t = tokensDe(v);
-      return t.length >= 2 && t.every(x => VAULT.indexOf(x) > -1);
+      return t.length >= 2 && t.every(x => VAULT.includes(x));
     }
   },
   {
@@ -113,7 +113,7 @@ function marcar(marca, texto, clase) {
   p.appendChild(nodo("small", null, dos(d.getHours()) + ":" + dos(d.getMinutes()) + ":" + dos(d.getSeconds())));
   registro.appendChild(p);
   registro.scrollTop = registro.scrollHeight;
-  while (registro.children.length > 24) registro.removeChild(registro.firstElementChild);
+  while (registro.children.length > 24) registro.firstElementChild.remove();
   return p;
 }
 
@@ -140,7 +140,7 @@ function pintarTokens() {
   caja.innerHTML = "";
   tokensDe(el("carga").value.trim().toLowerCase()).forEach(t => {
     const chip = nodo("span", "token", t);
-    chip.dataset.ok = VAULT.indexOf(t) > -1 ? "1" : "0";
+    chip.dataset.ok = VAULT.includes(t) ? "1" : "0";
     caja.appendChild(chip);
   });
 }

@@ -15,7 +15,7 @@
   function cut() {
     if (!ink) return;
     ink.classList.remove('is-drawn');
-    void ink.offsetWidth;
+    ink.getBoundingClientRect();
     ink.classList.add('is-drawn');
   }
 
@@ -26,9 +26,9 @@
       if (k === i) gates[k].setAttribute('aria-current', 'true');
       else gates[k].removeAttribute('aria-current');
     }
-    hall.setAttribute('data-at', i);
-    if (counter) counter.textContent = gates[i].getAttribute('data-no');
-    if (say) say.textContent = gates[i].getAttribute('data-say') || '';
+    hall.dataset.at = i;
+    if (counter) counter.textContent = gates[i].dataset.no;
+    if (say) say.textContent = gates[i].dataset.say || '';
     cut();
   }
 

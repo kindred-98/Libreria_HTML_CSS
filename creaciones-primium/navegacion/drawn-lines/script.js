@@ -1,6 +1,6 @@
 (function () {
   var list = document.querySelectorAll('.rowset .row');
-  var rows = [].slice.call(list);
+  var rows = Array.prototype.slice.call(list);
   var links = rows.map(function (r) { return r.querySelector('a'); });
   var secs = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
   var tally = document.getElementById('tally');
@@ -24,7 +24,7 @@
 
   function read() {
     var line = window.innerHeight * 0.44;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var gap = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];

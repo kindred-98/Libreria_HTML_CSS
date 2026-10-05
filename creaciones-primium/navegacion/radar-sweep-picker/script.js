@@ -19,7 +19,7 @@
   var current = -1;
 
   function bearingOf(blip) {
-    var value = parseFloat((blip.style.getPropertyValue('--b') || '0').replace('deg', ''));
+    var value = Number.parseFloat((blip.style.getPropertyValue('--b') || '0').replace('deg', ''));
     return isNaN(value) ? 0 : value;
   }
 
@@ -28,13 +28,13 @@
     var b = bearingOf(blip);
     needle.style.setProperty('--b', b + 'deg');
     wedge.style.setProperty('--b', b + 'deg');
-    if (selName) selName.textContent = blip.getAttribute('data-name') || '';
+    if (selName) selName.textContent = blip.dataset.name || '';
     if (selBearing) selBearing.textContent = 'Bearing ' + (String(Math.round(b)).padStart(3, '0'));
     if (selState) selState.textContent = states[index] || '';
-    if (selRwy) selRwy.textContent = blip.getAttribute('data-rwy') || '';
-    if (selHdg) selHdg.textContent = blip.getAttribute('data-hdg') || '';
-    if (selDist) selDist.textContent = blip.getAttribute('data-dist') + ' mi';
-    if (selBag) selBag.textContent = blip.getAttribute('data-bag') || '';
+    if (selRwy) selRwy.textContent = blip.dataset.rwy || '';
+    if (selHdg) selHdg.textContent = blip.dataset.hdg || '';
+    if (selDist) selDist.textContent = blip.dataset.dist + ' mi';
+    if (selBag) selBag.textContent = blip.dataset.bag || '';
     if (selGo) selGo.setAttribute('href', targets[index]);
   }
 
@@ -60,13 +60,13 @@
     current = -1;
   }
 
-  for (var i = 0; i < blips.length; i++) {
-    blips[i].addEventListener('click', function () {
+  for (const blip of blips) {
+    blip.addEventListener('click', function () {
       var index = blips.indexOf(this);
       if (current === index) close();
       else open(index);
     });
-    blips[i].addEventListener('keydown', function (event) {
+    blip.addEventListener('keydown', function (event) {
       var here = blips.indexOf(this);
       var next = null;
       switch (event.key) {
@@ -75,7 +75,7 @@
         case 'Home': next = 0; break;
         case 'End': next = blips.length - 1; break;
         case 'Escape': close(); break;
-        default: next = null;
+        default: break;
       }
       if (next === null) return;
       event.preventDefault();

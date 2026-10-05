@@ -8,7 +8,6 @@
   var btns = document.querySelectorAll(".pb");
   var meters = document.querySelectorAll(".meter");
   var dreads = [document.getElementById("d0"), document.getElementById("d1"), document.getElementById("d2")];
-  var cols = document.querySelectorAll(".col");
 
   var FACT = [
     [0],

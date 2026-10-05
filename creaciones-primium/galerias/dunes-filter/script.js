@@ -24,7 +24,7 @@
   function apply(key) {
     var keep = [];
     lines.forEach(function (line, n) {
-      var ok = key === "all" || line.dataset.tags.split(" ").indexOf(key) > -1;
+      var ok = key === "all" || line.dataset.tags.split(" ").includes(key);
       line.classList.toggle("is-out", !ok);
       line.dataset.rank = n;
       if (ok) { keep.push(line); }
@@ -39,7 +39,7 @@
       line.style.order = k;
       line.querySelector(".idx").textContent = pad(k + 1);
       if (k === 0) { line.classList.add("is-lead"); }
-      void line.offsetWidth;
+      line.getBoundingClientRect();
       line.classList.add("is-in");
     });
     live = keep;

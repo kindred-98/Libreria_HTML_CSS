@@ -2,7 +2,7 @@
   var sash = document.getElementById('sashwin');
   var latch = document.getElementById('latch');
   var mark = document.getElementById('mark');
-  var lights = [].slice.call(document.querySelectorAll('.lights__light'));
+  var lights = Array.prototype.slice.call(document.querySelectorAll('.lights__light'));
   var panes = lights.map(function (l) { return l.querySelector('a'); });
   var roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var secs = panes.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
@@ -22,7 +22,7 @@
 
   function read() {
     var line = window.innerHeight * 0.46;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var bestD = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -47,7 +47,7 @@
   });
 
   function shut(closed) {
-    sash.setAttribute('data-state', closed ? 'shut' : 'open');
+    sash.dataset.state = closed ? 'shut' : 'open';
     latch.setAttribute('aria-expanded', closed ? 'false' : 'true');
     latch.querySelector('.latch__text').textContent = closed ? 'Open the sash' : 'Slide all shut';
   }

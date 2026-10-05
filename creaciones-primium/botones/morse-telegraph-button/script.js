@@ -12,7 +12,6 @@
   var key = document.getElementById('key');
   var term = document.querySelector('.term');
   var sounder = document.getElementById('sounder');
-  var contact = document.getElementById('contact');
   var log = document.getElementById('log');
   var echo = document.getElementById('echo');
   var stateEl = document.getElementById('state');
@@ -51,7 +50,7 @@
       p.textContent = contenido;
     }
     log.appendChild(p);
-    while (log.children.length > 14) log.removeChild(log.firstChild);
+    while (log.children.length > 14) log.firstChild.remove();
   }
   // Helper para envolver texto en <b> sin pasar por innerHTML.
   function lineaNegrita(texto) {
@@ -84,8 +83,7 @@
     var seq = document.createElement('div');
     seq.style.cssText = 'display:flex;flex-direction:column;align-items:center;width:100%';
     for (var r = 0; r < 2; r++) {
-      for (var i = 0; i < steps.length; i++) {
-        var s = steps[i];
+      for (var s of steps) {
         var d = document.createElement('span');
         if (s.t === 'dot') d.className = 'tape__mark tape__mark--dot';
         else if (s.t === 'dash') d.className = 'tape__mark tape__mark--dash';

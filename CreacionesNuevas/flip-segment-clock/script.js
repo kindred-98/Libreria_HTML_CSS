@@ -7,13 +7,13 @@ function render() {
   const o = tick % 10;
   if (tensEl.textContent !== String(t)) {
     tensEl.classList.remove("is-flip");
-    void tensEl.offsetWidth;
+    tensEl.getBoundingClientRect();
     tensEl.textContent = String(t);
     tensEl.classList.add("is-flip");
   }
   if (onesEl.textContent !== String(o)) {
     onesEl.classList.remove("is-flip");
-    void onesEl.offsetWidth;
+    onesEl.getBoundingClientRect();
     onesEl.textContent = String(o);
     onesEl.classList.add("is-flip");
   }

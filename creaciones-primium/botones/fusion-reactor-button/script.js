@@ -13,7 +13,11 @@
     document.getElementById("b4"), document.getElementById("b5"), document.getElementById("b6")];
 
   function rnd(a, b) { return a + Math.random() * (b - a); }
-  function clamp(x, a, b) { return x < a ? a : x > b ? b : x; }
+  function clamp(x, a, b) {
+    if (x < a) return a;
+    if (x > b) return b;
+    return x;
+  }
 
   var SPK = 14;
   var sparks = [], i;
@@ -38,12 +42,11 @@
     arcs.push({ n: ac, on: false, t: 0 });
   }
 
-  var temp = 61.4, peak = 24.6, seq = 0, hot = false, tmr = 0, tState = 0;
+  var temp = 61.4, peak = 24.6, seq = 0, hot = false, tmr = 0;
   var w = btn.offsetWidth || 240;
   var base = [0.52, 0.66, 0.42, 0.46, 0.36, 0.48];
   var txt = ["2.62e20", "6.40 T", "0.42 mm", "61.4 MK", "0.31e19", "8.02e14"];
   var live = [1.9, 6.3, 0.42, 24.6, 0.34, 8.2];
-  var hi = [3.4, 8.9, 0.71, 96.0, 4.2, 21.0];
 
   function paint() {
     for (var k = 0; k < 6; k++) {

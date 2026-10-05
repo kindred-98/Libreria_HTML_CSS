@@ -15,8 +15,8 @@
   var started = Date.now();
 
   function child(li, selector) {
-    for (var i = 0; i < li.children.length; i++) {
-      if (li.children[i].matches(selector)) return li.children[i];
+    for (const node of li.children) {
+      if (node.matches(selector)) return node;
     }
     return null;
   }
@@ -48,7 +48,7 @@
         return btn && btn.getAttribute('aria-expanded') === 'true';
       }).map(function (li) {
         var btn = child(li, 'button');
-        return btn.getAttribute('data-node');
+        return btn.dataset.node;
       });
       window.sessionStorage.setItem(KEY, JSON.stringify(open));
     } catch (err) {
@@ -65,8 +65,8 @@
       branches.forEach(function (li) {
         var btn = child(li, 'button');
         if (!btn) return;
-        var node = btn.getAttribute('data-node');
-        if (open.indexOf(node) > -1) setBranch(li, true, false);
+        var node = btn.dataset.node;
+        if (open.includes(node)) setBranch(li, true, false);
         else setBranch(li, false, false);
       });
     } catch (err) {

@@ -32,7 +32,7 @@ function rollTo(node, to) {
     return;
   }
   node.classList.remove("is-rolling");
-  void node.offsetWidth;
+  node.getBoundingClientRect();
   node.classList.add("is-rolling");
   const began = Date.now();
   const span = 640;
@@ -90,7 +90,7 @@ planBtns.forEach(function (btn) {
     footNote.textContent = name + " selected. Checkout opens with " + cycle + " billing.";
     if (!reduce) {
       footNote.classList.remove("is-flash");
-      void footNote.offsetWidth;
+      footNote.getBoundingClientRect();
       footNote.classList.add("is-flash");
     }
   });
@@ -116,7 +116,7 @@ function runCount(node) {
   step();
 }
 
-countNodes.forEach(runCount);
+countNodes.forEach(function (node) { return runCount(node); });
 paint(prices[0], Number(prices[0].dataset.monthly));
 paint(prices[1], Number(prices[1].dataset.monthly));
 paint(prices[2], Number(prices[2].dataset.monthly));

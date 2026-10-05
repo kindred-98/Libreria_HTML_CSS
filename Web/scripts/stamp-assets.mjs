@@ -56,7 +56,7 @@ for (const nombre of htmlFiles) {
 
   const cambios = new Map();
   for (const coincidencia of original.matchAll(CON_VERSION)) {
-    const [, apertura, relativa] = coincidencia;
+    const [, , relativa] = coincidencia;
     if (cambios.has(relativa)) continue;
     const rutaAsset = path.resolve(webDirectory, relativa);
     let contenido;

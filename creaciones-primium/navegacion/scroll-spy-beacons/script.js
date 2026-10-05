@@ -65,7 +65,7 @@
   window.addEventListener("scroll", queue, { passive: true });
   window.addEventListener("resize", queue);
 
-  for (var i = 0; i < bcns.length; i++) {
+  for (const a of bcns) {
     (function (a) {
       a.addEventListener("keydown", function (e) {
         var here = a.parentNode ? Array.prototype.indexOf.call(a.parentNode.children, a) : 0;
@@ -79,7 +79,7 @@
           bcns[next].focus();
         }
       });
-    })(bcns[i]);
+    })(a);
   }
 
   paint();

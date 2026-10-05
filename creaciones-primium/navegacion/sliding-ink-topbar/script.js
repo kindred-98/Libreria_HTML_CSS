@@ -10,8 +10,8 @@
   var mqSmall = window.matchMedia("(max-width: 760px)");
 
   function current() {
-    for (var i = 0; i < links.length; i++) {
-      if (links[i].getAttribute("aria-current") === "page") return links[i];
+    for (const link of links) {
+      if (link.getAttribute("aria-current") === "page") return link;
     }
     return links[0];
   }
@@ -84,9 +84,9 @@
       entries.forEach(function (en) {
         if (en.isIntersecting) {
           var id = en.target.id;
-          for (var i = 0; i < links.length; i++) {
-            if (links[i].getAttribute("href") === "#" + id) {
-              setCurrent(links[i]);
+          for (const link of links) {
+            if (link.getAttribute("href") === "#" + id) {
+              setCurrent(link);
               return;
             }
           }
@@ -109,10 +109,14 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", function () { moveInk(current()); });
   window.addEventListener("load", function () { moveInk(current()); });
-  mqSmall.addEventListener ? mqSmall.addEventListener("change", function () {
-    if (mqSmall.matches) { nav.classList.remove("is-open"); burger.setAttribute("aria-expanded", "false"); open = false; }
-    moveInk(current());
-  }) : null;
+  // MediaQueryList.addEventListener no existe en navegadores viejos: se registra
+  // el listener solo cuando la API esta, en vez de dejar un ternario suelto.
+  if (mqSmall.addEventListener) {
+    mqSmall.addEventListener("change", function () {
+      if (mqSmall.matches) { nav.classList.remove("is-open"); burger.setAttribute("aria-expanded", "false"); open = false; }
+      moveInk(current());
+    });
+  }
 
   onScroll();
   setCurrent(current());

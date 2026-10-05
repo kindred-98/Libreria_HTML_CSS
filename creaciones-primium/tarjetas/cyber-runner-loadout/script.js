@@ -41,7 +41,7 @@ function build(preset) {
       num.textContent = String(value);
     }
     row.style.animation = "none";
-    void row.offsetWidth;
+    row.getBoundingClientRect();
     row.style.animation = "";
     row.style.animationDelay = (i * 0.04).toFixed(2) + "s";
   });
@@ -49,7 +49,7 @@ function build(preset) {
     power.textContent = String(preset.power);
     power.classList.remove("is-pop");
     if (!reduce) {
-      void power.offsetWidth;
+      power.getBoundingClientRect();
       power.classList.add("is-pop");
     }
   }
@@ -78,7 +78,7 @@ if (ability && abilityText && card) {
     abilityText.textContent = fired ? "Veil active" : "Trigger ability";
     if (!reduce) {
       card.classList.remove("is-firing");
-      void card.offsetWidth;
+      card.getBoundingClientRect();
       card.classList.add("is-firing");
       window.setTimeout(function () {
         card.classList.remove("is-firing");

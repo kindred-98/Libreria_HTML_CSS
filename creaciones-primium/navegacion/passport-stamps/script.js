@@ -21,7 +21,7 @@
     }
     if (fill) fill.style.width = ((i + 1) / stamps.length * 100).toFixed(2) + '%';
     if (readout) {
-      var raw = stamps[i].getAttribute('data-say') || '';
+      var raw = stamps[i].dataset.say || '';
       var cut = raw.split(',');
       readout.textContent = (cut[0] || '') + (cut[1] ? ' \u00b7 ' + cut[1] : '');
     }

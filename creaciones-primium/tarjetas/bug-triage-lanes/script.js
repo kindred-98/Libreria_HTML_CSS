@@ -111,7 +111,7 @@ function move(dir) {
   card.classList.add("is-flying");
   if (!reduce) {
     flight.classList.remove("is-run");
-    void flight.offsetWidth;
+    flight.getBoundingClientRect();
     flight.classList.add("is-run");
   }
   window.setTimeout(function () {

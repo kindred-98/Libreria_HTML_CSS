@@ -20,7 +20,7 @@ const CAMPOS = [
     etiqueta: "Recomendación",
     vacio: "Dinos si lo volverías a comprar.",
     error: "Esa opción de recomendación no es válida.",
-    prueba: v => ["Sí, lo compraría otra vez", "Depende del uso que le des", "No lo volvería a comprar"].indexOf(v) !== -1
+    prueba: v => ["Sí, lo compraría otra vez", "Depende del uso que le des", "No lo volvería a comprar"].includes(v)
   },
   {
     id: "titulo",

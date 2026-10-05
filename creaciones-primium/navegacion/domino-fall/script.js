@@ -17,16 +17,16 @@
     for (var k = 0; k < tiles.length; k++) {
       if (k === i) {
         tiles[k].setAttribute('aria-current', 'true');
-        tiles[k].removeAttribute('data-down');
+        delete tiles[k].dataset.down;
       } else {
         tiles[k].removeAttribute('aria-current');
-        if (k < i) tiles[k].setAttribute('data-down', 'true');
-        else tiles[k].removeAttribute('data-down');
+        if (k < i) tiles[k].dataset.down = 'true';
+        else delete tiles[k].dataset.down;
       }
     }
-    hall.setAttribute('data-at', i);
+    hall.dataset.at = i;
     if (fallen) fallen.textContent = i;
-    if (say) say.textContent = tiles[i].getAttribute('data-say') || '';
+    if (say) say.textContent = tiles[i].dataset.say || '';
   }
 
   function scan() {

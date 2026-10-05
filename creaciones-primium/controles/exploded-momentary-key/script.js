@@ -28,9 +28,7 @@
   var still = false;
   try {
     still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch (err) {
-    void err;
-  }
+  } catch {}
 
   var layers = stack.querySelectorAll(".layer");
   var coil = stack.querySelector(".coil");
@@ -41,7 +39,6 @@
   var travDim = stack.querySelector(".trav__dim");
   var plot = stack.parentNode.querySelector(".plot");
 
-  var press = 0;
   var down = false;
   var cycles = 0;
   var ramp = 0;
@@ -55,8 +52,6 @@
   }
 
   function render(p) {
-    press = p;
-
     for (var k = 0; k < layers.length && k < LAYERS; k += 1) {
       var y = BASE[k] + PUSH[k] * p;
       layers[k].style.transform = "translate3d(0," + y.toFixed(2) + "px,0)";
@@ -181,9 +176,7 @@
     if (key.setPointerCapture) {
       try {
         key.setPointerCapture(event.pointerId);
-      } catch (err) {
-        void err;
-      }
+      } catch {}
     }
     event.preventDefault();
   });
@@ -224,5 +217,4 @@
   });
 
   render(0);
-  void still;
 })();

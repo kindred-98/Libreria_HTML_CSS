@@ -176,7 +176,7 @@
   menu.addEventListener('click', function (e) {
     var b = e.target.closest('[data-go]');
     if (!b) return;
-    var dest = document.querySelector(b.getAttribute('data-go'));
+    var dest = document.querySelector(b.dataset.go);
     closeMenu(true);
     if (dest) dest.scrollIntoView({ block: 'start' });
   });

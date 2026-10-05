@@ -2,7 +2,6 @@
   var cv = document.getElementById("cv");
   var ctx = cv.getContext("2d");
   var coil = document.getElementById("coil");
-  var ring = document.getElementById("ring");
   var gauge = document.getElementById("gaugeFill");
   var ambBar = document.getElementById("ambBar");
   var ambVal = document.getElementById("ambVal");
@@ -24,7 +23,6 @@
   function size() {
     var r = cv.getBoundingClientRect();
     var c = coil.getBoundingClientRect();
-    var s = cv.parentNode.getBoundingClientRect();
     DPR = Math.min(2, window.devicePixelRatio || 1);
     W = Math.max(20, r.width);
     H = Math.max(20, r.height);
@@ -43,7 +41,7 @@
   function draw() {
     ctx.clearRect(0, 0, W, H);
     var B = COILH * 0.52;
-    var i, k, a, A, y0, y1, x0, x1;
+    var i, k, a, A, y0, x0;
 
     ctx.strokeStyle = "rgba(62,240,208,.14)";
     ctx.lineWidth = 1;
@@ -79,7 +77,7 @@
       ctx.stroke();
 
       for (var q = 0; q < 2; q++) {
-        a = t * 0.55 + (p = q * Math.PI) + k * 0.62;
+        a = t * 0.55 + q * Math.PI + k * 0.62;
         var x = CX + lx(A, a), y = CY + ly(B, a);
         var x2 = CX + lx(A, a + 0.06), y2 = CY + ly(B, a + 0.06);
         var ang = Math.atan2(y2 - y, x2 - x);
@@ -114,7 +112,7 @@
     if (fireT < 0.9) return;
     fireT = 0;
     document.body.classList.remove("firing");
-    void document.body.offsetWidth;
+    document.body.getBoundingClientRect();
     document.body.classList.add("firing", "armed");
     window.setTimeout(function () { document.body.classList.remove("firing"); }, 760);
     window.setTimeout(function () { document.body.classList.remove("armed"); }, 2300);

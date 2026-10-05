@@ -28,8 +28,8 @@
   }
 
   function active() {
-    for (var i = 0; i < tabs.length; i++) {
-      if (tabs[i].getAttribute("aria-selected") === "true") return tabs[i];
+    for (var tab of tabs) {
+      if (tab.getAttribute("aria-selected") === "true") return tab;
     }
     return tabs[0];
   }

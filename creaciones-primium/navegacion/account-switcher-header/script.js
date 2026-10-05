@@ -25,12 +25,12 @@
   var closeTimer = null;
 
   function setAccount(row, announce) {
-    var name = row.getAttribute('data-name');
-    var role = row.getAttribute('data-role');
-    var key = row.getAttribute('data-key');
-    var state = row.getAttribute('data-state');
+    var name = row.dataset.name;
+    var role = row.dataset.role;
+    var key = row.dataset.key;
+    var state = row.dataset.state;
     rows.forEach(function (r) { r.setAttribute('aria-checked', r === row ? 'true' : 'false'); });
-    drRows.forEach(function (r) { r.setAttribute('aria-pressed', r.getAttribute('data-name') === name ? 'true' : 'false'); });
+    drRows.forEach(function (r) { r.setAttribute('aria-pressed', r.dataset.name === name ? 'true' : 'false'); });
     acctName.textContent = name;
     acctRole.textContent = role;
     acctAv.textContent = key;

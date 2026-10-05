@@ -28,16 +28,16 @@
   }
 
   function tagsOf(card) {
-    return card.getAttribute("data-tags").split("|");
+    return card.dataset.tags.split("|");
   }
 
   function hayOf(card) {
     return flat([
-      card.getAttribute("data-name"),
-      card.getAttribute("data-place"),
-      card.getAttribute("data-author"),
-      card.getAttribute("data-lic"),
-      card.getAttribute("data-tags").replace(/\|/g, " ")
+      card.dataset.name,
+      card.dataset.place,
+      card.dataset.author,
+      card.dataset.lic,
+      card.dataset.tags.replace(/\|/g, " ")
     ].join(" "));
   }
 
@@ -63,17 +63,17 @@
   function matches(card) {
     var hay = hayOf(card);
     var tk = tokens();
-    for (var i = 0; i < tk.length; i++) {
-      if (hay.indexOf(flat(tk[i])) === -1) return false;
+    for (var t of tk) {
+      if (hay.includes(flat(t))) return false;
     }
     var tags = tagsOf(card);
     for (var key in active) {
-      if (!Object.prototype.hasOwnProperty.call(active, key)) continue;
+      if (!Object.hasOwn(active, key)) continue;
       var group = active[key];
       if (!group.length) continue;
       var hit = false;
-      for (var j = 0; j < group.length; j++) {
-        if (tags.indexOf(group[j]) !== -1) { hit = true; break; }
+      for (var tag of group) {
+        if (tags.includes(tag)) { hit = true; break; }
       }
       if (!hit) return false;
     }
@@ -81,10 +81,10 @@
   }
 
   function paint(card, tk) {
-    card.querySelector(".card__name").innerHTML = mark(card.getAttribute("data-name"), tk);
+    card.querySelector(".card__name").innerHTML = mark(card.dataset.name, tk);
     card.querySelector(".card__meta").innerHTML =
-      mark(card.getAttribute("data-place"), tk) + " &middot; " + mark(card.getAttribute("data-author"), tk);
-    card.querySelector(".card__lic").innerHTML = mark(card.getAttribute("data-lic"), tk);
+      mark(card.dataset.place, tk) + " &middot; " + mark(card.dataset.author, tk);
+    card.querySelector(".card__lic").innerHTML = mark(card.dataset.lic, tk);
   }
 
   function apply() {
@@ -98,9 +98,9 @@
     });
 
     visible.sort(function (a, b) {
-      if (sortKey === "place") return flat(a.getAttribute("data-place")).localeCompare(flat(b.getAttribute("data-place")));
-      if (sortKey === "author") return flat(a.getAttribute("data-author")).localeCompare(flat(b.getAttribute("data-author")));
-      return Number(a.getAttribute("data-no")) - Number(b.getAttribute("data-no"));
+      if (sortKey === "place") return flat(a.dataset.place).localeCompare(flat(b.dataset.place));
+      if (sortKey === "author") return flat(a.dataset.author).localeCompare(flat(b.dataset.author));
+      return Number(a.dataset.no) - Number(b.dataset.no);
     });
     visible.forEach(function (card) { grid.appendChild(card); });
 
@@ -123,7 +123,7 @@
   clear.addEventListener("click", function () {
     field.value = "";
     chips.forEach(function (c) {
-      if (c.getAttribute("data-key")) { c.classList.remove("is-on"); c.setAttribute("aria-pressed", "false"); }
+      if (c.dataset.key) { c.classList.remove("is-on"); c.setAttribute("aria-pressed", "false"); }
     });
     active = {};
     cursor = 0;
@@ -132,10 +132,10 @@
   });
 
   chips.forEach(function (chip) {
-    var key = chip.getAttribute("data-key");
+    var key = chip.dataset.key;
     if (!key) return;
     chip.addEventListener("click", function () {
-      var v = chip.getAttribute("data-v");
+      var v = chip.dataset.v;
       var on = !chip.classList.contains("is-on");
       chip.classList.toggle("is-on", on);
       chip.setAttribute("aria-pressed", on ? "true" : "false");
@@ -150,7 +150,7 @@
 
   sorters.forEach(function (btn) {
     btn.addEventListener("click", function () {
-      sortKey = btn.getAttribute("data-sort");
+      sortKey = btn.dataset.sort;
       sorters.forEach(function (b) {
         var on = b === btn;
         b.classList.toggle("is-on", on);
@@ -176,11 +176,11 @@
     var img = card.querySelector("img");
     rimg.setAttribute("src", img.getAttribute("src"));
     rimg.setAttribute("alt", img.getAttribute("alt"));
-    rname.textContent = card.getAttribute("data-no") + " \u00b7 " + card.getAttribute("data-name");
-    rplace.textContent = card.getAttribute("data-place") + " \u00b7 " + card.getAttribute("data-author");
-    rlic.textContent = card.getAttribute("data-lic");
+    rname.textContent = card.dataset.no + " \u00b7 " + card.dataset.name;
+    rplace.textContent = card.dataset.place + " \u00b7 " + card.dataset.author;
+    rlic.textContent = card.dataset.lic;
     var visible = cards.filter(function (c) { return !c.classList.contains("is-out"); });
-    rcount.textContent = card.getAttribute("data-no") + " / " + (visible.length < 10 ? "0" : "") + visible.length;
+    rcount.textContent = card.dataset.no + " / " + (visible.length < 10 ? "0" : "") + visible.length;
   }
 
   function open() {

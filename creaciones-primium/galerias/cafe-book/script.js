@@ -38,7 +38,7 @@
     railBtns.push(b);
   }
   index.forEach(function (btn) {
-    btn.addEventListener("click", function () { go(Number(btn.getAttribute("data-leaf"))); });
+    btn.addEventListener("click", function () { go(Number(btn.dataset.leaf)); });
   });
 
   function paint() {
@@ -55,7 +55,7 @@
     pileNote.textContent = at === 0 ? "Nothing read yet" : String(at) + (at === 1 ? " leaf read" : " leaves read");
 
     index.forEach(function (btn) {
-      btn.setAttribute("aria-current", Number(btn.getAttribute("data-leaf")) === at ? "true" : "false");
+      btn.setAttribute("aria-current", Number(btn.dataset.leaf) === at ? "true" : "false");
     });
     railBtns.forEach(function (btn, n) { btn.setAttribute("aria-current", n === at ? "true" : "false"); });
 
@@ -140,7 +140,7 @@
   document.getElementById("v-prev").addEventListener("click", function () { openAt(at > 1 ? at - 1 : 8); });
   document.getElementById("v-next").addEventListener("click", function () { openAt(at < 8 ? at + 1 : 1); });
   document.getElementById("v-close").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   album.addEventListener("keydown", function (e) {
     var k = e.key;

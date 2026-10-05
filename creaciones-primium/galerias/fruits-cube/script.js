@@ -168,7 +168,7 @@
   stage.addEventListener("click", function (ev) {
     var p = ev.target.closest("[data-shot]");
     if (!p) { return; }
-    openAt(Number(p.getAttribute("data-shot")), p);
+    openAt(Number(p.dataset.shot), p);
   });
 
   stage.addEventListener("pointerdown", function (ev) {
@@ -202,7 +202,7 @@
   manifestLinks.forEach(function (a) {
     a.addEventListener("click", function (ev) {
       ev.preventDefault();
-      openAt(Number(a.getAttribute("data-shot")), a);
+      openAt(Number(a.dataset.shot), a);
     });
   });
 

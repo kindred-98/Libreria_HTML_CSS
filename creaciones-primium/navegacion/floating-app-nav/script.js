@@ -6,8 +6,8 @@
   var heroUnread = document.getElementById("heroUnread");
   var markRead = document.getElementById("markRead");
   var restore = document.getElementById("restore");
-  var links = [].slice.call(nav.querySelectorAll("a[href^='#']"));
-  var sections = [].slice.call(document.querySelectorAll("main .sec[id]"));
+  var links = Array.prototype.slice.call(nav.querySelectorAll("a[href^='#']"));
+  var sections = Array.prototype.slice.call(document.querySelectorAll("main .sec[id]"));
   var active = null;
 
   function setGlow(i) {
@@ -17,30 +17,30 @@
   function setActive(link) {
     if (!link || link === active) return;
     active = link;
-    for (var i = 0; i < links.length; i++) {
-      if (links[i] === link) links[i].setAttribute("aria-current", "page");
-      else links[i].removeAttribute("aria-current");
+    for (const item of links) {
+      if (item === link) item.setAttribute("aria-current", "page");
+      else item.removeAttribute("aria-current");
     }
-    setGlow(Number(link.getAttribute("data-i")) || 0);
+    setGlow(Number(link.dataset.i) || 0);
     var foot = document.querySelector(".foot span:nth-child(2)");
-    if (foot) foot.textContent = "Tab " + String(Number(link.getAttribute("data-i")) + 1).padStart(2, "0") + " of 05";
+    if (foot) foot.textContent = "Tab " + String(Number(link.dataset.i) + 1).padStart(2, "0") + " of 05";
   }
 
   function spy() {
     var mark = window.scrollY + window.innerHeight * 0.34;
     var current = sections[0];
-    for (var i = 0; i < sections.length; i++) {
-      if (sections[i].offsetTop <= mark) current = sections[i];
+    for (const section of sections) {
+      if (section.offsetTop <= mark) current = section;
     }
     if (!current) return;
     var id = "#" + current.id;
-    for (var k = 0; k < links.length; k++) {
-      if (links[k].getAttribute("href") === id) { setActive(links[k]); break; }
+    for (const link of links) {
+      if (link.getAttribute("href") === id) { setActive(link); break; }
     }
   }
 
-  for (var i = 0; i < links.length; i++) {
-    links[i].addEventListener("click", function (e) {
+  for (const link of links) {
+    link.addEventListener("click", function (e) {
       var href = this.getAttribute("href");
       var target = document.querySelector(href);
       setActive(this);
@@ -95,7 +95,7 @@
     window.requestAnimationFrame(function () { ticking = false; spy(); });
   }, { passive: true });
   window.addEventListener("resize", function () {
-    if (active) setGlow(Number(active.getAttribute("data-i")) || 0);
+    if (active) setGlow(Number(active.dataset.i) || 0);
   });
 
   setActive(links[0]);

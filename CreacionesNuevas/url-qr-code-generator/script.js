@@ -15,7 +15,7 @@ genBtn.addEventListener('click',()=>{
   }catch(e){
     // qrcode-generator lanza una cadena, no un Error, cuando la URL no cabe en
     // el QR. Se comprueba el texto para no tapar ningun otro fallo real.
-    if(String(e).indexOf('code length overflow')<0)throw e;
+    if(!String(e).includes('code length overflow'))throw e;
     img.hidden=true;dlBtn.setAttribute('hidden','');
     hint.textContent='URL too long for a QR code';hint.hidden=false;
   }

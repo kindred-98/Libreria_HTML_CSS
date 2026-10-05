@@ -67,14 +67,14 @@ const CAMPOS = [
     etiqueta: "Affected system",
     vacio: "Pick the system that was touched, otherwise the case has no owner.",
     error: "That system is not on the estate list.",
-    prueba: v => Object.prototype.hasOwnProperty.call(SISTEMAS, v)
+    prueba: v => Object.hasOwn(SISTEMAS, v)
   },
   {
     id: "vector",
     etiqueta: "Entry vector",
     vacio: "Say how the access came in. Genuinely unknown is a real answer.",
     error: "That entry vector is not on the list.",
-    prueba: v => Object.prototype.hasOwnProperty.call(VECTORES, v)
+    prueba: v => Object.hasOwn(VECTORES, v)
   },
   {
     id: "severidad",
@@ -82,7 +82,7 @@ const CAMPOS = [
     vacio: "Pick the worst thing true right now. The pager reads this field and nothing else.",
     error: "That severity is not one of the four.",
     tipo: "radio",
-    prueba: v => SEVS.indexOf(v) !== -1
+    prueba: v => SEVS.includes(v)
   },
   {
     id: "matriz",
@@ -112,14 +112,14 @@ const CAMPOS = [
     etiqueta: "Reported by",
     vacio: "Pick the person filing, the conversation goes to their queue.",
     error: "That analyst is not on the duty rota.",
-    prueba: v => Object.prototype.hasOwnProperty.call(PERSONAS, v)
+    prueba: v => Object.hasOwn(PERSONAS, v)
   },
   {
     id: "contacto",
     etiqueta: "Phone for the callback",
     vacio: "At SEV1 and SEV2 somebody rings you back inside the hour.",
     error: "Digits with spaces, plus and dashes, eight to eighteen characters.",
-    prueba: v => /^\+?[0-9][0-9 \-]{6,17}$/.test(v)
+    prueba: v => /^\+?[\d][0-9 -]{6,17}$/.test(v)
   }
 ];
 
@@ -141,7 +141,7 @@ function anexosMarcados() {
 function pintarMatriz() {
   matrizFilas.innerHTML = "";
   CLASES.forEach(c => {
-    const marcado = clasesMarcadas().indexOf(c.id) !== -1;
+    const marcado = clasesMarcadas().includes(c.id);
     const label = document.createElement("label");
     label.className = "clase";
 
@@ -225,7 +225,7 @@ function refrescar() {
   const clases = clasesMarcadas();
   el("cClases").textContent = clases.length === 0
     ? "none ticked"
-    : CLASES.filter(c => clases.indexOf(c.id) !== -1).map(c => c.nombre).join(", ");
+    : CLASES.filter(c => clases.includes(c.id)).map(c => c.nombre).join(", ");
   const an = anexosMarcados();
   el("cAnexos").textContent = an.length === 0 ? "nothing attached" : an.length + (an.length === 1 ? " attachment" : " attachments");
   el("cAnalista").textContent = analista.value === "" ? "nobody yet" : PERSONAS[analista.value];
@@ -238,7 +238,7 @@ function refrescar() {
   el("caso").dataset.sev = sev === "" ? "none" : sev;
   if (sev === "") {
     el("cSev").textContent = "no severity";
-    el("cSev").removeAttribute("data-nivel");
+    delete el("cSev").dataset.nivel;
   } else {
     el("cSev").textContent = sev + " · " + RELOJES[sev];
     el("cSev").dataset.nivel = sev;
@@ -247,7 +247,7 @@ function refrescar() {
   el("matriz-ayuda").textContent = clases.length === 0
     ? "Nothing ticked yet. The case reads as no exposure until you say otherwise."
     : clases.length + " of 6 classes ticked. The case now reads: " +
-      CLASES.filter(c => clases.indexOf(c.id) !== -1).map(c => c.nombre.toLowerCase()).join(", ") + ".";
+      CLASES.filter(c => clases.includes(c.id)).map(c => c.nombre.toLowerCase()).join(", ") + ".";
   el("anexos-ayuda").textContent = an.length === 0
     ? "Nothing attached. A case with no evidence is a case the analyst has to go and gather itself."
     : an.length + " of 5 attached: " + an.join(", ") + ".";
@@ -297,7 +297,7 @@ function pintarCampo(f) {
     env.dataset.estado = "error";
     control.setAttribute("aria-invalid", "true");
     desc.push(err.id);
-    if (f.id === "contacto" && !vacio && valor.indexOf("@") !== -1) {
+    if (f.id === "contacto" && !vacio && valor.includes("@")) {
       err.textContent = "That is an email address, and the duty officer cannot ring it. Digits, spaces, plus and dashes.";
     } else {
       err.textContent = vacio ? f.vacio : f.error;
@@ -318,7 +318,7 @@ function problemas() {
     if (!f.prueba(valorCampo(f))) {
       const v = valorCampo(f);
       let texto = v === "" ? f.vacio : f.error;
-      if (f.id === "contacto" && v !== "" && v.indexOf("@") !== -1) {
+      if (f.id === "contacto" && v !== "" && v.includes("@")) {
         texto = "That is an email address, and the duty officer cannot ring it. Digits, spaces, plus and dashes.";
       }
       salida.push(f.etiqueta + ": " + texto);
@@ -367,13 +367,17 @@ btnPegar.addEventListener("click", () => {
     return;
   }
   const espera = new Promise(resolve => { setTimeout(resolve, 500); });
-  Promise.race([navigator.clipboard.readText().catch(() => ""), espera]).then(resultado => {
-    if (resultado === undefined) {
-      pedirPegadoManual("The browser kept the clipboard to itself");
-      return;
-    }
-    conTexto(resultado);
-  });
+  // La carrera nunca se rechaza (el texto va con catch y el temporizador solo
+  // resuelve), pero se recoge el error por si el navegador rompe otra vez.
+  Promise.race([navigator.clipboard.readText().catch(() => ""), espera])
+    .then(resultado => {
+      if (resultado === undefined) {
+        pedirPegadoManual("The browser kept the clipboard to itself");
+        return;
+      }
+      conTexto(resultado);
+    })
+    .catch(() => {});
 });
 
 resumenTxt.addEventListener("paste", e => {
@@ -424,7 +428,7 @@ window.addEventListener("resize", colocarCap);
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintarCampo);
+  CAMPOS.forEach(f => pintarCampo(f));
   const fallos = problemas();
 
   if (fallos.length > 0) {

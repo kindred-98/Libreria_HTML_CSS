@@ -1,13 +1,13 @@
 (function () {
   var crumb = document.getElementById("crumb");
   var list = document.getElementById("crumbList");
-  var steps = [].slice.call(list.querySelectorAll("li"));
+  var steps = Array.prototype.slice.call(list.querySelectorAll("li"));
   var links = steps.map(function (li) { return li.querySelector("a"); });
-  var sheets = [].slice.call(document.querySelectorAll(".sheet"));
+  var sheets = Array.prototype.slice.call(document.querySelectorAll(".sheet"));
   var stamp = document.getElementById("stamp");
   var stepNo = document.getElementById("stepNo");
   var stepName = document.getElementById("stepName");
-  var sections = [].slice.call(document.querySelectorAll("main .sec[id]"));
+  var sections = Array.prototype.slice.call(document.querySelectorAll("main .sec[id]"));
   var current = -1;
   var ticking = false;
 
@@ -24,8 +24,8 @@
         links[i].removeAttribute("aria-current");
       }
     }
-    for (var s = 0; s < sheets.length; s++) {
-      sheets[s].classList.toggle("is-on", Number(sheets[s].getAttribute("data-sheet")) === level);
+    for (const sheet of sheets) {
+      sheet.classList.toggle("is-on", Number(sheet.dataset.sheet) === level);
     }
     stamp.textContent = "Level " + String(level + 1).padStart(2, "0");
     stepNo.textContent = String(level + 1).padStart(2, "0");

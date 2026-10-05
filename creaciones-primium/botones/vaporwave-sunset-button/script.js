@@ -4,7 +4,7 @@
   var body = document.body;
   var row = document.querySelector(".key__row");
   var letters = row ? row.children : [];
-  var lines = [].slice.call(document.querySelectorAll(".rush i"));
+  var lines = Array.prototype.slice.call(document.querySelectorAll(".rush i"));
   var clear = 0;
   var clearBurst = 0;
 
@@ -20,20 +20,20 @@
 
   function slam() {
     body.classList.remove("slam");
-    void body.offsetWidth;
+    body.getBoundingClientRect();
     body.classList.add("slam");
     window.clearTimeout(clear);
     clear = window.setTimeout(function () { body.classList.remove("slam"); }, 880);
-    for (var i = 0; i < lines.length; i++) {
-      lines[i].classList.remove("burst");
+    for (var line of lines) {
+      line.classList.remove("burst");
     }
-    void body.offsetWidth;
-    for (var j = 0; j < lines.length; j++) {
-      lines[j].classList.add("burst");
+    body.getBoundingClientRect();
+    for (var burst of lines) {
+      burst.classList.add("burst");
     }
     window.clearTimeout(clearBurst);
     clearBurst = window.setTimeout(function () {
-      for (var k = 0; k < lines.length; k++) { lines[k].classList.remove("burst"); }
+      for (var late of lines) { late.classList.remove("burst"); }
     }, 560);
   }
 

@@ -63,7 +63,7 @@
   }
 
   function vent(x, y, power) {
-    var n = power ? 13 : 4 + ((Math.random() * 3) | 0);
+    var n = power ? 13 : 4 + ((Math.random() * 3 | 0));
     for (var i = 0; i < n; i++) {
       var a = -Math.PI / 2 + rnd(-0.85, 0.85) * (power ? 1.6 : 1);
       var sp = power ? rnd(210, 380) : rnd(130, 250);
@@ -111,7 +111,7 @@
     bannerTx.textContent = text;
     banner.classList.remove("is-on");
     scrim.classList.remove("is-on");
-    void banner.offsetWidth;
+    banner.getBoundingClientRect();
     banner.classList.add("is-on");
     scrim.classList.add("is-on");
   }
@@ -202,7 +202,8 @@
       charge = ((ts / 1000) % CHARGE) / CHARGE;
       var cyc = (ts / 1000) % CHARGE;
       if (cyc > CHARGE * 0.64) charge = 1 - (cyc - CHARGE * 0.64) / (CHARGE * 0.36);
-      charge = charge < 0 ? 0 : charge > 1 ? 1 : charge;
+      if (charge < 0) charge = 0;
+      else if (charge > 1) charge = 1;
 
       ventClock -= dt;
       if (ventClock <= 0) {
@@ -218,7 +219,11 @@
     if (bossFill) bossFill.style.transform = "scaleX(" + Math.min(1, heat).toFixed(3) + ")";
     if (forgeFill) forgeFill.style.transform = "scaleX(" + Math.max(0.02, charge).toFixed(3) + ")";
     if (bossState) {
-      var st = heat > 0.86 ? "Critical" : heat > 0.66 ? "Roaring" : heat > 0.42 ? "Drawing" : heat > 0.2 ? "Warming" : "Tepid";
+      var st = "Tepid";
+      if (heat > 0.86) st = "Critical";
+      else if (heat > 0.66) st = "Roaring";
+      else if (heat > 0.42) st = "Drawing";
+      else if (heat > 0.2) st = "Warming";
       if (bossState.textContent !== st) bossState.textContent = st;
     }
     if (boss) {

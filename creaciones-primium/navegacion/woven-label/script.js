@@ -2,7 +2,7 @@
   var label = document.getElementById('label');
   var needle = document.getElementById('needle');
   var mark = document.getElementById('mark');
-  var rows = [].slice.call(document.querySelectorAll('.tape__row'));
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.tape__row'));
   var links = rows.map(function (r) { return r.querySelector('a'); });
   var roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var secs = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
@@ -22,7 +22,7 @@
 
   function read() {
     var line = window.innerHeight * 0.46;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var bestD = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -47,7 +47,7 @@
   });
 
   function pull(tight) {
-    label.setAttribute('data-seam', tight ? 'tight' : 'loose');
+    label.dataset.seam = tight ? 'tight' : 'loose';
     needle.setAttribute('aria-expanded', tight ? 'false' : 'true');
     needle.querySelector('.needle__text').textContent = tight ? 'Loosen the seam' : 'Tighten the seam';
   }

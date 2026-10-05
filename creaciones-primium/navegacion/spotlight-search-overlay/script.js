@@ -111,8 +111,8 @@
 
   function score(item, terms) {
     var total = 0;
-    for (var i = 0; i < terms.length; i++) {
-      var at = item.hay.indexOf(terms[i]);
+    for (const term of terms) {
+      var at = item.hay.indexOf(term);
       if (at < 0) return -1;
       total += at < item.t.length + 6 ? 3 : 1;
     }
@@ -222,7 +222,7 @@
         a.addEventListener('pointerenter', function () { setPreview(item); });
         a.addEventListener('focus', function () {
           var ls = links();
-          for (var n = 0; n < ls.length; n++) ls[n].classList.remove('sel');
+          for (const other of ls) other.classList.remove('sel');
           sel = ls.indexOf(a);
           a.classList.add('sel');
           setPreview(item);

@@ -4,7 +4,7 @@
   var leak = document.querySelector(".leak");
   var bar = document.querySelector(".cap__bar i");
   var dot = document.querySelector(".cap__dot");
-  var frames = [].slice.call(sheet.querySelectorAll(".fr"));
+  var frames = Array.prototype.slice.call(sheet.querySelectorAll(".fr"));
   var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var CYCLE = 1600, STEP = 16;
   var base = "8 frames \u00b7 24 fps \u00b7 cycle 1.60 s \u00b7 ";
@@ -29,8 +29,8 @@
   function nums(el, props) {
     var cs = getComputedStyle(el);
     var out = [];
-    for (var i = 0; i < props.length; i++) {
-      var v = parseFloat(cs.getPropertyValue(props[i]));
+    for (var prop of props) {
+      var v = Number.parseFloat(cs.getPropertyValue(prop));
       out.push(isNaN(v) ? 0 : v);
     }
     return out;
@@ -56,7 +56,7 @@
   }
 
   var data = frames.map(function (fr) {
-    var slices = [].slice.call(fr.querySelectorAll(".sl"));
+    var slices = Array.prototype.slice.call(fr.querySelectorAll(".sl"));
     return {
       el: fr,
       slices: slices.map(function (s) {
@@ -76,8 +76,7 @@
       var u = held ? holdU : (cyc + f / data.length) % 1;
       var sh = shape(u);
       var fr = data[f];
-      for (var i = 0; i < fr.slices.length; i++) {
-        var s = fr.slices[i];
+      for (var s of fr.slices) {
         var t = "translate3d(" + (s.a * sh[1]).toFixed(2) + "px," + (s.b * sh[2]).toFixed(2) +
           "px,0) rotate(" + (s.r * sh[3]).toFixed(3) + "deg) scaleY(" + sh[4].toFixed(3) + ")";
         if (t !== s.last) {
@@ -99,7 +98,7 @@
   }
 
   function choose(fr) {
-    for (var i = 0; i < frames.length; i++) frames[i].classList.remove("is-sel");
+    for (var f of frames) f.classList.remove("is-sel");
     fr.classList.add("is-sel");
   }
 
@@ -119,7 +118,7 @@
     cap.textContent = base + (calm ? "settled" : "running");
   }
 
-  for (var i = 0; i < frames.length; i++) {
+  for (var fr of frames) {
     (function (fr) {
       fr.addEventListener("pointerdown", function () { grab(fr); });
       fr.addEventListener("pointerenter", function () { if (!held) choose(fr); });
@@ -127,15 +126,15 @@
         if (e.key === " " || e.key === "Enter") grab(fr);
       });
       fr.addEventListener("blur", release);
-    })(frames[i]);
+    })(fr);
   }
 
   window.addEventListener("pointerup", release);
   window.addEventListener("pointercancel", release);
 
   if (calm) {
-    for (var f = 0; f < data.length; f++) {
-      var fr2 = data[f];
+    for (var fr2 of data) {
+      // El indice j se compara con 2, 3 y 7, asi que el bucle interno se queda como indice.
       for (var j = 0; j < fr2.slices.length; j++) {
         var sl = fr2.slices[j];
         if (j === 2 || j === 3 || j === 7) {

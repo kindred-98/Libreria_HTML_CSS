@@ -75,7 +75,7 @@
       var lp = (cyc - d[j + 6]) / 0.78;
       if (lp < 0) lp += 1;
       u = sstep(0.36, 0.52, lp) - sstep(0.72, 0.93, lp);
-      u = u < 0 ? 0 : u;
+      u = Math.max(u, 0);
       var e = u * u * (3 - 2 * u);
 
       var orx = ORB * d[j + 1];
@@ -126,7 +126,7 @@
   function go() {
     burst = 1;
     document.body.classList.remove("burst");
-    void document.body.offsetWidth;
+    document.body.getBoundingClientRect();
     document.body.classList.add("burst");
     window.setTimeout(function () { document.body.classList.remove("burst"); }, 820);
     cyc = 0.30;

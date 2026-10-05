@@ -14,8 +14,7 @@
   ];
 
   var sws=[];
-  for(var i=0;i<TINTS.length;i++){
-    var t=TINTS[i];
+  for(var t of TINTS){
     var b=document.createElement("button");
     b.type="button";
     b.className="sw";
@@ -29,11 +28,9 @@
     sws.push(b);
   }
 
-  var face=key.querySelector(".key__face");
   var grain=key.querySelector(".key__grain");
   var spec=key.querySelector(".key__spec");
   var hot=key.querySelector(".key__hot");
-  var led=document.getElementById("led");
   var state=document.getElementById("state");
   var clk=document.getElementById("clk");
   var cycles=document.getElementById("cycles");
@@ -99,7 +96,7 @@
     li.appendChild(b);
     li.appendChild(document.createTextNode(" "+text));
     loglist.insertBefore(li,loglist.firstChild);
-    while(loglist.children.length>4)loglist.removeChild(loglist.lastChild);
+    while(loglist.children.length>4)loglist.lastChild.remove();
   }
 
   function start(){

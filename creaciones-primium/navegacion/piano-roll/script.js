@@ -29,7 +29,7 @@
       else n.removeAttribute("aria-current");
     });
     aguja.style.setProperty("--giro", (indice * 60).toFixed(1) + "deg");
-    compas.textContent = notas[indice].getAttribute("data-medida");
+    compas.textContent = notas[indice].dataset.medida;
     girar(indice);
   }
 

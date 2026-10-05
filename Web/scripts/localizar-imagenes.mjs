@@ -204,7 +204,7 @@ const cache = await cargarCache();
 const bytes = new Map();      // url -> bytes conocidos (null si sin tamano)
 const pendientes = [];
 for (const url of urls) {
-  if (Object.prototype.hasOwnProperty.call(cache, url)) bytes.set(url, cache[url]);
+  if (Object.hasOwn(cache, url)) bytes.set(url, cache[url]);
   else pendientes.push(url);
 }
 

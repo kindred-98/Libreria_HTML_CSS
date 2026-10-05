@@ -2,7 +2,6 @@
   var act = document.getElementById('act');
   var cab = document.querySelector('.cab');
   var slot = document.querySelector('.slot');
-  var screen = document.getElementById('screen');
   var hScore = document.getElementById('hScore');
   var sScore = document.getElementById('hudScore');
   var hCred = document.getElementById('hCred');
@@ -19,7 +18,6 @@
   var flash = document.getElementById('flash');
   var cue = document.getElementById('cue');
   var figE = document.getElementById('figE');
-  var figP = document.getElementById('figP');
   var burstPool = Array.prototype.slice.call(document.querySelectorAll('.burst'));
   var burstIx = 0;
   var score = 0;
@@ -31,12 +29,12 @@
 
   function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
   function clearTimers() {
-    for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]);
+    for (var t of timers) clearTimeout(t);
     timers.length = 0;
   }
   function fire(el, cls) {
     el.classList.remove(cls);
-    void el.offsetWidth;
+    el.getBoundingClientRect();
     el.classList.add(cls);
   }
   function pad(n) {
@@ -108,7 +106,10 @@
     fire(figE, 'is-hit');
     fire(comboV, 'is-pop');
     burst('+' + gain);
-    flourishIn(punish ? 'Punish' : (combo > 3 ? 'Flourish' : 'Clean'), punish ? 'triple credit' : combo + ' hit chain');
+    var titulo = 'Clean';
+    if (punish) titulo = 'Punish';
+    else if (combo > 3) titulo = 'Flourish';
+    flourishIn(titulo, punish ? 'triple credit' : combo + ' hit chain');
     if (punish) cue.classList.remove('is-on');
 
     var fill = Math.min(1, combo / 9);

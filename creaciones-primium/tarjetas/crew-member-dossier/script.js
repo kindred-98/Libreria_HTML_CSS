@@ -76,7 +76,7 @@ renewBtn.addEventListener("click", function () {
   renewText.textContent = queued ? "Request renewal" : "Renewal queued";
 });
 
-figures.forEach(runCounter);
+figures.forEach(function (node) { return runCounter(node); });
 runClock();
 window.setTimeout(function () {
   card.classList.add("is-settled");

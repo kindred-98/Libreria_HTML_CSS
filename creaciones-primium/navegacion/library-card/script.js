@@ -25,7 +25,7 @@
     if (fill) fill.style.width = ((i + 1) / rows.length * 100).toFixed(2) + '%';
     if (borrowed) borrowed.textContent = String(i + 1);
     if (readout) {
-      var raw = rows[i].getAttribute('data-say') || '';
+      var raw = rows[i].dataset.say || '';
       var cut = raw.split(',');
       readout.textContent = 'Loan ' + (i + 1) + ' of ' + rows.length + (cut[1] ? ' \u00b7 ' + cut[1] : '') + (cut[2] ? ' \u00b7 ' + cut[2] : '');
     }

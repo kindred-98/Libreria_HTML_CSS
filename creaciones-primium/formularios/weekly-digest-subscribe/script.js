@@ -38,7 +38,7 @@ function el(id) { return document.getElementById(id); }
 function veredicto(v) {
   if (v === "") return "vacio";
   if (!/^[^\s@,;]+@[^\s@,;]+\.[A-Za-z]{2,}$/.test(v)) return "forma";
-  if (TIRADOS.indexOf(v.split("@")[1].toLowerCase()) !== -1) return "tirado";
+  if (TIRADOS.includes(v.split("@")[1].toLowerCase())) return "tirado";
   if (v.split("@")[1].toLowerCase() === "example.com") return "tirado";
   return "ok";
 }
@@ -66,7 +66,7 @@ function pintarEmail() {
       ayuda.textContent = "Try kate@ or name@mailinator.com to watch the check refuse them. A personal address works, a throwaway one does not.";
     } else if (r === "forma") {
       err.textContent = "That is not the shape name@domain.tld the mail server expects. Check for a missing dot.";
-      ayuda.textContent = "There is no dot in " + (v.indexOf("@") === -1 ? "that" : v.split("@")[1] || "the domain") + ", and the mail server needs one.";
+      ayuda.textContent = "There is no dot in " + (v.includes("@") ? "that" : v.split("@")[1] || "the domain") + ", and the mail server needs one.";
     } else {
       err.textContent = v.split("@")[1] + " is a throwaway inbox. We do not put the digest on a list that is thrown away.";
       ayuda.textContent = "Use an address you will still read in a year, the list outlives the inbox.";

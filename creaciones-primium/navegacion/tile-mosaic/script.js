@@ -2,7 +2,7 @@
   var field = document.getElementById('field');
   var trowel = document.getElementById('trowel');
   var mark = document.getElementById('mark');
-  var cells = [].slice.call(document.querySelectorAll('.bed__cell'));
+  var cells = Array.prototype.slice.call(document.querySelectorAll('.bed__cell'));
   var tiles = cells.map(function (c) { return c.querySelector('a'); });
   var roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var secs = tiles.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
@@ -22,7 +22,7 @@
 
   function read() {
     var line = window.innerHeight * 0.46;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var bestD = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -47,7 +47,7 @@
   });
 
   function press(flat) {
-    field.setAttribute('data-laid', flat ? 'flat' : 'lifted');
+    field.dataset.laid = flat ? 'flat' : 'lifted';
     trowel.setAttribute('aria-expanded', flat ? 'false' : 'true');
     trowel.querySelector('.trowel__text').textContent = flat ? 'Lift the tile' : 'Lay the field';
   }

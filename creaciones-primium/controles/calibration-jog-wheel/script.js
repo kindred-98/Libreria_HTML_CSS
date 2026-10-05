@@ -19,7 +19,9 @@ if (jog && wheel) {
     wheel.style.setProperty("--deg", String(value * 0.9));
     jog.setAttribute("aria-valuenow", String(value));
     const mm = (value / 1000).toFixed(3);
-    const sign = value > 0 ? "+" : value < 0 ? "−" : "";
+    let sign = "";
+    if (value > 0) sign = "+";
+    else if (value < 0) sign = "−";
     jog.setAttribute("aria-valuetext", `${sign}${Math.abs(value)} microns, division ${Math.round(value / DIV)}`);
     if (drift) drift.textContent = `${mm}`;
     if (indexOut) indexOut.textContent = String(Math.round(value / DIV));

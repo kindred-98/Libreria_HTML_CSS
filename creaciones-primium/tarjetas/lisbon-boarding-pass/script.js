@@ -6,7 +6,7 @@ let minutes = 6 * 60 + 41;
 
 scanBtn.addEventListener("click", function () {
   barcode.classList.remove("is-scanning");
-  void barcode.offsetWidth;
+  barcode.getBoundingClientRect();
   barcode.classList.add("is-scanning");
   minutes += 1;
   const hours = Math.floor(minutes / 60) % 24;

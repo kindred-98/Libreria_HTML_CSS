@@ -58,7 +58,7 @@ function paintAmounts() {
 
 function setHeat(next) {
   heat = next;
-  card.setAttribute("data-heat", String(heat));
+  card.dataset.heat = String(heat);
   heatBar.style.setProperty("--w", String(HEAT_WIDTH[heat]));
   heatBtns.forEach(function (btn) {
     const on = Number(btn.dataset.heat) === heat;

@@ -11,7 +11,7 @@ if (input && win) {
   const bars = Array.from(win.querySelectorAll(".wave i"));
   const heights = bars.map((bar) => {
     const raw = getComputedStyle(bar).getPropertyValue("--h");
-    const n = parseFloat(raw);
+    const n = Number.parseFloat(raw);
     return Number.isFinite(n) ? n : 0.5;
   });
 
@@ -54,11 +54,11 @@ if (input && win) {
     const next = current >= 99 ? 1 : current + 1;
     if (cutOut) cutOut.textContent = String(next).padStart(2, "0");
     win.classList.remove("is-cut");
-    void win.offsetWidth;
+    win.getBoundingClientRect();
     win.classList.add("is-cut");
     if (lamp) {
       lamp.classList.remove("is-pulse");
-      void lamp.offsetWidth;
+      lamp.getBoundingClientRect();
       lamp.classList.add("is-pulse");
       window.setTimeout(() => lamp.classList.remove("is-pulse"), 320);
     }
@@ -87,7 +87,9 @@ if (input && win) {
     new ResizeObserver(measure).observe(win);
   }
 
-  if (document.fonts && document.fonts.ready) {
+  // "ready" es una promesa: como condicion siempre seria cierta, asi que solo
+  // se comprueba que exista el FontFaceSet.
+  if (document.fonts) {
     document.fonts.ready.then(measure).catch(() => {});
   }
 }

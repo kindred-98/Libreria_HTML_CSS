@@ -4,7 +4,7 @@
   var CICLO = 5400;
   var CIERRE = 4600;
   var sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var agujeros = [].slice.call(document.querySelectorAll('.perforacion'));
+  var agujeros = Array.prototype.slice.call(document.querySelectorAll('.perforacion'));
   var secciones = agujeros.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
   var trazador = document.getElementById('trazador');
   var aguja = document.getElementById('aguja');
@@ -40,7 +40,7 @@
 
   function leer() {
     var linea = window.innerHeight * 0.46;
-    var mejor = actual < 0 ? 0 : actual;
+    var mejor = Math.max(actual, 0);
     var distancia = Infinity;
     for (var k = 0; k < secciones.length; k++) {
       var s = secciones[k];
@@ -63,17 +63,12 @@
   function cerrar() {
     cuenta = cuenta >= 999 ? 1 : cuenta + 1;
     curvas.textContent = String(cuenta);
-    var i = actual < 0 ? 0 : actual;
+    var i = Math.max(actual, 0);
     vivo.textContent = 'Curve ' + (cuenta - 1) + ' is closed. The pen is in hole ' +
       ROMANOS[i] + ', ' + TITULOS[i] + '. Curve ' + cuenta + ' begins.';
     cerrado = true;
     ventana.style.transition = 'transform 90ms ease-out';
     ventana.style.transform = 'translate3d(0,' + (-i * 22 - 3) + 'px,0)';
-    ultimo = ahora() - (CICLO - 240);
-  }
-
-  function ahora() {
-    return performance.now();
   }
 
   function tic(t) {
@@ -87,7 +82,7 @@
     fase = (fase + dt) % CICLO;
     if (fase >= CIERRE) cerrar();
     if (cerrado && fase < 520) {
-      trazador.removeAttribute('data-cierra');
+      delete trazador.dataset.cierra;
       cerrado = false;
       ventana.style.transition = 'transform 420ms cubic-bezier(.2,.82,.16,1)';
     }

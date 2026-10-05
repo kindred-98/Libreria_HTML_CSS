@@ -1,7 +1,6 @@
 (function () {
   var cv = document.getElementById("cracks");
   var ctx = cv.getContext("2d");
-  var core = document.querySelector(".core");
   var btn = document.getElementById("btn");
   var heat = document.getElementById("heat");
   var ghost = document.getElementById("ghost");
@@ -25,7 +24,6 @@
   var H = 0;
   var t0 = 0;
   var heatV = 0;
-  var heatTarget = 0;
   var ghostV = 0;
   var strikes = 0;
   var wave = 1;
@@ -37,7 +35,6 @@
   var seeds = [];
   var segs = [];
   var crackle = [];
-  var grown = 0;
   var embers = [];
   var hitAt = -99;
 
@@ -65,8 +62,8 @@
   function layout() {
     var s = seeds;
     var n = 0;
-    for (var i = 0; i < s.length; i++) {
-      n += grow(s[i], s[i].x * W, s[i].y * H, s[i].a, s[i].l, 0, n);
+    for (var seed of s) {
+      n += grow(seed, seed.x * W, seed.y * H, seed.a, seed.l, 0, n);
     }
     ncrEl.textContent = String(n);
     return n;
@@ -133,7 +130,6 @@
     hitAt = (performance.now() - t0) / 1000;
     grow(sd, px * W, py * H, a, 64 + Math.random() * 60, 0, 0);
     ncrEl.textContent = String(segs.length && countLive());
-    heatTarget = 1;
     heatV = Math.min(1, heatV + 0.5);
     fl = 1;
     flT = 0;
@@ -148,9 +144,9 @@
     }
     for (var i = 0; i < 8; i++) {
       var E = null;
-      for (var k = 0; k < embers.length; k++) {
-        if (!embers[k].on) {
-          E = embers[k];
+      for (var em of embers) {
+        if (!em.on) {
+          E = em;
           break;
         }
       }
@@ -170,7 +166,7 @@
 
   function countLive() {
     var n = 0;
-    for (var i = 0; i < seeds.length; i++) n += seeds[i].n;
+    for (var seed of seeds) n += seed.n;
     return n;
   }
 
@@ -178,8 +174,7 @@
     ctx.clearRect(0, 0, W, H);
     var base = 0.34 + hv * 0.66;
     ctx.lineCap = "round";
-    for (var c = 0; c < crackle.length; c++) {
-      var C = crackle[c];
+    for (var C of crackle) {
       ctx.strokeStyle = "rgba(196, 96, 40, " + (0.1 + 0.3 * hv).toFixed(3) + ")";
       ctx.lineWidth = C.w;
       ctx.beginPath();
@@ -239,8 +234,7 @@
       floatEl.style.transform = "translateX(-50%) translateY(" + ((1 - floatT) * -34).toFixed(1) + "px) scale(" + (0.8 + floatT * 0.3).toFixed(2) + ")";
     }
 
-    for (var i = 0; i < embers.length; i++) {
-      var E = embers[i];
+    for (var E of embers) {
       if (!E.on) continue;
       E.t += dt;
       if (E.t > E.life) {

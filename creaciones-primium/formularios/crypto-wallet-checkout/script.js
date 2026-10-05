@@ -41,7 +41,7 @@ const CAMPOS = [
     etiqueta: "Red de envío",
     vacio: "Elige en qué red quieres pagar.",
     error: "Esa red no está disponible para este pedido.",
-    prueba: v => Object.prototype.hasOwnProperty.call(REDES, v)
+    prueba: v => Object.hasOwn(REDES, v)
   },
   {
     id: "referencia",
@@ -101,7 +101,7 @@ function euros(n) {
 
 function redActual() {
   const v = el("red").value;
-  return Object.prototype.hasOwnProperty.call(REDES, v) ? REDES[v] : REDES.ethereum;
+  return Object.hasOwn(REDES, v) ? REDES[v] : REDES.ethereum;
 }
 
 function actualizarTicket() {
@@ -245,7 +245,7 @@ el("volver").addEventListener("click", () => {
   form.hidden = false;
   confirmado.hidden = true;
   btnConfirmar.disabled = false;
-  btnConfirmar.removeAttribute("data-estado");
+  delete btnConfirmar.dataset.estado;
   textoConfirmar.textContent = "Confirmar y firmar";
   CAMPOS.forEach(f => {
     const env = referencia(f).closest(".campo");

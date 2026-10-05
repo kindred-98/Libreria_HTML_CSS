@@ -30,7 +30,7 @@
     }
     if (fill) fill.style.width = ((i + 1) / tabs.length * 100).toFixed(2) + '%';
     if (readout) {
-      var raw = tabs[i].getAttribute('data-say') || '';
+      var raw = tabs[i].dataset.say || '';
       var cut = raw.split(',');
       readout.textContent = 'Tab ' + (letters[i] || i + 1) + ' of VI \u00b7 section ' + (i + 1) + (cut[2] ? ' \u00b7 ' + cut[2] : '');
     }

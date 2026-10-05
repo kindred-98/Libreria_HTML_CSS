@@ -37,7 +37,7 @@ function wave(btn) {
     return;
   }
   btn.classList.remove("is-wave");
-  void btn.offsetWidth;
+  btn.getBoundingClientRect();
   btn.classList.add("is-wave");
   window.setTimeout(function () {
     btn.classList.remove("is-wave");
@@ -85,7 +85,7 @@ function paint() {
 
 function setSession(key) {
   session = key;
-  hall.setAttribute("data-session", key);
+  hall.dataset.session = key;
   segs.forEach(function (btn) {
     const on = btn.dataset.ses === key;
     btn.classList.toggle("is-on", on);

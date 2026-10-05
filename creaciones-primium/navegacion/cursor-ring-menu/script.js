@@ -19,7 +19,6 @@
   for (i = 0; i < links.length; i++) {
     names.push(links[i].querySelector(".opt__t").textContent);
   }
-  var roving = 0;
   var active = -1;
 
   function show(index) {
@@ -33,7 +32,6 @@
     for (var k = 0; k < links.length; k++) {
       links[k].setAttribute("tabindex", k === index ? "0" : "-1");
     }
-    roving = index;
   }
 
   function setActive(index) {
@@ -44,8 +42,8 @@
       else links[k].removeAttribute("aria-current");
     }
     var id = links[index].getAttribute("href").slice(1);
-    for (var n = 0; n < entries.length; n++) {
-      entries[n].classList.toggle("is-here", entries[n].id === id);
+    for (const entry of entries) {
+      entry.classList.toggle("is-here", entry.id === id);
     }
   }
 

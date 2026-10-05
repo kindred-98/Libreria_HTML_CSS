@@ -106,7 +106,6 @@
   var items = [];
   var current = 0;
   var isOpen = false;
-  var cursor = 0;
   var backFocus = null;
   var pending = false;
   var store = null;
@@ -127,7 +126,6 @@
     for (var n = 0; n < items.length; n++) {
       (function (btn, i) {
         btn.addEventListener("click", function () {
-          cursor = i;
           apply(i);
           close(true);
         });
@@ -139,18 +137,18 @@
     current = k;
     var lang = LANGS[k];
     var slots = document.querySelectorAll("[data-i18n]");
-    for (var n = 0; n < slots.length; n++) {
-      var i = parseInt(slots[n].getAttribute("data-i18n"), 10);
-      if (lang.strings[i] !== undefined) slots[n].textContent = lang.strings[i];
+    for (const slot of slots) {
+      var i = parseInt(slot.dataset.i18n, 10);
+      if (lang.strings[i] !== undefined) slot.textContent = lang.strings[i];
     }
     var rich = document.querySelectorAll("[data-i18n-html]");
-    for (var r = 0; r < rich.length; r++) {
-      var j = parseInt(rich[r].getAttribute("data-i18n-html"), 10);
-      if (lang.strings[j] !== undefined) rich[r].innerHTML = lang.strings[j];
+    for (const node of rich) {
+      var j = parseInt(node.dataset.i18nHtml, 10);
+      if (lang.strings[j] !== undefined) node.innerHTML = lang.strings[j];
     }
     var aria = document.querySelector("[data-i18n-aria]");
     if (aria) {
-      var a = parseInt(aria.getAttribute("data-i18n-aria"), 10);
+      var a = parseInt(aria.dataset.i18nAria, 10);
       if (lang.strings[a] !== undefined) {
         aria.setAttribute("aria-label", lang.code.toUpperCase() + " · " + lang.native + " · " + lang.strings[a]);
       }
@@ -165,13 +163,12 @@
       items[t].setAttribute("aria-checked", t === k ? "true" : "false");
       items[t].setAttribute("tabindex", t === k ? "0" : "-1");
     }
-    if (store) { try { store.setItem("meridianLang", lang.code); } catch (e) { } }
+    if (store) { try { store.setItem("meridianLang", lang.code); } catch {} }
   }
 
   function setCursor(k) {
     if (k < 0) k = items.length - 1;
     if (k >= items.length) k = 0;
-    cursor = k;
     for (var n = 0; n < items.length; n++) items[n].setAttribute("tabindex", n === k ? "0" : "-1");
     items[k].focus();
   }
@@ -224,7 +221,7 @@
     if (e.key === "Tab") {
       e.preventDefault();
       var f = [ringClose];
-      for (var n = 0; n < items.length; n++) if (items[n].offsetParent !== null) f.push(items[n]);
+      for (const item of items) if (item.offsetParent !== null) f.push(item);
       var order = f.filter(function (el) { return el.offsetParent !== null; });
       var at = order.indexOf(document.activeElement);
       var to = order[(at + (e.shiftKey ? -1 : 1) + order.length) % order.length];
@@ -240,14 +237,14 @@
     pending = false;
     var markY = window.innerHeight * 0.36;
     var now = "";
-    for (var k = 0; k < features.length; k++) {
-      if (features[k].getBoundingClientRect().top <= markY) now = features[k].id;
+    for (const feature of features) {
+      if (feature.getBoundingClientRect().top <= markY) now = feature.id;
     }
-    for (var n = 0; n < navLinks.length; n++) {
-      if (navLinks[n].getAttribute("href") === "#" + now) navLinks[n].setAttribute("aria-current", "true");
-      else navLinks[n].removeAttribute("aria-current");
+    for (const link of navLinks) {
+      if (link.getAttribute("href") === "#" + now) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
     }
-    for (var s = 0; s < features.length; s++) features[s].classList.toggle("is-here", features[s].id === now);
+    for (const f of features) f.classList.toggle("is-here", f.id === now);
   }
 
   function queue() {

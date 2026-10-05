@@ -2,7 +2,7 @@
   var ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var TITULOS = ['The Ruler', 'The Teeth', 'The Tip', 'The Smudge', 'The Fold', 'Arrival'];
   var NS = 'http://www.w3.org/2000/svg';
-  var paradas = [].slice.call(document.querySelectorAll('.parada'));
+  var paradas = Array.prototype.slice.call(document.querySelectorAll('.parada'));
   var secciones = paradas.map(function (p) { return document.getElementById(p.getAttribute('href').slice(1)); });
   var ruta = document.getElementById('ruta');
   var trazo = document.getElementById('trazo');
@@ -35,7 +35,7 @@
 
   function leer() {
     var lineaLectura = window.innerHeight * 0.46;
-    var mejor = actual < 0 ? 0 : actual;
+    var mejor = Math.max(actual, 0);
     var distancia = Infinity;
     for (var k = 0; k < secciones.length; k++) {
       var s = secciones[k];
@@ -112,7 +112,7 @@
     nodos();
     if (puntos.length < 2) return;
     var d = camino();
-    if (svg) trazo.removeChild(svg);
+    if (svg) svg.remove();
     svg = document.createElementNS(NS, 'svg');
     svg.setAttribute('viewBox', '0 0 ' + ruta.clientWidth + ' ' + ruta.clientHeight);
     svg.setAttribute('preserveAspectRatio', 'none');
@@ -162,7 +162,7 @@
 
   function caminar() {
     if (rojo && !sinMovimiento.matches && largoTrazo) {
-      var pintado = largoTrazo - (parseFloat(rojo.getAttribute('stroke-dashoffset')) || 0);
+      var pintado = largoTrazo - (Number.parseFloat(rojo.getAttribute('stroke-dashoffset')) || 0);
       if (pintado > -0.6 && pintado < largoTrazo + 0.6) ponerNib(pintado);
     }
     andar = requestAnimationFrame(caminar);
@@ -195,7 +195,7 @@
   window.addEventListener('resize', function () {
     if (espera) clearTimeout(espera);
     espera = setTimeout(function () {
-      var i = actual < 0 ? 0 : actual;
+      var i = Math.max(actual, 0);
       pintar();
       irA(i);
     }, 170);

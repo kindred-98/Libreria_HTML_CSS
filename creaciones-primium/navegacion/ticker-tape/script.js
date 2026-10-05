@@ -15,7 +15,7 @@
     var m = window.getComputedStyle(cinta).transform;
     if (!m || m === "none") return 0;
     var numeros = m.slice(m.indexOf("(") + 1, m.indexOf(")")).split(",");
-    return parseFloat(numeros[4]) || 0;
+    return Number.parseFloat(numeros[4]) || 0;
   }
 
   function imprimir() {
@@ -44,7 +44,7 @@
       if (i === indice) t.setAttribute("aria-current", "true");
       else t.removeAttribute("aria-current");
     });
-    cifras.textContent = tizas[indice].getAttribute("data-no");
+    cifras.textContent = tizas[indice].dataset.no;
   }
 
   function medir() {

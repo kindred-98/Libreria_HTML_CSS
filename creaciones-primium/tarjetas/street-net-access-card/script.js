@@ -97,7 +97,7 @@ function stampLog() {
   const list = document.querySelector(".log__list");
   list.insertBefore(li, list.firstChild);
   while (list.children.length > 4) {
-    list.removeChild(list.lastChild);
+    list.lastChild.remove();
   }
 
   setTimeout(stampLog, 4600);

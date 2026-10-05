@@ -48,7 +48,7 @@ function focoables() {
 function anunciar(texto) {
   vivo.textContent = texto;
   vivo.hidden = true;
-  void vivo.offsetWidth;
+  vivo.getBoundingClientRect();
   vivo.hidden = false;
   window.setTimeout(() => { vivo.hidden = true; }, 2200);
 }
@@ -191,8 +191,8 @@ filas.addEventListener("keydown", e => {
     alternarCaptura(capturando, filas.querySelector('.tecla[data-accion="' + capturando + '"]'));
     return;
   }
-  if (["ShiftLeft", "ShiftRight", "ControlLeft", "ControlRight", "AltLeft", "AltRight", "MetaLeft", "MetaRight"].indexOf(e.code) > -1) return;
-  if (PROHIBIDAS.indexOf(e.key) > -1) {
+  if (["ShiftLeft", "ShiftRight", "ControlLeft", "ControlRight", "AltLeft", "AltRight", "MetaLeft", "MetaRight"].includes(e.code)) return;
+  if (PROHIBIDAS.includes(e.key)) {
     anunciar(e.key === "Escape" ? "Escape closes the panel instead of binding" : e.key + " cannot be bound on its own");
     return;
   }
@@ -269,7 +269,7 @@ function limpiar() {
   });
   filas.querySelectorAll(".fila").forEach(f => {
     f.dataset.estado = "neutro";
-    f.removeAttribute("data-capturando");
+    delete f.dataset.capturando;
   });
   filas.querySelectorAll(".fila__error").forEach(p => { p.textContent = ""; });
   el("perfil").value = "";

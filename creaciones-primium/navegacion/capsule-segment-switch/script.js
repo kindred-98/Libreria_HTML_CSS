@@ -20,7 +20,7 @@
     thumb.style.height = (opt.offsetHeight - 6) + "px";
     thumb.style.transform = "translate(" + (opt.offsetLeft - pad + 3) + "px," + (opt.offsetTop - pad + 3) + "px)";
     if (!animate) {
-      void thumb.offsetWidth;
+      thumb.getBoundingClientRect();
       thumb.style.transition = "";
     }
   }

@@ -13,7 +13,7 @@ let reading = Number(readers.textContent) || 47;
 
 function pulse(node, className) {
   node.classList.remove(className);
-  void node.offsetWidth;
+  node.getBoundingClientRect();
   node.classList.add(className);
 }
 

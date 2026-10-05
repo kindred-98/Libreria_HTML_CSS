@@ -53,7 +53,7 @@ function apply(level, shake) {
   }
   if (shake && card && !reduce) {
     card.classList.remove("is-shaking");
-    void card.offsetWidth;
+    card.getBoundingClientRect();
     card.classList.add("is-shaking");
     window.setTimeout(function () {
       card.classList.remove("is-shaking");

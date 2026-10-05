@@ -23,7 +23,11 @@ var PAL=[
  {hi:'#fffefb',mid:'#f1ebdf',lo:'#b8a88b',dk:'#7c6d57',fin:'rgba(255,255,252,.52)',eye:'#1c150d',blot:['#d9571a','#f8edd9']}
 ];
 
-function cl(v,a,b){return v<a?a:(v>b?b:v);}
+function cl(v,a,b){
+  if(v<a)return a;
+  if(v>b)return b;
+  return v;
+}
 function lp(a,b,t){return a+(b-a)*t;}
 function rn(a,b){return a+Math.random()*(b-a);}
 function wr(a){a=(a+Math.PI)%TAU;if(a<0)a+=TAU;return a-Math.PI;}
@@ -49,7 +53,7 @@ function mkSprite(inner,mid,outer){
 
 function addKoi(x,y){
   var k={},j;
-  k.pal=PAL[(Math.random()*PAL.length)|0];
+  k.pal=PAL[(Math.random()*PAL.length | 0)];
   k.n=24;
   k.len=rn(0.19,0.30)*S;
   k.hw=k.len*0.155;
@@ -389,7 +393,7 @@ function drawKoi(k){
   var n=k.n,hw=k.hw,len=k.len,pal=k.pal,lx=k.lx,ly=k.ly,ca,sa,i;
   var sc=1-k.depth*0.14;
   sa=Math.sin(k.ang);ca=Math.cos(k.ang);
-  var im=(n*0.34)|0;
+  var im=(n*0.34 | 0);
   var mx=k.x+(lx[im]*ca-ly[im]*sa)*sc;
   var my=k.y+(lx[im]*sa+ly[im]*ca)*sc;
   var dl=hw*2.3*sc;
@@ -415,7 +419,7 @@ function drawKoi(k){
   finPetal(lx[j4],ly[j4],-2.04+0.24*fl2,len*0.095,'rgba(244,222,192,0.26)','rgba(255,244,220,0.1)',0);
 
   bodyPath(k);
-  var mx0=lx[(n*0.32)|0],my0=ly[(n*0.32)|0];
+  var mx0=lx[(n*0.32 | 0)],my0=ly[(n*0.32 | 0)];
   var g=ctx.createLinearGradient(mx0,my0-hw*1.3,mx0,my0+hw*1.3);
   g.addColorStop(0,pal.lo);
   g.addColorStop(0.14,pal.mid);
@@ -477,7 +481,7 @@ function drawKoi(k){
     ctx.globalAlpha=k.alpha;
   }
   ctx.globalAlpha=k.alpha*0.1;
-  ctx.drawImage(dot,lx[(n*0.28)|0]-hw*0.95,ly[(n*0.28)|0]-hw*0.85,hw*1.9,hw*1.4);
+  ctx.drawImage(dot,lx[(n*0.28 | 0)]-hw*0.95,ly[(n*0.28 | 0)]-hw*0.85,hw*1.9,hw*1.4);
   ctx.globalAlpha=k.alpha;
   ctx.restore();
 

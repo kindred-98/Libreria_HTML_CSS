@@ -123,7 +123,7 @@ for (const name of ["day", "month", "year"]) {
   if (name === "year") {
     const wanted = String(today.getFullYear());
     const found = items.findIndex((item) => item.textContent.trim() === wanted);
-    initial = found < 0 ? 0 : found;
+    initial = Math.max(found, 0);
   }
 
   const col = {
@@ -166,7 +166,7 @@ for (const name of ["day", "month", "year"]) {
     col.lastT = now();
     col.anim = false;
     col.vel = 0;
-    try { root.setPointerCapture(event.pointerId); } catch (err) { void err; }
+    try { root.setPointerCapture(event.pointerId); } catch { }
   });
 
   root.addEventListener("pointermove", (event) => {
@@ -189,7 +189,7 @@ for (const name of ["day", "month", "year"]) {
   const release = (event) => {
     if (!col.drag) return;
     col.drag = false;
-    try { root.releasePointerCapture(event.pointerId); } catch (err) { void err; }
+    try { root.releasePointerCapture(event.pointerId); } catch { }
     if (!col.moved) {
       col.select.focus();
       col.suppress = false;
@@ -243,7 +243,7 @@ if (todayBtn) {
       else {
         const wanted = String(today.getFullYear());
         const found = col.items.findIndex((item) => item.textContent.trim() === wanted);
-        goTo(col, found < 0 ? 0 : found, 0);
+        goTo(col, Math.max(found, 0), 0);
       }
     });
   });

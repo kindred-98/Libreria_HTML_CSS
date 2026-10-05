@@ -85,7 +85,10 @@
     p.kind = kind;
     p.drag = drag;
     p.g = g;
-    p.el.className = "pt pt--" + (kind === 0 ? "m" : kind === 1 ? "a" : "f");
+    var sufijo = "f";
+    if (kind === 0) sufijo = "m";
+    else if (kind === 1) sufijo = "a";
+    p.el.className = "pt pt--" + sufijo;
   }
 
   function kill(i) {

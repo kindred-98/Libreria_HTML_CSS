@@ -29,7 +29,7 @@
     while(count>MAX){
       var first=log.firstElementChild;
       if(!first)break;
-      log.removeChild(first);
+      first.remove();
       count--;
     }
     if(reduce){

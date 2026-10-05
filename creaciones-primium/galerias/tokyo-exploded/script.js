@@ -110,17 +110,17 @@
   stage.addEventListener("click", function (ev) {
     var b = ev.target.closest(".plate");
     if (!b) { return; }
-    openAt(Number(b.getAttribute("data-shot")), b);
+    openAt(Number(b.dataset.shot), b);
   });
 
   orderBtns.forEach(function (b) {
-    b.addEventListener("click", function () { setLayer(Number(b.getAttribute("data-l"))); });
+    b.addEventListener("click", function () { setLayer(Number(b.dataset.l)); });
   });
 
   planLinks.forEach(function (a) {
     a.addEventListener("click", function (ev) {
       ev.preventDefault();
-      openAt(Number(a.getAttribute("data-shot")), a);
+      openAt(Number(a.dataset.shot), a);
     });
   });
 

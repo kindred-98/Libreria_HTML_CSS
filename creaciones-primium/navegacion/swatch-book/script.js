@@ -2,7 +2,7 @@
   var pages = document.getElementById('pages');
   var ribbon = document.getElementById('ribbon');
   var mark = document.getElementById('mark');
-  var slots = [].slice.call(document.querySelectorAll('.samples__slot'));
+  var slots = Array.prototype.slice.call(document.querySelectorAll('.samples__slot'));
   var swatches = slots.map(function (s) { return s.querySelector('a'); });
   var secs = swatches.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
   var cur = -1;
@@ -21,7 +21,7 @@
 
   function read() {
     var line = window.innerHeight * 0.46;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var bestD = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -46,7 +46,7 @@
   });
 
   function shut(closed) {
-    pages.setAttribute('data-open', closed ? 'no' : 'yes');
+    pages.dataset.open = closed ? 'no' : 'yes';
     ribbon.setAttribute('aria-expanded', closed ? 'false' : 'true');
     ribbon.querySelector('.ribbon__text').textContent = closed ? 'Open the book' : 'Close the book';
   }

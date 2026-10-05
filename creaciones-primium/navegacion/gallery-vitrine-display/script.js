@@ -1,11 +1,11 @@
 (function () {
-  var peds = [].slice.call(document.querySelectorAll('.ped'));
+  var peds = Array.prototype.slice.call(document.querySelectorAll('.ped'));
   var hint = document.getElementById('hintT');
-  var indexLinks = [].slice.call(document.querySelectorAll('.index__list a'));
+  var indexLinks = Array.prototype.slice.call(document.querySelectorAll('.index__list a'));
   var appt = document.getElementById('appt');
   var slots = document.getElementById('slots');
   var slotOk = document.getElementById('slotOk');
-  var slotButtons = [].slice.call(slots.querySelectorAll('button'));
+  var slotButtons = Array.prototype.slice.call(slots.querySelectorAll('button'));
   var index = 0;
 
   function sheet(i, ring) {
@@ -18,7 +18,7 @@
       ped.setAttribute('tabindex', on ? '0' : '-1');
       if (on && ring) {
         ped.classList.remove('is-hit');
-        void ped.offsetWidth;
+        ped.getBoundingClientRect();
         ped.classList.add('is-hit');
       }
     });
@@ -80,7 +80,7 @@
     btn.addEventListener('click', function () {
       slotButtons.forEach(function (b) { b.classList.remove('is-on'); });
       btn.classList.add('is-on');
-      slotOk.textContent = 'Cita reservada: ' + btn.getAttribute('data-slot') + ' con el taller';
+      slotOk.textContent = 'Cita reservada: ' + btn.dataset.slot + ' con el taller';
       slotOk.classList.add('on');
     });
   });
@@ -91,9 +91,9 @@
       closeSlots(true);
       return;
     }
-    if (peds.indexOf(document.activeElement) > -1) {
+    if (peds.includes(document.activeElement)) {
       peds[index].classList.remove('is-hit');
-      void peds[index].offsetWidth;
+      peds[index].getBoundingClientRect();
       peds[index].classList.add('is-hit');
     }
   });

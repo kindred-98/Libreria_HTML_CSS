@@ -15,6 +15,11 @@ inp.addEventListener('input',()=>{
     li.classList.toggle('pass',ok);if(ok)pass++;
   });
   const valid=pass===4;
-  inp.className='vinput '+(v?valid?'valid':'invalid':'');
-  status.textContent=v?(valid?'✅':'❌'):'';
+  // Los dos ternarios van separados: solo hay que marcar el campo cuando hay texto.
+  let clase='';
+  if(v)clase=valid?'valid':'invalid';
+  inp.className='vinput '+clase;
+  let marca='';
+  if(v)marca=valid?'✅':'❌';
+  status.textContent=marca;
 });

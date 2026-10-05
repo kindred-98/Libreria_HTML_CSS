@@ -15,7 +15,7 @@
       else p.removeAttribute("aria-current");
     });
     aguja.style.setProperty("--ang", (-52 + indice * 20.8).toFixed(1) + "deg");
-    valor.textContent = palancas[indice].getAttribute("data-n");
+    valor.textContent = palancas[indice].dataset.n;
   }
 
   function medir() {

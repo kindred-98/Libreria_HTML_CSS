@@ -1,8 +1,8 @@
 (function () {
   var KEY = 'ferrocarriles-norte-arbol-v1';
   var tree = document.getElementById('tree');
-  var nodes = [].slice.call(tree.querySelectorAll('.node'));
-  var leaves = [].slice.call(tree.querySelectorAll('.leaf'));
+  var nodes = Array.prototype.slice.call(tree.querySelectorAll('.node'));
+  var leaves = Array.prototype.slice.call(tree.querySelectorAll('.leaf'));
   var filt = document.getElementById('filt');
   var filtX = document.getElementById('filtX');
   var stat = document.getElementById('stat');
@@ -60,7 +60,7 @@
       var list = JSON.parse(stored);
       nodes.forEach(function (node) {
         var id = node.querySelector(':scope > .tw').getAttribute('aria-controls');
-        setOpen(node, list.indexOf(id) > -1);
+        setOpen(node, list.includes(id));
       });
     } catch (e) {
       nodes.forEach(function (node) { setOpen(node, node.parentElement === tree); });
@@ -81,7 +81,7 @@
 
   function countIn(node) {
     var total = 0;
-    var subs = [].slice.call(node.querySelectorAll('.leaf'));
+    var subs = Array.prototype.slice.call(node.querySelectorAll('.leaf'));
     subs.forEach(function (leaf) {
       if (!leaf.classList.contains('is-off')) total++;
     });
@@ -95,7 +95,7 @@
       if (badge.textContent !== String(n)) {
         badge.textContent = String(n);
         badge.classList.remove('bump');
-        void badge.offsetWidth;
+        badge.getBoundingClientRect();
         badge.classList.add('bump');
         window.setTimeout(function () { badge.classList.remove('bump'); }, 380);
       }
@@ -111,7 +111,7 @@
     var q = filt.value.trim().toLowerCase();
     filtX.hidden = !q;
     leaves.forEach(function (leaf) {
-      var hit = !q || leaf.textContent.toLowerCase().indexOf(q) > -1;
+      var hit = !q || leaf.textContent.toLowerCase().includes(q);
       leaf.classList.toggle('is-off', !hit);
     });
     recount();
@@ -126,7 +126,7 @@
 
   function rows() {
     var out = [];
-    [].slice.call(tree.querySelectorAll('.tw, .leaf')).forEach(function (el) {
+    Array.prototype.slice.call(tree.querySelectorAll('.tw, .leaf')).forEach(function (el) {
       if (el.classList.contains('is-off')) return;
       var node = el.closest ? el.closest('.node') : null;
       if (el.classList.contains('leaf')) {

@@ -42,7 +42,7 @@
     var words = query ? query.split(/\s+/) : [];
     results = INDEX.filter(function (item) {
       var hay = haystack(item);
-      return words.every(function (word) { return hay.indexOf(word) > -1; });
+      return words.every(function (word) { return hay.includes(word); });
     });
     list.innerHTML = results.map(function (item, i) {
       return '<li role="option" id="opt-' + item.id + '" aria-selected="' + (i === 0) + '">' +

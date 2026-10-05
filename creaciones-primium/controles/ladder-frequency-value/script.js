@@ -56,7 +56,9 @@ if (bench && input && strips.length === 4) {
     if (unit) unit.classList.toggle("is-lock", onRung);
     if (note) {
       const off = hertz(v) - RUNGS[b];
-      note.textContent = onRung ? "seated on octave" : (off > 0 ? `+${off} hz over` : `${Math.abs(off)} hz under`);
+      let texto = "seated on octave";
+      if (!onRung) texto = off > 0 ? `+${off} hz over` : `${Math.abs(off)} hz under`;
+      note.textContent = texto;
     }
   };
 
@@ -68,7 +70,7 @@ if (bench && input && strips.length === 4) {
     }
     if (unit) {
       unit.classList.remove("is-seat");
-      void unit.offsetWidth;
+      unit.getBoundingClientRect();
       unit.classList.add("is-seat");
       setTimeout(() => unit.classList.remove("is-seat"), 300);
     }
@@ -76,7 +78,6 @@ if (bench && input && strips.length === 4) {
 
   const run = (v0, v1, dur, spring) => {
     if (raf) cancelAnimationFrame(raf);
-    const d0 = digits(hertz(v0));
     const d1 = digits(hertz(v1));
     const t0 = performance.now();
     const ease = spring ? easeBack : easeOut;

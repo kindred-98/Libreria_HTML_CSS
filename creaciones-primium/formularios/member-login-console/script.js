@@ -30,7 +30,7 @@ const CAMPOS = [
     etiqueta: "Contraseña",
     vacio: "La contraseña no puede ir vacía.",
     error: "Debe tener entre 10 y 64 caracteres, con mayúscula, minúscula y dígito.",
-    prueba: v => v.length >= 10 && v.length <= 64 && /[A-Z]/.test(v) && /[a-z]/.test(v) && /[0-9]/.test(v)
+    prueba: v => v.length >= 10 && v.length <= 64 && /[A-Z]/.test(v) && /[a-z]/.test(v) && /[\d]/.test(v)
   },
   {
     id: "recordar",

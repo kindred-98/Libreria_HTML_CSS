@@ -55,14 +55,14 @@ function launch() {
   skill.classList.add("is-firing");
   skill.setAttribute("aria-pressed", "true");
   shine.classList.remove("is-sweeping");
-  void shine.getBoundingClientRect();
+  shine.getBoundingClientRect();
   shine.classList.add("is-sweeping");
 
   let tick = 0;
   const ticker = setInterval(function () {
     tick = (tick + 1) % BURST.length;
     card.classList.remove("is-cast");
-    void card.getBoundingClientRect();
+    card.getBoundingClientRect();
     card.classList.add("is-cast");
     charge.style.width = "100%";
   }, 1800);

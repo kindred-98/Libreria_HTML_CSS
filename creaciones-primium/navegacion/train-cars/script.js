@@ -10,7 +10,7 @@
   var note = document.getElementById('consignNote');
 
   var list = document.querySelectorAll('.consist .car');
-  var cars = [].slice.call(list);
+  var cars = Array.prototype.slice.call(list);
   var secs = cars.map(function (c) {
     return document.getElementById(c.getAttribute('href').slice(1));
   });
@@ -21,8 +21,8 @@
   function metrics() {
     var cs = getComputedStyle(document.documentElement);
     return {
-      cw: parseFloat(cs.getPropertyValue('--cw')) || 132,
-      van: parseFloat(cs.getPropertyValue('--van')) || 58
+      cw: Number.parseFloat(cs.getPropertyValue('--cw')) || 132,
+      van: Number.parseFloat(cs.getPropertyValue('--van')) || 58
     };
   }
 
@@ -36,7 +36,7 @@
     var m = metrics();
     var gap = Math.round(m.cw * 0.22);
     var mid = track.clientWidth / 2;
-    var x = parseFloat(consist.style.getPropertyValue('--x'));
+    var x = Number.parseFloat(consist.style.getPropertyValue('--x'));
     if (isNaN(x)) x = mid - centreOf(cur);
     consist.style.setProperty('--x', x.toFixed(1) + 'px');
     coupler.style.setProperty('--cx',
@@ -48,7 +48,7 @@
     var m = metrics();
     var gap = Math.round(m.cw * 0.22);
     var mid = track.clientWidth / 2;
-    var from = parseFloat(consist.style.getPropertyValue('--x'));
+    var from = Number.parseFloat(consist.style.getPropertyValue('--x'));
     if (isNaN(from)) from = 0;
     var to = mid - centreOf(cur);
     var t0 = 0;
@@ -93,7 +93,7 @@
 
   function read() {
     var line = window.innerHeight * 0.42;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var gap = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -138,7 +138,7 @@
     if (key !== 'ArrowRight' && key !== 'ArrowLeft' && key !== 'Home' && key !== 'End') return;
     var from = cars.indexOf(document.activeElement);
     if (from < 0) return;
-    var to = from;
+    var to;
     if (key === 'ArrowRight') to = from + 1;
     else if (key === 'ArrowLeft') to = from - 1;
     else if (key === 'Home') to = 0;

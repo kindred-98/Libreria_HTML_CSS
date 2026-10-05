@@ -24,7 +24,7 @@
   var lastFocus = null;
 
   function depth(cell) {
-    return Number(cell.getAttribute("data-depth"));
+    return Number(cell.dataset.depth);
   }
 
   function place(cell) {
@@ -32,7 +32,7 @@
     var r = cell.getAttribute("data-r" + (setting + 1));
     cell.style.gridColumn = c;
     cell.style.gridRow = r;
-    cell.style.setProperty("--k", cell.getAttribute("data-k"));
+    cell.style.setProperty("--k", cell.dataset.k);
   }
 
   function readCap(cell) {
@@ -77,7 +77,7 @@
       c.classList.add("is-printing");
       place(c);
     });
-    void mosaic.offsetWidth;
+    mosaic.getBoundingClientRect();
     cells.forEach(function (c) { c.classList.remove("is-printing"); });
     setFocus(current);
   }

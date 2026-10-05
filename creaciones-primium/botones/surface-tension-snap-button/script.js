@@ -1,5 +1,5 @@
 (function () {
-  var units = [].slice.call(document.querySelectorAll(".unit"));
+  var units = Array.prototype.slice.call(document.querySelectorAll(".unit"));
   var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var t0 = 0;
   var durs = [5.6, 4.7, 6.4, 4.1];
@@ -22,7 +22,9 @@
   });
 
   function clamp01(v) {
-    return v < 0 ? 0 : v > 1 ? 1 : v;
+    if (v < 0) return 0;
+    if (v > 1) return 1;
+    return v;
   }
 
   function ease(p) {
@@ -41,7 +43,7 @@
       var flyA = 0;
       var snapA = 0;
       var phase = "HOLD";
-      var strain = 0.08 + Math.sin(p * 12.566) * 0.02;
+      var strain;
 
       if (p < 0.5) {
         strain = 0.1 + 0.05 * Math.sin(p * 12.566) + p * 0.1;
@@ -151,10 +153,10 @@
 
   if (calm) {
     t0 = 0;
-    for (var i = 0; i < refs.length; i++) {
-      refs[i].gauge.style.transform = "scaleY(0.62)";
-      refs[i].ph.textContent = "HOLD";
-      refs[i].ph.style.color = "rgba(255, 186, 110, 0.7)";
+    for (var ref of refs) {
+      ref.gauge.style.transform = "scaleY(0.62)";
+      ref.ph.textContent = "HOLD";
+      ref.ph.style.color = "rgba(255, 186, 110, 0.7)";
     }
     return;
   }

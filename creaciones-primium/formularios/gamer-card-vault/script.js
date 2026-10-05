@@ -23,7 +23,7 @@ const CAMPOS = [
     etiqueta: "Card already in the vault",
     vacio: "",
     error: "That card is not in the vault.",
-    prueba: v => v === "" || Object.prototype.hasOwnProperty.call(GUARDADAS, v)
+    prueba: v => v === "" || Object.hasOwn(GUARDADAS, v)
   },
   {
     id: "numero",
@@ -53,7 +53,7 @@ const CAMPOS = [
     etiqueta: "Security code",
     vacio: "The three digits on the back are needed to prove the card is yours.",
     error: "Three digits, or four on an American Express card.",
-    prueba: v => /^[0-9]{3,4}$/.test(v)
+    prueba: v => /^[\d]{3,4}$/.test(v)
   },
   {
     id: "facturacion",
@@ -67,7 +67,7 @@ const CAMPOS = [
     etiqueta: "Currency",
     vacio: "",
     error: "That currency is not in the treasury.",
-    prueba: v => ["eur", "usd", "gbp", "sek"].indexOf(v) !== -1
+    prueba: v => ["eur", "usd", "gbp", "sek"].includes(v)
   }
 ];
 
@@ -93,6 +93,20 @@ function marcaDe(v) {
   return "vault";
 }
 
+// Los dos nombres que necesita el resguardo: el de la marca dibujada en la
+// tarjeta y el que se escribe en el resumen. Tabla en vez de ternario anidado:
+// anadido antes, el "?" dentro del ":" no se leia ni de lejos.
+const MARCA_TARJETA = { visa: "VISA", mc: "MASTERCARD", amex: "AMEX", vault: "VAULT" };
+const MARCA_RESUMEN = { visa: "VISA", mc: "Mastercard", amex: "American Express", vault: "Vault card" };
+
+function marcaMayuscula(marca) {
+  return MARCA_TARJETA[marca] || MARCA_TARJETA.vault;
+}
+
+function marcaTitular(marca) {
+  return MARCA_RESUMEN[marca] || MARCA_RESUMEN.vault;
+}
+
 function luhn(v) {
   const d = digitos(v);
   if (d.length < 13 || d.length > 19) return false;
@@ -111,7 +125,7 @@ function luhn(v) {
 }
 
 function caducidadValida(v) {
-  if (!/^[0-9]{2}\/[0-9]{2}$/.test(v)) return false;
+  if (!/^[\d]{2}\/[\d]{2}$/.test(v)) return false;
   const mes = Number(v.slice(0, 2));
   const anio = 2000 + Number(v.slice(3, 5));
   if (mes < 1 || mes > 12) return false;
@@ -136,7 +150,7 @@ function textoError(f) {
     if (digitos(valor).length < 13) return f.corta;
     return f.error;
   }
-  if (f.id === "caduca" && !/^[0-9]{2}\/[0-9]{2}$/.test(valor)) return f.formato;
+  if (f.id === "caduca" && !/^[\d]{2}\/[\d]{2}$/.test(valor)) return f.formato;
   return f.error;
 }
 
@@ -168,7 +182,7 @@ function pintarTarjeta() {
   el("verNumero").textContent = verNumero ? digitos(numero.value).replace(/(\d{4})(?=\d)/g, "$1 ") : enmascarar(numero.value);
   el("verTitular").textContent = titular.value.trim() === "" ? "CARD HOLDER" : titular.value.trim();
   el("verCaduca").textContent = caduca.value.trim() === "" ? "MM/AA" : caduca.value.trim();
-  el("verMarca").textContent = marca === "visa" ? "VISA" : (marca === "mc" ? "MASTERCARD" : (marca === "amex" ? "AMEX" : "VAULT"));
+  el("verMarca").textContent = marcaMayuscula(marca);
   el("verMarca").dataset.marca = marca;
   el("marcaViva").textContent = el("verMarca").textContent;
   el("marcaViva").dataset.marca = marca;
@@ -332,7 +346,7 @@ form.addEventListener("submit", e => {
   pintarTarjeta();
 
   const marca = marcaDe(numero.value);
-  const marcaTexto = marca === "visa" ? "VISA" : (marca === "mc" ? "Mastercard" : (marca === "amex" ? "American Express" : "Vault card"));
+  const marcaTexto = marcaTitular(marca);
   el("sellTarjeta").textContent = marcaTexto + " ending " + digitos(numero.value).slice(-4);
   el("sellTitularTxt").textContent = titular.value.trim();
   el("sellCaduca").textContent = caduca.value.trim() + (el("guardar").checked ? ", kept for the season" : ", one season only");

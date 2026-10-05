@@ -205,9 +205,9 @@ function enfocaPrimero(fallos) {
     ["One change", "#detalle"],
     ["Your tag", "#alias"]
   ];
-  for (let i = 0; i < orden.length; i++) {
-    if (fallos.some(function (f) { return f.indexOf(orden[i][0]) === 0; })) {
-      form.querySelector(orden[i][1]).focus();
+  for (const campo of orden) {
+    if (fallos.some(function (f) { return f.indexOf(campo[0]) === 0; })) {
+      form.querySelector(campo[1]).focus();
       return;
     }
   }

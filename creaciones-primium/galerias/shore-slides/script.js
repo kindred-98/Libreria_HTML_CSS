@@ -43,7 +43,7 @@
     var from = slides[at];
     var toSl = slides[to];
     toSl.classList.add("is-on", "turn");
-    void toSl.offsetWidth;
+    toSl.getBoundingClientRect();
     at = to;
     paint();
     var settle = function () {

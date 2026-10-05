@@ -48,7 +48,7 @@ sessions.forEach(function (session, index) {
     });
     note.textContent = notes[index];
     note.classList.remove("is-swap");
-    void note.offsetWidth;
+    note.getBoundingClientRect();
     note.classList.add("is-swap");
   });
 });

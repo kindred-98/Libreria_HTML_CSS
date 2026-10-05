@@ -61,7 +61,7 @@ const CAMPOS = [
     etiqueta: "Contraseña",
     vacio: "Escribe una contraseña.",
     error: "Necesitas 10 caracteres, con mayúscula, minúscula y dígito.",
-    prueba: v => v.length >= 10 && /[A-Z]/.test(v) && /[a-z]/.test(v) && /[0-9]/.test(v)
+    prueba: v => v.length >= 10 && /[A-Z]/.test(v) && /[a-z]/.test(v) && /[\d]/.test(v)
   },
   {
     id: "repetir", panel: 2,
@@ -89,7 +89,7 @@ const CAMPOS = [
     etiqueta: "Código de verificación",
     vacio: "Faltan cifras por escribir.",
     error: "Ese código no coincide. Revisa las seis cifras.",
-    prueba: v => v.length === 6 && /^[0-9]{6}$/.test(v)
+    prueba: v => v.length === 6 && /^[\d]{6}$/.test(v)
   }
 ];
 
@@ -250,7 +250,7 @@ function medirClave() {
     larga: v.length >= 10,
     mayus: /[A-Z]/.test(v),
     minus: /[a-z]/.test(v),
-    digito: /[0-9]/.test(v)
+    digito: /[\d]/.test(v)
   };
   reglas.forEach(li => {
     li.dataset.cumplida = cumplidas[li.dataset.regla] ? "1" : "0";

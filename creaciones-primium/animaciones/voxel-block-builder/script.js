@@ -73,7 +73,7 @@ for (let i = 0; i < SPARKS; i++) sparks.push({ on: false, x: 0, y: 0, vx: 0, vy:
 function mulberry32(a) {
   return function () {
     a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
+    a = (a + 0x6d2b79f5 | 0);
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -97,7 +97,7 @@ function makeStructure() {
   const cells = [];
   for (let x = 0; x < 7; x++) for (let z = 0; z < 7; z++) cells.push([x, 0, z]);
   const posts = [[0, 0], [0, 6], [6, 0], [6, 6]];
-  for (let i = 0; i < posts.length; i++) cells.push([posts[i][0], 1, posts[i][1]]);
+  for (const post of posts) cells.push([post[0], 1, post[1]]);
   for (let x = 1; x < 6; x++) for (let z = 1; z < 6; z++) cells.push([x, 1, z]);
   for (let x = 2; x < 5; x++) for (let z = 2; z < 5; z++) cells.push([x, 2, z]);
   for (let x = 2; x < 5; x++) for (let z = 2; z < 5; z++) cells.push([x, 3, z]);
@@ -145,7 +145,10 @@ function initStructure() {
     FACE_T.push(shade(base, 1.34 * v));
     FACE_X.push(shade(base, 0.58 * v));
     FACE_Z.push(shade(base, 0.95 * v));
-    EDGE.push(beacon ? 'rgba(255,205,140,0.55)' : post ? 'rgba(120,235,255,0.44)' : 'rgba(150,220,255,0.22)');
+    let edgeCol = 'rgba(150,220,255,0.22)';
+    if (beacon) edgeCol = 'rgba(255,205,140,0.55)';
+    else if (post) edgeCol = 'rgba(120,235,255,0.44)';
+    EDGE.push(edgeCol);
     BEACON.push(beacon ? 1 : 0);
     ORD.push(i);
     DELAY.push(i * BUILD_STAG);
@@ -194,7 +197,7 @@ function initMotes() {
       ny: rnd(),
       r: 0.7 + rnd() * 1.7,
       a: 0.1 + rnd() * 0.3,
-      h: 1 + ((rnd() * 2) | 0),
+      h: 1 + ((rnd() * 2 | 0)),
       p: rnd() * 6.2831853,
       c: rnd() > 0.78 ? '#ffd7a0' : '#a8e4ff'
     });
@@ -210,7 +213,7 @@ function buildGrain() {
   const im = g.createImageData(size, size);
   const rnd = mulberry32(0x3ab7);
   for (let i = 0; i < im.data.length; i += 4) {
-    const v = (rnd() * 255) | 0;
+    const v = (rnd() * 255 | 0);
     im.data[i] = v;
     im.data[i + 1] = v;
     im.data[i + 2] = v;
@@ -376,8 +379,7 @@ function drawFloor(u) {
 }
 
 function drawMotes(u) {
-  for (let i = 0; i < motes.length; i++) {
-    const m = motes[i];
+  for (const m of motes) {
     const k = 6.2831853 * m.h * u;
     const x = m.nx * W + Math.sin(k + m.p) * W * 0.012;
     const y = m.ny * H + Math.cos(k * 1.3 + m.p) * H * 0.014;
@@ -579,7 +581,7 @@ function draw(tt) {
   }
 
   if (placed > placedPrev) {
-    for (let i = placedPrev < 0 ? 0 : placedPrev; i < placed; i++) {
+    for (let i = Math.max(placedPrev, 0); i < placed; i++) {
       proj(BX[i] + 0.5, BY[i] + 1, BZ[i] + 0.5, 7);
       spawnSparks(PX[7], PY[7], i + Math.floor(tt * 11));
     }
@@ -593,8 +595,8 @@ function draw(tt) {
   ctx.fillRect(0, 0, W, H);
 
   if (grainPattern) {
-    const gx = (Math.random() * 146) | 0;
-    const gy = (Math.random() * 146) | 0;
+    const gx = (Math.random() * 146 | 0);
+    const gy = (Math.random() * 146 | 0);
     ctx.save();
     ctx.globalCompositeOperation = 'overlay';
     ctx.globalAlpha = 0.05;

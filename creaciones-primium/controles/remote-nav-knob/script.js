@@ -28,7 +28,7 @@ if (nav && knob && ring && enter) {
     if (lcdName) {
       lcdName.textContent = ITEMS[i];
       lcdName.classList.remove("roll");
-      void lcdName.offsetWidth;
+      lcdName.getBoundingClientRect();
       lcdName.classList.add("roll");
     }
     if (lcdMeta) lcdMeta.textContent = `station ${i + 1} of ${ITEMS.length}`;
@@ -39,11 +39,11 @@ if (nav && knob && ring && enter) {
   const press = () => {
     const i = Number(nav.value) || 0;
     enter.classList.remove("pulse");
-    void enter.offsetWidth;
+    enter.getBoundingClientRect();
     enter.classList.add("pulse");
     if (remote) {
       remote.classList.remove("jolt");
-      void remote.offsetWidth;
+      remote.getBoundingClientRect();
       remote.classList.add("jolt");
     }
     if (status) status.textContent = `Opened ${ITEMS[i]}`;

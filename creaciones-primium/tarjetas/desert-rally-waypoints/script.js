@@ -41,7 +41,7 @@ function paintPoint(index) {
     return;
   }
   ficha.classList.remove("is-swapping");
-  void ficha.offsetWidth;
+  ficha.getBoundingClientRect();
   ficha.classList.add("is-swapping");
   window.setTimeout(function () {
     ficha.classList.remove("is-swapping");

@@ -21,7 +21,7 @@ const CAMPOS = {
     etiqueta: "Nueva contraseña",
     vacio: "Escribe la contraseña que quieres dejar puesta.",
     error: "Necesitas 10 caracteres, con mayúscula, minúscula y un dígito.",
-    prueba: v => v.length >= 10 && /[A-Z]/.test(v) && /[a-z]/.test(v) && /[0-9]/.test(v)
+    prueba: v => v.length >= 10 && /[A-Z]/.test(v) && /[a-z]/.test(v) && /[\d]/.test(v)
   },
   repetir: {
     id: "repetir",
@@ -131,7 +131,7 @@ function medirClave() {
     (v.length >= 10 ? 1 : 0) +
     (/[A-Z]/.test(v) ? 1 : 0) +
     (/[a-z]/.test(v) ? 1 : 0) +
-    (/[0-9]/.test(v) ? 1 : 0) +
+    (/[\d]/.test(v) ? 1 : 0) +
     (/[^A-Za-z0-9]/.test(v) ? 1 : 0);
   const nivel = v === "" ? 0 : Math.max(1, Math.min(4, Math.ceil(puntos / 1.5)));
   circuito.dataset.nivel = String(nivel);

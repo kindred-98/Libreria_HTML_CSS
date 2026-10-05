@@ -17,8 +17,8 @@
       if (k === i) links[k].setAttribute('aria-current', 'true');
       else links[k].removeAttribute('aria-current');
     }
-    nav.setAttribute('data-at', i);
-    if (readout) readout.textContent = links[i].getAttribute('data-say') || '';
+    nav.dataset.at = i;
+    if (readout) readout.textContent = links[i].dataset.say || '';
   }
 
   function scan() {

@@ -28,7 +28,7 @@ function ell(cx,cy,rx,ry,a0,a1,steps){
   return o;
 }
 function arcTo(list,extra){
-  for(let i=0;i<extra.length;i++) list.push(extra[i]);
+  for(const e of extra) list.push(e);
   return list;
 }
 const GLYPH={
@@ -44,9 +44,9 @@ function buildSegments(){
   const segs=[];
   for(let i=0;i<WORD.length;i++){
     const strokes=GLYPH[WORD[i]],ox=i*PITCH;
-    for(let s=0;s<strokes.length;s++){
+    for(const stroke of strokes){
       const pts=[];
-      for(let k=0;k<strokes[s].length;k++) pts.push([strokes[s][k][0]+ox,strokes[s][k][1]]);
+      for(const pt of stroke) pts.push([pt[0]+ox,pt[1]]);
       segs.push({pen:1,pts:pts});
     }
   }
@@ -65,13 +65,13 @@ function buildSegments(){
 function flatten(segs){
   const out=[];
   let prev=null;
-  for(let i=0;i<segs.length;i++){
-    const pts=segs[i].pts,pen=segs[i].pen;
+  for(const seg of segs){
+    const pts=seg.pts,pen=seg.pen;
     if(prev){
       out.push({x:prev[0],y:prev[1],pen:0});
       out.push({x:pts[0][0],y:pts[0][1],pen:0});
     }
-    for(let k=0;k<pts.length;k++) out.push({x:pts[k][0],y:pts[k][1],pen:pen});
+    for(const pt of pts) out.push({x:pt[0],y:pt[1],pen:pen});
     prev=pts[pts.length-1];
   }
   return out;
@@ -81,7 +81,7 @@ function densify(pts,maxLen){
   for(let i=0;i<pts.length-1;i++){
     const a=pts[i],b=pts[i+1];
     const dx=b.x-a.x,dy=b.y-a.y;
-    const d=Math.sqrt(dx*dx+dy*dy);
+    const d=Math.hypot(dx, dy);
     const n=Math.max(1,Math.ceil(d/maxLen));
     for(let k=1;k<=n;k++){
       const f=k/n;
@@ -108,7 +108,7 @@ function resample(pts,n){
   const m=pts.length,cum=new Float64Array(m);
   for(let i=1;i<m;i++){
     const dx=pts[i].x-pts[i-1].x,dy=pts[i].y-pts[i-1].y;
-    cum[i]=cum[i-1]+Math.sqrt(dx*dx+dy*dy);
+    cum[i]=cum[i-1]+Math.hypot(dx, dy);
   }
   const total=cum[m-1]||1e-6;
   const z=new Float64Array(n*2),pen=new Uint8Array(n);
@@ -159,7 +159,7 @@ function spectrum(z,n,P){
     }
     sr/=n;
     si/=n;
-    out.push({k:k,r:Math.sqrt(sr*sr+si*si),a0:Math.atan2(si,sr)});
+    out.push({k:k,r:Math.hypot(sr, si),a0:Math.atan2(si,sr)});
   }
   return out;
 }
@@ -168,9 +168,9 @@ const rs=resample(chaikin(densify(flatten(buildSegments()),0.05),2),SAMPLES);
 const inkBox=centerOnInk(rs.z,rs.pen,SAMPLES);
 const terms=spectrum(rs.z,SAMPLES,P_HARM).filter(function(t){return t.r>0;});
 let totalR=0,maxTerm=0;
-for(let i=0;i<terms.length;i++){
-  totalR+=terms[i].r;
-  if(terms[i].r>maxTerm) maxTerm=terms[i].r;
+for(const t of terms){
+  totalR+=t.r;
+  if(t.r>maxTerm) maxTerm=t.r;
 }
 const GHOST=(function(){
   const gx=[],gy=[],gb=[];
@@ -238,8 +238,7 @@ const VEC_COLS=["rgba(94,224,255,ALPHA)","rgba(122,190,255,ALPHA)","rgba(146,150
 
 function chainNorm(u,out){
   let x=0,y=0;
-  for(let i=0;i<terms.length;i++){
-    const t=terms[i];
+  for(const t of terms){
     const a=t.a0+TAU*t.k*u;
     x+=t.r*Math.cos(a);
     y+=t.r*Math.sin(a);
@@ -345,8 +344,7 @@ function drawMachine(panel,u,clock){
     const hi=Math.pow((L+1.55)/LV,1.55);
     ctx.beginPath();
     let any=false;
-    for(let i=0;i<terms.length;i++){
-      const t=terms[i];
+    for(const t of terms){
       const n=t.r*inv;
       if(n<lo||n>=hi) continue;
       const a=t.a0+TAU*t.k*u;
@@ -367,8 +365,7 @@ function drawMachine(panel,u,clock){
     const hi=Math.pow((L+1.55)/LV,1.55);
     ctx.beginPath();
     let x=px,y=py,any=false;
-    for(let i=0;i<terms.length;i++){
-      const t=terms[i];
+    for(const t of terms){
       const n=t.r*inv;
       if(n<lo||n>=hi) continue;
       const a=t.a0+TAU*t.k*u;

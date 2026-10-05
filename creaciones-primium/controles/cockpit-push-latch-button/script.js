@@ -24,13 +24,16 @@ if (box && btn && guard && guarded) {
     const on = armed();
     box.classList.toggle("is-armed", on);
     if (lampText) lampText.textContent = on ? "armed" : "standby";
-    setHint(on ? "on" : isOpen() ? "open" : "shut");
+    let pista = "shut";
+    if (on) pista = "on";
+    else if (isOpen()) pista = "open";
+    setHint(pista);
   };
 
   const strike = () => {
     box.classList.remove("is-throw");
     guarded.classList.remove("is-clack");
-    void box.offsetWidth;
+    box.getBoundingClientRect();
     box.classList.add("is-throw");
     guarded.classList.add("is-clack");
   };
@@ -56,7 +59,10 @@ if (box && btn && guard && guarded) {
       setHint("blocked");
       window.setTimeout(() => {
         box.classList.remove("is-blocked");
-        setHint(armed() ? "on" : isOpen() ? "open" : "shut");
+        let pista = "shut";
+        if (armed()) pista = "on";
+        else if (isOpen()) pista = "open";
+        setHint(pista);
       }, 1100);
       return;
     }

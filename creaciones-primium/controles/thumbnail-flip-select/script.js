@@ -14,9 +14,7 @@
   var still = false;
   try {
     still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch (err) {
-    void err;
-  }
+  } catch {}
 
   var EASE_IN = "cubic-bezier(.36,.02,.16,1)";
   var EASE_OUT = "cubic-bezier(.16,.86,.24,1)";
@@ -25,9 +23,9 @@
   var order = [];
   var slots = [];
   var nodes = mosaic.querySelectorAll(".tile");
-  for (var i = 0; i < nodes.length; i += 1) {
-    order.push(nodes[i]);
-    slots.push(nodes[i].parentNode);
+  for (var node of nodes) {
+    order.push(node);
+    slots.push(node.parentNode);
   }
   tiles = order.slice();
 
@@ -42,7 +40,9 @@
     node.style.transition = "none";
     node.style.transform = from;
     node.style.opacity = fromOpacity === undefined ? "1" : fromOpacity;
-    node.offsetWidth;
+    // Lectura de disposicion: fuerza el reflujo para que la posicion inicial
+    // quede pintada antes de poner la transicion y animar hacia `to`.
+    node.getBoundingClientRect();
     node.style.transition = "transform " + duration + "ms " + ease + ", opacity " + Math.round(duration * 0.7) + "ms linear";
     node.style.transform = to;
     node.style.opacity = "1";
@@ -64,9 +64,9 @@
 
   function show(value) {
     var next = null;
-    for (var k = 0; k < tiles.length; k += 1) {
-      if (tiles[k].getAttribute("data-value") === value) {
-        next = tiles[k];
+    for (var tile of tiles) {
+      if (tile.dataset.value === value) {
+        next = tile;
       }
     }
     if (!next || next === current) {
@@ -88,14 +88,14 @@
     var inLast = next.getBoundingClientRect();
     var outLast = outgoing ? outgoing.getBoundingClientRect() : null;
 
-    for (var s = 0; s < slots.length; s += 1) {
-      if (slots[s]) {
-        slots[s].classList.toggle("is-hung", !slots[s].querySelector(".tile"));
+    for (var slot of slots) {
+      if (slot) {
+        slot.classList.toggle("is-hung", !slot.querySelector(".tile"));
       }
     }
 
-    for (var m = 0; m < tiles.length; m += 1) {
-      tiles[m].setAttribute("aria-pressed", tiles[m] === next ? "true" : "false");
+    for (var tile of tiles) {
+      tile.setAttribute("aria-pressed", tile === next ? "true" : "false");
     }
 
     if (still) {
@@ -125,15 +125,15 @@
     }
 
     if (plaque) {
-      plaque.textContent = next.getAttribute("data-plaque") || "";
+      plaque.textContent = next.dataset.plaque || "";
     }
     if (status) {
-      status.textContent = titleOf(next) + " is on the wall. " + (next.getAttribute("data-plaque") || "");
+      status.textContent = titleOf(next) + " is on the wall. " + (next.dataset.plaque || "");
     }
   }
 
   function pick(tile) {
-    var value = tile.getAttribute("data-value");
+    var value = tile.dataset.value;
     if (!value) {
       return;
     }

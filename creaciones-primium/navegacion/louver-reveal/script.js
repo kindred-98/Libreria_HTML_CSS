@@ -2,7 +2,7 @@
   var bay = document.getElementById('bay');
   var lever = document.getElementById('lever');
   var mark = document.getElementById('mark');
-  var blades = [].slice.call(document.querySelectorAll('.blade'));
+  var blades = Array.prototype.slice.call(document.querySelectorAll('.blade'));
   var rows = blades.map(function (a) { return a.parentNode; });
   var roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var secs = blades.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
@@ -23,7 +23,7 @@
 
   function read() {
     var line = window.innerHeight * 0.44;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var bestD = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -49,7 +49,7 @@
   });
 
   function tilt(open) {
-    bay.setAttribute('data-tilt', open ? 'open' : 'closed');
+    bay.dataset.tilt = open ? 'open' : 'closed';
     lever.setAttribute('aria-expanded', open ? 'true' : 'false');
     lever.querySelector('.lever__text').textContent = open ? 'Close the blind' : 'Open the blind';
   }
@@ -60,13 +60,13 @@
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-      if (document.activeElement && blades.indexOf(document.activeElement) < 0) return;
+      if (document.activeElement && !blades.includes(document.activeElement)) return;
       e.preventDefault();
-      select(Math.min(blades.length - 1, (cur < 0 ? 0 : cur) + 1), true);
+      select(Math.min(blades.length - 1, (Math.max(cur, 0)) + 1), true);
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-      if (document.activeElement && blades.indexOf(document.activeElement) < 0) return;
+      if (document.activeElement && !blades.includes(document.activeElement)) return;
       e.preventDefault();
-      select(Math.max(0, (cur < 0 ? 0 : cur) - 1), true);
+      select(Math.max(0, (Math.max(cur, 0)) - 1), true);
     } else if (e.key === 'Escape') {
       if (lever.getAttribute('aria-expanded') === 'true') {
         tilt(false);

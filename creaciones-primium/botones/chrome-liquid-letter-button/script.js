@@ -31,7 +31,7 @@
       pool.push(d);
       (function (node) {
         setTimeout(function () {
-          if (node.parentNode) node.parentNode.removeChild(node);
+          if (node.parentNode) node.remove();
         }, 1500);
       })(d);
     }

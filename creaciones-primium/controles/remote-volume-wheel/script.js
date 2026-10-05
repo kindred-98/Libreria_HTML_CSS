@@ -44,7 +44,7 @@ if (input && bay && disc) {
     if (statePlate) statePlate.textContent = muted ? "shorted" : "path closed";
     if (shortBox && muted) {
       shortBox.classList.remove("spark");
-      void shortBox.offsetWidth;
+      shortBox.getBoundingClientRect();
       shortBox.classList.add("spark");
       window.setTimeout(() => shortBox.classList.remove("spark"), 900);
     }

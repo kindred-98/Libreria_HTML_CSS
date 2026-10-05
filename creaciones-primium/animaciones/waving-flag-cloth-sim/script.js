@@ -30,7 +30,7 @@
     function idx(i, j) { return j * COLS + i; }
     function push(a, b, k) {
       var dx = posX[b] - posX[a], dy = posY[b] - posY[a];
-      A.push(a); B.push(b); R.push(Math.sqrt(dx * dx + dy * dy)); K.push(k);
+      A.push(a); B.push(b); R.push(Math.hypot(dx, dy)); K.push(k);
     }
     var i, j;
     for (j = 0; j < ROWS; j++) for (i = 0; i < COLS - 1; i++) push(idx(i, j), idx(i + 1, j), 1);
@@ -162,10 +162,9 @@
     c.arc(cx, cy, r * 0.1, 0, TAU);
     c.fill();
 
-    var ornaments = 5;
     var gap = r * 0.62;
-    var ox = cx - (gap * (ornaments - 1)) / 2;
-    for (i2 = 0; i2 < ornaments; i2++) {
+    var ox = cx - (gap * 4) / 2;
+    for (var i2 = 0; i2 < 5; i2++) {
       var dxx = ox + i2 * gap;
       var dyy = cy + r * 1.16;
       var s = r * (i2 === 2 ? 0.15 : 0.1);
@@ -240,7 +239,7 @@
   }
 
   function solve() {
-    var a, b, i, dx, dy, dist, diff, rx, ry, k, s;
+    var a, b, dx, dy, dist, diff, rx, ry, k, s;
     for (k = 0; k < linkCount; k++) {
       a = linkA[k];
       b = linkB[k];
@@ -575,7 +574,7 @@
     btn.addEventListener("click", function () {
       Array.prototype.forEach.call(buttons, function (other) { other.classList.remove("is-on"); });
       btn.classList.add("is-on");
-      windLevel = parseFloat(btn.getAttribute("data-wind")) || 1;
+      windLevel = parseFloat(btn.dataset.wind) || 1;
     });
   });
 

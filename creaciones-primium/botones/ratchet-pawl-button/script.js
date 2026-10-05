@@ -60,7 +60,6 @@
   });
 
   function frame(now){
-    var t=(now-t0)/1000;
     var dt=last?Math.min(.06,(now-last)/1000):.016;
     last=now;
     push+=(0-push)*Math.min(1,dt*9);

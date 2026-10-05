@@ -21,7 +21,7 @@ const CAMPOS = [
     etiqueta: "Tipo de identificación",
     vacio: "Indica si emites como persona física, extranjero o empresa.",
     error: "Ese tipo de identificación no está disponible.",
-    prueba: v => ["NIF", "NIE", "CIF"].indexOf(v) !== -1
+    prueba: v => ["NIF", "NIE", "CIF"].includes(v)
   },
   {
     id: "numero-id",
@@ -31,7 +31,7 @@ const CAMPOS = [
     prueba: v => {
       const tipo = el("tipo-id").value;
       if (!tipo) return false;
-      if (tipo === "CIF") return /^B[0-9A-Z][0-9]{6}[0-9A-J]$/.test(v) || /^[A-HJUV][0-9]{8}$/.test(v);
+      if (tipo === "CIF") return /^B[0-9A-Z][\d]{6}[0-9A-J]$/.test(v) || /^[A-HJUV][\d]{8}$/.test(v);
       const formato = tipo === "NIF" ? /^\d{8}[A-Z]$/ : /^[XYZ]\d{7}[A-Z]$/;
       if (!formato.test(v)) return false;
       let numero = v;
@@ -62,14 +62,14 @@ const CAMPOS = [
     etiqueta: "Régimen fiscal",
     vacio: "Elige el régimen fiscal que te aplica.",
     error: "Ese régimen no está en la lista.",
-    prueba: v => ["general", "simplificado", "recargo", "agricultura", "exenta"].indexOf(v) !== -1
+    prueba: v => ["general", "simplificado", "recargo", "agricultura", "exenta"].includes(v)
   },
   {
     id: "epigrafe",
     etiqueta: "Epígrafe del IAE",
     vacio: "Elige el epígrafe que mejor se ajuste a tu actividad.",
     error: "Ese epígrafe no está en la lista.",
-    prueba: v => ["0111", "0112", "0971", "6431", "6521", "0119"].indexOf(v) !== -1
+    prueba: v => ["0111", "0112", "0971", "6431", "6521", "0119"].includes(v)
   },
   {
     id: "volumen",
@@ -91,7 +91,7 @@ const CAMPOS = [
     vacio: "El código postal es obligatorio para facturar.",
     error: "Cinco cifras cuyo prefijo debe corresponder a la provincia escrita.",
     prueba: v => /^\d{5}$/.test(v) && (!el("provincia").value.trim() ||
-      (Object.prototype.hasOwnProperty.call(PREFIJOS_PROVINCIA, v.slice(0, 2)) &&
+      (Object.hasOwn(PREFIJOS_PROVINCIA, v.slice(0, 2)) &&
         PREFIJOS_PROVINCIA[v.slice(0, 2)].toLowerCase() === el("provincia").value.trim().toLowerCase()))
   },
   {
@@ -120,7 +120,7 @@ const CAMPOS = [
     etiqueta: "Forma de pago",
     vacio: "Elige la forma de pago por defecto.",
     error: "Esa forma de pago no está en la lista.",
-    prueba: v => ["transferencia", "domiciliado", "tarjeta", "bizum"].indexOf(v) !== -1
+    prueba: v => ["transferencia", "domiciliado", "tarjeta", "bizum"].includes(v)
   },
   {
     id: "observaciones",
@@ -212,13 +212,18 @@ el("numero-id").addEventListener("input", () => {
   else if (tipo === "NIE") v = v.replace(/[^0-9XYZ]/g, "");
   else v = v.replace(/[^0-9]/g, "");
   el("numero-id").value = v;
-  el("numero-id").maxLength = tipo === "CIF" ? 9 : 9;
+  // Ternario simplificado: CIF y el resto permiten el mismo limite de 9 caracteres.
+  el("numero-id").maxLength = 9;
 });
 
 el("tipo-id").addEventListener("change", () => {
   const tipo = el("tipo-id").value;
-  el("numero-id").maxLength = tipo === "NIF" ? 9 : 9;
-  el("numero-id").placeholder = tipo === "NIF" ? "53820093D" : tipo === "NIE" ? "X1234567L" : "B12345678";
+  // Ternario simplificado: NIF y el resto permiten el mismo limite de 9 caracteres.
+  el("numero-id").maxLength = 9;
+  let ejemplo = "B12345678";
+  if (tipo === "NIF") ejemplo = "53820093D";
+  else if (tipo === "NIE") ejemplo = "X1234567L";
+  el("numero-id").placeholder = ejemplo;
   el("numero-id").value = "";
   pintar(CAMPOS.find(f => f.id === "numero-id"));
   actualizarResumen();

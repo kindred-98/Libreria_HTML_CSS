@@ -40,7 +40,7 @@ if (input && drum) {
     if (plus) plus.disabled = value >= MAX;
     if (totalRow) {
       totalRow.classList.remove("is-pop");
-      void totalRow.offsetWidth;
+      totalRow.getBoundingClientRect();
       totalRow.classList.add("is-pop");
     }
     if (live && !silent) {

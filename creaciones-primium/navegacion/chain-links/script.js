@@ -6,7 +6,7 @@
   var note = document.getElementById('rigNote');
 
   var list = document.querySelectorAll('.chain .link');
-  var links = [].slice.call(list);
+  var links = Array.prototype.slice.call(list);
   var secs = links.map(function (l) {
     return document.getElementById(l.getAttribute('href').slice(1));
   });
@@ -49,7 +49,7 @@
 
   function read() {
     var line = window.innerHeight * 0.42;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var gap = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -103,7 +103,7 @@
     var from = links.indexOf(document.activeElement);
     if (from < 0) return;
     var cols = window.innerWidth <= 430 ? 2 : (window.innerWidth <= 760 ? 3 : 6);
-    var to = from;
+    var to;
     if (key === 'ArrowRight') to = from + 1;
     else if (key === 'ArrowLeft') to = from - 1;
     else if (key === 'ArrowDown') to = from + cols;

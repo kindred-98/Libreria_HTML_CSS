@@ -66,7 +66,9 @@
     var n = tracks.length;
     for (var i = 0; i < n; i++) {
       var d = v.scan * 1.4 - (i / n) * 0.5;
-      var draw = d < 0 ? 0 : d > 1 ? 1 : d;
+      var draw = d;
+      if (draw < 0) draw = 0;
+      else if (draw > 1) draw = 1;
       var t = tracks[i];
       t.el.style.strokeDashoffset = (t.len * (1 - draw)).toFixed(1);
       t.el.setAttribute('stroke-opacity', (0.1 + 0.9 * Math.min(1, d * 3.4)).toFixed(2));
@@ -83,7 +85,7 @@
     setTxt(toastTx, t);
     toast.classList.toggle('bad', !!bad);
     toast.classList.remove('up');
-    void toast.offsetWidth;
+    toast.getBoundingClientRect();
     toast.classList.add('up');
   }
 
@@ -166,7 +168,7 @@
   function reject() {
     pad.classList.add('no');
     pad.classList.remove('shake');
-    void pad.offsetWidth;
+    pad.getBoundingClientRect();
     pad.classList.add('shake');
     setTxt(hint, 'Not recognised · try again');
     setTxt(att, 'attempt ' + pad2(attempt) + ' · no match');

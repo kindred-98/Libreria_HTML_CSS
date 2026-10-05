@@ -33,14 +33,14 @@ const CAMPOS = [
     etiqueta: "Category",
     vacio: "Pick a category or the stream gets demoted.",
     error: "That category is not in the platform list.",
-    prueba: v => ["fps", "strategy", "rpg", "justchatting", "deportes", "iracing"].indexOf(v) > -1
+    prueba: v => ["fps", "strategy", "rpg", "justchatting", "deportes", "iracing"].includes(v)
   },
   {
     id: "idioma",
     etiqueta: "Stream language",
     vacio: "Pick the language you speak in.",
     error: "That language is not offered.",
-    prueba: v => ["en", "es", "fr", "de", "pt"].indexOf(v) > -1
+    prueba: v => ["en", "es", "fr", "de", "pt"].includes(v)
   },
   {
     id: "etiquetas",
@@ -54,7 +54,7 @@ const CAMPOS = [
     etiqueta: "Microphone",
     vacio: "Choose an input device, otherwise the meter stays at zero.",
     error: "That input device is not plugged in.",
-    prueba: v => ["usb1", "usb2", "lavalier", "agregado"].indexOf(v) > -1
+    prueba: v => ["usb1", "usb2", "lavalier", "agregado"].includes(v)
   },
   {
     id: "ganancia",

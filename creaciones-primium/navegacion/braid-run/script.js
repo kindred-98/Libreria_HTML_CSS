@@ -2,7 +2,7 @@
   var plait = document.getElementById('plait');
   var bobbin = document.getElementById('bobbin');
   var mark = document.getElementById('mark');
-  var nodes = [].slice.call(document.querySelectorAll('.crossings__node'));
+  var nodes = Array.prototype.slice.call(document.querySelectorAll('.crossings__node'));
   var links = nodes.map(function (n) { return n.querySelector('a'); });
   var roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var threads = ['linen', 'madder', 'woad'];
@@ -18,8 +18,8 @@
       nodes[k].classList.toggle('is-on', k === i);
     });
     nodes.forEach(function (n, k) {
-      n.setAttribute('data-lead', String(((k + i) % 3 + 3) % 3));
-      n.setAttribute('data-thread', threads[((k + i) % 3 + 3) % 3]);
+      n.dataset.lead = String(((k + i) % 3 + 3) % 3);
+      n.dataset.thread = threads[((k + i) % 3 + 3) % 3];
     });
     document.documentElement.style.setProperty('--cur', String(i));
     mark.textContent = roman[i];
@@ -27,7 +27,7 @@
 
   function read() {
     var line = window.innerHeight * 0.45;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var bestD = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -52,7 +52,7 @@
   });
 
   function open(loose) {
-    plait.setAttribute('data-state', loose ? 'loose' : 'braided');
+    plait.dataset.state = loose ? 'loose' : 'braided';
     bobbin.setAttribute('aria-expanded', loose ? 'false' : 'true');
     bobbin.querySelector('.bobbin__text').textContent = loose ? 'Re-plait the threads' : 'Unpick the plait';
   }

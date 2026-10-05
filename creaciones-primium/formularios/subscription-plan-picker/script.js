@@ -22,7 +22,7 @@ const CAMPOS = [
     etiqueta: "Plan",
     vacio: "Despliega el panel con el correo y elige un plan.",
     error: "Elige uno de los tres planes del club.",
-    prueba: v => ["Esencial", "Editorial", "Colectivo"].indexOf(v) !== -1
+    prueba: v => ["Esencial", "Editorial", "Colectivo"].includes(v)
   },
   {
     id: "periodicidad",

@@ -7,8 +7,8 @@
   var form = document.getElementById('mini');
   var input = document.getElementById('q');
   var status = document.getElementById('qst');
-  var sections = [].slice.call(document.querySelectorAll('.sec[id]'));
-  var ticks = [].slice.call(wide.querySelectorAll('a')).concat([].slice.call(tight.querySelectorAll('a')));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.sec[id]'));
+  var ticks = Array.prototype.slice.call(wide.querySelectorAll('a')).concat(Array.prototype.slice.call(tight.querySelectorAll('a')));
   var condensed = false;
   var ticking = false;
 
@@ -50,8 +50,8 @@
   function spy() {
     var line = window.scrollY + window.innerHeight * 0.34;
     var active = sections[0];
-    for (var i = 0; i < sections.length; i++) {
-      if (sections[i].offsetTop <= line) active = sections[i];
+    for (const section of sections) {
+      if (section.offsetTop <= line) active = section;
     }
     var id = active ? active.id : '';
     ticks.forEach(function (link) {
@@ -96,7 +96,7 @@
       var hay = (row.id + ' ' + row.keys).toLowerCase();
       var score = 0;
       words.forEach(function (w) {
-        if (hay.indexOf(w) > -1) score += w.length > 3 ? 2 : 1;
+        if (hay.includes(w)) score += w.length > 3 ? 2 : 1;
       });
       if (score > bestScore) {
         bestScore = score;

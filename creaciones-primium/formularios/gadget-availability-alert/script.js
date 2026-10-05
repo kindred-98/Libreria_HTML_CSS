@@ -33,7 +33,7 @@ const CAMPOS = [
     etiqueta: "Body colour",
     vacio: "Pick the body colour you want to be told about.",
     error: "That colour is not in the batch.",
-    prueba: v => COLORES.indexOf(v) !== -1
+    prueba: v => COLORES.includes(v)
   }
 ];
 

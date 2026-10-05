@@ -13,7 +13,6 @@
   var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var DUR = 6400;
-  var NS = 10;
   var t0 = performance.now() - DUR * 0.62;
   var cx = 0, cy = 0, R = 0, Rmax = 0;
   var captures = 0;
@@ -77,7 +76,7 @@
     tFld.textContent = g.toFixed(2);
     var fl = well.querySelector('.well__flash');
     fl.classList.remove('go');
-    void well.offsetWidth;
+    well.getBoundingClientRect();
     fl.classList.add('go');
     measure();
   }
@@ -113,7 +112,7 @@
     crs.style.setProperty('--sx', sx.toFixed(3));
     crs.style.setProperty('--sy', sy.toFixed(3));
     crs.style.setProperty('--sc', sc.toFixed(3));
-    crs.style.setProperty('--a', (a < 0 ? 0 : a).toFixed(3));
+    crs.style.setProperty('--a', (Math.max(a, 0)).toFixed(3));
     crs.style.setProperty('--near', near.toFixed(3));
     field.style.setProperty('--near', near.toFixed(3));
     field.style.setProperty('--press', press.toFixed(3));
@@ -128,9 +127,12 @@
     }
 
     tAlt.textContent = (s.r / Rmax).toFixed(3);
-    tVel.textContent = (Math.sqrt(dx * dx + dy * dy) * 2.2).toFixed(2);
+    tVel.textContent = (Math.hypot(dx, dy) * 2.2).toFixed(2);
 
-    var ph = s.st === 0 ? (p < 0.2 ? 'ingress' : 'spiral') : s.st === 1 ? 'capture' : 'ejection';
+    var ph;
+    if (s.st === 0) ph = p < 0.2 ? 'ingress' : 'spiral';
+    else if (s.st === 1) ph = 'capture';
+    else ph = 'ejection';
     if (ph !== lastPhase) {
       lastPhase = ph;
       phase.textContent = ph;

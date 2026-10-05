@@ -45,7 +45,7 @@
     setMark(data[i].set);
     if (indexMark && spin) {
       indexMark.classList.remove('is-set');
-      void indexMark.offsetWidth;
+      indexMark.getBoundingClientRect();
       indexMark.classList.add('is-set');
     }
   }
@@ -54,11 +54,11 @@
     setMark(data[current].set);
   });
 
-  for (var i = 0; i < sectors.length; i++) {
-    sectors[i].addEventListener('click', function () {
+  for (const sector of sectors) {
+    sector.addEventListener('click', function () {
       apply(sectors.indexOf(this), true);
     });
-    sectors[i].addEventListener('keydown', function (event) {
+    sector.addEventListener('keydown', function (event) {
       var here = sectors.indexOf(this);
       var next = null;
       switch (event.key) {
@@ -66,7 +66,7 @@
         case 'ArrowLeft': case 'ArrowDown': next = here - 1; break;
         case 'Home': next = 0; break;
         case 'End': next = sectors.length - 1; break;
-        default: next = null;
+        default: break;
       }
       if (next === null) return;
       event.preventDefault();

@@ -10,7 +10,7 @@
     c.height=size;
     var g=c.getContext('2d');
     var grd=g.createRadialGradient(size/2,size/2,0,size/2,size/2,size/2);
-    for(var i=0;i<stops.length;i++) grd.addColorStop(stops[i][0],stops[i][1]);
+    for(var stop of stops) grd.addColorStop(stop[0],stop[1]);
     g.fillStyle=grd;
     g.fillRect(0,0,size,size);
     return c;
@@ -24,9 +24,6 @@
     [0,'rgba(255,238,176,.66)'],[0.11,'rgba(255,226,140,.38)'],[0.24,'rgba(254,204,104,.2)'],
     [0.4,'rgba(250,178,66,.095)'],[0.6,'rgba(242,152,42,.035)'],[0.82,'rgba(230,130,28,.008)'],
     [1,'rgba(222,124,22,0)']]);
-  var far=sprite(64,[
-    [0,'rgba(255,246,204,.56)'],[0.15,'rgba(255,226,142,.3)'],[0.34,'rgba(250,192,76,.12)'],
-    [0.6,'rgba(238,160,44,.03)'],[0.85,'rgba(228,140,30,.005)'],[1,'rgba(222,126,22,0)']]);
   var disc=sprite(160,[
     [0,'rgba(255,246,206,.6)'],[0.15,'rgba(255,232,164,.48)'],[0.33,'rgba(252,206,112,.33)'],
     [0.53,'rgba(248,182,74,.19)'],[0.73,'rgba(240,162,50,.095)'],[0.89,'rgba(232,144,36,.03)'],
@@ -74,7 +71,6 @@
     bot:.74
   }];
 
-  var fields=[];
   var W=1;
   var H=1;
   var clock=0;
@@ -85,7 +81,11 @@
   var py=-99999;
   var hasPointer=false;
   var r1=Math.random;
-  var clamp=function(v,a,b){return v<a?a:v>b?b:v;};
+  var clamp=function(v,a,b){
+    if(v<a)return a;
+    if(v>b)return b;
+    return v;
+  };
 
   function rnd(a,b){return a+(b-a)*r1();}
 
@@ -158,7 +158,7 @@
     }
     f.vx*=.981;
     f.vy*=.981;
-    var sp=Math.sqrt(f.vx*f.vx+f.vy*f.vy);
+    var sp=Math.hypot(f.vx, f.vy);
     var top=H*f.top;
     var bot=H*f.bot;
     var m=f.z*20+16;
@@ -181,8 +181,7 @@
     var list=layer.list;
     g.clearRect(0,0,W,H);
     g.globalCompositeOperation='lighter';
-    for(var i=0;i<list.length;i++){
-      var f=list[i];
+    for(var f of list){
       var p=blink(f);
       var a=f.alpha*(f.base+p*(1-f.base*1.06));
       if(a<=.012) continue;
@@ -219,8 +218,7 @@
     W=Math.max(1,Math.round(rect.width));
     H=Math.max(1,Math.round(rect.height));
     var dpr=Math.min(2,window.devicePixelRatio||1);
-    for(var i=0;i<layers.length;i++){
-      var L=layers[i];
+    for(var L of layers){
       L.el.width=Math.round(W*dpr);
       L.el.height=Math.round(H*dpr);
       L.g=L.el.getContext('2d');
@@ -238,25 +236,24 @@
     var sy=nh/H;
     W=nw;
     H=nh;
-    for(var i=0;i<layers.length;i++){
-      var L=layers[i];
+    for(var L of layers){
       if(L.list){
-        for(var k=0;k<L.list.length;k++){
-          L.list[k].x*=sx;
-          L.list[k].y*=sy;
+        for(var f of L.list){
+          f.x*=sx;
+          f.y*=sy;
         }
       }
     }
     measure();
-    for(var j=0;j<layers.length;j++) render(layers[j]);
+    for(var lay of layers) render(lay);
   }
 
   function buildAll(){
-    for(var i=0;i<layers.length;i++) build(layers[i]);
+    for(var L of layers) build(L);
   }
 
   function paint(){
-    for(var i=0;i<layers.length;i++) render(layers[i]);
+    for(var L of layers) render(L);
   }
 
   function frame(now){
@@ -266,10 +263,9 @@
     if(dt>.05) dt=.05;
     if(dt<0) dt=0;
     clock+=dt;
-    for(var i=0;i<layers.length;i++){
-      var L=layers[i];
+    for(var L of layers){
       var list=L.list;
-      for(var k=0;k<list.length;k++) move(list[k],dt);
+      for(var f of list) move(f,dt);
       render(L);
     }
     handle=window.requestAnimationFrame(frame);

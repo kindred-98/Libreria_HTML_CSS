@@ -15,7 +15,11 @@ if (dial && rotor) {
   const STEP = 1 / 240;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  const clamp = (n, lo, hi) => (n < lo ? lo : n > hi ? hi : n);
+  const clamp = (n, lo, hi) => {
+    if (n < lo) return lo;
+    if (n > hi) return hi;
+    return n;
+  };
   const angleOf = (event) => {
     const box = dial.getBoundingClientRect();
     const dx = event.clientX - (box.left + box.width / 2);
@@ -212,7 +216,7 @@ if (dial && rotor) {
     drag = null;
     dial.classList.remove("is-grab");
     if (event && typeof dial.releasePointerCapture === "function") {
-      try { dial.releasePointerCapture(event.pointerId); } catch (err) { void err; }
+      try { dial.releasePointerCapture(event.pointerId); } catch { }
     }
     let speed = 0;
     if (marks.length > 1) {

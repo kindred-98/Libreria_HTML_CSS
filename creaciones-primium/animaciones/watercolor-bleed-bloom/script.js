@@ -70,10 +70,10 @@ const live = [];
 function read(node) {
   return {
     node: node,
-    dur: (Number(node.getAttribute('data-dur')) || 24) * 1000,
-    off: (Number(node.getAttribute('data-off')) || 0) * 1000,
-    sq: (node.getAttribute('data-sq') || '1,1').split(',').map(Number),
-    rot: Number(node.getAttribute('data-rot')) || 0,
+    dur: (Number(node.dataset.dur) || 24) * 1000,
+    off: (Number(node.dataset.off) || 0) * 1000,
+    sq: (node.dataset.sq || '1,1').split(',').map(Number),
+    rot: Number(node.dataset.rot) || 0,
     wet: node.querySelector('.wet'),
     rim: node.querySelector('.rim'),
     mass: node.querySelector('.mass'),
@@ -129,10 +129,10 @@ function drop(clientX, clientY, force) {
   const p = pigments[Math.floor(Math.random() * pigments.length)];
   const w = 13 + Math.random() * 15;
   const rot = Math.round(Math.random() * 72 - 36);
-  node.setAttribute('data-dur', '9');
-  node.setAttribute('data-off', '0');
-  node.setAttribute('data-sq', (0.9 + Math.random() * 0.22).toFixed(2) + ',' + (0.9 + Math.random() * 0.22).toFixed(2));
-  node.setAttribute('data-rot', String(rot));
+  node.dataset.dur = '9';
+  node.dataset.off = '0';
+  node.dataset.sq = (0.9 + Math.random() * 0.22).toFixed(2) + ',' + (0.9 + Math.random() * 0.22).toFixed(2);
+  node.dataset.rot = String(rot);
   const x = Math.min(88, Math.max(12, ((clientX - box.left) / box.width) * 100));
   const y = Math.min(88, Math.max(12, ((clientY - box.top) / box.height) * 100));
   node.style.cssText = '--x:' + x.toFixed(2) + '%;--y:' + y.toFixed(2) + '%;--w:' + w.toFixed(2) +
@@ -176,8 +176,7 @@ if (field) {
     const frame = function (now) {
       if (now - last > 10 || last === 0) {
         last = now;
-        for (let i = 0; i < list.length; i += 1) {
-          const b = list[i];
+        for (const b of list) {
           const p = (((now + b.off) % b.dur) + b.dur) % b.dur / b.dur;
           stage(b, p);
         }
@@ -186,7 +185,7 @@ if (field) {
           const age = now - b.born;
           const p = age / b.life;
           if (p >= 1) {
-            if (b.node.parentNode) b.node.parentNode.removeChild(b.node);
+            if (b.node.parentNode) b.node.remove();
             live.splice(i, 1);
             dragCount -= 1;
             continue;
@@ -206,8 +205,7 @@ if (field) {
         }
         if (wetLabel) {
           let wetNow = 0;
-          for (let i = 0; i < list.length; i += 1) {
-            const b = list[i];
+          for (const b of list) {
             const p = (((now + b.off) % b.dur) + b.dur) % b.dur / b.dur;
             if (p > 0.1 && p < 0.8) wetNow += 1;
           }

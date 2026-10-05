@@ -24,9 +24,7 @@
   var still = false;
   try {
     still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch (err) {
-    void err;
-  }
+  } catch {}
 
   function pad(n) {
     return n < 10 ? "0" + n : String(n);
@@ -59,7 +57,7 @@
   }
 
   function drumHeight(drum) {
-    var value = parseFloat(getComputedStyle(drum).height);
+    var value = Number.parseFloat(getComputedStyle(drum).height);
     return isFinite(value) && value > 4 ? value : 40;
   }
 
@@ -74,7 +72,7 @@
       return;
     }
     drum.classList.remove("is-turn");
-    void drum.offsetWidth;
+    drum.getBoundingClientRect();
     drum.classList.add("is-turn");
     window.setTimeout(function () {
       drum.classList.remove("is-turn");
@@ -133,7 +131,7 @@
   function confirmCard() {
     if (stamp) {
       stamp.classList.remove("is-on");
-      void stamp.offsetWidth;
+      stamp.getBoundingClientRect();
       stamp.classList.add("is-on");
     }
     var t = read();
@@ -207,7 +205,7 @@
       if (!drum) {
         return;
       }
-      var part = drum.getAttribute("data-part");
+      var part = drum.dataset.part;
       if (!PARTS[part]) {
         return;
       }
@@ -224,9 +222,7 @@
       if (typeof drum.setPointerCapture === "function") {
         try {
           drum.setPointerCapture(event.pointerId);
-        } catch (err) {
-          void err;
-        }
+        } catch {}
       }
     });
 
@@ -261,9 +257,7 @@
       if (event && typeof event.target.releasePointerCapture === "function") {
         try {
           event.target.releasePointerCapture(event.pointerId);
-        } catch (err) {
-          void err;
-        }
+        } catch {}
       }
       if (status) {
         var t = read();

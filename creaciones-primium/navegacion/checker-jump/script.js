@@ -20,7 +20,7 @@
   function leap() {
     if (!man || calm.matches) return;
     man.classList.remove('is-leap');
-    void man.offsetWidth;
+    man.getBoundingClientRect();
     man.classList.add('is-leap');
   }
 
@@ -40,9 +40,9 @@
         else squares[k].classList.remove('is-taken');
       }
     }
-    hall.setAttribute('data-at', i);
+    hall.dataset.at = i;
     if (move) move.textContent = squares[i].querySelector('.sq__n').textContent;
-    if (say) say.textContent = squares[i].getAttribute('data-say') || '';
+    if (say) say.textContent = squares[i].dataset.say || '';
     if (!first) leap();
   }
 

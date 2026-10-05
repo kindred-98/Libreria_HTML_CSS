@@ -148,14 +148,12 @@
   }
 
   function drawBlades(){
-    for(var r=0;r<rows.length;r++){
-      var row=rows[r];
+    for(var row of rows){
       var list=row.list;
       var stiff=row.stiff;
       var drag=.52+.62*row.d;
       g.fillStyle=row.ga;
-      for(var i=0;i<list.length;i++){
-        var b=list[i];
+      for(var b of list){
         var bn=bendAt(b.x)*drag*b.s*stiff;
         if(bn>1.7) bn=1.7;
         else if(bn<-1.25) bn=-1.25;
@@ -175,8 +173,7 @@
   }
 
   function drawSeeds(){
-    for(var i=0;i<seeds.length;i++){
-      var s=seeds[i];
+    for(var s of seeds){
       var bn=bendAt(s.x)*(.6+.7*s.d);
       if(bn>1.5) bn=1.5;
       else if(bn<-1.1) bn=-1.1;
@@ -203,8 +200,7 @@
 
   function drawWisps(){
     g.globalCompositeOperation='lighter';
-    for(var i=0;i<wisps.length;i++){
-      var wp=wisps[i];
+    for(var wp of wisps){
       var gu=gusts[wp.k];
       var lead=Math.sin(t*1.3+wp.ph)*26;
       var x=gu.gx+lead;
@@ -221,8 +217,7 @@
 
   function drawMotes(dt){
     g.globalCompositeOperation='lighter';
-    for(var i=0;i<motes.length;i++){
-      var m=motes[i];
+    for(var m of motes){
       var w=bendAt(m.x);
       m.x+=(16+w*54)*m.v*dt;
       m.y+=(Math.sin(t*1.15+m.p)*7-2.5)*dt;

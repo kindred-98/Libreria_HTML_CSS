@@ -11,7 +11,11 @@ const barEl = document.getElementById('bar');
 const railmarkEl = document.getElementById('railmark');
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const clamp01 = v => (v < 0 ? 0 : v > 1 ? 1 : v);
+const clamp01 = (v) => {
+  if (v < 0) return 0;
+  if (v > 1) return 1;
+  return v;
+};
 const lerp = (a, b, t) => a + (b - a) * t;
 const smooth = t => t * t * (3 - 2 * t);
 const TAU = Math.PI * 2;
@@ -67,7 +71,7 @@ function seedGrain(){
   const im = gx.createImageData(128, 128);
   const d = im.data;
   for (let i = 0; i < d.length; i += 4){
-    const v = (Math.random() * 255) | 0;
+    const v = (Math.random() * 255 | 0);
     d[i] = v;
     d[i + 1] = v;
     d[i + 2] = v;
@@ -78,7 +82,7 @@ function seedGrain(){
 }
 
 function pick(){
-  return pool[(Math.random() * pool.length) | 0];
+  return pool[(Math.random() * pool.length | 0)];
 }
 
 function makePool(){
@@ -90,8 +94,7 @@ function makePool(){
 
 function fill(host, list){
   const frag = document.createDocumentFragment();
-  for (let i = 0; i < list.length; i++){
-    const d = list[i];
+  for (const d of list){
     const el = document.createElement('i');
     el.className = 'disc';
     el.style.setProperty('--x', d.x.toFixed(1) + 'px');
@@ -115,7 +118,7 @@ function spread(n, rx, ry){
   const cells = [];
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) cells.push([c, r]);
   for (let i = cells.length - 1; i > 0; i--){
-    const j = (Math.random() * (i + 1)) | 0;
+    const j = ((Math.random() * (i + 1)) | 0);
     const t = cells[i];
     cells[i] = cells[j];
     cells[j] = t;
@@ -143,8 +146,7 @@ function build(){
   discs = 0;
   const rx = W * 0.76;
   const ry = H * 0.76;
-  for (let i = 0; i < PLANES.length; i++){
-    const P = PLANES[i];
+  for (const P of PLANES){
     const el = document.createElement('div');
     el.className = 'plane';
     const sh = document.createElement('div');
@@ -182,8 +184,7 @@ function build(){
       ph2: Math.random() * TAU
     });
   }
-  for (let t = 0; t < TRAILS.length; t++){
-    const T = TRAILS[t];
+  for (const T of TRAILS){
     const P = PLANES[T.p];
     const pl = planes[T.p];
     if (!pl) continue;
@@ -256,8 +257,7 @@ function readouts(z){
 }
 
 function applyFocus(zf){
-  for (let i = 0; i < planes.length; i++){
-    const P = planes[i];
+  for (const P of planes){
     const t = smooth(clamp01(Math.abs(P.z - zf) / SPREAD));
     P.sh.style.opacity = (1 - t).toFixed(3);
     P.bl.style.opacity = t.toFixed(3);
@@ -275,8 +275,7 @@ function frame(){
   const sec = (performance.now() - t0) / 1000;
   ptr = lerp(ptr, ptrT, 0.055);
   const zf = clamp01(autoFocus(sec) + ptr * 0.42);
-  for (let i = 0; i < planes.length; i++){
-    const P = planes[i];
+  for (const P of planes){
     const T = LOOP * P.k;
     const near = 1 - P.z;
     const dx = Math.sin(TAU * sec / T + P.ph) * near * 30 + Math.sin(TAU * sec / (T * 0.5) + P.ph2) * near * 9;

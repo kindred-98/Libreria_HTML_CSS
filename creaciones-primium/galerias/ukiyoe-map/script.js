@@ -23,8 +23,8 @@
 
   function pad(n) { return (n < 10 ? "0" : "") + n; }
   function centre(el) {
-    var x = parseFloat(el.style.getPropertyValue("--c"));
-    var y = parseFloat(el.style.getPropertyValue("--t"));
+    var x = Number.parseFloat(el.style.getPropertyValue("--c"));
+    var y = Number.parseFloat(el.style.getPropertyValue("--t"));
     return { x: x, y: y };
   }
 
@@ -104,7 +104,7 @@
   document.getElementById("v-prev").addEventListener("click", function () { openAt((at - 1 + TOTAL) % TOTAL); });
   document.getElementById("v-next").addEventListener("click", function () { openAt((at + 1) % TOTAL); });
   document.getElementById("v-close").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   plan.addEventListener("keydown", function (e) {
     var k = e.key;

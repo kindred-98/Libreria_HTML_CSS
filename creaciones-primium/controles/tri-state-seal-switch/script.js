@@ -18,7 +18,7 @@ const paint = () => {
 const clunk = () => {
   if (!knob) return;
   knob.classList.remove("is-click");
-  void knob.offsetWidth;
+  knob.getBoundingClientRect();
   knob.classList.add("is-click");
   window.setTimeout(() => knob.classList.remove("is-click"), 460);
 };

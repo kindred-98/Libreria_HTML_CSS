@@ -12,7 +12,7 @@
   function fazer(el) {
     if (!clic) return;
     el.classList.remove("pulsando");
-    void el.offsetWidth;
+    el.getBoundingClientRect();
     el.classList.add("pulsando");
     window.clearTimeout(clic);
     clic = window.setTimeout(function () {
@@ -28,8 +28,8 @@
       else l.removeAttribute("aria-current");
     });
     luz.style.width = (((indice + 1) / lamparas.length) * 100).toFixed(2) + "%";
-    numero.textContent = lamparas[indice].getAttribute("data-s");
-    nombre.textContent = lamparas[indice].getAttribute("data-nombre");
+    numero.textContent = lamparas[indice].dataset.s;
+    nombre.textContent = lamparas[indice].dataset.nombre;
     fazer(lamparas[indice]);
   }
 

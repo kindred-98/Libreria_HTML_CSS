@@ -35,7 +35,7 @@ const CAMPOS = [
     etiqueta: "Your item",
     vacio: "Pick the item you would send. Without it there is nothing to review.",
     error: "That item is not in the catalogue any more, so it cannot be offered.",
-    prueba: v => Object.prototype.hasOwnProperty.call(ITEMS, v)
+    prueba: v => Object.hasOwn(ITEMS, v)
   },
   {
     id: "miValor",
@@ -49,7 +49,7 @@ const CAMPOS = [
     etiqueta: "Wanted item",
     vacio: "Tell us which single item you want back.",
     error: "That item is not in the catalogue any more, so it cannot be asked for.",
-    prueba: v => Object.prototype.hasOwnProperty.call(ITEMS, v)
+    prueba: v => Object.hasOwn(ITEMS, v)
   },
   {
     id: "suValor",
@@ -63,14 +63,14 @@ const CAMPOS = [
     etiqueta: "Platform",
     vacio: "Choose the platform the items live on.",
     error: "That platform is not in the supported list.",
-    prueba: v => ["steam", "xbox", "playstation", "epic", "battlenet"].indexOf(v) > -1
+    prueba: v => ["steam", "xbox", "playstation", "epic", "battlenet"].includes(v)
   },
   {
     id: "modo",
     etiqueta: "Type of trade",
     vacio: "Say whether the trade moves credits or only items.",
     error: "That trade type is not on the desk list.",
-    prueba: v => ["objetos", "creditos", "intercambio"].indexOf(v) > -1
+    prueba: v => ["objetos", "creditos", "intercambio"].includes(v)
   },
   {
     id: "perfil",
@@ -126,7 +126,7 @@ const CAMPOS = [
     etiqueta: "Preferred channel",
     vacio: "Choose where we answer you.",
     error: "That channel is not offered by the desk.",
-    prueba: v => ["chat", "correo", "app"].indexOf(v) > -1
+    prueba: v => ["chat", "correo", "app"].includes(v)
   },
   {
     id: "contacto",
@@ -205,7 +205,7 @@ function refrescarBalanza() {
   el("ladoOferta").textContent = a === null ? "0" : String(a);
   el("ladoPeticion").textContent = b === null ? "0" : String(b);
   const nota = el("balanzaNota");
-  balanza.removeAttribute("data-estado");
+  delete balanza.dataset.estado;
 
   if (a === null || b === null) {
     balanzaRelleno.style.transform = "scaleX(0)";

@@ -20,7 +20,7 @@ const CAMPOS = [
     etiqueta: "País del IBAN",
     vacio: "Indica el país del IBAN.",
     error: "Ese país no está admitido en el esquema SEPA.",
-    prueba: v => Object.prototype.hasOwnProperty.call(LONGITUDES, v)
+    prueba: v => Object.hasOwn(LONGITUDES, v)
   },
   {
     id: "control",
@@ -79,7 +79,7 @@ const CAMPOS = [
     etiqueta: "Periodicidad",
     vacio: "Elige cada cuánto se cobra la cuota.",
     error: "Esa periodicidad no está en la lista.",
-    prueba: v => PERIODOS.indexOf(v) !== -1
+    prueba: v => PERIODOS.includes(v)
   },
   {
     id: "firma",
@@ -182,7 +182,7 @@ function modulo97(iban) {
   let resto = 0;
   for (let i = 0; i < reordenado.length; i++) {
     const c = reordenado.charAt(i);
-    const digitos = /[0-9]/.test(c) ? c : String(c.charCodeAt(0) - 55);
+    const digitos = /[\d]/.test(c) ? c : String(c.charCodeAt(0) - 55);
     for (let k = 0; k < digitos.length; k++) {
       resto = (resto * 10 + Number(digitos.charAt(k))) % 97;
     }
@@ -309,7 +309,7 @@ function indice(control) {
 form.addEventListener("keydown", e => {
   const control = e.target;
   if (!control || !control.tagName) return;
-  const esCampo = ["INPUT", "SELECT", "TEXTAREA"].indexOf(control.tagName) !== -1;
+  const esCampo = ["INPUT", "SELECT", "TEXTAREA"].includes(control.tagName);
   if (!esCampo) return;
   const pos = indice(control.id);
   if (!pos) return;

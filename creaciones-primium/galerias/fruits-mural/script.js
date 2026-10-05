@@ -12,7 +12,6 @@
   var opener = null;
   var t0 = 0;
   var pending = false;
-  var scrollY = 0;
 
   function makeLane(track) {
     var set = document.createElement("div");
@@ -125,7 +124,6 @@
   }
 
   window.addEventListener("scroll", function () {
-    scrollY = window.pageYOffset;
     if (!pending) { pending = true; requestAnimationFrame(drift); }
   }, { passive: true });
 
@@ -159,7 +157,6 @@
   if (calm.matches) {
     grain.style.transform = "translate3d(0,0,0)";
     lanes.forEach(function (lane) { lane.track.style.transform = "translate3d(0,0,0)"; });
-    scrollY = 0;
   } else {
     requestAnimationFrame(loop);
   }

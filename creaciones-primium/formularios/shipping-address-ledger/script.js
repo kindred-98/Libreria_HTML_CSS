@@ -26,7 +26,7 @@ const CAMPOS = [
     etiqueta: "Tipo de vía",
     vacio: "Indica si es calle, avenida, plaza u otra vía.",
     error: "Ese tipo de vía no está en la lista del libro.",
-    prueba: v => ["calle", "avenida", "plaza", "ronda", "carretera", "paseo", "travesia"].indexOf(v) !== -1
+    prueba: v => ["calle", "avenida", "plaza", "ronda", "carretera", "paseo", "travesia"].includes(v)
   },
   {
     id: "calle",
@@ -62,7 +62,7 @@ const CAMPOS = [
     etiqueta: "Código postal",
     vacio: "El código postal es obligatorio para enviar.",
     error: "Deben ser cinco cifras y el prefijo debe existir.",
-    prueba: v => /^\d{5}$/.test(v) && Object.prototype.hasOwnProperty.call(PREFIJOS, v.slice(0, 2))
+    prueba: v => /^\d{5}$/.test(v) && Object.hasOwn(PREFIJOS, v.slice(0, 2))
   },
   {
     id: "provincia",

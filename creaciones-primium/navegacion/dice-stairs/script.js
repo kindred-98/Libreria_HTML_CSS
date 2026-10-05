@@ -18,9 +18,9 @@
       if (k === i) steps[k].setAttribute('aria-current', 'true');
       else steps[k].removeAttribute('aria-current');
     }
-    hall.setAttribute('data-at', i);
-    if (counter) counter.textContent = steps[i].getAttribute('data-no');
-    if (say) say.textContent = steps[i].getAttribute('data-say') || '';
+    hall.dataset.at = i;
+    if (counter) counter.textContent = steps[i].dataset.no;
+    if (say) say.textContent = steps[i].dataset.say || '';
   }
 
   function scan() {

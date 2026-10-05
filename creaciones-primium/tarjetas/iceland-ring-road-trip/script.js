@@ -77,7 +77,7 @@ function activate(index) {
     button.setAttribute("aria-pressed", String(k === index));
   });
   ficha.classList.remove("ficha--swap");
-  void ficha.offsetWidth;
+  ficha.getBoundingClientRect();
   ficha.classList.add("ficha--swap");
 }
 

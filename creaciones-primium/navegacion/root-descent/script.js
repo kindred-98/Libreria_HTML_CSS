@@ -40,7 +40,7 @@
     }
     nav.style.setProperty('--pos', String(index));
     nav.style.setProperty('--depth', String(index * 100) + 'px');
-    nav.setAttribute('data-at', String(index + 1));
+    nav.dataset.at = String(index + 1);
     if (readout) {
       readout.textContent = 'Stratum ' + (index + 1) + ' of ' + links.length + ' · ' + names[index];
     }

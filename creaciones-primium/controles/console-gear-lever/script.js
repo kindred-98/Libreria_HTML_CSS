@@ -60,7 +60,7 @@ if (gate && input && knob) {
 
   const jump = (element) => {
     element.classList.remove("is-hit");
-    void element.offsetWidth;
+    element.getBoundingClientRect();
     element.classList.add("is-hit");
   };
 
@@ -101,9 +101,14 @@ if (gate && input && knob) {
 
     bars.forEach((bar, k) => bar.classList.toggle("is-on", k === Number(input.max) - index));
 
+    let etiqueta = "reverse";
+    if (index !== 0) {
+      const sufijo = index === 1 ? "st" : index === 2 ? "nd" : index === 3 ? "rd" : "th";
+      etiqueta = NAMES[index] + sufijo;
+    }
     input.setAttribute(
       "aria-valuetext",
-      (index === 0 ? "reverse" : NAMES[index] + (index === 1 ? "st" : index === 2 ? "nd" : index === 3 ? "rd" : "th")) +
+      etiqueta +
         ", ratio " + ratio.toFixed(2) + ", torque " + torque.toFixed(1) + " newton metres"
     );
 

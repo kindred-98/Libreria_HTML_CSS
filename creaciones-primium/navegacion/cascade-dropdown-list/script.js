@@ -14,17 +14,17 @@
     var btn = dd.querySelector(".dd__btn");
     if (btn) btn.setAttribute("aria-expanded", "false");
     var subsIn = dd.querySelectorAll(".sub");
-    for (var k = 0; k < subsIn.length; k++) {
-      subsIn[k].classList.remove("is-open");
-      var sb = subsIn[k].querySelector(".sub__btn");
+    for (const sub of subsIn) {
+      sub.classList.remove("is-open");
+      var sb = sub.querySelector(".sub__btn");
       if (sb) sb.setAttribute("aria-expanded", "false");
     }
     if (returnFocus && btn) btn.focus();
   }
 
   function closeAll(except) {
-    for (var k = 0; k < items.length; k++) {
-      if (items[k] !== except) close(items[k], false);
+    for (const item of items) {
+      if (item !== except) close(item, false);
     }
   }
 
@@ -74,8 +74,8 @@
         if (e.key === "Escape") close(dd, true);
       });
 
-      for (var n = 0; n < links.length; n++) {
-        links[n].addEventListener("click", function () { close(dd, false); });
+      for (const link of links) {
+        link.addEventListener("click", function () { close(dd, false); });
       }
     })(items[i]);
   }
@@ -112,21 +112,21 @@
     var vh = window.innerHeight;
     var mark = vh * 0.4;
     var currentId = "";
-    for (var k = 0; k < sections.length; k++) {
-      if (sections[k].getBoundingClientRect().top <= mark) currentId = sections[k].id;
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= mark) currentId = section.id;
     }
     var nav = document.querySelector(".bar");
     var anchors = nav.querySelectorAll("a[href^='#']");
-    for (var n = 0; n < anchors.length; n++) {
-      var id = anchors[n].getAttribute("href").slice(1);
+    for (const anchor of anchors) {
+      var id = anchor.getAttribute("href").slice(1);
       if (id && id === currentId) {
-        anchors[n].setAttribute("aria-current", "true");
+        anchor.setAttribute("aria-current", "true");
       } else {
-        anchors[n].removeAttribute("aria-current");
+        anchor.removeAttribute("aria-current");
       }
     }
-    for (var s = 0; s < sections.length; s++) {
-      sections[s].classList.toggle("is-here", sections[s].id === currentId);
+    for (const sec of sections) {
+      sec.classList.toggle("is-here", sec.id === currentId);
     }
   }
 

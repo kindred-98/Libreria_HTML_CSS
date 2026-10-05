@@ -90,7 +90,7 @@ function applyRange(key) {
 
   lineShape.classList.remove("is-drawn");
   areaShape.classList.remove("is-drawn");
-  void lineShape.getBoundingClientRect();
+  lineShape.getBoundingClientRect();
   lineShape.classList.add("is-drawn");
   areaShape.classList.add("is-drawn");
 }

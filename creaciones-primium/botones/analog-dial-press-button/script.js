@@ -69,7 +69,6 @@
   }
   function label(v){return v.toFixed(2)}
   function paint(){
-    var f=Math.max(0,Math.min(1,(ang-MIN)/(MAX-MIN)));
     var dev=ang-target;
     if(hubSet)hubSet.textContent=label(target);
     if(tSet)tSet.textContent=label(target);
@@ -95,7 +94,7 @@
     target=set[si];
     kick=1;
     hub.classList.remove("is-kick");
-    void hub.offsetWidth;
+    hub.getBoundingClientRect();
     hub.classList.add("is-kick");
   }
   hub.addEventListener("pointerdown",go);

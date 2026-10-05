@@ -33,7 +33,7 @@
   }
   var lh=20;
   function measure(){
-    var v=parseFloat(getComputedStyle(unit).getPropertyValue("--lh"));
+    var v=Number.parseFloat(getComputedStyle(unit).getPropertyValue("--lh"));
     if(v&&!isNaN(v))lh=v;
   }
   measure();
@@ -86,7 +86,7 @@
   pad.addEventListener("click",function(e){
     var b=e.target.closest?e.target.closest(".tk"):null;
     if(!b)return;
-    var k=parseInt(b.getAttribute("data-k"),10);
+    var k=parseInt(b.dataset.k,10);
     if(k>=1&&k<=6)fire(k-1);
   });
 

@@ -5,16 +5,16 @@
   var list = document.getElementById("kinList");
   var num = document.getElementById("ovNum");
   var ghost = document.getElementById("ovGhost");
-  var dests = [].slice.call(list.querySelectorAll(".dest"));
-  var sections = [].slice.call(document.querySelectorAll("main .sec[id]"));
+  var dests = Array.prototype.slice.call(list.querySelectorAll(".dest"));
+  var sections = Array.prototype.slice.call(document.querySelectorAll("main .sec[id]"));
   var open = false;
   var seed = 0;
   var focused = null;
   var active = null;
 
   function splitLetters() {
-    for (var i = 0; i < dests.length; i++) {
-      var w = dests[i].querySelector(".dest__w");
+    for (const dest of dests) {
+      var w = dest.querySelector(".dest__w");
       var text = w.textContent;
       w.textContent = "";
       for (var c = 0; c < text.length; c++) {
@@ -41,7 +41,9 @@
         letters[i].style.setProperty("--tx", (n * 46).toFixed(1) + "px");
         letters[i].style.setProperty("--ty", (m * 34 - 12).toFixed(1) + "px");
         letters[i].style.setProperty("--rr", (n * 14).toFixed(1) + "deg");
-        letters[i].offsetHeight;
+        // Lectura de disposicion: fuerza el reflujo para que el estado disperso
+        // quede pintado antes de devolver las letras a su sitio.
+        letters[i].getBoundingClientRect();
         letters[i].style.setProperty("--tx", "0px");
         letters[i].style.setProperty("--ty", "0px");
         letters[i].style.setProperty("--rr", "0deg");
@@ -61,16 +63,18 @@
     if (!item) return;
     if (active && active !== item) scatter(active, true);
     active = item;
-    for (var i = 0; i < dests.length; i++) {
-      if (dests[i] === item) dests[i].setAttribute("aria-current", "page");
-      else dests[i].removeAttribute("aria-current");
+    for (const d of dests) {
+      if (d === item) d.setAttribute("aria-current", "page");
+      else d.removeAttribute("aria-current");
     }
     var n = item.querySelector(".dest__n").textContent;
     num.textContent = n;
     ghost.textContent = n;
     if (kinetic) {
       seed += 1;
-      item.offsetHeight;
+      // Lectura de disposicion: fuerza el reflujo para que las letras salgan
+      // desde 0 y la transicion se vea, en vez de saltar sin animarse.
+      item.getBoundingClientRect();
       scatter(item, false);
     }
     setOrder(item);
@@ -88,10 +92,6 @@
     } else if (restore) {
       menuBtn.focus();
     }
-  }
-
-  function neighbours(item) {
-    setOrder(item);
   }
 
   menuBtn.addEventListener("click", function () { setOpen(!open, false); });
@@ -128,7 +128,7 @@
     }
   });
 
-  for (var i = 0; i < dests.length; i++) {
+  for (const item of dests) {
     (function (item) {
       item.addEventListener("pointerenter", function () {
         focused = item;
@@ -155,7 +155,7 @@
       item.addEventListener("keydown", function (e) {
         if (e.key === "Escape") setOpen(false, true);
       });
-    })(dests[i]);
+    })(item);
   }
 
   var ticking = false;
@@ -166,14 +166,14 @@
       ticking = false;
       var mark = window.scrollY + window.innerHeight * 0.32;
       var current = null;
-      for (var i = 0; i < sections.length; i++) {
-        if (sections[i].offsetTop <= mark) current = sections[i];
+      for (const section of sections) {
+        if (section.offsetTop <= mark) current = section;
       }
       if (!current) return;
       var id = "#" + current.id;
-      for (var k = 0; k < dests.length; k++) {
-        if (dests[k].getAttribute("href") === id) {
-          if (dests[k] !== active) setActive(dests[k], false);
+      for (const dest of dests) {
+        if (dest.getAttribute("href") === id) {
+          if (dest !== active) setActive(dest, false);
           break;
         }
       }

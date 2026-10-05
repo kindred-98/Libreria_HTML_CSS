@@ -107,7 +107,7 @@
     hits = 0;
     cards.forEach(function (c, i) {
       var s = SPECIMENS[i];
-      var ok = (active === "all" || s.group === active) && (!q || hay(s).indexOf(q) > -1);
+      var ok = (active === "all" || s.group === active) && (!q || hay(s).includes(q));
       c.hidden = !ok;
       if (ok) {
         hits++;

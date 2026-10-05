@@ -27,7 +27,7 @@ if (input && box) {
   const pop = (element) => {
     if (!element) return;
     element.classList.remove("is-pop");
-    void element.offsetWidth;
+    element.getBoundingClientRect();
     element.classList.add("is-pop");
   };
 

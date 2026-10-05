@@ -121,8 +121,8 @@
       else if (ev.key === "End") { ev.preventDefault(); take(chips.length - 1); paint(); }
       return;
     }
-    var inFan = chips.indexOf(document.activeElement) > -1;
-    var inSpine = ents.indexOf(document.activeElement) > -1;
+    var inFan = chips.includes(document.activeElement);
+    var inSpine = ents.includes(document.activeElement);
     if (inFan && (ev.key === "ArrowRight" || ev.key === "Home" || ev.key === "End")) {
       ev.preventDefault();
       var to = ev.key === "Home" ? 0 : ev.key === "End" ? chips.length - 1 : at + 1;

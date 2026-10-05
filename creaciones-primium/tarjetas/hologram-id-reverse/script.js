@@ -18,7 +18,7 @@ function flashFoil() {
   }
   window.clearTimeout(burstTimer);
   hid.classList.remove("is-burst");
-  void hid.offsetWidth;
+  hid.getBoundingClientRect();
   hid.classList.add("is-burst");
   burstTimer = window.setTimeout(function () {
     hid.classList.remove("is-burst");

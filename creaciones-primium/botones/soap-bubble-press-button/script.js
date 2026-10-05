@@ -12,8 +12,8 @@
     bub.appendChild(r);
     bub.appendChild(r2);
     setTimeout(function(){
-      if(r.parentNode)r.parentNode.removeChild(r);
-      if(r2.parentNode)r2.parentNode.removeChild(r2);
+      if(r.parentNode)r.remove();
+      if(r2.parentNode)r2.remove();
     },1500);
   }
 

@@ -74,14 +74,14 @@
     form.t1 = window.setTimeout(function () {
       key.classList.remove("is-down");
       key.classList.remove("re-a", "re-b");
-      void key.offsetWidth;
+      key.getBoundingClientRect();
       key.classList.add(key.classList.contains("re-b") ? "re-a" : "re-b");
     }, 110);
     form.t2 = window.setTimeout(function () {
       var wait = typing();
       thread.appendChild(wait);
       window.setTimeout(function () {
-        if (wait.parentNode) wait.parentNode.removeChild(wait);
+        if (wait.parentNode) wait.remove();
         thread.appendChild(bubble("in", replies[n % replies.length], stamp()));
         n++;
         room.lastChild.textContent = "Ops online\\ replies in 2 min";

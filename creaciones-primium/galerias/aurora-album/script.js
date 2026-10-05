@@ -33,7 +33,7 @@
     spread.style.setProperty("--s", "0.14");
     spread.style.setProperty("--tx", "0px");
     spread.style.setProperty("--ty", "0px");
-    void spread.offsetWidth;
+    spread.getBoundingClientRect();
     spread.style.setProperty("--s", "1");
   }
 
@@ -62,7 +62,7 @@
   function closeAlbum() {
     viewer.hidden = true;
     open = false;
-    for (var k = 0; k < pages.length; k++) pages[k].style.display = "none";
+    for (var page of pages) page.style.display = "none";
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
@@ -74,7 +74,7 @@
   document.getElementById("vPrev").addEventListener("click", function () { go(at - 1); });
   document.getElementById("vNext").addEventListener("click", function () { go(at + 1); });
   document.getElementById("vClose").addEventListener("click", closeAlbum);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) closeAlbum(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) closeAlbum(); });
 
   window.addEventListener("resize", function () { if (open) layout(); });
 

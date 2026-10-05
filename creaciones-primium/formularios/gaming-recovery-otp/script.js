@@ -22,7 +22,7 @@ function valorCodigo() {
 }
 
 function codigoCompleto() {
-  return /^[0-9]{6}$/.test(valorCodigo());
+  return /^[\d]{6}$/.test(valorCodigo());
 }
 
 function textoErrorCodigo() {
@@ -60,7 +60,7 @@ function pintarMotivo() {
   const ayuda = el("motivo-ayuda");
   const mensaje = el("motivo-error");
   const valor = motivo.value;
-  const malo = MOTIVOS.indexOf(valor) === -1;
+  const malo = MOTIVOS.includes(valor);
   const desc = [ayuda.id];
 
   if (malo) {

@@ -24,9 +24,9 @@
         else cards[k].classList.remove('is-past');
       }
     }
-    hall.setAttribute('data-at', i);
+    hall.dataset.at = i;
     if (counter) counter.textContent = cards[i].querySelector('.card__rank').textContent;
-    if (say) say.textContent = cards[i].getAttribute('data-say') || '';
+    if (say) say.textContent = cards[i].dataset.say || '';
   }
 
   function scan() {

@@ -50,7 +50,7 @@ if (gate && gear && gearSpin && pinionSpin && inputs.length) {
 
   const rebuild = (el) => {
     el.classList.remove("is-hit");
-    void el.offsetWidth;
+    el.getBoundingClientRect();
     el.classList.add("is-hit");
   };
 

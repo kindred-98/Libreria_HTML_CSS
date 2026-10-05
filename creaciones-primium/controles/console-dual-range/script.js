@@ -33,7 +33,7 @@ if (track && lo && hi) {
     body.textContent = message;
     line.append(mark, body);
     logBox.append(line);
-    while (logBox.childElementCount > KEEP) logBox.removeChild(logBox.firstElementChild);
+    while (logBox.childElementCount > KEEP) logBox.firstElementChild.remove();
   };
 
   const flush = () => {

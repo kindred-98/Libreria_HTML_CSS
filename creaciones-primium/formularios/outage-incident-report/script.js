@@ -34,7 +34,7 @@ const CAMPOS = [
     etiqueta: "Affected service",
     vacio: "Pick the service that is failing so the ticket reaches the right rota.",
     error: "That service is not in the node catalogue.",
-    prueba: v => SERVICIOS.indexOf(v) !== -1
+    prueba: v => SERVICIOS.includes(v)
   },
   {
     id: "titulo",
@@ -67,14 +67,14 @@ const CAMPOS = [
     etiqueta: "Who reported it",
     vacio: "Pick the person filing this ticket.",
     error: "That name is not on the rota.",
-    prueba: v => GUARDIAS.indexOf(v) !== -1
+    prueba: v => GUARDIAS.includes(v)
   },
   {
     id: "contacto",
     etiqueta: "Phone for the callback",
     vacio: "Leave a number the on call engineer can ring back.",
     error: "Digits, spaces, plus and dashes only, between 8 and 18 characters.",
-    prueba: v => /^\+?[0-9][0-9 \-]{6,17}$/.test(v)
+    prueba: v => /^\+?[\d][0-9 -]{6,17}$/.test(v)
   }
 ];
 

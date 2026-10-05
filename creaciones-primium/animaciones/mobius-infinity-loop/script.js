@@ -45,7 +45,6 @@
 
   const P = new Float64Array((SEG + 1) * 2);
   const Z = new Float64Array(SEG + 1);
-  const S = new Float64Array(SEG + 1);
   const Pm = new Float64Array((SEG + 1) * 2);
   const Zm = new Float64Array(SEG + 1);
   // C se guarda por parejas x/y, igual que P y Pm: con (SEG + 1) solo cabian
@@ -224,7 +223,6 @@
     elSpineHalo.setAttribute('d', spineD);
 
     const mid = Math.round(SEG / 2);
-    void mid;
     buildRibs(RIB_MINOR, ribBuf);
     elRibsMinor.setAttribute('d', ribBuf[0] + ribBuf[1]);
     buildRibs(RIB_MAJOR, ribBuf);
@@ -232,8 +230,9 @@
 
     let pct = 100;
     if (u < REVEAL) pct = (u / REVEAL) * 100;
-    else if (u < REVEAL + HOLD) pct = 100;
-    else if (u < REVEAL + HOLD + FADE) pct = 100 - ((u - REVEAL - HOLD) / FADE) * 100;
+    else if (u < REVEAL + HOLD) {
+      // la fase de espera mantiene pct en 100, el valor con el que se declara
+    } else if (u < REVEAL + HOLD + FADE) pct = 100 - ((u - REVEAL - HOLD) / FADE) * 100;
     const cut = Math.round(((pct / 100) * SEG));
     elReveal.setAttribute('d', pct >= 99.5 ? edgeD : loopPath(P, 0, cut, false));
     elReveal.style.opacity = pct >= 99.5 || pct > 0.5 ? '1' : '0';
@@ -272,7 +271,6 @@
     if (outReveal) outReveal.textContent = Math.round(pct) + '%';
     if (barReveal) barReveal.style.transform = 'scaleX(' + (pct / 100).toFixed(3) + ')';
     if (outBands) outBands.textContent = (W * 2).toFixed(0) + ' px';
-    void mid;
   }
 
   let last = 0;

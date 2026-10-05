@@ -29,7 +29,7 @@
     slide.style.height = stop.offsetHeight + "px";
     slide.style.transform = "translate(" + (stop.offsetLeft - 6) + "px," + (stop.offsetTop - 6) + "px)";
     if (!animate) {
-      void slide.offsetWidth;
+      slide.getBoundingClientRect();
       slide.style.transition = "";
     }
   }
@@ -44,10 +44,10 @@
       if (k === index) stops[k].setAttribute("aria-current", "true");
       else stops[k].removeAttribute("aria-current");
     }
-    for (var n = 0; n < entries.length; n++) {
-      entries[n].classList.toggle("is-here", entries[n].id === "sec-" + (index + 1));
+    for (var entry of entries) {
+      entry.classList.toggle("is-here", entry.id === "sec-" + (index + 1));
     }
-    dial.setAttribute("data-stop", String(index));
+    dial.dataset.stop = String(index);
     needle.style.setProperty("--ang", (-150 + index * 60) + "deg");
     fVal.textContent = data[index].f;
     mOpen.textContent = data[index].open;
@@ -105,7 +105,7 @@
 
   window.addEventListener("scroll", queue, { passive: true });
   window.addEventListener("resize", function () { place(current, false); queue(); });
-  dial.setAttribute("data-stop", "0");
+  dial.dataset.stop = "0";
   current = 0;
   place(0, false);
   window.addEventListener("load", function () { place(current, false); });

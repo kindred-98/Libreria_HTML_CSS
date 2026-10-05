@@ -40,14 +40,14 @@
     refold(i);
     if (ribbon && list) ribbon.style.setProperty('--ry', rows[i].offsetTop + 'px');
     if (fill) fill.style.width = ((i + 1) / links.length * 100).toFixed(2) + '%';
-    var say = links[i].getAttribute('data-say') || '';
+    var say = links[i].dataset.say || '';
     if (readout) readout.textContent = say;
     if (reading) {
       var name = links[i].querySelector('.chap-name');
       var plain = name ? name.firstChild.textContent.trim() : '';
       reading.textContent = plain;
     }
-    if (folio) folio.textContent = links[i].getAttribute('data-folio') || '';
+    if (folio) folio.textContent = links[i].dataset.folio || '';
     if (blurb) {
       var note = rows[i].querySelector('.chap-note');
       blurb.textContent = note ? note.textContent.trim() : '';

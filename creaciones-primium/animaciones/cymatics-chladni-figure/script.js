@@ -25,7 +25,8 @@ const MODES = [
 ];
 
 if (spectrum) {
-  for (let i = 0; i < MODES.length; i += 1) {
+  // Solo se necesita una barra por modo; el dato del modo no se usa aqui.
+  for (const mode of MODES) {
     spectrum.appendChild(document.createElement('span'));
   }
 }

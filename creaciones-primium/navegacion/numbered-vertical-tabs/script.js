@@ -2,9 +2,9 @@
   var list = document.getElementById('tablist');
   var node = document.getElementById('node');
   var rail = document.querySelector('.rail');
-  var tabs = [].slice.call(list.querySelectorAll('[role="tab"]'));
-  var more = [].slice.call(document.querySelectorAll('.more'));
-  var refs = [].slice.call(document.querySelectorAll('.refs__list a'));
+  var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+  var more = Array.prototype.slice.call(document.querySelectorAll('.more'));
+  var refs = Array.prototype.slice.call(document.querySelectorAll('.refs__list a'));
   var index = 0;
   var narrow = window.matchMedia('(max-width: 700px)');
 

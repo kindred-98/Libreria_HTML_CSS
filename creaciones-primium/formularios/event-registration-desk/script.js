@@ -111,7 +111,9 @@ function dinero(n) {
 function pintarAgenda() {
   reloj.innerHTML = "";
   SESIONES.forEach((s, i) => {
-    const estado = s.quedan === 0 ? "llena" : s.quedan <= 8 ? "justa" : "libre";
+    let estado = "libre";
+    if (s.quedan === 0) estado = "llena";
+    else if (s.quedan <= 8) estado = "justa";
     const cerrado = estado === "llena";
 
     const label = document.createElement("label");
@@ -268,9 +270,10 @@ function pintarResumen() {
   const libres = Math.max(0, PLAZAS_TOTALES - ocupadas * 42);
   el("aforoCifra").textContent = libres + " de " + PLAZAS_TOTALES;
   el("aforoRelleno").style.transform = "scaleX(" + (1 - libres / PLAZAS_TOTALES).toFixed(4) + ")";
+  const pluralSesion = ocupadas === 1 ? " sesión reservada" : " sesiones reservadas";
   el("aforoPie").textContent = ocupadas === 0
     ? "Aún no has ocupado ninguna plaza."
-    : ocupadas + (ocupadas === 1 ? " sesión reservada" : " sesiones reservadas") +
+    : ocupadas + pluralSesion +
       " para " + nombre.value.trim().split(" ")[0] + ".";
 
   const checks = document.getElementById("resumenLista");
@@ -327,8 +330,7 @@ form.addEventListener("submit", e => {
     if (fallo && !primero) {
       primero = f.id === "agenda"
         ? document.querySelector('input[name="sesion"]:not([disabled])')
-        : f.id === "entrada" ? document.querySelector('input[name="entrada"]') : el(f.id);
-    }
+        : f.id === "entrada" ? document.querySelector('input[name="entrada"]') : el(f.id);    }
   });
   pintarResumen();
 

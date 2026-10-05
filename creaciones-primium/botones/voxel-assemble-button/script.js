@@ -20,7 +20,6 @@
   var lastTxt = -999;
   var oy = 0;
   var cy = 0;
-  var sh = 40;
   var top = 0;
   var vx = [0, 0, 0];
   var vy = [0, 0, 0];
@@ -39,7 +38,9 @@
     var out = "";
     var k = 0;
     for (var p = 0; p < 3; p++) {
-      var cls = p === 0 ? "p0" : p === 1 ? "p1" : "p2";
+      var cls = "p2";
+      if (p === 0) cls = "p0";
+      else if (p === 1) cls = "p1";
       out += '<div class="plate ' + cls + '">';
       for (var r = 1; r <= 3; r++) {
         for (var c = 0; c < n; c++) {
@@ -89,7 +90,6 @@
     var lr = slab.getBoundingClientRect();
     oy = sr.top + sr.height * 0.5;
     cy = lr.top + lr.height / 2;
-    sh = lr.height;
     top = lr.top;
   }
 
@@ -141,7 +141,7 @@
       cnt.textContent = String(shown).padStart(3, "0");
       pct.textContent = String(pc).padStart(3, "0");
       bar.style.width = pc + "%";
-      var label = "Standby";
+      var label;
       if (t >= 0.62 || t < 0.06) label = "Assembly Locked";
       else if (t < 0.16) label = "Disassembling";
       else if (t < 0.45) label = "Exploded View";

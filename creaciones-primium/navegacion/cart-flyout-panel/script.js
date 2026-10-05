@@ -20,8 +20,11 @@
   var backFocus = null;
   var pending = false;
 
-  for (var i = 0; i < all.length; i++) {
-    if (all[i].querySelector(".dd__btn")) dds.push(all[i]);
+  // i sigue vivo para los bucles IIFE de mas abajo, que lo reutilizan.
+  var i;
+
+  for (const node of all) {
+    if (node.querySelector(".dd__btn")) dds.push(node);
   }
 
   function money(n) {
@@ -32,9 +35,9 @@
     var sum = 0;
     var count = 0;
     var items = linesEl.querySelectorAll(".line");
-    for (var k = 0; k < items.length; k++) {
-      var q = parseInt(items[k].querySelector("[data-qty]").getAttribute("data-qty"), 10) || 0;
-      sum += parseFloat(items[k].getAttribute("data-price")) * q;
+    for (const item of items) {
+      var q = parseInt(item.querySelector("[data-qty]").dataset.qty, 10) || 0;
+      sum += Number.parseFloat(item.dataset.price) * q;
       count += q;
     }
     basketN.textContent = String(count);
@@ -53,20 +56,20 @@
     var line = btn.closest(".line");
     if (!line) return;
     var num = line.querySelector("[data-qty]");
-    var q = parseInt(num.getAttribute("data-qty"), 10) || 0;
-    if (btn.hasAttribute("data-drop")) {
+    var q = parseInt(num.dataset.qty, 10) || 0;
+    if ("drop" in btn.dataset) {
       line.classList.add("is-gone");
       var wait = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 260;
       window.setTimeout(function () {
-        if (line.parentNode) line.parentNode.removeChild(line);
+        if (line.parentNode) line.remove();
         totals();
       }, wait);
       return;
     }
-    var step = parseInt(btn.getAttribute("data-step"), 10);
+    var step = parseInt(btn.dataset.step, 10);
     q += step;
     if (q < 0) q = 0;
-    num.setAttribute("data-qty", String(q));
+    num.dataset.qty = String(q);
     num.textContent = String(q);
     var less = line.querySelector('[data-step="-1"]');
     if (less) less.disabled = q === 0;
@@ -76,13 +79,13 @@
   linesEl.addEventListener("keydown", function (e) {
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
     var btn = e.target.closest ? e.target.closest("button") : null;
-    if (!btn || btn.hasAttribute("data-drop")) return;
+    if (!btn || "drop" in btn.dataset) return;
     e.preventDefault();
     var line = btn.closest(".line");
     var step = e.key === "ArrowRight" ? 1 : -1;
     var num = line.querySelector("[data-qty]");
-    var q = Math.max(0, (parseInt(num.getAttribute("data-qty"), 10) || 0) + step);
-    num.setAttribute("data-qty", String(q));
+    var q = Math.max(0, (parseInt(num.dataset.qty, 10) || 0) + step);
+    num.dataset.qty = String(q);
     num.textContent = String(q);
     var less = line.querySelector('[data-step="-1"]');
     if (less) less.disabled = q === 0;
@@ -101,13 +104,13 @@
     var b = dd.querySelector(".dd__btn");
     if (b) b.setAttribute("aria-expanded", "false");
     var inner = dd.querySelectorAll(".sub");
-    for (var k = 0; k < inner.length; k++) closeSub(inner[k]);
+    for (const sub of inner) closeSub(sub);
     if (back && b) b.focus();
   }
 
   function closeAllDds(except) {
-    for (var k = 0; k < dds.length; k++) {
-      if (dds[k] !== except) closeDd(dds[k], false);
+    for (const dd of dds) {
+      if (dd !== except) closeDd(dd, false);
     }
   }
 
@@ -159,7 +162,7 @@
       var sbtn = sub.querySelector(".sub__btn");
       if (!sbtn) return;
       function sync() {
-        var on = sub.className.indexOf("is-open") > -1 || sub.contains(document.activeElement);
+        var on = sub.className.includes("is-open") || sub.contains(document.activeElement);
         sbtn.setAttribute("aria-expanded", on ? "true" : "false");
       }
       sub.addEventListener("mouseenter", sync);
@@ -180,8 +183,8 @@
   function focusables() {
     var out = [];
     var list = panel.querySelectorAll("a[href],button:not([disabled])");
-    for (var k = 0; k < list.length; k++) {
-      if (list[k].offsetParent !== null) out.push(list[k]);
+    for (const el of list) {
+      if (el.offsetParent !== null) out.push(el);
     }
     return out;
   }
@@ -248,16 +251,16 @@
     pending = false;
     var markY = window.innerHeight * 0.36;
     var now = "";
-    for (var k = 0; k < shelves.length; k++) {
-      if (shelves[k].getBoundingClientRect().top <= markY) now = shelves[k].id;
+    for (const shelf of shelves) {
+      if (shelf.getBoundingClientRect().top <= markY) now = shelf.id;
     }
     var links = document.querySelectorAll('a[href^="#"]');
-    for (var n = 0; n < links.length; n++) {
-      var id = links[n].getAttribute("href").slice(1);
-      if (id && id === now) links[n].setAttribute("aria-current", "true");
-      else links[n].removeAttribute("aria-current");
+    for (const link of links) {
+      var id = link.getAttribute("href").slice(1);
+      if (id && id === now) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
     }
-    for (var s = 0; s < shelves.length; s++) shelves[s].classList.toggle("is-here", shelves[s].id === now);
+    for (const sh of shelves) sh.classList.toggle("is-here", sh.id === now);
   }
 
   function queue() {
@@ -269,7 +272,7 @@
   window.addEventListener("resize", queue);
 
   var lessButtons = linesEl.querySelectorAll('[data-step="-1"]');
-  for (var q = 0; q < lessButtons.length; q++) lessButtons[q].disabled = false;
+  for (const less of lessButtons) less.disabled = false;
   totals();
   spy();
 })();

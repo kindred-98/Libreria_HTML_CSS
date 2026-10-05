@@ -17,7 +17,7 @@
     var segs = dig.children;
     for (var i = 0; i < segs.length; i++) {
       var el = segs[i];
-      var lit = on.indexOf(ORDER[i]) > -1;
+      var lit = on.includes(ORDER[i]);
       if (lit) {
         el.classList.remove('is-ghost');
         el.classList.add('is-on');
@@ -25,7 +25,7 @@
         el.classList.remove('is-on');
         if (ghost) {
           el.classList.add('is-ghost');
-          if (ghosts.indexOf(el) < 0) ghosts.push(el);
+          if (!ghosts.includes(el)) ghosts.push(el);
         } else {
           el.classList.remove('is-ghost');
         }
@@ -37,14 +37,14 @@
     var on = MAP[n] || '';
     var segs = dig.children;
     for (var i = 0; i < segs.length; i++) {
-      if (on.indexOf(ORDER[i]) > -1 && !segs[i].classList.contains('is-on')) {
+      if (on.includes(ORDER[i]) && !segs[i].classList.contains('is-on')) {
         segs[i].classList.add('is-ghost');
       }
     }
   }
 
   function dropGhosts() {
-    for (var i = 0; i < ghosts.length; i++) ghosts[i].classList.remove('is-ghost');
+    for (var ghost of ghosts) ghost.classList.remove('is-ghost');
     ghosts.length = 0;
   }
 
@@ -92,9 +92,9 @@
     if (head >= frames.length - 1) {
       window.clearInterval(walkTimer);
       walkTimer = window.setTimeout(function () {
-        for (var i = 0; i < frames.length; i++) {
-          frames[i].classList.remove('is-frozen');
-          var r = frames[i].querySelector('.ro');
+        for (var fr of frames) {
+          fr.classList.remove('is-frozen');
+          var r = fr.querySelector('.ro');
           paint(r.children[0], 0, false);
           paint(r.children[1], 0, false);
         }
@@ -109,8 +109,9 @@
   }
 
   function fire(fr) {
-    for (var i = 0; i < frames.length; i++) frames[i].classList.remove('is-fire');
-    void fr.offsetWidth;
+    // Nombre distinto a fr porque fr es el parametro de fire().
+for (var f of frames) f.classList.remove('is-fire');
+    fr.getBoundingClientRect();
     fr.classList.add('is-fire');
     window.setTimeout(function () { fr.classList.remove('is-fire'); }, 460);
     if (frames.indexOf(fr) !== head) {

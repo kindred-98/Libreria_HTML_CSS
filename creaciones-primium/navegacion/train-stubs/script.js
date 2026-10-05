@@ -28,7 +28,7 @@
     }
     place(i);
     if (readout) {
-      var raw = stubs[i].getAttribute('data-say') || '';
+      var raw = stubs[i].dataset.say || '';
       var cut = raw.split(',');
       readout.textContent = (cut[0] || '') + (cut[1] ? ' \u00b7 ' + cut[1] : '') + (cut[2] ? ' \u00b7 ' + cut[2] : '');
     }

@@ -21,7 +21,7 @@
     if (arrow) arrow.style.setProperty('--si', i);
     if (readout) {
       var n = i + 1;
-      readout.textContent = 'Panel ' + (n < 10 ? '0' + n : n) + ' of ' + panels.length + ' \u00b7 ' + (panels[i].getAttribute('data-say') || '').split(',')[1];
+      readout.textContent = 'Panel ' + (n < 10 ? '0' + n : n) + ' of ' + panels.length + ' \u00b7 ' + (panels[i].dataset.say || '').split(',')[1];
     }
   }
 

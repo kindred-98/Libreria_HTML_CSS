@@ -196,7 +196,6 @@ function pintar(f) {
   const ayuda = el(f.id + "-ayuda");
   const error = el(f.id + "-error");
   const bruto = valorCampo(f);
-  const valor = Array.isArray(bruto) ? bruto.join(",") : bruto;
   const vacio = Array.isArray(bruto) ? bruto.length === 0 : bruto === "";
   const malo = !vacio && !f.prueba(bruto);
   const fallo = vacio ? Boolean(f.vacio) : malo;
@@ -211,7 +210,7 @@ function pintar(f) {
   }
 
   if (f.opcional) {
-    env.dataset.estado = fallo ? "error" : (vacio ? "neutro" : "ok");
+    env.dataset.estado = fallo ? "error" : vacio ? "neutro" : "ok";
   } else {
     env.dataset.estado = fallo ? "error" : "ok";
   }
@@ -464,7 +463,7 @@ el("otra").addEventListener("click", () => {
   CAMPOS.forEach(f => {
     const env = f.tipo === "grupo" ? document.querySelector("fieldset.dias") : el(f.id).closest(".campo");
     env.dataset.estado = "neutro";
-    env.removeAttribute("data-aviso");
+    delete env.dataset.aviso;
     const e = el(f.id + "-error");
     if (e) e.textContent = "";
   });

@@ -1,5 +1,5 @@
 (function () {
-  var cells = [].slice.call(document.querySelectorAll(".cell"));
+  var cells = Array.prototype.slice.call(document.querySelectorAll(".cell"));
   var logEl = document.getElementById("log");
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -18,7 +18,7 @@
   function mk(n) { return new Float32Array(n * 8); }
 
   var nodes = cells.map(function (cell, idx) {
-    var st = cell.getAttribute("data-st");
+    var st = cell.dataset.st;
     var c = CONF[st];
     var cv = cell.querySelector(".cell__cv");
     var btn = cell.querySelector(".node");
@@ -43,8 +43,7 @@
   });
 
   function size() {
-    for (var i = 0; i < nodes.length; i++) {
-      var n = nodes[i];
+    for (var n of nodes) {
       var r = n.cv.getBoundingClientRect();
       n.dpr = Math.min(2, window.devicePixelRatio || 1);
       n.w = Math.max(10, r.width);
@@ -62,7 +61,7 @@
     var d = document.createElement("div");
     d.innerHTML = line;
     logEl.insertBefore(d, logEl.firstChild);
-    while (logEl.children.length > 3) logEl.removeChild(logEl.lastChild);
+    while (logEl.children.length > 3) logEl.lastChild.remove();
   }
 
   function scatter(n) {
@@ -80,12 +79,12 @@
     }
     n.energy = 1;
     n.cell.classList.remove("burst");
-    void n.cell.offsetWidth;
+    n.cell.getBoundingClientRect();
     n.cell.classList.add("burst");
     window.setTimeout(function () { n.cell.classList.remove("burst"); }, 760);
   }
 
-  for (var b = 0; b < nodes.length; b++) {
+  for (var node of nodes) {
     (function (n) {
       if (n.st === "dark") {
         n.btn.addEventListener("click", function () { log("<i>NODE-09</i> offline · no response"); });
@@ -101,7 +100,7 @@
         log("<b>NODE-" + (n.idx + 1 < 10 ? "0" : "") + (n.idx + 1) + "</b> probed · rhythm " +
           n.rhythm.toFixed(2) + "×");
       });
-    })(nodes[b]);
+    })(node);
   }
 
   var AMB = [
@@ -121,7 +120,8 @@
     if (c.n === 0) return;
 
     var rgb = c.hue;
-    var flick = n.st === "fault" ? (Math.sin(n.t * 21) > -0.3 ? 1 : 0.25) : 1;
+    var flick = 1;
+    if (n.st === "fault") flick = Math.sin(n.t * 21) > -0.3 ? 1 : 0.25;
     var breathe = n.st === "charge" ? 0.32 + 0.68 * Math.pow(Math.abs(Math.sin(n.t * 0.8 + n.phase)), 0.7) : 1;
     var radBase = c.rad * n.size * (n.st === "charge" ? (0.34 + 0.66 * breathe) : 1);
     var speed = c.sp * n.rhythm * (1 + n.energy * 1.7);
@@ -186,7 +186,10 @@
     }
     ctx.globalCompositeOperation = "source-over";
 
-    var base = n.st === "charge" ? breathe : n.st === "fault" ? (0.3 + 0.5 * (Math.sin(n.t * 21) * 0.5 + 0.5)) : 0.42 + 0.22 * Math.sin(n.t * 0.9 + n.phase);
+    var base;
+    if (n.st === "charge") base = breathe;
+    else if (n.st === "fault") base = 0.3 + 0.5 * (Math.sin(n.t * 21) * 0.5 + 0.5);
+    else base = 0.42 + 0.22 * Math.sin(n.t * 0.9 + n.phase);
     n.meterV += ((0.2 + base * 0.8) - n.meterV) * Math.min(1, dt * 6);
     n.meter.style.transform = "scaleX(" + n.meterV.toFixed(3) + ")";
     n.ring.style.opacity = (0.28 + 0.5 * Math.min(1, n.energy + 0.15)).toFixed(2);
@@ -197,7 +200,7 @@
   function frame(now) {
     var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
     last = now;
-    for (var i = 0; i < nodes.length; i++) draw(nodes[i], dt);
+    for (var node of nodes) draw(node, dt);
     ambT += dt;
     if (ambT > 3.1) {
       ambT = 0;
@@ -211,10 +214,10 @@
   window.addEventListener("resize", size);
   log("bay 04 online · <b>9 nodes</b> armed · solver v2.8");
   if (reduce) {
-    for (var q = 0; q < nodes.length; q++) {
-      nodes[q].t = 3.4;
-      draw(nodes[q], 0.016);
-      draw(nodes[q], 0.016);
+    for (var node of nodes) {
+      node.t = 3.4;
+      draw(node, 0.016);
+      draw(node, 0.016);
     }
   } else {
     requestAnimationFrame(frame);

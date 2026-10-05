@@ -38,7 +38,7 @@ if (seg) {
       if (i === 1) subject.classList.add("m-crop");
       if (i === 2) subject.classList.add("m-mask");
       subject.classList.remove("swap");
-      void subject.offsetWidth;
+      subject.getBoundingClientRect();
       subject.classList.add("swap");
       window.setTimeout(() => subject.classList.remove("swap"), 200);
     }

@@ -2,7 +2,6 @@
   "use strict";
   var inks = document.querySelectorAll(".ink");
   if (!inks.length) return;
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var POOL = 4;
 
   function attach(btn) {
@@ -41,7 +40,6 @@
         var wob = Math.sin(u * 9.4) * 2.4 * (1 - u);
         it.n.style.opacity = (u < 0.06 ? u / 0.06 * 0.92 : 0.92 * (1 - Math.pow(u, 3.4))).toFixed(3);
         it.n.style.transform = "translate3d(" + (it.x + wob).toFixed(1) + "px," + (it.y + wob * 0.6).toFixed(1) + "px,0) scale(" + grow.toFixed(3) + ")";
-        var ring = it.n.firstChild;
       }
     }
 
@@ -74,5 +72,5 @@
     });
   }
 
-  for (var i = 0; i < inks.length; i++) attach(inks[i]);
+  for (var ink of inks) attach(ink);
 })();

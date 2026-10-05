@@ -136,7 +136,7 @@ function actualizarTarjeta() {
   const nodo = el("verMarca");
   nodo.textContent = digitos.length === 0 ? "TARJETA" : marca.texto;
   if (marca.clase) nodo.dataset.marca = marca.clase;
-  else nodo.removeAttribute("data-marca");
+  else delete nodo.dataset.marca;
   const titular = el("titular").value.trim();
   el("verTitular").textContent = titular ? titular.toUpperCase() : "NOMBRE DEL TITULAR";
   el("verCaduca").textContent = el("caducidad").value.trim() || "MM/AA";
@@ -255,7 +255,7 @@ el("otra").addEventListener("click", () => {
   document.querySelector(".caja-cab").hidden = false;
   recibo.hidden = true;
   btnPagar.disabled = false;
-  btnPagar.removeAttribute("data-estado");
+  delete btnPagar.dataset.estado;
   textoPagar.textContent = "Pagar 120,40 €";
   CAMPOS.forEach(f => {
     const env = referencia(f).closest(".campo");

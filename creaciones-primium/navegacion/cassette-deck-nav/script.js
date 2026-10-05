@@ -48,7 +48,7 @@
       panel.hidden = !on;
       panel.classList.remove('is-in');
       if (on) {
-        void panel.offsetWidth;
+        panel.getBoundingClientRect();
         panel.classList.add('is-in');
       }
     });

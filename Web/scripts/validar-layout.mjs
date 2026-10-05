@@ -55,8 +55,9 @@ const ANCHOS = [
 // esconden los bugs que nadie vuelve a mirar.
 //
 // (vacia de momento: el marquee de la cabecera se recorta con overflow:hidden,
-// asi que no llega a salir y no hay que exceptuar nada)
-const EXCEPCIONES = [];
+// asi que no llega a salir y no hay que exceptuar nada). La clave es
+// `ruta@ancho`, para poder consultarla con `Object.hasOwn`: `"/Web/index.html@320": "el motivo"`.
+const EXCEPCIONES = {};
 
 // Margen de tolerancia. Con 1 px no se falla: hay redondeos de subpixel que no
 // son un fallo que el visitante llegue a ver. A partir de 2 px ya se nota.
@@ -180,9 +181,10 @@ try {
         continue;
       }
 
-      const permitido = EXCEPCIONES.some(
-        (excepcion) => excepcion.pagina === pagina.ruta && excepcion.ancho === ancho,
-      );
+      // Mapa de excepciones y no lista: una lista vacia hace que el chequeo no
+      // pueda ser cierto nunca, y eso es justo lo que hay que poder escribir
+      // aqui cuando aparezca un desbordamiento legitimo.
+      const permitido = Object.hasOwn(EXCEPCIONES, `${pagina.ruta}@${ancho}`);
       if (medida.exceso > TOLERANCIA && !permitido) {
         if (medida.exceso > peor.exceso) {
           peor = { exceso: medida.exceso, ancho, culpables: medida.culpable };

@@ -10,7 +10,7 @@
   var over = document.querySelector(".axis__over");
   var overTag = document.querySelector(".over");
   var mark = document.querySelector(".scale__mark");
-  var specks = [].slice.call(document.querySelectorAll(".speck"));
+  var specks = Array.prototype.slice.call(document.querySelectorAll(".speck"));
   var press = document.getElementById("press");
   var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -94,7 +94,12 @@
     sheen.style.transform =
       "translateY(" + (-40 + (e > 40 && e < 620 ? (e - 40) / 580 * 250 : 0)).toFixed(1) + "%) skewX(-9deg)";
 
-    var ov = e < 780 ? (e < 90 ? e / 90 : e < 420 ? 1 : 1 - (e - 420) / 360) : 0;
+    var ov = 0;
+    if (e < 780) {
+      if (e < 90) ov = e / 90;
+      else if (e < 420) ov = 1;
+      else ov = 1 - (e - 420) / 360;
+    }
     ov = Math.max(0, Math.min(1, ov));
     over.style.opacity = (ov * 0.85).toFixed(3);
     over.style.transform = "scaleX(" + Math.min(1, ov * 1.3).toFixed(3) + ")";
@@ -120,7 +125,9 @@
   }
 
   function pad(v) {
-    return v < 10 ? "00" + v : v < 100 ? "0" + v : String(v);
+    if (v < 10) return "00" + v;
+    if (v < 100) return "0" + v;
+    return String(v);
   }
 
   function hold(state) {
@@ -140,7 +147,10 @@
 
   MAX = 8.4;
   window.addEventListener("resize", fitIt);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitIt);
+  // "ready" es una promesa: como condicion siempre seria cierta, asi que solo
+  // se comprueba que exista el FontFaceSet. El fallo se ignora porque el ajuste
+  // ya se ha hecho con las fuentes que hay.
+  if (document.fonts) document.fonts.ready.then(fitIt).catch(function () {});
   fitIt();
   if (calm) {
     word.style.webkitTextStrokeWidth = "6px";

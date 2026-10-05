@@ -30,7 +30,7 @@
       else snaps[k].removeAttribute('aria-current');
     }
     if (readout) {
-      var raw = snaps[i].getAttribute('data-say') || '';
+      var raw = snaps[i].dataset.say || '';
       var cut = raw.split(',');
       readout.textContent = 'Frame ' + (i + 1) + ' of ' + snaps.length + (cut[1] ? ' \u00b7 ' + cut[1] : '');
     }

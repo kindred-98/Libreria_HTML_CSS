@@ -46,11 +46,11 @@
     }
 
     var taut = 1 - s;
-    for (var k = 0; k < snaps.length; k++) {
+    for (var snap of snaps) {
       var q = (p - .3) / .34;
       var vis = q > 0 && q < 1 ? Math.sin(q * Math.PI) : 0;
-      snaps[k].style.opacity = (vis * taut).toFixed(3);
-      snaps[k].style.transform = "scaleY(" + (1 - Math.max(0, 1 - vis * 2) * .55).toFixed(3) + ")";
+      snap.style.opacity = (vis * taut).toFixed(3);
+      snap.style.transform = "scaleY(" + (1 - Math.max(0, 1 - vis * 2) * .55).toFixed(3) + ")";
     }
 
     var shake = Math.sin(p * TAU * 16) * .35 * taut + Math.sin(p * TAU * 12 + .8) * .22 * taut;

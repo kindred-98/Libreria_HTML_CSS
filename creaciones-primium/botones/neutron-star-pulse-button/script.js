@@ -44,8 +44,7 @@
 
   setInterval(function(){
     var now=performance.now();
-    for(var i=0;i<pads.length;i++){
-      var p=pads[i];
+    for(var p of pads){
       if(reduce){
         if(p.hzEl)p.hzEl.textContent="1.42 Hz";
         continue;
@@ -54,7 +53,10 @@
         p.next=now+rnd(1500,3800);
         recon(p);
       }
-      var want=p.classList.contains("is-jet")?1.42:(p.classList.contains("is-live")?3.08:1.42);
+      // is-jet manda sobre is-live: por eso el if va antes que el else if.
+      var want=1.42;
+      if(p.classList.contains("is-jet"))want=1.42;
+      else if(p.classList.contains("is-live"))want=3.08;
       p.spd+=(want-p.spd)*.1;
       if(p.hzEl)p.hzEl.textContent=p.spd.toFixed(2)+" Hz";
     }

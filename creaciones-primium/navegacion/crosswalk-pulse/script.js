@@ -29,8 +29,8 @@
       else r.removeAttribute("aria-current");
     });
     barra.style.width = (((indice + 1) / rayas.length) * 100).toFixed(2) + "%";
-    fase.textContent = rayas[indice].getAttribute("data-n");
-    nombre.textContent = rayas[indice].getAttribute("data-name");
+    fase.textContent = rayas[indice].dataset.n;
+    nombre.textContent = rayas[indice].dataset.name;
     colocar();
   }
 

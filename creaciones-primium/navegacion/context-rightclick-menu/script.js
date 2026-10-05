@@ -6,7 +6,6 @@
   var all = document.querySelectorAll(".dd");
   var subs = document.querySelectorAll(".sub");
   var cards = document.querySelectorAll(".card");
-  var rootList = menu.querySelectorAll(":scope > .ctx__i, :scope > .ctx__grp > .ctx__i");
   var open = false;
   var backFocus = null;
   var cursor = -1;
@@ -20,8 +19,11 @@
     return s;
   }
 
-  for (var i = 0; i < all.length; i++) {
-    if (all[i].querySelector(".dd__btn")) dds.push(all[i]);
+  // i sigue vivo para los bucles IIFE de mas abajo, que lo reutilizan.
+  var i;
+
+  for (const node of all) {
+    if (node.querySelector(".dd__btn")) dds.push(node);
   }
 
   function closeSub(sub) {
@@ -36,13 +38,13 @@
     var b = dd.querySelector(".dd__btn");
     if (b) b.setAttribute("aria-expanded", "false");
     var inner = dd.querySelectorAll(".sub");
-    for (var k = 0; k < inner.length; k++) closeSub(inner[k]);
+    for (const sub of inner) closeSub(sub);
     if (back && b) b.focus();
   }
 
   function closeAllDds(except) {
-    for (var k = 0; k < dds.length; k++) {
-      if (dds[k] !== except) closeDd(dds[k], false);
+    for (const dd of dds) {
+      if (dd !== except) closeDd(dd, false);
     }
   }
 
@@ -95,7 +97,7 @@
       var sbtn = sub.querySelector(".sub__btn");
       if (!sbtn) return;
       function sync() {
-        var on = sub.className.indexOf("is-open") > -1 || sub.contains(document.activeElement);
+        var on = sub.className.includes("is-open") || sub.contains(document.activeElement);
         sbtn.setAttribute("aria-expanded", on ? "true" : "false");
       }
       sub.addEventListener("mouseenter", sync);
@@ -116,10 +118,10 @@
   function levelItems(scope) {
     var out = [];
     var kids = scope.children;
-    for (var k = 0; k < kids.length; k++) {
-      if (kids[k].classList.contains("ctx__i")) out.push(kids[k]);
-      if (kids[k].classList.contains("ctx__grp")) {
-        var inner = kids[k].querySelector(".ctx__i");
+    for (const kid of kids) {
+      if (kid.classList.contains("ctx__i")) out.push(kid);
+      if (kid.classList.contains("ctx__grp")) {
+        var inner = kid.querySelector(".ctx__i");
         if (inner) out.push(inner);
       }
     }
@@ -152,9 +154,9 @@
     menu.classList.remove("is-open");
     trigger.setAttribute("aria-expanded", "false");
     var grps = menu.querySelectorAll(".ctx__grp");
-    for (var k = 0; k < grps.length; k++) closeCtxGrp(grps[k]);
+    for (const grp of grps) closeCtxGrp(grp);
     var list = levelItems(menu);
-    for (var j = 0; j < list.length; j++) list[j].setAttribute("tabindex", "-1");
+    for (const entry of list) entry.setAttribute("tabindex", "-1");
     if (restore && backFocus && backFocus.focus) backFocus.focus();
   }
 
@@ -172,9 +174,10 @@
     backFocus = source || document.activeElement;
     closeAllDds(null);
     var grps = menu.querySelectorAll(".ctx__grp");
-    for (var k = 0; k < grps.length; k++) closeCtxGrp(grps[k]);
+    for (const grp of grps) closeCtxGrp(grp);
     var list = levelItems(menu);
     cursor = 0;
+    // El indice se compara con 0 para marcar el primero, asi que sigue numerico.
     for (var j = 0; j < list.length; j++) list[j].setAttribute("tabindex", j === 0 ? "0" : "-1");
     menu.classList.add("is-open");
     open = true;
@@ -258,8 +261,8 @@
       e.preventDefault();
       var allItems = menu.querySelectorAll(".ctx__i");
       var order = [];
-      for (var k = 0; k < allItems.length; k++) {
-        if (allItems[k].offsetParent !== null) order.push(allItems[k]);
+      for (const node of allItems) {
+        if (node.offsetParent !== null) order.push(node);
       }
       var at = order.indexOf(item);
       var to = order[(at + (e.shiftKey ? -1 : 1) + order.length) % order.length];
@@ -283,16 +286,16 @@
     }
     if (item.getAttribute("role") === "menuitemradio") {
       var all = item.parentNode.querySelectorAll('[role="menuitemradio"]');
-      for (var k = 0; k < all.length; k++) all[k].setAttribute("aria-checked", "false");
+      for (const radio of all) radio.setAttribute("aria-checked", "false");
       item.setAttribute("aria-checked", "true");
     }
     if (item.getAttribute("role") === "menuitemcheckbox") {
       var on = item.getAttribute("aria-checked") === "true";
       item.setAttribute("aria-checked", on ? "false" : "true");
-      hit(item.hasAttribute("data-go") ? item.getAttribute("data-go") : "#cut");
+      hit("go" in item.dataset ? item.dataset.go : "#cut");
     }
-    if (item.hasAttribute("data-go")) {
-      var id = item.getAttribute("data-go").slice(1);
+    if ("go" in item.dataset) {
+      var id = item.dataset.go.slice(1);
       var target = document.getElementById(id);
       if (target) {
         target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
@@ -307,7 +310,7 @@
     var el = document.querySelector(hash);
     if (!el) return;
     el.classList.remove("is-hit");
-    void el.offsetWidth;
+    el.getBoundingClientRect();
     el.classList.add("is-hit");
   }
 
@@ -336,16 +339,16 @@
   function spy() {
     var mark = window.innerHeight * 0.42;
     var current = "";
-    for (var k = 0; k < cards.length; k++) {
-      if (cards[k].getBoundingClientRect().top <= mark) current = cards[k].id;
+    for (const card of cards) {
+      if (card.getBoundingClientRect().top <= mark) current = card.id;
     }
     var links = document.querySelectorAll('a[href^="#"]');
-    for (var n = 0; n < links.length; n++) {
-      var id = links[n].getAttribute("href").slice(1);
-      if (id && id === current) links[n].setAttribute("aria-current", "true");
-      else links[n].removeAttribute("aria-current");
+    for (const link of links) {
+      var id = link.getAttribute("href").slice(1);
+      if (id && id === current) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
     }
-    for (var s = 0; s < cards.length; s++) cards[s].classList.toggle("is-here", cards[s].id === current);
+    for (const c of cards) c.classList.toggle("is-here", c.id === current);
   }
 
   var queued = false;

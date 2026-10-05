@@ -1,7 +1,6 @@
 (function () {
   var log = document.getElementById("log");
   var cmd = document.getElementById("cmd");
-  var line = document.getElementById("line");
   var lat = document.getElementById("lat");
   var latv = document.getElementById("latv");
   var cv = document.getElementById("frost");
@@ -20,14 +19,12 @@
   var t0 = 0;
   var tPress = -99;
   var lines = 0;
-  var sealed = false;
   var shards = [];
   var seeds = [];
   var frostAmt = 0;
   var sx = 0.5;
   var sy = 0.5;
   var stage = -1;
-  var auto = 0;
 
   function size() {
     var r = cv.getBoundingClientRect();
@@ -53,7 +50,7 @@
     log.appendChild(p);
     lines++;
     while (log.children.length > 13) {
-      log.removeChild(log.firstChild);
+      log.firstChild.remove();
     }
   }
 
@@ -108,8 +105,8 @@
   function newSeeds() {
     seeds = [];
     var edge = [[0.04, 0.06], [0.96, 0.1], [0.5, 0.03], [0.08, 0.92], [0.94, 0.88], [0.5, 0.97], [0.3, 0.5], [0.72, 0.44]];
-    for (var i = 0; i < edge.length; i++) {
-      seeds.push({ x: edge[i][0], y: edge[i][1], a: Math.atan2(0.5 - edge[i][1], 0.5 - edge[i][0]) + (Math.random() - 0.5) * 1.2, l: 16 + Math.random() * 16 });
+    for (var pt of edge) {
+      seeds.push({ x: pt[0], y: pt[1], a: Math.atan2(0.5 - pt[1], 0.5 - pt[0]) + (Math.random() - 0.5) * 1.2, l: 16 + Math.random() * 16 });
     }
   }
 
@@ -157,13 +154,11 @@
     var p = t - tPress;
     var st = 0;
 
-    if (p < 0) {
-      st = 0;
-    } else if (p < 0.22) {
+    if (p >= 0 && p < 0.22) {
       st = 1;
-    } else if (p < 2.7) {
+    } else if (p >= 0.22 && p < 2.7) {
       st = 2;
-    } else {
+    } else if (p >= 2.7) {
       st = 3;
     }
 
@@ -174,7 +169,6 @@
         key.classList.add("is-hot");
         badge.style.opacity = "0";
         badge.style.transform = "scale(0.8)";
-        sealed = false;
         frostAmt = 0;
         burst(sx, sy);
         say("! lattice integrity lost, purging", "warn");
@@ -195,7 +189,6 @@
       if (st === 3) {
         stat.textContent = "SEALED";
         key.classList.remove("is-hot");
-        sealed = true;
         say("  line 7 sealed, integrity 100 %", "ok");
         badge.style.opacity = "1";
         badge.style.transform = "scale(1)";
@@ -218,7 +211,8 @@
     lat.style.transform = "scaleX(" + frostAmt.toFixed(3) + ")";
     latv.textContent = Math.round(frostAmt * 100) + "%";
     cmd.style.opacity = p < 0.3 ? "0.35" : "1";
-    flyShards(Math.min(0.05, Math.max(0.001, p < 0.22 ? 0.016 : 0.016)));
+    // Ternario simplificado: las dos ramas mandaban la misma tanda de esquirlas.
+    flyShards(Math.min(0.05, Math.max(0.001, 0.016)));
     var s = Math.floor(t);
     clock.textContent = "00:" + String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
     return t;
@@ -284,7 +278,7 @@
   setTimeout(function () {
     press(0.5, 0.42);
   }, 700);
-  auto = setInterval(function () {
+  setInterval(function () {
     press(0.34 + Math.random() * 0.32, 0.3 + Math.random() * 0.3);
   }, 11000);
 

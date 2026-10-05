@@ -57,7 +57,9 @@ if (input && rig && rail && carriage) {
     new ResizeObserver(measure).observe(rail);
   }
 
-  if (document.fonts && document.fonts.ready) {
+  // "ready" es una promesa: como condicion siempre seria cierta, asi que solo
+  // se comprueba que exista el FontFaceSet.
+  if (document.fonts) {
     document.fonts.ready.then(measure).catch(() => {});
   }
 }

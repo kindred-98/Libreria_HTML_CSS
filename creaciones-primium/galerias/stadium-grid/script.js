@@ -165,7 +165,7 @@
       return;
     }
 
-    if (order.indexOf(cursor) === -1) {
+    if (order.includes(cursor)) {
       cursor = order[0];
     }
     cells.forEach(function (c, i) {
@@ -200,7 +200,7 @@
       c.style.transform = "translate3d(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px,0)";
     });
 
-    void mosaic.offsetWidth;
+    mosaic.getBoundingClientRect();
 
     cells.forEach(function (c) {
       if (!c.classList.contains("is-out") && c.style.transform) {

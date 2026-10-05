@@ -24,7 +24,9 @@ if (input && track && cap) {
   };
 
   const speak = (value) => {
-    const db = value <= 0 ? "minus infinity" : `${value * 0.4 - 30.6 < 0 ? "minus " : "plus "}${Math.abs(value * 0.4 - 30.6).toFixed(1)}`;
+    const db = value <= 0
+      ? "minus infinity"
+      : `${value * 0.4 - 30.6 < 0 ? "minus " : "plus "}${Math.abs(value * 0.4 - 30.6).toFixed(1)}`;
     return `${db} decibels`;
   };
 

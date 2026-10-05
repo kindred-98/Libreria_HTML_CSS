@@ -64,7 +64,7 @@ function go(dir) {
   back.innerHTML = lefts[target];
   turn.classList.add("is-on");
   turn.classList.remove("is-forward", "is-back");
-  void turn.offsetWidth;
+  turn.getBoundingClientRect();
   turn.classList.add(dir > 0 ? "is-forward" : "is-back");
   fold.classList.add("is-creasing");
   window.setTimeout(function () {

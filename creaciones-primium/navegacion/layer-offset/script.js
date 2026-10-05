@@ -1,6 +1,6 @@
 (function () {
   var ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
-  var capas = [].slice.call(document.querySelectorAll('.capa'));
+  var capas = Array.prototype.slice.call(document.querySelectorAll('.capa'));
   var secciones = capas.map(function (c) { return document.getElementById(c.getAttribute('href').slice(1)); });
   var lineal = document.getElementById('lineal');
   var micra = document.getElementById('micra');
@@ -27,7 +27,7 @@
 
   function leer() {
     var linea = window.innerHeight * 0.46;
-    var mejor = actual < 0 ? 0 : actual;
+    var mejor = Math.max(actual, 0);
     var distancia = Infinity;
     for (var k = 0; k < secciones.length; k++) {
       var s = secciones[k];

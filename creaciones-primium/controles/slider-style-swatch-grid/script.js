@@ -36,13 +36,13 @@
 
   var all = document.querySelectorAll(".mini__input");
   var miniCapW = 20;
-  for (var i = 0; i < all.length; i += 1) {
-    minis.push({ input: all[i], cap: document.getElementById("cap-" + all[i].id.replace("min-", "")) });
+  for (var node of all) {
+    minis.push({ input: node, cap: document.getElementById("cap-" + node.id.replace("min-", "")) });
   }
 
   function sweep() {
     hero.classList.remove("is-sweeping");
-    void hero.offsetWidth;
+    hero.getBoundingClientRect();
     hero.classList.add("is-sweeping");
     window.clearTimeout(sweepTimer);
     sweepTimer = window.setTimeout(function () {
@@ -56,15 +56,15 @@
       return;
     }
 
-    hero.setAttribute("data-finish", key);
+    hero.dataset.finish = key;
     if (heroName) {
       heroName.textContent = data.name;
     }
 
     var layers = hero.querySelectorAll(".fin");
-    for (var n = 0; n < layers.length; n += 1) {
-      var on = layers[n].className.indexOf("fin--" + key) > -1;
-      layers[n].classList.toggle("is-on", on);
+    for (var layer of layers) {
+      var on = layer.className.includes("fin--" + key);
+      layer.classList.toggle("is-on", on);
     }
 
     if (spGloss) spGloss.textContent = String(data.gloss);
@@ -119,40 +119,40 @@
   function measure() {
     var plate = document.querySelector(".hero__plate");
     if (plate) {
-      var padL = parseFloat(window.getComputedStyle(plate).paddingLeft) || 18;
-      var padR = parseFloat(window.getComputedStyle(plate).paddingRight) || 18;
+      var padL = Number.parseFloat(window.getComputedStyle(plate).paddingLeft) || 18;
+      var padR = Number.parseFloat(window.getComputedStyle(plate).paddingRight) || 18;
       reach = Math.max(0, plate.clientWidth - padL - padR - capW);
     } else {
       reach = 300;
     }
     minReach = 40;
     paintMaster();
-    for (var k = 0; k < minis.length; k += 1) {
-      var box = minis[k].input.parentNode;
+    for (var mini of minis) {
+      var box = mini.input.parentNode;
       if (box && box.clientWidth > 0) {
         minReach = Math.max(0, box.clientWidth - miniCapW);
       }
-      paintMini(minis[k]);
+      paintMini(mini);
     }
   }
 
   var radios = document.querySelectorAll(".cell__radio");
-  for (var r = 0; r < radios.length; r += 1) {
+  for (var radio of radios) {
     (function (radio) {
       radio.addEventListener("change", function () {
         if (radio.checked) {
           setFinish(radio.value, true);
         }
       });
-    })(radios[r]);
+    })(radio);
   }
 
-  for (var m = 0; m < minis.length; m += 1) {
+  for (var entry of minis) {
     (function (entry) {
       entry.input.addEventListener("input", function () {
         paintMini(entry);
       });
-    })(minis[m]);
+    })(entry);
   }
 
   master.addEventListener("input", paintMaster);

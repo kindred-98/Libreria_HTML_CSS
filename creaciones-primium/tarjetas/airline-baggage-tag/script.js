@@ -51,7 +51,7 @@ function scrambleSerial(final, bump) {
     }
   }
   serial.classList.remove("is-printing");
-  void serial.offsetWidth;
+  serial.getBoundingClientRect();
   serial.classList.add("is-printing");
   step();
 }
@@ -64,9 +64,9 @@ let printCount = 4;
 
 function setFace(face) {
   inner.classList.remove("is-turned", "is-returning");
-  void inner.offsetWidth;
+  inner.getBoundingClientRect();
   inner.classList.add(face === "back" ? "is-turned" : "is-returning");
-  card.setAttribute("data-face", face);
+  card.dataset.face = face;
   flipBtn.setAttribute("aria-pressed", face === "back" ? "true" : "false");
   flipBtn.textContent = face === "back" ? "Show route" : "Flip tag";
   if (face === "front") {
@@ -77,7 +77,7 @@ function setFace(face) {
 }
 
 flipBtn.addEventListener("click", function () {
-  setFace(card.getAttribute("data-face") === "back" ? "front" : "back");
+  setFace(card.dataset.face === "back" ? "front" : "back");
 });
 
 checkBtns.forEach(function (btn) {

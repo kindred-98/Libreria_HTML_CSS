@@ -8,7 +8,7 @@
   if(!spec||!depth||!refl)return;
 
   var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var p=0.34,hit=-9999,gl=0,gt=0;
+  var p=0.34,hit=-9999,gt=0;
 
   function apply(){
     var prox=Math.max(0,1-Math.abs(p-0.5)*2.3);

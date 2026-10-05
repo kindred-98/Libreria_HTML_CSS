@@ -49,7 +49,7 @@
       if (!keep) { return; }
       item.classList.remove("s1", "s2", "s3", "is-in", "is-lit");
       item.classList.add("s" + cuts[at % cuts.length]);
-      void item.offsetWidth;
+      item.getBoundingClientRect();
       item.classList.add("is-in");
       shown.push(item);
       at++;
@@ -74,7 +74,6 @@
     var p = ((now - t0) % span) / span;
     var x = -46 + p * 150;
     beam.style.transform = "translate3d(" + x.toFixed(2) + "vw,0,0) rotate(7deg)";
-    var box = sheet.getBoundingClientRect();
     var vw = window.innerWidth;
     var beamX = vw * (x / 100) + vw * 0.17;
     var found = -1;

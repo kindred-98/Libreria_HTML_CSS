@@ -66,7 +66,7 @@ const CAMPOS = [
     etiqueta: "Company tax number",
     vacio: "Without a tax number the league cannot pay a company account at all.",
     error: "Two upper case letters and nine digits, like GB123456789.",
-    prueba: v => /^[A-Z]{2}[0-9]{9}$/.test(v),
+    prueba: v => /^[A-Z]{2}[\d]{9}$/.test(v),
     soloSi: "equipo"
   },
   {
@@ -103,7 +103,7 @@ const CAMPOS = [
     etiqueta: "Prize money currency",
     vacio: "",
     error: "That currency is not on the league list.",
-    prueba: v => ["eur", "usd", "gbp", "sek"].indexOf(v) !== -1,
+    prueba: v => ["eur", "usd", "gbp", "sek"].includes(v),
     suave: true
   }
 ];
@@ -118,14 +118,14 @@ function paisIban(v) {
   const d = digitosIban(v).toUpperCase();
   if (d.length < 2) return "";
   const p = d.substring(0, 2);
-  return Object.prototype.hasOwnProperty.call(PAISES, p) ? p : "";
+  return Object.hasOwn(PAISES, p) ? p : "";
 }
 
 function ibanValido(v) {
   const d = digitosIban(v).toUpperCase();
-  if (!/^[A-Z]{2}[0-9]{2}[A-Z0-9]{10,30}$/.test(d)) return false;
+  if (!/^[A-Z]{2}[\d]{2}[A-Z0-9]{10,30}$/.test(d)) return false;
   const p = d.substring(0, 2);
-  if (!Object.prototype.hasOwnProperty.call(PAISES, p)) return false;
+  if (!Object.hasOwn(PAISES, p)) return false;
   const rango = TALLAS[p];
   if (rango[0] !== 0 && (d.length < rango[0] || d.length > rango[1])) return false;
   const movido = d.substring(4) + d.substring(0, 4);
@@ -220,14 +220,14 @@ function problemas() {
   const planilla = it.toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (t === "jugador" && it !== "" && jg !== "") {
     const esperado = jg.replace(/[^a-z0-9]/gi, "").toUpperCase();
-    if (esperado !== "" && planilla.indexOf(esperado) === -1) {
+    if (esperado !== "" && planilla.includes(esperado)) {
       salida.push("Account holder: " + it + " does not contain the player handle " + jg + ". The league pays the name the bank holds, so a mismatch here means a returned payment and a week of delay.");
     }
   }
   if (t === "equipo" && it !== "" && rs !== "") {
     const palabras = rs.toUpperCase().split(/\s+/).filter(p => p.length > 2 && p !== "LTD" && p !== "LIMITED" && p !== "GMBH" && p !== "SL" && p !== "SAS" && p !== "BV");
     const primera = palabras[0];
-    if (primera !== undefined && planilla.indexOf(primera.replace(/[^A-Z0-9]/g, "")) === -1) {
+    if (primera !== undefined && planilla.includes(primera.replace(/[^A-Z0-9]/g, ""))) {
       salida.push("Account holder: the registered name on the bank account does not contain " + primera + ", which is the company name. A company account has to be in the company name or the payment is returned.");
     }
   }
@@ -270,16 +270,23 @@ function refrescar() {
   el("bloque-equipo").hidden = t !== "equipo";
 
   el("tTipo").textContent = t === "equipo" ? "company account" : "player account";
-  el("tNombre").textContent = t === "equipo"
-    ? (el("razon").value.trim() === "" ? "Company pending" : el("razon").value.trim())
-    : (el("jugador").value.trim() === "" ? "Payee pending" : "@" + el("jugador").value.trim());
-  el("tSub").textContent = t === "equipo"
-    ? (el("iva").value.trim() === "" ? "Tax number pending" : "Tax " + el("iva").value.trim())
-    : (el("tag").value.trim() === "" ? "Roster tag pending" : "Broadcast tag " + el("tag").value.trim());
+  const razon = el("razon").value.trim();
+  const jugador = el("jugador").value.trim();
+  let nombre = "Payee pending";
+  if (t === "equipo") nombre = razon === "" ? "Company pending" : razon;
+  else if (jugador !== "") nombre = "@" + jugador;
+  el("tNombre").textContent = nombre;
+
+  const iva = el("iva").value.trim();
+  const tag = el("tag").value.trim();
+  let sub = "Roster tag pending";
+  if (t === "equipo") sub = iva === "" ? "Tax number pending" : "Tax " + iva;
+  else if (tag !== "") sub = "Broadcast tag " + tag;
+  el("tSub").textContent = sub;
   el("tIban").textContent = ibanCrudo === "" ? "not set" : enmascararIban(ibanCrudo);
   el("tTitular").textContent = titular === "" ? "not set" : titular;
   el("tPais").textContent = p === "" ? "unknown" : PAISES[p].nombre;
-  el("tControl").textContent = ibanCrudo === "" ? "not checked" : (okIban ? "valid, mod 97 equals one" : "does not add up");
+  el("tControl").textContent = ibanCrudo === "" ? "not checked" : okIban ? "valid, mod 97 equals one" : "does not add up";
   el("tSwift").textContent = swift === "" ? "not given" : swift;
 
   const sello = el("paisSello");
@@ -290,9 +297,9 @@ function refrescar() {
 
   el("iban-ayuda").textContent = ibanCrudo === ""
     ? "Type it however you like, spaces are added as you go. Two letters, two digits, then up to thirty alphanumeric characters."
-    : (okIban
+    : okIban
       ? "The mod ninety seven check passes, and the length matches " + PAISES[p].nombre + " accounts."
-      : "Twenty two characters for a British account, twenty seven for a French one. The check digits have to add up to one.");
+      : "Twenty two characters for a British account, twenty seven for a French one. The check digits have to add up to one.";
 
   const coincidencia = el("coincidencia");
   if (titular !== "" && okIban) {
@@ -308,10 +315,12 @@ function refrescar() {
     coincidencia.hidden = true;
   }
 
+  let swiftTxt = "BIC is the right length";
+  if (swift === "") swiftTxt = p !== "" && PAISES[p].eea ? "BIC not needed inside the EEA" : "BIC pending";
   const pasos = [
     { id: "iban", ok: okIban, txt: okIban ? "IBAN checksum passes" : "IBAN checksum pending" },
     { id: "titular", ok: titular !== "" && /^[A-Z][A-Z .'-]{2,39}$/.test(titular), txt: titular === "" ? "Account holder pending" : "Account holder is upper case" },
-    { id: "swift", ok: swift === "" || /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(swift), txt: swift === "" ? (p !== "" && PAISES[p].eea ? "BIC not needed inside the EEA" : "BIC pending") : "BIC is the right length" },
+    { id: "swift", ok: swift === "" || /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(swift), txt: swiftTxt },
     { id: "t", ok: t === "jugador" ? el("jugador").value.trim() !== "" && el("tag").value.trim() !== "" : el("razon").value.trim() !== "" && el("iva").value.trim() !== "", txt: t === "jugador" ? "Roster identity complete" : "Company identity complete" }
   ];
 
@@ -389,7 +398,7 @@ CAMPOS.forEach(f => {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.filter(visible).forEach(pintarCampo);
+  CAMPOS.filter(visible).forEach(f => pintarCampo(f));
   const fallos = problemas();
 
   if (fallos.length > 0) {

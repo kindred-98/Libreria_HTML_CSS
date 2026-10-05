@@ -38,11 +38,11 @@
       for (var i = 0; i < links.length; i++) {
         if (i === index) { links[i].setAttribute('aria-current', 'true'); }
         else { links[i].removeAttribute('aria-current'); }
-        if (i <= index) { links[i].setAttribute('data-capped', ''); }
-        else { links[i].removeAttribute('data-capped'); }
+        if (i <= index) { links[i].dataset.capped = ''; }
+        else { delete links[i].dataset.capped; }
       }
       nav.style.setProperty('--pos', String(index));
-      nav.setAttribute('data-at', String(index + 1));
+      nav.dataset.at = String(index + 1);
       if (readout) {
         readout.textContent = 'Cell ' + (index + 1) + ' of ' + links.length + ' · ' + names[index];
       }

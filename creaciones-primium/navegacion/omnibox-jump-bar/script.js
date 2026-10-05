@@ -28,7 +28,6 @@
 
   var GROUPS = ['Personas', 'Proyectos', 'Documentación', 'Sistemas', 'Formación', 'Instalaciones', 'Seguridad', 'Soporte TI'];
 
-  var form = document.getElementById('form');
   var input = document.getElementById('q');
   var tray = document.getElementById('tray');
   var body = document.getElementById('body');
@@ -59,7 +58,7 @@
   }
 
   function links() {
-    return [].slice.call(body.querySelectorAll('a'));
+    return Array.prototype.slice.call(body.querySelectorAll('a'));
   }
 
   function openTray() {
@@ -100,7 +99,7 @@
     var q = words.join(' ');
     var found = INDEX.filter(function (it) {
       var hay = (it.t + ' ' + it.p + ' ' + it.g + ' ' + it.s + ' ' + it.k).toLowerCase();
-      return words.every(function (w) { return hay.indexOf(w) > -1; });
+      return words.every(function (w) { return hay.includes(w); });
     });
     lab.textContent = 'Resultados para ' + q;
     if (!found.length) {
@@ -128,9 +127,9 @@
   }
 
   function bind() {
-    [].slice.call(body.querySelectorAll('.hist button')).forEach(function (b) {
+    Array.prototype.slice.call(body.querySelectorAll('.hist button')).forEach(function (b) {
       b.addEventListener('click', function () {
-        input.value = b.getAttribute('data-q');
+        input.value = b.dataset.q;
         run();
       });
     });

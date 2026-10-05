@@ -108,7 +108,7 @@
   }
 
   runBtn.addEventListener("click", function () { setRun(!running); });
-  openBtn.addEventListener("click", function () { open(atGate < 0 ? 0 : atGate); });
+  openBtn.addEventListener("click", function () { open(Math.max(atGate, 0)); });
 
   rows.forEach(function (r, n) {
     r.addEventListener("click", function () {
@@ -169,7 +169,7 @@
     else if (e.key === "PageUp") { e.preventDefault(); step(3); }
     else if (e.key === "Home") { e.preventDefault(); align(0); report(); }
     else if (e.key === "End") { e.preventDefault(); align(count - 1); report(); }
-    else if (e.key === "Enter") { e.preventDefault(); open(atGate < 0 ? 0 : atGate); }
+    else if (e.key === "Enter") { e.preventDefault(); open(Math.max(atGate, 0)); }
     else if (e.key === " ") { e.preventDefault(); setRun(!running); }
   });
 

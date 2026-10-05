@@ -5,7 +5,7 @@ const colors = ["#f472b6", "#fbbf24", "#34d399", "#60a5fa", "#fb7185"];
 btn.addEventListener("click", () => {
   btn.classList.remove("is-burst");
   confetti.replaceChildren();
-  void btn.offsetWidth;
+  btn.getBoundingClientRect();
   btn.classList.add("is-burst");
   btn.setAttribute("aria-pressed", "true");
 

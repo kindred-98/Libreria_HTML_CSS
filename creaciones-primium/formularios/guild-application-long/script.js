@@ -77,9 +77,9 @@ function pintarEstado(campo, forzar) {
   const valor = campo.leer();
   const fallo = falloDe(campo);
   const tocado = tocados[campo.id] || forzar;
-  if (fallo && tocado) caja.setAttribute('data-estado', 'error');
-  else if (!fallo && valor !== '' && valor !== false && !(Array.isArray(valor) && valor.length === 0)) caja.setAttribute('data-estado', 'ok');
-  else caja.setAttribute('data-estado', 'neutro');
+  if (fallo && tocado) caja.dataset.estado = 'error';
+  else if (!fallo && valor !== '' && valor !== false && !(Array.isArray(valor) && valor.length === 0)) caja.dataset.estado = 'ok';
+  else caja.dataset.estado = 'neutro';
   const err = document.getElementById(campo.id + '-err');
   if (err) err.textContent = fallo && tocado ? fallo : '';
   const ayuda = document.getElementById(campo.id + '-ayuda');
@@ -138,7 +138,7 @@ function pintarFicha() {
   $('#tRelleno').style.transform = 'scaleX(' + pct / 100 + ')';
   $('#tSecciones').textContent = seccionesHechas() + ' of ' + TRAMOS.length;
   $('#tPie').textContent = (REGIONES[$('#region').value] || 'no region') + ' · ' + (IDIOMAS[$('#idioma').value] || 'no language');
-  $('#tarjeta').setAttribute('data-clase', nivelClase(nivel));
+  $('#tarjeta').dataset.clase = nivelClase(nivel);
 
   const etiquetas = rolEtiquetas();
   $('#tEtiquetas').innerHTML = '';
@@ -164,7 +164,7 @@ function pintarFicha() {
   $('#cartaCuenta').textContent = largo + ' of ' + MAX_CARTA + ', ' + MIN_CARTA + ' minimum';
   const pips = $('#cartaPips');
   pips.style.setProperty('--relleno', Math.min(1, largo / MAX_CARTA).toFixed(3));
-  pips.setAttribute('data-largo', largo >= MIN_CARTA ? '1' : '0');
+  pips.dataset.largo = largo >= MIN_CARTA ? '1' : '0';
 
   const ayudaRoles = $('#roles-ayuda');
   if (ayudaRoles) ayudaRoles.textContent = marcadas('#roles').length ? 'On the sheet as ' + rolEtiquetas().join(', ') + '.' : 'Nothing ticked yet. The sheet on the right shows a guild with no set raid comp.';
@@ -201,7 +201,7 @@ function construirAnclas() {
     const li = document.createElement('li');
     const a = document.createElement('a');
     a.href = '#' + t.id;
-    a.setAttribute('data-estado', 'neutro');
+    a.dataset.estado = 'neutro';
     const span = document.createElement('span');
     span.textContent = (titulo ? titulo.textContent : t.id).replace(/^\d+/, '').trim();
     a.appendChild(span);
@@ -224,9 +224,9 @@ function marcarAnclas() {
     const t = TRAMOS[i];
     const propios = controlesDe(t);
     const completo = propios.length > 0 && propios.every(c => !falloDe(c));
-    if (completo) a.setAttribute('data-estado', 'hecho');
-    else if (t === actual) a.setAttribute('data-estado', 'activo');
-    else a.setAttribute('data-estado', 'neutro');
+    if (completo) a.dataset.estado = 'hecho';
+    else if (t === actual) a.dataset.estado = 'activo';
+    else a.dataset.estado = 'neutro';
   });
   $('#anclasPie').textContent = hechos === TRAMOS.length ? 'every section ready to send' : (TRAMOS.length - hechos) + ' of ' + TRAMOS.length + ' sections still open';
 }
@@ -374,7 +374,6 @@ function enviar(ev) {
     const caja = $('#resumenError');
     caja.scrollIntoView({ behavior: suave() ? 'smooth' : 'auto', block: 'center' });
     if (!suave()) caja.removeAttribute('hidden');
-    const boton = $('#enviar');
     const texto = $('#enviarTexto');
     const original = texto.textContent;
     texto.textContent = fallos + (fallos === 1 ? ' thing left' : ' things left');
@@ -423,7 +422,7 @@ function otra() {
   Object.keys(tocados).forEach(k => { delete tocados[k]; });
   CAMPOS.forEach(c => {
     const caja = envoltorio(c.id);
-    if (caja) caja.setAttribute('data-estado', 'neutro');
+    if (caja) caja.dataset.estado = 'neutro';
     const err = document.getElementById(c.id + '-err');
     if (err) err.textContent = '';
   });

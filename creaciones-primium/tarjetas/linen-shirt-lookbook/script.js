@@ -23,7 +23,7 @@ function paintPick() {
 
 function restartFlip() {
   mosaic.classList.remove("is-flip");
-  void mosaic.offsetWidth;
+  mosaic.getBoundingClientRect();
   mosaic.classList.add("is-flip");
 }
 
@@ -37,7 +37,7 @@ function apply(name) {
     const show = name === "all" || tile.dataset.cat === name;
     if (show) {
       tile.hidden = false;
-      void tile.offsetWidth;
+      tile.getBoundingClientRect();
       tile.classList.remove("is-out");
     } else {
       tile.classList.add("is-out");

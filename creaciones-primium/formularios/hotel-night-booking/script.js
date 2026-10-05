@@ -78,11 +78,11 @@ function noches() {
 }
 
 function habitacionActual() {
-  return Object.prototype.hasOwnProperty.call(HABITACIONES, habitacion.value) ? HABITACIONES[habitacion.value] : null;
+  return Object.hasOwn(HABITACIONES, habitacion.value) ? HABITACIONES[habitacion.value] : null;
 }
 
 function tarifaActual() {
-  return Object.prototype.hasOwnProperty.call(TARIFAS, tarifa.value) ? TARIFAS[tarifa.value] : null;
+  return Object.hasOwn(TARIFAS, tarifa.value) ? TARIFAS[tarifa.value] : null;
 }
 
 function totales() {
@@ -384,7 +384,7 @@ desayuno.addEventListener("change", () => {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintarCampo);
+  CAMPOS.forEach(f => pintarCampo(f));
   const t = refrescar();
   const fallos = problemas();
 
