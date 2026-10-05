@@ -87,6 +87,36 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Arregla la vulnerabilidad S5145 y 5 BUGs reales (1 VULN + 5 BUG)] - 2026-10-05
+
+- **Vulnerabilidad**: `Web/scripts/exportar-incidencias-sonar.mjs:126`
+  (S5145, Log Injection via unsanitized user input). El `error.message`
+  de la API de SonarCloud podia traer newlines o caracteres de control
+  y contaminar el log. Se sanea con `replace(/[\r\n\t\v\f\0]+/g, " ")` y
+  `slice(0, 200)` antes de escribirlo en consola.
+- **CSS S4657 (x2)**: propiedades sobreescritas por el shorthand `font`:
+  - `creaciones-primium/navegacion/numbered-section-ledger/styles.css`:
+    `font-style:normal` en `.ch__t i`.
+  - `creaciones-primium/navegacion/omnibox-jump-bar/styles.css`:
+    `line-height:1.15` en `.brand__t` (el shorthand `font` ya lo define).
+- **CSS S4656 (x2)**: propiedad duplicada en la misma regla:
+  - `creaciones-primium/galerias/lake-phone/styles.css`: `display:block`
+    y `display:-webkit-box` en `.entry__name` (se conserva el segundo
+    que es el que aplica el line-clamp).
+  - `creaciones-primium/botones/wireframe-hud-lock-button/styles.css`:
+    `top:50%` duplicado en `.tag` con `top:calc(...)` (se conserva
+    el calc, que es la version responsive). El `top:50%` lo introdujo
+    el fix del `.tag` en el commit `090ca05` sin tener en cuenta
+    que ya existia un `top` posterior.
+- **JS S6959**: `PREGUNTAS.reduce(...)` en
+  `creaciones-primium/formularios/team-pulse-survey/script.js:160` sin
+  valor inicial. Se pasa `PREGUNTAS[0]` para que el primer paso del
+  reduce no opere sobre `undefined`.
+
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
 ## [Quita el fallback deprecated de MediaQueryList.addListener en 3 demos (3 issues)] - 2026-10-05
 
 Los 3 archivos restantes con S1874 ('addListener' is deprecated) tenian

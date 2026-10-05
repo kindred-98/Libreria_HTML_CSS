@@ -123,7 +123,13 @@ let hotspots = [];
 try {
   hotspots = await paginar("/api/hotspots/search", { projectKey: proyecto });
 } catch (error) {
-  console.warn(`  no se pudieron leer los hotspots (${error.message}). Suele pasar si la cuenta no es de pago.`);
+  // S5145: el mensaje de error podria traer newlines o caracteres de
+  // control si viene de un servidor comprometido. Se sanea antes de
+  // escribirlo al log para evitar log injection.
+  const mensajeSeguro = String(error?.message ?? "")
+    .replace(/[\r\n\t\v\f\0]+/g, " ")
+    .slice(0, 200);
+  console.warn(`  no se pudieron leer los hotspots (${mensajeSeguro}). Suele pasar si la cuenta no es de pago.`);
 }
 console.log(`  ${hotspots.length} hotspots`);
 
