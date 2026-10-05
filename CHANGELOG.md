@@ -87,6 +87,31 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Documenta el plan para llevar el proyecto del 80 al 97] - 2026-10-06
+
+`Docs/Plan_de_nivel_siguiente.md` recoge el camino desde el 80 actual hasta
+un 97, con el producto/mercado en 100. No es una opinion: cada nota trae su
+comando y su medicion.
+
+- **Punto de partida medido**: calidad 88, seguridad 92, rendimiento 82,
+  accesibilidad 85, producto/mercado 68. Lighthouse movil 72-86, escritorio
+  99/100/100.
+- **Dos hallazgos que no estaban documentados**: el Quality Gate de
+  SonarCloud devuelve `NONE` (no hay gate configurado, no esta en A), y el
+  recuento real de incidencias abiertas es **99** (1 bug, 0 vulnerabilidades,
+  98 code smells), no 0.
+- **Ocho fases** ordenadas por retorno por hora y por riesgo, no por
+  numero: 1 (gate + 0), 4a (legal), 0 (herramientas y tests), 4b (SEO,
+  medicion, release), 2 (accesibilidad), 5 (robustez), 3 (rendimiento),
+  6 (lanzamiento).
+- **Invariantes** (5 reglas que ninguna fase puede romper) y **tabla de
+  riesgos**: que fase puede subir el contador de Sonar y como se evita.
+- **Definicion operativa de "producto = 100"**: 20 casillas verificables.
+  Sin eso, la nota seria una opinion.
+- Incluye tambien un apartado de **que no hace falta hacer** para no
+  dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
+  service worker en la primera entrega.
+
 ## [Deja el CLS de la pagina de componentes en 0 quitando el salto del pie] - 2026-10-06
 
 En el preset movil de Lighthouse, `Web/components.html` medía **CLS 0,29**.
