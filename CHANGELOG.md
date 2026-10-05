@@ -87,6 +87,25 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Auto-fix de code smells mecanicos: forEach wrap, [^0-9] -> \D (46 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana dos patrones:
+
+- **S7727** `arr.forEach(fn)` -> `arr.forEach((...args) => fn(...args))`.
+  Al pasar la funcion directamente, `this` dentro de `fn` no esta
+  enlazado al array; con la arrow se preserva correctamente. El
+  argumento `...args` reenvia todos los parametros que `forEach`
+  pasaria normalmente.
+- **S6353b** `[^0-9]` -> `\D`. Sinonimo exacto: cualquier caracter
+  que no es un digito. El patron `\[^0-9\]` NO matchea `[0-9]` (que
+  ya esta cubierto por S6353 con la conversion a `\d`), asi que no
+  hay colision.
+
+Aplicado: 46 sustituciones en 23 ficheros (23 forEach + 23 [^0-9]).
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
 ## [Auto-fix de code smells mecanicos: isNaN, charCodeAt, getAttribute (36 issues)] - 2026-10-05
 
 `Web/scripts/autofix-sonar-mecanico.mjs` gana tres patrones:

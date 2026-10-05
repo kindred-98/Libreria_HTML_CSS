@@ -175,6 +175,27 @@ const PATRONES = [
     regex: /new Date\(\)\.getTime\(\)/g,
     reemplazo: "Date.now()",
   },
+  {
+    // arr.forEach(fn) -> arr.forEach((...args) => fn(...args)).
+    // Pasamos la funcion directamente: `this` dentro de fn no esta
+    // enlazado al array. Al envolver con arrow, `this` se preserva
+    // correctamente (que es lo que Sonar pide). Limitado a llamadas
+    // simples `obj.forEach(ident)` sin argumentos adicionales.
+    id: "S7727",
+    descripcion: "arr.forEach(fn) -> arr.forEach((...args) => fn(...args))",
+    regex: /\.forEach\(([A-Za-z_$][\w$]*)\)/g,
+    reemplazo: ".forEach((...args) => $1(...args))",
+  },
+  {
+    // [^0-9] -> \D (sinonimo exacto: "cualquier caracter que no es un
+    // digito"). El patron NO matchea [0-9] (que ya esta cubierto por el
+    // S6353 de arriba: `[0-9]` -> `\d`), porque la regex usa `\[^0-9\]`
+    // con el `^` literal.
+    id: "S6353b",
+    descripcion: "[^0-9] -> \\D",
+    regex: /\[\^0-9\]/g,
+    reemplazo: "\\D",
+  },
 ];
 
 const EXCLUIR = ["node_modules", ".git", "Web/scripts/lib/", ".sonarlint/", "Web/data/", "tmp/", "dist/"];

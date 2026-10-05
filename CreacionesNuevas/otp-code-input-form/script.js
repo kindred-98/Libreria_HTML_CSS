@@ -1,14 +1,14 @@
 const cells=[...document.querySelectorAll('.otp-cell')];
 cells.forEach((c,i)=>{
   c.addEventListener('input',e=>{
-    c.value=c.value.replace(/[^0-9]/g,'');
+    c.value=c.value.replace(/\D/g,'');
     c.classList.toggle('filled',c.value!=='');
     if(c.value&&i<5)cells[i+1].focus();
   });
   c.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!c.value&&i>0)cells[i-1].focus();});
 });
 cells[0].parentElement.addEventListener('paste',e=>{
-  const data=(e.clipboardData||window.clipboardData).getData('text').replace(/[^0-9]/g,'');
+  const data=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
   cells.forEach((c,i)=>{c.value=data[i]||'';c.classList.toggle('filled',!!c.value);});
   cells[Math.min(data.length,5)].focus();e.preventDefault();
 });

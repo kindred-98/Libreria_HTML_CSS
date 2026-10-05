@@ -173,7 +173,7 @@ el("atras").addEventListener("click", () => {
 form.addEventListener("submit", e => {
   e.preventDefault();
   const mios = camposDelPaso(paso);
-  mios.forEach(pintar);
+  mios.forEach((...args) => pintar(...args));
   const fallos = problemas(paso);
 
   if (fallos.length > 0) {

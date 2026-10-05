@@ -232,7 +232,7 @@ function runCount(node) {
   step();
 }
 
-counts.forEach(runCount);
+counts.forEach((...args) => runCount(...args));
 
 setAngle(angle);
 glide();

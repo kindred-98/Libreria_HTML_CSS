@@ -179,6 +179,6 @@
   window.addEventListener("resize", function () { moveMark(cells[current]); });
 
   setSetting(0);
-  cells.forEach(place);
+  cells.forEach((...args) => place(...args));
   setFocus(0);
 })();

@@ -311,7 +311,7 @@ function repintarOTP() {
 
 casillas.forEach((c, i) => {
   c.addEventListener("input", () => {
-    c.value = c.value.replace(/[^0-9]/g, "").slice(0, 1);
+    c.value = c.value.replace(/\D/g, "").slice(0, 1);
     repintarOTP();
     if (c.value !== "" && i < casillas.length - 1) casillas[i + 1].focus();
     const campo = CAMPOS.find(f => f.id === "otp");
@@ -330,7 +330,7 @@ casillas.forEach((c, i) => {
 
   c.addEventListener("paste", e => {
     e.preventDefault();
-    const pegado = (e.clipboardData || window.clipboardData).getData("text").replace(/[^0-9]/g, "");
+    const pegado = (e.clipboardData || window.clipboardData).getData("text").replace(/\D/g, "");
     for (let k = 0; k < pegado.length && i + k < casillas.length; k++) {
       casillas[i + k].value = pegado[k];
     }

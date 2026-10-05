@@ -102,7 +102,7 @@ function mostrarResumen(fallos) {
 
 casillas.forEach((c, i) => {
   c.addEventListener("input", () => {
-    c.value = c.value.replace(/[^0-9]/g, "").slice(0, 1);
+    c.value = c.value.replace(/\D/g, "").slice(0, 1);
     casillas.forEach(x => x.classList.toggle("llena", x.value !== ""));
     if (campoCodigo.dataset.estado === "error") pintarCodigo();
     if (c.value !== "" && i < casillas.length - 1) casillas[i + 1].focus();
@@ -130,7 +130,7 @@ casillas.forEach((c, i) => {
 
   c.addEventListener("paste", e => {
     e.preventDefault();
-    const pegado = ((e.clipboardData || window.clipboardData).getData("text") || "").replace(/[^0-9]/g, "");
+    const pegado = ((e.clipboardData || window.clipboardData).getData("text") || "").replace(/\D/g, "");
     for (let k = 0; k < pegado.length && i + k < casillas.length; k++) {
       casillas[i + k].value = pegado[k];
     }

@@ -79,7 +79,7 @@ let restante = 0;
 function el(id) { return document.getElementById(id); }
 
 function digitos(v) {
-  return v.replace(/[^0-9]/g, "");
+  return v.replace(/\D/g, "");
 }
 
 function marcaDe(v) {

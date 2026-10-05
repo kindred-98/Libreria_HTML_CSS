@@ -205,7 +205,7 @@ function enmascararTelefono(v) {
   if (/[^\d\s+\-]/.test(v)) return "not a phone number";
   const ultimos = v.replace(/[^\d]/g, "").slice(-3);
   if (ultimos.length < 3) return v;
-  return v.replace(/\d(?=[^0-9]*$)/, "•");
+  return v.replace(/\d(?=\D*$)/, "•");
 }
 
 function refrescar() {

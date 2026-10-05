@@ -277,7 +277,7 @@ function pintarTodo() {
   const control = el(id);
   control.addEventListener("input", () => {
     if (id === "nacimiento" || id === "altura") {
-      control.value = control.value.replace(/[^0-9]/g, "").slice(0, 4);
+      control.value = control.value.replace(/\D/g, "").slice(0, 4);
     }
     if (id === "licencia") {
       control.value = control.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 11);

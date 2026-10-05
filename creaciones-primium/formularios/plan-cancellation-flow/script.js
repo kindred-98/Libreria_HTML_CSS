@@ -251,7 +251,7 @@ function completar(titulo, texto, nota) {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  camposDe(etapa).forEach(pintar);
+  camposDe(etapa).forEach((...args) => pintar(...args));
   const fallos = problemas(etapa);
 
   if (fallos.length > 0) {

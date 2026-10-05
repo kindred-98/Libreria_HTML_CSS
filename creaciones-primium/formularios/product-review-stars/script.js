@@ -124,7 +124,7 @@ function problemas() {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintar);
+  CAMPOS.forEach((...args) => pintar(...args));
   pintarBarras(valorCampo(CAMPOS[0]));
   const fallos = problemas();
 

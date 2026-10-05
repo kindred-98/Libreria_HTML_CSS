@@ -188,7 +188,7 @@ function pintarImpacto() {
 }
 
 function mascaraTelefono(valor) {
-  const limpio = valor.replace(/[^0-9]/g, "");
+  const limpio = valor.replace(/\D/g, "");
   if (limpio.length <= 4) return limpio;
   return limpio.slice(-4).replace(/^/, "ending ");
 }

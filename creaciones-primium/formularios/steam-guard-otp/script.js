@@ -108,7 +108,7 @@ function mostrarResumen(fallos) {
 }
 
 function repartir(texto, desde) {
-  const limpio = (texto || "").replace(/[^0-9]/g, "");
+  const limpio = (texto || "").replace(/\D/g, "");
   if (limpio === "") return;
   for (let k = 0; k < limpio.length && desde + k < casillas.length; k++) {
     casillas[desde + k].value = limpio.charAt(k);
@@ -122,7 +122,7 @@ function repartir(texto, desde) {
 casillas.forEach((c, i) => {
   c.addEventListener("input", () => {
     const original = c.value;
-    c.value = c.value.replace(/[^0-9]/g, "").slice(0, 1);
+    c.value = c.value.replace(/\D/g, "").slice(0, 1);
     marcarLlenas();
     if (envCodigo.dataset.estado === "error") pintarCodigo();
     if (c.value !== "" && original !== c.value) {
@@ -175,7 +175,7 @@ function pedirPegadoManual(motivo) {
 }
 
 function conTexto(texto) {
-  if ((texto || "").replace(/[^0-9]/g, "") === "") {
+  if ((texto || "").replace(/\D/g, "") === "") {
     pedirPegadoManual("There is no code in the clipboard");
     return;
   }

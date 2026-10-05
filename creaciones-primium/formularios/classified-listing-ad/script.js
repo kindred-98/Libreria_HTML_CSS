@@ -262,7 +262,7 @@ el("repaltear").addEventListener("click", () => {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintar);
+  CAMPOS.forEach((...args) => pintar(...args));
   cuenta();
   progreso();
 

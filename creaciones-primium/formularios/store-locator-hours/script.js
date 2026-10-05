@@ -292,7 +292,7 @@ const CAMPOS = [
     vacio: "A mobile number, in case the room is running late.",
     error: "Nine to fifteen digits, the plus sign and spaces allowed.",
     prueba: v => {
-      const d = v.replace(/[^0-9]/g, "");
+      const d = v.replace(/\D/g, "");
       return d.length >= 9 && d.length <= 15;
     }
   },
@@ -386,7 +386,7 @@ el("avisos").addEventListener("change", () => {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintar);
+  CAMPOS.forEach((...args) => pintar(...args));
   const fallos = problemas();
 
   if (fallos.length > 0) {

@@ -210,7 +210,7 @@ el("numero-id").addEventListener("input", () => {
   let v = el("numero-id").value.toUpperCase().replace(/\s/g, "");
   if (tipo === "CIF") v = v.replace(/[^0-9A-Z]/g, "");
   else if (tipo === "NIE") v = v.replace(/[^0-9XYZ]/g, "");
-  else v = v.replace(/[^0-9]/g, "");
+  else v = v.replace(/\D/g, "");
   el("numero-id").value = v;
   // Ternario simplificado: CIF y el resto permiten el mismo limite de 9 caracteres.
   el("numero-id").maxLength = 9;
@@ -245,7 +245,7 @@ function problemas() {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintar);
+  CAMPOS.forEach((...args) => pintar(...args));
   const fallos = problemas();
 
   if (fallos.length > 0) {
