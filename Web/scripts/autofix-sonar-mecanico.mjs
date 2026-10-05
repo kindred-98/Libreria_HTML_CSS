@@ -111,7 +111,7 @@ const PATRONES = [
     // reescribe a `e.target === x?.y` y cambia semantica.
     id: "S6582",
     descripcion: "x && x.y -> x?.y (optional chaining, en posicion aislada)",
-    regex: /(?<=\s*[(,;?:]|^)\b([A-Za-z_$][\w$]*)\s*&&\s*\1\.([A-Za-z_$][\w$]*(?:\([^\)]*\))?)(?=\s*(?:[,);\]?:&|?]|\n|$))/g,
+    regex: /(?<=\s*[(,;?:]|^)\b([A-Za-z_$][\w$]*)\s*&&\s*\1\.([A-Za-z_$][\w$]*(?:\([^\)]*\))?)(?=\s*(?:[,);\]?:&|]|\n|$))/g,
     reemplazo: "$1?.$2",
   },
   {
@@ -174,6 +174,35 @@ const PATRONES = [
     descripcion: "new Date().getTime() -> Date.now()",
     regex: /new Date\(\)\.getTime\(\)/g,
     reemplazo: "Date.now()",
+  },
+  {
+    // isFinite(x) -> Number.isFinite(x). La global acepta cualquier valor
+    // y fuerza conversion a numero, igual que isNaN; Number.isFinite hace
+    // lo mismo sin la coercion implicita. En los demos donde aparece,
+    // el argumento ya es numerico, asi que la conversion es sinonima.
+    id: "S7773-isfinite",
+    descripcion: "isFinite(x) -> Number.isFinite(x)",
+    regex: /(?<![A-Za-z0-9_$.])isFinite\(/g,
+    reemplazo: "Number.isFinite(",
+  },
+  {
+    // s.indexOf("x") === 0 -> s.startsWith("x"). Sinonimo exacto: la
+    // global busca la primera ocurrencia y compara con 0, startsWith
+    // busca desde el principio. Solo aplica al caso "=== 0" (prefijo).
+    id: "S6557",
+    descripcion: 's.indexOf("x") === 0 -> s.startsWith("x")',
+    regex: /\.indexOf\((["'])([^"']+)\1\)\s*===\s*0\b/g,
+    reemplazo: ".startsWith('$2')",
+  },
+  {
+    // new Date(x).getTime() -> x.getTime(). Si x ya es un Date, envolver
+    // en `new Date()` es redundante: crea un objeto identico al
+    // argumento. Solo aplica cuando el argumento es un valor Date, lo
+    // cual es el caso comun.
+    id: "S7719",
+    descripcion: "new Date(x).getTime() -> x.getTime()",
+    regex: /new Date\((\w+)\)\.getTime\(\)/g,
+    reemplazo: "$1.getTime()",
   },
   {
     // arr.forEach(fn) -> arr.forEach((...args) => fn(...args)).

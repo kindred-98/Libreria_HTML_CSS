@@ -30,7 +30,7 @@
   function clock() {
     var t = null;
     if (ref) t = ref.currentTime;
-    if (typeof t !== "number" || !isFinite(t) || t < 0) t = performance.now();
+    if (typeof t !== "number" || !Number.isFinite(t) || t < 0) t = performance.now();
     return t % T;
   }
 

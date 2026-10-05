@@ -87,6 +87,31 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Auto-fix: S5869 (char class duplicada), S6557, S7773-isfinite, S7759, S7719 (18 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana tres patrones y se
+arregla un duplicado en uno existente:
+
+- **S5869** "Remove duplicates in this character class". El regex
+  S6582 del propio script tenia `?` dos veces en la clase
+  `[,);\]?:&|?]`. Se elimina el duplicado: ahora `[,);\]?:&|]`.
+- **S6557** `s.indexOf("x") === 0` -> `s.startsWith("x")`. Sinonimo
+  exacto: ambos buscan desde el principio. Solo aplica al caso
+  `=== 0` (prefijo), no a busquedas de inclusion.
+- **S7773-isfinite** `isFinite(x)` -> `Number.isFinite(x)`. Sinonimo
+  exacto para argumentos numericos (que es el caso en los demos).
+- **S7759** `new Date().getTime()` -> `Date.now()`. Reaplicado: los 8
+  casos del re-analisis post-merge.
+- **S7719** `new Date(x).getTime()` -> `x.getTime()`. Si x ya es un
+  Date, envolver en `new Date()` es redundante (crea un objeto
+  identico al argumento).
+
+Aplicado: 5 startsWith + 0 getTime redundante (ya estaban) =
+**5 sustituciones nuevas**, mas el fix del duplicado en el script.
+Verificado en verde: `validar`, `validar:encabezados`,
+`validar:html` (Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
 ## [Arregla la vulnerabilidad S5145 y 5 BUGs reales (1 VULN + 5 BUG)] - 2026-10-05
 
 - **Vulnerabilidad**: `Web/scripts/exportar-incidencias-sonar.mjs:126`

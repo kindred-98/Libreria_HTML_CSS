@@ -43,10 +43,10 @@
     var parts = String(input.value || "00:00").split(":");
     var h = Number.parseInt(parts[0], 10);
     var m = Number.parseInt(parts[1], 10);
-    if (!isFinite(h) || h < 0) {
+    if (!Number.isFinite(h) || h < 0) {
       h = 0;
     }
-    if (!isFinite(m) || m < 0) {
+    if (!Number.isFinite(m) || m < 0) {
       m = 0;
     }
     return { h: Math.min(23, h), m: Math.min(59, m) };
@@ -58,14 +58,14 @@
 
   function drumHeight(drum) {
     var value = Number.parseFloat(getComputedStyle(drum).height);
-    return isFinite(value) && value > 4 ? value : 40;
+    return Number.isFinite(value) && value > 4 ? value : 40;
   }
 
   function spin(part, index) {
     var strip = PARTS[part].drum;
     var drum = strip.parentNode;
     var prev = Number.parseInt(strip.style.getPropertyValue("--i"), 10);
-    var steps = isFinite(prev) ? Math.abs(index - prev) : 1;
+    var steps = Number.isFinite(prev) ? Math.abs(index - prev) : 1;
     strip.style.transitionDuration = still ? "0ms" : Math.min(760, 250 + steps * 34) + "ms";
     strip.style.setProperty("--i", String(index));
     if (still) {
