@@ -181,8 +181,7 @@
     treeBtn.focus();
   });
 
-  if (mq.addEventListener) mq.addEventListener('change', function () { panelOpen = false; syncPanel(); });
-  else if (mq.addListener) mq.addEventListener('change', function () { panelOpen = false; syncPanel(); });
+  mq.addEventListener('change', function () { panelOpen = false; syncPanel(); });
 
   function spy() {
     pending = false;

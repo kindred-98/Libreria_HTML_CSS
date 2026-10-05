@@ -714,8 +714,7 @@ function onMQ(){
   else{boltWait=3.55;flash=0;after=0;start();}
 }
 
-if(mq.addEventListener)mq.addEventListener('change',onMQ);
-else if(mq.addListener)mq.addEventListener('change', onMQ);
+mq.addEventListener('change',onMQ);
 
 resize();
 if(mq.matches)still();

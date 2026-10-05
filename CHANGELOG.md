@@ -87,6 +87,31 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Quita el fallback deprecated de MediaQueryList.addListener en 3 demos (3 issues)] - 2026-10-05
+
+Los 3 archivos restantes con S1874 ('addListener' is deprecated) tenian
+el patron:
+
+```js
+if (mq.addEventListener) mq.addEventListener('change', cb);
+else if (mq.addListener) mq.addEventListener('change', cb);
+```
+
+`mq.addListener` (sin parentesis) es un check de propiedad: el codigo
+comprueba si el navegador expone ese metodo deprecated para usar el
+fallback. En cualquier navegador moderno `addEventListener` esta
+disponible, asi que la rama `else if` es codigo muerto. Se simplifica
+a la unica llamada a `addEventListener` en cada caso.
+
+Archivos:
+- `creaciones-primium/navegacion/folder-tree-nav/script.js:184-185`
+- `creaciones-primium/animaciones/tornado-vortex-debris/script.js:717-718`
+- `creaciones-primium/animaciones/koi-pond-ripple-trail/script.js:737-738`
+
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
 ## [Rename de variable `status` a `statusEl` en 7 demos (14 issues)] - 2026-10-05
 
 `status` es una variable deprecada en HTML5 (sobra con
