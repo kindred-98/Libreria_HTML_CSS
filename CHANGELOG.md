@@ -87,7 +87,42 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
-## [Auto-fix: S5869 (char class duplicada), S6557, S7773-isfinite, S7759, S7719 (18 issues)] - 2026-10-05
+## [Auto-fix: S5869 (char class duplicada), S6557, S7773-isfinite, S7759, S7719 (12 issues)] - 2026-10-05
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana dos patrones y se
+arregla un duplicado en uno existente:
+
+- **S5869** "Remove duplicates in this character class". El regex
+  S6582 del propio script tenia `?` dos veces en la clase
+  `[,);\]?:&|?]`. Se elimina el duplicado: ahora `[,);\]?:&|]`.
+- **S6557** `s.indexOf("x") === 0` -> `s.startsWith("x")`. Sinonimo
+  exacto: ambos buscan desde el principio. Solo aplica al caso
+  `=== 0` (prefijo), no a busquedas de inclusion.
+- **S7773-isfinite** `isFinite(x)` -> `Number.isFinite(x)`. Sinonimo
+  exacto para argumentos numericos.
+- **S7759** `new Date().getTime()` -> `Date.now()`. Reaplicado: los 8
+  casos del re-analisis post-merge.
+- **S7719** `new Date(x).getTime()` -> `x.getTime()`. Si x ya es un
+  Date, envolver en `new Date()` es redundante.
+
+**S1940** (invertir operandos en comparaciones) se intento pero se
+descarto: 3296 hits en una sola pasada y rompio 5 demos
+(`tarjetas-cyber-deck-target-hud`, `home-energy-meter`,
+`pipeline-notify-timeline`, `street-net-access-card`,
+`lofi-study-session-player`). El reorden `a > b` -> `b < a` cambia
+la semantica cuando uno de los operandos es string (coercion
+implicita) y rompe la pista visual del orden del bucle. Queda en
+`autofix-sonar-mecanico.mjs` documentado como "no auto-arreglable".
+
+Aplicado: 5 startsWith + 7 isFinite + 0 Date.now nuevos + 0
+getTime redundante + el fix del duplicado en el script =
+**12 issues nuevas** (el resto de los 18 del conteo previo ya
+estaban arreglados en commits anteriores). Verificado en verde:
+`validar`, `validar:encabezados`, `validar:html` (Node 20/22/24),
+`validar:enlaces`, `validar:layout` y `validar:demos` (1018/1018, 0
+fallos).
+
+## [Arregla la vulnerabilidad S5145 y 5 BUGs reales (1 VULN + 5 BUG)] - 2026-10-05
 
 `Web/scripts/autofix-sonar-mecanico.mjs` gana tres patrones y se
 arregla un duplicado en uno existente:
