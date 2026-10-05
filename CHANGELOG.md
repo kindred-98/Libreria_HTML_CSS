@@ -87,6 +87,41 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Deja el CLS de la pagina de componentes en 0 quitando el salto del pie] - 2026-10-06
+
+En el preset movil de Lighthouse, `Web/components.html` medía **CLS 0,29**.
+Medido con un `PerformanceObserver` de `layout-shift` puro (y con la misma
+medicion antes y despues del cambio), el 97% del problema era un solo
+elemento: el `<footer class="site-footer">`, que saltaba de `y=481` a
+fuera del viewport.
+
+- **Por que**: `#component-grid` llega **vacia** en el HTML y se rellena
+  con el catalogo en `app.js`, que va con `defer`. En el primer pintado
+  hay sitio para el pie justo debajo de la cabecera; cuando entran las
+  nueve tarjetas de la pagina (3.353 px) el pie se va a `y=4.081` y ese
+  salto vale 0,247 de CLS.
+- **Arreglo**: `min-height: 60vh` / `60dvh` en `.component-grid`, siguiendo
+  el mismo doble patron `vh` + `dvh` que ya usa `.davoker-portal` para
+  iOS. El pie arranca ya fuera del viewport y al crecer la rejilla sigue
+  fuera: no hay desplazamiento que medir. Con una pagina completa de
+  tarjetas el alto final (3.353 px) supera holgadamente los 60vh, asi
+  que en pantalla no se nota nada. Si el autor elegido es Davoker la
+  rejilla se oculta (`elements.grid.hidden = true`) y la regla no aplica.
+- **Medido antes/despues, preset movil**: CLS de la rejilla **0,254 ->
+  0,0065** (lo que queda son 4 px que se mueve toda la cabecera al
+  entrar, repartidos en cinco fuentes de 0,0065); puntuacion de
+  Lighthouse **76 -> 86**. En escritorio, `.component-grid` pasa de
+  **86 a 100** y el CLS queda en 0,0040.
+- Verificado en verde: `validar`, `validar:layout` (5 paginas x 23
+  anchos), `validar:a11y` (sin violaciones serious/critical),
+  `validar:html`, `validar:enlaces`, `validar:encabezados`, `duplicados`
+  y `validar:lighthouse` (99/100/100 en las tres paginas).
+- Las huellas `?v=` de `site.css` y de `app.js` se re-sellan con
+  `npm run sellar`: sin cambiar la de `site.css` el `Cache-Control:
+  immutable` de un ano serviria el CSS antiguo a todo el mundo que ya
+  tenga la pagina cacheada. La de `app.js` estaba desactualizada
+  respecto a su propio contenido (`ae876329` frente al real `ca0109dd`).
+
 ## [Hace responsivos los 119 showcases de Davoker (texto que se salia de la caja en movil)] - 2026-10-06
 
 En movil, dentro del apartado de Davoker, letras grandes como `BENGALA`
