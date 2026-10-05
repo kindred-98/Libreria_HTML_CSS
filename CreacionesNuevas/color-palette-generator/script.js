@@ -6,7 +6,7 @@ function gen(){
   for(let i=0;i<5;i++){
     const c=rndHex();const s=document.createElement('div');s.className='swatch';
     s.style.background=c;s.innerHTML='<span class="sw-hex">'+c+'</span>';
-    s.addEventListener('click',()=>{navigator.clipboard?.writeText(c);showToast(c+' copied!');});
+    s.addEventListener('click',()=>{navigator.clipboard?.writeText(c).catch(()=>{});showToast(c+' copied!');});
     palette.appendChild(s);
   }
 }

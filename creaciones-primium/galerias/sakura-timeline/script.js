@@ -22,14 +22,14 @@
   function meta(n) {
     var b = st[n];
     return {
-      no: b.getAttribute("data-no") || pad(n + 1),
-      date: b.getAttribute("data-date"),
-      day: b.getAttribute("data-day"),
-      name: b.getAttribute("data-name"),
-      note: b.getAttribute("data-note"),
-      credit: b.getAttribute("data-credit"),
-      crop: b.getAttribute("data-crop"),
-      place: b.getAttribute("data-place")
+      no: b.dataset.no || pad(n + 1),
+      date: b.dataset.date,
+      day: b.dataset.day,
+      name: b.dataset.name,
+      note: b.dataset.note,
+      credit: b.dataset.credit,
+      crop: b.dataset.crop,
+      place: b.dataset.place
     };
   }
 
@@ -110,7 +110,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   st.forEach(function (b, i) { b.addEventListener("click", function () { openAt(i); }); });
@@ -121,12 +121,12 @@
   document.getElementById("vPrev").addEventListener("click", function () { openAt((at - 1 + st.length) % st.length); });
   document.getElementById("vNext").addEventListener("click", function () { openAt((at + 1) % st.length); });
   document.getElementById("vClose").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   Array.prototype.forEach.call(document.querySelectorAll('a[href^="#st-"]'), function (a) {
     a.addEventListener("click", function (e) {
       e.preventDefault();
-      var n = parseInt(a.getAttribute("href").slice(4), 10) - 1;
+      var n = Number.parseInt(a.getAttribute("href").slice(4), 10) - 1;
       if (isNaN(n)) return;
       goTo(n);
       st[n].focus();

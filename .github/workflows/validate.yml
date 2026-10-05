@@ -49,10 +49,14 @@ jobs:
           # El lockfile es la unica forma de que el CI instale exactamente las
           # mismas versiones que se han probado en local. Con "npm install" y sin
           # lockfile, cada push podia traerse una version distinta de playwright.
+          # "--ignore-scripts" evita que los scripts de instalacion de las
+          # dependencias se ejecuten: este repositorio no necesita ninguno, y el
+          # unico navegador (Chromium) se instala mas abajo con "playwright
+          # install", que es el paso que lo trae de verdad.
           cache: npm
 
       - name: Instalar dependencias
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       # Dependabot avisa con alertas y con correos, pero no corta nada: una
       # vulnerabilidad de nivel alto seguia entrando en main y hasta que alguien
@@ -112,12 +116,16 @@ jobs:
       # estaticas: miran ficheros, sintaxis, el catalogo y las cabeceras, y
       # ninguna mide lo que se ve. Una pagina que se dibuja 39 px mas ancha de lo
       # que permite la ventana no falla ninguna de ellas. Chromium son ~170 MB
-      # en la cache del runner, y el paso va aparte para que se vea en el
+# en la cache del runner, y el paso va aparte para que se vea en el
       # log cuanto cuesta. Baja una sola vez: lo que varia con la version de Node
-      # es la comprobacion estatica de arriba, no el navegador que la mide.
+      # es la comprobacion estatica de arriba, no el navegador que lo mide.
+      # "--no-install" obliga a que salga del playwright del package.json (con
+      # la version fijada por el lockfile): sin el, npx podria bajarse cualquier
+      # version publicada y ejecutar sus scripts, y el analisis dejaria de
+      # depender de lo que se ha probado.
       - name: Instalar Chromium (para la comprobacion de layout)
         if: matrix.node-version == 24
-        run: npx playwright install --with-deps chromium
+        run: npx --no-install playwright install --with-deps chromium
 
       - name: Comprobar que ninguna pagina se sale de lado
         if: matrix.node-version == 24

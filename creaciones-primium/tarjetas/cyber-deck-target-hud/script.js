@@ -2,13 +2,13 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 const figures = Array.from(document.querySelectorAll("[data-final]"));
 
 function scramble(text) {
-  return text.replace(/[0-9]/g, function () {
+  return text.replace(/[\d]/g, function () {
     return String(Math.floor(Math.random() * 10));
   });
 }
 
 function recompose(node) {
-  const finalText = node.getAttribute("data-final") || node.textContent;
+  const finalText = node.dataset.final || node.textContent;
   let step = 0;
   const timer = window.setInterval(function () {
     step += 1;

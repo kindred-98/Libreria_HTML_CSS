@@ -179,7 +179,7 @@ const CAMPOS = [
     etiqueta: "Teléfono",
     vacio: "Necesitamos un teléfono para el recordatorio.",
     error: "Debe ser un número español de nueve cifras, entre 600 y 799.",
-    prueba: v => /^[6-7][0-9]{8}$/.test(v.replace(/[\s.-]/g, ""))
+    prueba: v => /^[6-7][\d]{8}$/.test(v.replace(/[\s.-]/g, ""))
   },
   {
     id: "correo",

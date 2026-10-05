@@ -44,14 +44,14 @@
         var cy = (Math.floor(i / cols) + 0.5) / rows * 100;
         var dx = cx - p.x;
         var dy = (cy - p.y) * 0.86;
-        var d = Math.sqrt(dx * dx + dy * dy);
+        var d = Math.hypot(dx, dy);
         dots[i].style.setProperty('--d', Math.round(d * 3.1) + 'ms');
       }
       btn.classList.remove('is-hit');
-      void btn.offsetWidth;
+      btn.getBoundingClientRect();
       btn.classList.add('is-hit');
       mx++;
-      last.textContent = 'ch ' + btn.getAttribute('data-ch') + ' \ ' + mx + ' strikes';
+      last.textContent = 'ch ' + btn.dataset.ch + ' \ ' + mx + ' strikes';
     };
 
     btn.addEventListener('click', function (e) { btn.__strike(e); });

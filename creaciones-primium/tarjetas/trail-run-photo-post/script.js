@@ -48,7 +48,7 @@ reacts.forEach(function (btn) {
     btn.classList.remove("is-bump");
     btn.setAttribute("aria-pressed", on ? "true" : "false");
     btn.setAttribute("aria-label", btn.getAttribute("aria-label").replace(/\d[\d.,k ]*/, compact(value) + " "));
-    void btn.offsetWidth;
+    btn.getBoundingClientRect();
     btn.classList.add("is-bump");
     if (num) {
       num.textContent = compact(value);

@@ -58,7 +58,7 @@
   function placeLoupe() {
     var r = print[at].getBoundingClientRect();
     var t = tbl.getBoundingClientRect();
-    var half = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--lv")) / 2 || 86;
+    var half = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--lv")) / 2 || 86;
     var cx = r.left + r.width * 0.5 + r.width * 0.44 + (bx - 50) / 100 * r.width * 0.7;
     var cy = r.top + r.height * 0.5 - r.height * 0.36 + (by - 50) / 100 * r.height * 0.7;
     var minX = t.left + half + 4, maxX = t.right - half - 4;
@@ -130,7 +130,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   buildScale();
@@ -139,7 +139,7 @@
   document.getElementById("back").addEventListener("click", function () { go(at - 1); });
   document.getElementById("fwd").addEventListener("click", function () { go(at + 1); });
   document.getElementById("open").addEventListener("click", function () { openAt(at); });
-  document.getElementById("loupe").addEventListener("click", function () {
+  document.getElementById("loupeToggle").addEventListener("click", function () {
     loupeOn = !loupeOn;
     this.textContent = loupeOn ? "Loupe on" : "Loupe off";
     this.setAttribute("aria-pressed", loupeOn ? "true" : "false");
@@ -155,7 +155,7 @@
   document.getElementById("vPrev").addEventListener("click", function () { openAt((at - 1 + print.length) % print.length); });
   document.getElementById("vNext").addEventListener("click", function () { openAt((at + 1) % print.length); });
   document.getElementById("vClose").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   window.addEventListener("resize", placeLoupe);
 
@@ -178,7 +178,7 @@
     else if (k === "Home") go(0);
     else if (k === "End") go(print.length - 1);
     else if (k === "Enter" || k === " ") { if (e.target !== tbl) return; openAt(at); }
-    else if (k === "l" || k === "L") document.getElementById("loupe").click();
+    else if (k === "l" || k === "L") document.getElementById("loupeToggle").click();
     else if (k === "g" || k === "G") document.getElementById("grid").click();
     else return;
     e.preventDefault();

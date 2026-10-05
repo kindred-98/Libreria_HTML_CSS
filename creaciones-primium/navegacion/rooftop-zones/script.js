@@ -16,8 +16,8 @@
       else z.removeAttribute("aria-current");
     });
     barra.style.width = (((indice + 1) / zonas.length) * 100).toFixed(2) + "%";
-    cuenta.textContent = zonas[indice].getAttribute("data-n");
-    nombre.textContent = zonas[indice].getAttribute("data-name");
+    cuenta.textContent = zonas[indice].dataset.n;
+    nombre.textContent = zonas[indice].dataset.name;
   }
 
   function medir() {

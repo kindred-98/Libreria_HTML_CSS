@@ -14,8 +14,8 @@
       if (i === indice) v.setAttribute("aria-current", "true");
       else v.removeAttribute("aria-current");
     });
-    canal.textContent = vias[indice].getAttribute("data-canal");
-    nombre.textContent = vias[indice].getAttribute("data-nombre");
+    canal.textContent = vias[indice].dataset.canal;
+    nombre.textContent = vias[indice].dataset.nombre;
   }
 
   var listo = false;

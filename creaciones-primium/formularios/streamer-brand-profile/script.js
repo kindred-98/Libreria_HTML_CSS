@@ -58,14 +58,14 @@ const CAMPOS = [
     etiqueta: "Based in",
     vacio: "Pick a city, it sets the tax country on the card.",
     error: "That city is not on the creator list.",
-    prueba: v => Object.prototype.hasOwnProperty.call(CIUDADES, v)
+    prueba: v => Object.hasOwn(CIUDADES, v)
   },
   {
     id: "categoria",
     etiqueta: "Category",
     vacio: "Pick what you play, the directory files you under it.",
     error: "That category is not one the directory carries.",
-    prueba: v => Object.prototype.hasOwnProperty.call(CATEGORIAS, v)
+    prueba: v => Object.hasOwn(CATEGORIAS, v)
   },
   {
     id: "plataformas",
@@ -96,7 +96,7 @@ const CAMPOS = [
     vacio: "Pick a tone, the sponsors read it before the numbers.",
     error: "That tone is not on the list of three.",
     tipo: "radio",
-    prueba: v => TONOS.indexOf(v) !== -1
+    prueba: v => TONOS.includes(v)
   }
 ];
 
@@ -165,7 +165,7 @@ function pintarTarjeta() {
       caja.appendChild(span);
     }
   } else {
-    ORDEN_PLATAFORMAS.filter(p => plats.indexOf(p) !== -1).forEach((p, i) => {
+    ORDEN_PLATAFORMAS.filter(p => plats.includes(p)).forEach((p, i) => {
       const span = document.createElement("span");
       span.className = "insignia";
       span.style.animationDelay = i * 0.05 + "s";
@@ -187,7 +187,7 @@ function pintarTarjeta() {
 
   el("plataformas-ayuda").textContent = plats.length === 0
     ? "Nothing ticked yet. The card shows three empty slots where the badges go."
-    : plats.length + " of 6 platforms. " + ORDEN_PLATAFORMAS.filter(p => plats.indexOf(p) !== -1).join(", ") + " print on the card in that order.";
+    : plats.length + " of 6 platforms. " + ORDEN_PLATAFORMAS.filter(p => plats.includes(p)).join(", ") + " print on the card in that order.";
 
   el("lemaCuenta").textContent = linea.length + " of 64";
   el("bioCuenta").textContent = larga.length + " of 240";
@@ -233,7 +233,7 @@ function pintarCampo(f) {
   const err = el(f.id + "-err");
   const valor = valorCampo(f);
   const vacio = valor === "";
-  const reservado = f.id === "manojo" && RESERVADAS.indexOf(valor.toLowerCase()) !== -1;
+  const reservado = f.id === "manojo" && RESERVADAS.includes(valor.toLowerCase());
   const malo = reservado || !f.prueba(valor);
   const fallo = f.suave ? (malo && !vacio) : malo;
   const control = controlReal(f);
@@ -270,7 +270,7 @@ function problemas() {
       salida.push(f.etiqueta + ": " + (v === "" ? f.vacio : f.error));
     }
   });
-  if (RESERVADAS.indexOf(manojo.value.trim().toLowerCase()) !== -1) {
+  if (RESERVADAS.includes(manojo.value.trim().toLowerCase())) {
     salida.push("Handle: " + manojo.value.trim() + " is on the reserved list, the directory keeps those for staff.");
   }
   return salida;
@@ -295,7 +295,7 @@ function avisoManojo() {
     el("manojo-ayuda").textContent = "Three to twenty characters, letters, digits, underscore and dot. No spaces, no capitals.";
     return;
   }
-  if (RESERVADAS.indexOf(v) !== -1) {
+  if (RESERVADAS.includes(v)) {
     el("manojo-ayuda").textContent = v + " is reserved for staff. Try something with a digit in it.";
     return;
   }
@@ -334,7 +334,7 @@ CAMPOS.forEach(f => {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintarCampo);
+  CAMPOS.forEach(f => pintarCampo(f));
   const fallos = problemas();
 
   if (fallos.length > 0) {
@@ -366,7 +366,7 @@ form.addEventListener("submit", e => {
 
   const lista = el("pubPlataformas");
   lista.innerHTML = "";
-  ORDEN_PLATAFORMAS.filter(p => plats.indexOf(p) !== -1).forEach(p => {
+  ORDEN_PLATAFORMAS.filter(p => plats.includes(p)).forEach(p => {
     const li = document.createElement("li");
     li.className = "insignia";
     const punto = document.createElement("i");

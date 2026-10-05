@@ -8,7 +8,11 @@ const integrityEl = document.getElementById('integrity');
 const barEl = document.getElementById('bar');
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const clamp01 = v => (v < 0 ? 0 : v > 1 ? 1 : v);
+const clamp01 = (v) => {
+  if (v < 0) return 0;
+  if (v > 1) return 1;
+  return v;
+};
 const ramp = (t, a, b) => clamp01((t - a) / (b - a));
 const eOut = x => 1 - Math.pow(1 - x, 3);
 const eIn = x => x * x * x;
@@ -46,7 +50,7 @@ function seedGrain(){
   const im = gx.createImageData(128, 128);
   const d = im.data;
   for (let i = 0; i < d.length; i += 4){
-    const v = (Math.random() * 255) | 0;
+    const v = (Math.random() * 255 | 0);
     d[i] = v;
     d[i + 1] = v;
     d[i + 2] = v;
@@ -153,13 +157,14 @@ function network(cells){
     }
     return i;
   };
-  for (let c = 0; c < cells.length; c++){
-    const cell = cells[c];
+  for (const cell of cells){
+    // El bucle interno necesita el indice porque cierra el anillo con
+    // cell[(i + 1) % cell.length], asi que no puede ser un for-of.
     for (let i = 0; i < cell.length; i++){
       const a = node(cell[i]);
       const b = node(cell[(i + 1) % cell.length]);
       if (a === b) continue;
-      const lo = a < b ? a : b;
+      const lo = Math.min(a, b);
       const hi = a < b ? b : a;
       const k = lo + '-' + hi;
       if (seen.has(k)) continue;
@@ -167,9 +172,9 @@ function network(cells){
       segs.push([lo, hi]);
     }
   }
-  for (let s = 0; s < segs.length; s++){
-    nodes[segs[s][0]].e.push(segs[s][1]);
-    nodes[segs[s][1]].e.push(segs[s][0]);
+  for (const seg of segs){
+    nodes[seg[0]].e.push(seg[1]);
+    nodes[seg[1]].e.push(seg[0]);
   }
   return { nodes: nodes, segs: segs };
 }
@@ -180,7 +185,7 @@ function prep(pts){
   for (let i = 1; i < pts.length; i++){
     const dx = pts[i].x - pts[i - 1].x;
     const dy = pts[i].y - pts[i - 1].y;
-    lens[i] = Math.sqrt(dx * dx + dy * dy);
+    lens[i] = Math.hypot(dx, dy);
     total += lens[i];
   }
   pts.lens = lens;
@@ -199,8 +204,8 @@ function crackTrails(net, cx, cy){
     order.push({ i: i, d: n.e.length === 1 ? d - 1e5 : d });
   }
   order.sort(function(a, b){ return a.d - b.d; });
-  for (let o = 0; o < order.length; o++){
-    let cur = order[o].i;
+  for (const src of order){
+    let cur = src.i;
     let prev = null;
     const pts = [];
     let guard = 0;
@@ -214,7 +219,7 @@ function crackTrails(net, cx, cy){
         const p = net.nodes[nb];
         let dx = p.x - n.x;
         let dy = p.y - n.y;
-        const L = Math.sqrt(dx * dx + dy * dy) || 1;
+        const L = Math.hypot(dx, dy) || 1;
         dx /= L;
         dy /= L;
         const s = prev ? dx * prev.x + dy * prev.y : rnd(-0.1, 0.3);
@@ -225,7 +230,7 @@ function crackTrails(net, cx, cy){
       const p = net.nodes[nb];
       let dx = p.x - n.x;
       let dy = p.y - n.y;
-      const L = Math.sqrt(dx * dx + dy * dy) || 1;
+      const L = Math.hypot(dx, dy) || 1;
       used.add(sk(cur, nb));
       pts.push({ x: n.x, y: n.y });
       prev = { x: dx / L, y: dy / L };
@@ -248,7 +253,7 @@ function branchTrails(net, cx, cy){
     if (net.nodes[i].e.length >= 3) cand.push(i);
   }
   for (let i = cand.length - 1; i > 0; i--){
-    const j = (Math.random() * (i + 1)) | 0;
+    const j = ((Math.random() * (i + 1)) | 0);
     const s = cand[i];
     cand[i] = cand[j];
     cand[j] = s;
@@ -262,7 +267,7 @@ function branchTrails(net, cx, cy){
     if (n.y < pane.y + L0 * 0.07 || n.y > pane.y + pane.h - L0 * 0.07) continue;
     let a = Math.atan2(n.y - cy, n.x - cx) + (Math.random() < 0.5 ? 1 : -1) * (Math.PI * 0.5 + rnd(-0.55, 0.55));
     const step = L0 * rnd(0.018, 0.055);
-    const steps = 3 + ((Math.random() * 3) | 0);
+    const steps = 3 + ((Math.random() * 3 | 0));
     const pts = [{ x: n.x, y: n.y }];
     let x = n.x;
     let y = n.y;
@@ -297,7 +302,7 @@ function shardFor(cell){
   cy /= 6 * area;
   const dx = cx - impact.x;
   const dy = cy - impact.y;
-  const d = Math.sqrt(dx * dx + dy * dy) || 1;
+  const d = Math.hypot(dx, dy) || 1;
   const dn = clamp01(d / world);
   return {
     pts: cell,
@@ -328,12 +333,11 @@ function build(ix, iy){
 
   const list = crackTrails(net, cx, cy);
   const extra = branchTrails(net, cx, cy);
-  for (let i = 0; i < extra.length; i++) list.push(extra[i]);
-  for (let i = 0; i < list.length; i++){
-    const tr = list[i];
+  for (const e of extra) list.push(e);
+  for (const tr of list){
     let near = Infinity;
-    for (let k = 0; k < tr.length; k++){
-      const d = Math.sqrt((tr[k].x - cx) * (tr[k].x - cx) + (tr[k].y - cy) * (tr[k].y - cy));
+    for (const p of tr){
+      const d = Math.sqrt((p.x - cx) * (p.x - cx) + (p.y - cy) * (p.y - cy));
       if (d < near) near = d;
     }
     tr.d = near;
@@ -352,7 +356,7 @@ function build(ix, iy){
   counts = new Int32Array(trails.length);
 
   shards = [];
-  for (let i = 0; i < cells.length; i++) shards.push(shardFor(cells[i]));
+  for (const cell of cells) shards.push(shardFor(cell));
   shards.sort(function(a, b){ return b.dn - a.dn; });
   parts = [];
 
@@ -455,8 +459,7 @@ function drawShards(a, st){
   ctx.save();
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
-  for (let i = 0; i < shards.length; i++){
-    const s = shards[i];
+  for (const s of shards){
     const p = clamp01((st - s.delay) / 0.44);
     if (p <= 0) continue;
     const eo = eOut(p);
@@ -695,7 +698,6 @@ function setText(el, v){
 function updateState(t){
   const split = ramp(t, T_SPLIT, T_RESID);
   const reform = ramp(t, T_REFORM, CYCLE);
-  const netA = ramp(t, T_CRACK, T_CRACK + 0.3) * (1 - 0.96 * reform);
   const ct = clamp01((t - T_CRACK) / (T_HOLD - T_CRACK));
   live = 0;
   for (let i = 0; i < trails.length; i++){

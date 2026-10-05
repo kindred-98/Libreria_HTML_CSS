@@ -20,7 +20,7 @@
     var owner = document.querySelector('[aria-controls="' + sub.id + '"]');
     if (owner) owner.setAttribute('aria-expanded', 'false');
     var host = sub.parentNode;
-    if (host && host.classList) {
+    if (host?.classList) {
       var stillOpen = host.querySelector('.sub.is-open');
       if (!stillOpen && host.parentNode && host.parentNode.classList &&
         host.parentNode.classList.contains('cell')) host.parentNode.classList.remove('is-host');
@@ -43,16 +43,16 @@
 
   function openSub(sub) {
     var keep = ancestors(sub);
-    for (var i = 0; i < subs.length; i++) {
-      if (subs[i] === sub) continue;
-      if (keep.indexOf(subs[i].id) > -1) continue;
-      closeOne(subs[i]);
+    for (const other of subs) {
+      if (other === sub) continue;
+      if (keep.includes(other.id)) continue;
+      closeOne(other);
     }
     sub.hidden = false;
     sub.classList.add('is-open');
     var owner = document.querySelector('[aria-controls="' + sub.id + '"]');
     if (owner) owner.setAttribute('aria-expanded', 'true');
-    if (owner && owner.classList && owner.classList.contains('cell__btn')) {
+    if (owner?.classList && owner.classList.contains('cell__btn')) {
       owner.parentNode.classList.add('is-host');
     }
   }
@@ -102,8 +102,7 @@
     }
   });
 
-  for (var t = 0; t < topItems.length; t++) {
-    var item = topItems[t];
+  for (const item of topItems) {
     var tag = item.tagName.toLowerCase();
     if (tag === 'a') {
       item.addEventListener('click', function () { closeMenu(false); });
@@ -150,14 +149,14 @@
   }
 
   var subOwners = Array.prototype.slice.call(mosaic.querySelectorAll('.sub [aria-controls^="sub-"]'));
-  for (var s = 0; s < subOwners.length; s++) {
-    subOwners[s].addEventListener('click', function () {
+  for (const owner of subOwners) {
+    owner.addEventListener('click', function () {
       var target = document.getElementById(this.getAttribute('aria-controls'));
       if (!target) return;
       if (target.classList.contains('is-open')) closeOne(target);
       else openSub(target);
     });
-    subOwners[s].addEventListener('keydown', function (event) {
+    owner.addEventListener('keydown', function (event) {
       if (event.key === 'ArrowRight' || event.key === 'Enter' || event.key === ' ') {
         var sub = document.getElementById(this.getAttribute('aria-controls'));
         if (!sub) return;

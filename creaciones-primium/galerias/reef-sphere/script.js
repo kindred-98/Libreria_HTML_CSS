@@ -33,7 +33,7 @@
   var pins = Array.prototype.slice.call(frontShell.querySelectorAll(".pin"));
   pins.forEach(function (p) {
     var c = p.cloneNode(true);
-    c.removeAttribute("data-index");
+    delete c.dataset.index;
     c.removeAttribute("tabindex");
     c.style.transform = "rotateX(" + p.dataset.ex + ") rotateY(calc(" + p.dataset.ax + " + 180deg)) translateZ(var(--r)) scale(.9)";
     backShell.appendChild(c);
@@ -216,7 +216,7 @@
     }
     viewer.hidden = true;
     vImg.removeAttribute("src");
-    if (restore && restore.focus) {
+    if (restore?.focus) {
       restore.focus({ preventScroll: true });
     }
     restore = null;

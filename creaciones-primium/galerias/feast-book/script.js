@@ -17,8 +17,6 @@
 
   var book = document.getElementById("book");
   var leavesBox = document.getElementById("leaves");
-  var pageLeft = document.getElementById("pageLeft");
-  var pageRight = document.getElementById("pageRight");
   var leftFolio = document.getElementById("leftFolio");
   var leftFurniture = document.getElementById("leftFurniture");
   var leftBody = document.getElementById("leftBody");
@@ -158,7 +156,7 @@
     } else {
       leaf.style.zIndex = "40";
       leaf.classList.add("is-turning");
-      void leaf.offsetWidth;
+      leaf.getBoundingClientRect();
       leaf.style.transform = "rotateY(0deg)";
       window.setTimeout(function () {
         leaf.classList.remove("is-turning");
@@ -266,7 +264,7 @@
     }
     viewer.hidden = true;
     vImg.removeAttribute("src");
-    if (restore && restore.focus) {
+    if (restore?.focus) {
       restore.focus({ preventScroll: true });
     }
     restore = null;

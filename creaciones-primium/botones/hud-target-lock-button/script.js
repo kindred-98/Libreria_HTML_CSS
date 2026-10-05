@@ -79,7 +79,7 @@
       g.connect(audio.destination);
       o.start();
       o.stop(audio.currentTime + (dur || 0.1) + 0.02);
-    } catch (e) { }
+    } catch {}
   }
 
   function setLock(on) {

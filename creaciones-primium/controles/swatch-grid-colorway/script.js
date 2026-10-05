@@ -17,9 +17,7 @@
   var still = false;
   try {
     still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch (err) {
-    void err;
-  }
+  } catch {}
 
   function plateOf(input) {
     var label = input.nextElementSibling;
@@ -44,7 +42,7 @@
     }
     brayer.classList.remove("is-run");
     block.classList.remove("is-inking");
-    void brayer.offsetWidth;
+    brayer.getBoundingClientRect();
     brayer.classList.add("is-run");
     block.classList.add("is-inking");
     window.setTimeout(function () {
@@ -65,8 +63,8 @@
     }
 
     var hex = String(current.value).replace("#", "").toUpperCase();
-    var name = current.getAttribute("data-name") || "Ink";
-    var serial = current.getAttribute("data-serial") || "";
+    var name = current.dataset.name || "Ink";
+    var serial = current.dataset.serial || "";
 
     if (fromKey !== current.id) {
       sweep();
@@ -104,7 +102,9 @@
   if (typeof ResizeObserver === "function" && wall) {
     new ResizeObserver(place).observe(wall);
   }
-  if (document.fonts && document.fonts.ready) {
+  // "ready" es una promesa: como condicion siempre seria cierta, asi que solo
+  // se comprueba que exista el FontFaceSet.
+  if (document.fonts) {
     document.fonts.ready.then(place).catch(function () {});
   }
 })();

@@ -948,9 +948,15 @@
         // efectos": el scroll de la pagina baja ahi y no 1,6 s despues, cuando ya
         // ha terminado la despedida. Sin esto, abrir transicion.html en una
         // pestaña no hace nada (no hay shell al que avisarle).
+        //
+        // El destino es el origen de esta pagina y no "*": el iframe del portal
+        // es de este mismo sitio (ver el sandbox de components.html, que incluye
+        // allow-same-origin), asi que ese es el origen real del padre. Con "*"
+        // el mensaje tambien lo recibiria cualquier otro sitio queongerre este
+        // HTML en un iframe propio.
         try {
             if (window.parent !== window) {
-                window.parent.postMessage({ type: "davoker-transicion" }, "*");
+                window.parent.postMessage({ type: "davoker-transicion" }, window.location.origin);
             }
         } catch (e) { /* sin padre: la pagina se ve suelta */ }
     </script>

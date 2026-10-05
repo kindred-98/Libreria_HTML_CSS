@@ -64,8 +64,6 @@
 
   function rad(d) { return d * Math.PI / 180; }
 
-  function norm(a) { return ((a % 360) + 360) % 360; }
-
   function place() {
     for (var i = 0; i < N; i += 1) {
       var la = rad(LATS[i]);
@@ -159,12 +157,12 @@
   stage.addEventListener("click", function (ev) {
     var p = ev.target.closest(".plate");
     if (!p) { return; }
-    openAt(Number(p.getAttribute("data-shot")), p);
+    openAt(Number(p.dataset.shot), p);
   });
 
   logBtns.forEach(function (b) {
     b.addEventListener("click", function () {
-      var n = Number(b.getAttribute("data-shot"));
+      var n = Number(b.dataset.shot);
       aim(n);
       openAt(n, b);
     });

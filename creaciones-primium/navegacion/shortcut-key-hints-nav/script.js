@@ -2,7 +2,6 @@
   var pages = Array.prototype.slice.call(document.querySelectorAll(".page"));
   var navItems = Array.prototype.slice.call(document.querySelectorAll(".nav__i"));
   var topbar = document.querySelector(".topbar");
-  var nav = document.getElementById("nav");
   var map = document.getElementById("keymap");
   var mapBtn = document.getElementById("mapBtn");
   var mapClose = document.getElementById("keymapClose");
@@ -24,11 +23,11 @@
     var chip = el.classList.contains("key") ? el : el.querySelector(".key");
     if (!chip) return;
     chip.classList.remove("is-lit");
-    void chip.offsetWidth;
+    chip.getBoundingClientRect();
     chip.classList.add("is-lit");
     stKey.textContent = chip.textContent.trim();
     stKey.classList.remove("is-lit");
-    void stKey.offsetWidth;
+    stKey.getBoundingClientRect();
     stKey.classList.add("is-lit");
   }
 
@@ -54,27 +53,27 @@
     el.classList.add("is-here");
   }
 
-  for (var t = 0; t < toggles.length; t++) {
+  for (const toggle of toggles) {
     (function (btn) {
       btn.addEventListener("click", function () {
         var on = btn.getAttribute("aria-pressed") !== "true";
         btn.setAttribute("aria-pressed", on ? "true" : "false");
-        var kind = btn.getAttribute("data-toggle");
+        var kind = btn.dataset.toggle;
         if (kind === "ruler") document.body.classList.toggle("is-noruler", !on);
         if (kind === "focus") document.body.classList.toggle("is-focus", on);
         if (kind === "grid") document.body.classList.toggle("is-grid", on);
         light(btn);
       });
-    })(toggles[t]);
+    })(toggle);
   }
 
-  for (var c = 0; c < cmds.length; c++) {
+  for (const cmd of cmds) {
     (function (btn) {
       btn.addEventListener("click", function () {
         light(btn);
-        go(btn.getAttribute("data-go").slice(1));
+        go(btn.dataset.go.slice(1));
       });
-    })(cmds[c]);
+    })(cmd);
   }
 
   for (var n = 0; n < navItems.length; n++) {
@@ -113,7 +112,7 @@
     mapOpen = false;
     mapBtn.setAttribute("aria-expanded", "false");
     if (back) {
-      if (lastFocus && lastFocus.focus) lastFocus.focus();
+      if (lastFocus?.focus) lastFocus.focus();
       else mapBtn.focus();
     }
   }
@@ -161,7 +160,7 @@
     if (e.key === "Escape") { closeMap(true); return; }
     if (/^[1-6]$/.test(e.key)) {
       e.preventDefault();
-      jump(parseInt(e.key, 10) - 1);
+      jump(Number.parseInt(e.key, 10) - 1);
     }
   });
 

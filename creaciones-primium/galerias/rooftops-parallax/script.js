@@ -64,12 +64,11 @@
     if (y !== lastY) {
       lastY = y;
       if (drift) {
-        for (var i = 0; i < layers.length; i += 1) {
-          var el = layers[i];
+        for (var el of layers) {
           var host = el.closest(".bay");
           var r = host.getBoundingClientRect();
           if (r.bottom < -vh * 0.5 || r.top > vh * 1.5) { continue; }
-          var depth = Number(el.getAttribute("data-depth"));
+          var depth = Number(el.dataset.depth);
           var shift = -(vh / 2 - (r.top + r.height / 2)) * depth;
           el.style.transform = "translate3d(0," + shift.toFixed(2) + "px, 0)";
         }
@@ -96,18 +95,18 @@
   railLinks.forEach(function (a) {
     a.addEventListener("click", function (ev) {
       ev.preventDefault();
-      scrollToBay(Number(a.getAttribute("data-bay")));
+      scrollToBay(Number(a.dataset.bay));
     });
   });
 
   openers.forEach(function (b) {
-    b.addEventListener("click", function () { openAt(Number(b.getAttribute("data-shot")), b); });
+    b.addEventListener("click", function () { openAt(Number(b.dataset.shot), b); });
   });
 
   chips.forEach(function (c) {
     c.addEventListener("click", function (ev) {
       ev.preventDefault();
-      openAt(Number(c.getAttribute("data-shot")), c);
+      openAt(Number(c.dataset.shot), c);
     });
   });
 

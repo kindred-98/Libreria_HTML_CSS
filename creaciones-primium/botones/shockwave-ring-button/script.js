@@ -182,21 +182,19 @@
 
   function impact() {
     var budget = 5;
-    for (var r = 0; r < rings.length; r++) {
-      var R = rings[r];
+    for (var R of rings) {
       if (!R.on) continue;
-      for (var i = 0; i < plates.length; i++) {
-        var p = plates[i];
+      for (var p of plates) {
         var ux = p.x + p.dx - cx;
         var uy = (p.y + p.dy - cy) / COMP;
-        var d = Math.sqrt(ux * ux + uy * uy);
+        var d = Math.hypot(ux, uy);
         var diff = Math.abs(d - R.r);
         if (diff >= R.band) continue;
         var f = 1 - diff / R.band;
         var nx = ux / (d || 1);
         var ny = uy / (d || 1);
         var dot = nx * R.vx + ny * R.vy;
-        var lobe = 0.24 + 0.76 * (dot > 0 ? dot : 0);
+        var lobe = 0.24 + 0.76 * (Math.max(dot, 0));
         lobe *= lobe;
         var imp = f * f * R.amp * lobe;
         p.dx += nx * imp;
@@ -220,8 +218,7 @@
   function settle(dt) {
     var k = Math.pow(0.0022, dt);
     var kr = Math.pow(0.0006, dt);
-    for (var i = 0; i < plates.length; i++) {
-      var p = plates[i];
+    for (var p of plates) {
       if (p.dx !== 0 || p.dy !== 0 || p.rot !== 0) {
         p.dx *= k;
         p.dy *= k;
@@ -246,8 +243,7 @@
   }
 
   function drift(dt) {
-    for (var i = 0; i < puffs.length; i++) {
-      var P = puffs[i];
+    for (var P of puffs) {
       if (!P.on) continue;
       P.t += dt;
       var q = P.t / P.dur;
@@ -273,8 +269,7 @@
     if (dt > 0.06) dt = 0.06;
     last = now;
     var live = 0;
-    for (var r = 0; r < rings.length; r++) {
-      var R = rings[r];
+    for (var R of rings) {
       if (!R.on) continue;
       R.t += dt;
       var q = Math.min(1, R.t / R.dur);

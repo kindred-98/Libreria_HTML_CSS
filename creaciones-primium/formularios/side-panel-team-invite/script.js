@@ -26,14 +26,14 @@ const CAMPOS = [
     etiqueta: "Access level",
     vacio: "Pick what these people will be able to do.",
     error: "That access level is not offered on the Studio plan.",
-    prueba: v => ["admin", "editor", "invitado", "facturacion"].indexOf(v) > -1
+    prueba: v => ["admin", "editor", "invitado", "facturacion"].includes(v)
   },
   {
     id: "equipo",
     etiqueta: "Team",
     vacio: "Put them in a team, otherwise they land in nobody.",
     error: "That team does not exist in this workspace.",
-    prueba: v => ["studio", "finanzas", "soporte", "ops", "diseno"].indexOf(v) > -1
+    prueba: v => ["studio", "finanzas", "soporte", "ops", "diseno"].includes(v)
   },
   {
     id: "mensaje",
@@ -74,8 +74,8 @@ function nodo(etiqueta, clase, texto) {
 }
 
 function validaCorreo(correo) {
-  if (YA_DENTRO.indexOf(correo) > -1) return "inside";
-  if (TIRADOS.indexOf(correo.split("@")[1] || "") > -1) return "tirado";
+  if (YA_DENTRO.includes(correo)) return "inside";
+  if (TIRADOS.includes(correo.split("@")[1] || "")) return "tirado";
   if (!/^[^\s@,;]+@[^\s@,;]+\.[a-zA-Z]{2,}$/.test(correo)) return "mala";
   return "bien";
 }
@@ -222,7 +222,7 @@ function alArrancarAsa(e) {
   hoja.__cayo = hoja.__desplaza;
   asa.focus();
   if (asa.setPointerCapture && e.pointerId !== undefined) {
-    try { asa.setPointerCapture(e.pointerId); } catch (x) { }
+    try { asa.setPointerCapture(e.pointerId); } catch {}
   }
 }
 
@@ -256,7 +256,7 @@ function alArrancarSeparador(e) {
   hoja.__anchoBase = ancho;
   separador.focus();
   if (separador.setPointerCapture && e.pointerId !== undefined) {
-    try { separador.setPointerCapture(e.pointerId); } catch (x) { }
+    try { separador.setPointerCapture(e.pointerId); } catch {}
   }
 }
 

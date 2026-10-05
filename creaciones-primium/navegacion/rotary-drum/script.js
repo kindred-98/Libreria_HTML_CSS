@@ -21,8 +21,8 @@
       if (i === indice) f.setAttribute("aria-current", "true");
       else f.removeAttribute("aria-current");
     });
-    numero.textContent = fichas[indice].getAttribute("data-n");
-    texto.textContent = fichas[indice].getAttribute("data-nombre");
+    numero.textContent = fichas[indice].dataset.n;
+    texto.textContent = fichas[indice].dataset.nombre;
     girar(indice);
   }
 
@@ -66,8 +66,8 @@
       if (i === indice) f.setAttribute("aria-current", "true");
       else f.removeAttribute("aria-current");
     });
-    numero.textContent = fichas[indice].getAttribute("data-n");
-    texto.textContent = fichas[indice].getAttribute("data-nombre");
+    numero.textContent = fichas[indice].dataset.n;
+    texto.textContent = fichas[indice].dataset.nombre;
     girar(indice);
   });
 

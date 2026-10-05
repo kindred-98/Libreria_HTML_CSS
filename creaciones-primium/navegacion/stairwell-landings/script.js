@@ -17,8 +17,8 @@
       else r.removeAttribute("aria-current");
     });
     barra.style.width = (((indice + 1) / rellanos.length) * 100).toFixed(2) + "%";
-    cuenta.textContent = rellanos[indice].getAttribute("data-n");
-    nombre.textContent = rellanos[indice].getAttribute("data-name");
+    cuenta.textContent = rellanos[indice].dataset.n;
+    nombre.textContent = rellanos[indice].dataset.name;
     caer(indice);
   }
 

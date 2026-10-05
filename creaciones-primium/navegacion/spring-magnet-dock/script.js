@@ -1,15 +1,15 @@
 (function () {
   var dock = document.getElementById("dock");
-  var items = [].slice.call(dock.querySelectorAll(".dock__list a"));
-  var sections = [].slice.call(document.querySelectorAll("main .sec[id]"));
+  var items = Array.prototype.slice.call(dock.querySelectorAll(".dock__list a"));
+  var sections = Array.prototype.slice.call(document.querySelectorAll("main .sec[id]"));
   var RADIUS = 132;
   var active = null;
 
   function reset() {
-    for (var i = 0; i < items.length; i++) {
-      items[i].style.setProperty("--sc", 1);
-      items[i].style.setProperty("--ty", "0px");
-      items[i].style.setProperty("--rot", "0deg");
+    for (const item of items) {
+      item.style.setProperty("--sc", 1);
+      item.style.setProperty("--ty", "0px");
+      item.style.setProperty("--rot", "0deg");
     }
   }
 
@@ -26,8 +26,8 @@
 
   function offsetsFromX(x) {
     var out = [];
-    for (var i = 0; i < items.length; i++) {
-      var r = items[i].getBoundingClientRect();
+    for (const item of items) {
+      var r = item.getBoundingClientRect();
       out.push(x - (r.left + r.width / 2));
     }
     return out;
@@ -38,17 +38,17 @@
   });
   dock.addEventListener("pointerleave", reset);
 
-  for (var i = 0; i < items.length; i++) {
-    items[i].addEventListener("focus", function () {
+  for (const item of items) {
+    item.addEventListener("focus", function () {
       var x = this.getBoundingClientRect().left + this.getBoundingClientRect().width / 2;
       apply(offsetsFromX(x));
     });
-    items[i].addEventListener("blur", reset);
-    items[i].addEventListener("pointerenter", function () {
+    item.addEventListener("blur", reset);
+    item.addEventListener("pointerenter", function () {
       var x = this.getBoundingClientRect().left + this.getBoundingClientRect().width / 2;
       apply(offsetsFromX(x));
     });
-    items[i].addEventListener("click", function (e) {
+    item.addEventListener("click", function (e) {
       var href = this.getAttribute("href");
       var target = document.querySelector(href);
       setActive(this);
@@ -63,9 +63,9 @@
   function setActive(link) {
     if (!link || link === active) return;
     active = link;
-    for (var i = 0; i < items.length; i++) {
-      if (items[i] === link) items[i].setAttribute("aria-current", "page");
-      else items[i].removeAttribute("aria-current");
+    for (const item of items) {
+      if (item === link) item.setAttribute("aria-current", "page");
+      else item.removeAttribute("aria-current");
     }
   }
 
@@ -92,13 +92,13 @@
       ticking = false;
       var mark = window.scrollY + window.innerHeight * 0.34;
       var current = null;
-      for (var i = 0; i < sections.length; i++) {
-        if (sections[i].offsetTop <= mark) current = sections[i];
+      for (const section of sections) {
+        if (section.offsetTop <= mark) current = section;
       }
       if (!current) return;
       var id = "#" + current.id;
-      for (var k = 0; k < items.length; k++) {
-        if (items[k].getAttribute("href") === id) { setActive(items[k]); break; }
+      for (const item of items) {
+        if (item.getAttribute("href") === id) { setActive(item); break; }
       }
     });
   }, { passive: true });

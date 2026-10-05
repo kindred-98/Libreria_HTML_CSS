@@ -173,7 +173,7 @@
 
   function fire() {
     document.body.classList.remove("fire");
-    void document.body.offsetWidth;
+    document.body.getBoundingClientRect();
     document.body.classList.add("fire");
     window.clearTimeout(clearT);
     clearT = window.setTimeout(function () { document.body.classList.remove("fire"); }, 560);

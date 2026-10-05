@@ -4,11 +4,11 @@
   var play = document.getElementById('play');
   var copy = document.getElementById('copy');
   var tape = document.querySelector('.tape');
-  var marks = [].slice.call(document.querySelectorAll('#marks .mark'));
-  var chapters = [].slice.call(document.querySelectorAll('.ch[id]'));
-  var more = [].slice.call(document.querySelectorAll('.ch__more'));
+  var marks = Array.prototype.slice.call(document.querySelectorAll('#marks .mark'));
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.ch[id]'));
+  var more = Array.prototype.slice.call(document.querySelectorAll('.ch__more'));
   var out = document.getElementById('scaleOut');
-  var ylds = [].slice.call(document.querySelectorAll('.yld'));
+  var ylds = Array.prototype.slice.call(document.querySelectorAll('.yld'));
   var current = '';
   var ticking = false;
 
@@ -19,7 +19,7 @@
     if (!node) return;
     var head = node.querySelector('h2');
     var num = node.querySelector('.ch__no');
-    var time = node.getAttribute('data-time') || '';
+    var time = node.dataset.time || '';
     marks.forEach(function (m) {
       if (m.getAttribute('href') === '#' + id) m.setAttribute('aria-current', 'true');
       else m.removeAttribute('aria-current');
@@ -38,7 +38,7 @@
     copy.appendChild(clock);
     if (announce) {
       tape.classList.remove('is-turn');
-      void copy.offsetWidth;
+      copy.getBoundingClientRect();
       tape.classList.add('is-turn');
     }
   }
@@ -53,8 +53,8 @@
 
     var line = window.scrollY + window.innerHeight * 0.5;
     var active = chapters[0];
-    for (var i = 0; i < chapters.length; i++) {
-      if (chapters[i].offsetTop <= line) active = chapters[i];
+    for (const chapter of chapters) {
+      if (chapter.offsetTop <= line) active = chapter;
     }
     if (active) setActive(active.id, false);
   }
@@ -83,12 +83,12 @@
   });
 
   function scaleBy(step) {
-    var n = parseInt(out.textContent, 10) + step;
+    var n = Number.parseInt(out.textContent, 10) + step;
     if (n < 1) n = 1;
     if (n > 24) n = 24;
     out.textContent = String(n);
     ylds.forEach(function (b) {
-      var base = parseInt(b.getAttribute('data-base') || '1', 10);
+      var base = Number.parseInt(b.dataset.base || '1', 10);
       b.textContent = String(Math.max(1, Math.round(base * n / 4)));
     });
   }
@@ -96,7 +96,7 @@
   document.getElementById('more').addEventListener('click', function () { scaleBy(1); });
   document.getElementById('less').addEventListener('click', function () { scaleBy(-1); });
 
-  ylds.forEach(function (b) { b.setAttribute('data-base', b.textContent); });
+  ylds.forEach(function (b) { b.dataset.base = b.textContent; });
 
   marks.forEach(function (m) {
     m.addEventListener('click', function () {

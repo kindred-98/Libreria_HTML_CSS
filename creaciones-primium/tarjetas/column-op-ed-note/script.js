@@ -36,7 +36,7 @@ crumpleBtn.addEventListener("click", function () {
     return;
   }
   card.classList.remove("is-crumpled");
-  void card.offsetWidth;
+  card.getBoundingClientRect();
   if (!on) {
     card.classList.add("is-crumpled");
   }
@@ -47,7 +47,7 @@ stampBtn.addEventListener("click", function () {
   stampBtn.setAttribute("aria-pressed", on ? "false" : "true");
   stamp.textContent = on ? "Hold" : "Run it";
   stamp.classList.remove("is-on");
-  void stamp.offsetWidth;
+  stamp.getBoundingClientRect();
   if (!on) {
     stamp.classList.add("is-on");
   }
@@ -85,7 +85,7 @@ function driftLamp() {
   window.setTimeout(driftLamp, 40);
 }
 
-counts.forEach(runCount);
+counts.forEach(n => runCount(n));
 tally();
 driftLamp();
 

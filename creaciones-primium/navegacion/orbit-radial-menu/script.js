@@ -27,24 +27,24 @@
       if (on) orbs[i].setAttribute('aria-current', 'true');
       else orbs[i].removeAttribute('aria-current');
     }
-    var a = orbs[index].getAttribute('data-alt') || '';
-    if (phaseName) phaseName.textContent = orbs[index].getAttribute('data-phase') || '';
+    var a = orbs[index].dataset.alt || '';
+    if (phaseName) phaseName.textContent = orbs[index].dataset.phase || '';
     if (elAlt) elAlt.textContent = a;
-    if (elInc) elInc.textContent = orbs[index].getAttribute('data-inc') || '';
-    if (elVel) elVel.textContent = orbs[index].getAttribute('data-vel') || '';
+    if (elInc) elInc.textContent = orbs[index].dataset.inc || '';
+    if (elVel) elVel.textContent = orbs[index].dataset.vel || '';
     if (elMet) elMet.textContent = mets[index] || '';
     if (hubState) hubState.textContent = states[index] || 'Orbit nominal';
     if (dialHand) dialHand.style.setProperty('--a', angles[index] + 'deg');
   }
 
-  for (var i = 0; i < orbs.length; i++) {
-    orbs[i].addEventListener('click', function () {
+  for (const orb of orbs) {
+    orb.addEventListener('click', function () {
       select(orbs.indexOf(this));
     });
-    orbs[i].addEventListener('focus', function () {
+    orb.addEventListener('focus', function () {
       select(orbs.indexOf(this));
     });
-    orbs[i].addEventListener('keydown', function (event) {
+    orb.addEventListener('keydown', function (event) {
       var here = orbs.indexOf(this);
       var next = null;
       switch (event.key) {
@@ -53,7 +53,7 @@
         case 'Home': next = 0; break;
         case 'End': next = orbs.length - 1; break;
         case 'Escape': next = -1; break;
-        default: next = null;
+        default: break;
       }
       if (next === null) return;
       event.preventDefault();

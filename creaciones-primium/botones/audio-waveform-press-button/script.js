@@ -1,7 +1,6 @@
 (function () {
   var panel = document.getElementById('panel');
   var scopes = Array.prototype.slice.call(document.querySelectorAll('.scope'));
-  var mainScope = document.querySelector('.scope--main');
   var arm = document.getElementById('arm');
   var armLbl = document.getElementById('armLbl');
   var armTicks = arm.querySelectorAll('.arm__ticks i');
@@ -21,8 +20,8 @@
   }
 
   function bars(scope) {
-    var n = parseInt(scope.getAttribute('data-bar'), 10);
-    var sd = parseInt(scope.getAttribute('data-seed'), 10) || 1;
+    var n = Number.parseInt(scope.dataset.bar, 10);
+    var sd = Number.parseInt(scope.dataset.seed, 10) || 1;
     var frag = document.createDocumentFragment();
     for (var i = 0; i < n; i++) {
       var b = document.createElement('i');
@@ -47,7 +46,7 @@
   var ladder = segs(document.querySelector('.ladder'), 18);
   var meterBoxes = document.querySelectorAll('.meter');
   var meters = Array.prototype.map.call(meterBoxes, function (m) {
-    return segs(m, parseInt(m.getAttribute('data-seg'), 10));
+    return segs(m, Number.parseInt(m.dataset.seg, 10));
   });
   var mainSegs = meters[meters.length - 1];
 
@@ -60,10 +59,10 @@
   var sliders = Array.prototype.slice.call(document.querySelectorAll('.slide[data-mod]'));
 
   function fmt(el, spec) {
-    var mn = parseFloat(spec.getAttribute('data-min'));
-    var mx = parseFloat(spec.getAttribute('data-max'));
-    var u = spec.getAttribute('data-unit') || '';
-    var v = mn + (mx - mn) * params[spec.getAttribute('data-mod')];
+    var mn = Number.parseFloat(spec.dataset.min);
+    var mx = Number.parseFloat(spec.dataset.max);
+    var u = spec.dataset.unit || '';
+    var v = mn + (mx - mn) * params[spec.dataset.mod];
     var s = v.toFixed(1) + u;
     if (el.textContent !== s) el.textContent = s;
   }
@@ -73,21 +72,21 @@
     el.addEventListener('pointerdown', function (e) {
       if (id !== null) return;
       id = e.pointerId;
-      try { el.setPointerCapture(id); } catch (err) {}
+      try { el.setPointerCapture(id); } catch {}
       start = e.clientY;
-      base = parseFloat(el.getAttribute('data-val'));
+      base = Number.parseFloat(el.dataset.val);
       e.preventDefault();
     });
     el.addEventListener('pointermove', function (e) {
       if (e.pointerId !== id) return;
       var v = base + (start - e.clientY) / 140;
       v = Math.max(0, Math.min(1, v));
-      el.setAttribute('data-val', v.toFixed(3));
+      el.dataset.val = v.toFixed(3);
       onVal(v);
     });
     function up(e) {
       if (e.pointerId !== id) return;
-      try { el.releasePointerCapture(id); } catch (err) {}
+      try { el.releasePointerCapture(id); } catch {}
       id = null;
     }
     el.addEventListener('pointerup', up);
@@ -95,8 +94,8 @@
   }
 
   nodes.forEach(function (k) {
-    var key = k.getAttribute('data-mod');
-    k.setAttribute('data-val', params[key].toFixed(3));
+    var key = k.dataset.mod;
+    k.dataset.val = params[key].toFixed(3);
     fmt(k.querySelector('.knob__val'), k);
     dragify(k, function (v) {
       params[key] = v;
@@ -105,8 +104,8 @@
   });
 
   sliders.forEach(function (s) {
-    var key = s.getAttribute('data-mod');
-    s.setAttribute('data-val', params[key].toFixed(3));
+    var key = s.dataset.mod;
+    s.dataset.val = params[key].toFixed(3);
     fmt(s.querySelector('.slide__val'), s);
     dragify(s, function (v) {
       params[key] = v;
@@ -115,7 +114,7 @@
   });
 
   Array.prototype.slice.call(document.querySelectorAll('.knob--sm')).forEach(function (k) {
-    k.setAttribute('data-val', parseFloat(k.getAttribute('data-val')).toFixed(3));
+    k.dataset.val = Number.parseFloat(k.dataset.val).toFixed(3);
   });
 
   glue.addEventListener('click', function () {
@@ -144,7 +143,7 @@
 
   arm.addEventListener('pointerdown', function (e) {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    try { arm.setPointerCapture(e.pointerId); } catch (err) {}
+    try { arm.setPointerCapture(e.pointerId); } catch {}
     down(true);
   });
   arm.addEventListener('pointerup', function () { down(false); });
@@ -167,7 +166,12 @@
   function light(list, n) {
     for (var i = 0; i < list.length; i++) {
       var on = i < n;
-      var c = !on ? '' : i >= list.length - 1 ? 'on clip' : i >= list.length - 4 ? 'on hot' : 'on';
+      var c = '';
+      if (on) {
+        if (i >= list.length - 1) c = 'on clip';
+        else if (i >= list.length - 4) c = 'on hot';
+        else c = 'on';
+      }
       if (list[i].className !== c) list[i].className = c;
     }
   }
@@ -190,8 +194,11 @@
 
     var ride = 0.12 + params.rate * 0.88;
     var aT = pressing ? 1 - 0.2 - params.drive * 0.34 : 1;
-    var gT = pressing ? 0.3 + 0.34 + params.drive * 0.2 + (params.glue ? 0.08 : 0) : 0.3;
-    var rT = pressing ? params.drive * 0.72 + (params.glue ? 0.18 : 0) : 0;
+    // El pegamento se separa para que cada linea se quede con un solo ternario.
+    var glueG = params.glue ? 0.08 : 0;
+    var glueR = params.glue ? 0.18 : 0;
+    var gT = pressing ? 0.3 + 0.34 + params.drive * 0.2 + glueG : 0.3;
+    var rT = pressing ? params.drive * 0.72 + glueR : 0;
     var k = 0.05 * ride + 0.014;
 
     amp += (aT - amp) * k;
@@ -268,7 +275,7 @@
     panel.style.setProperty('--gr', '0.4');
     light(mainSegs, 8);
     light(ladder, 11);
-    for (var q = 0; q < armTicks.length; q++) armTicks[q].className = 'on';
+    for (var tick of armTicks) tick.className = 'on';
   } else {
     step();
     (function loop() {

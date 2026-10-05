@@ -70,8 +70,8 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
 
-  for (var i = 0; i < links.length; i++) {
-    links[i].addEventListener('keydown', function (event) {
+  for (const link of links) {
+    link.addEventListener('keydown', function (event) {
       var here = links.indexOf(event.currentTarget);
       var handled = true;
       switch (event.key) {

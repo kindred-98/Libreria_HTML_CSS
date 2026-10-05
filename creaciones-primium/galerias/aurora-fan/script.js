@@ -156,7 +156,7 @@
     }
     viewer.hidden = true;
     vImg.removeAttribute("src");
-    if (restore && restore.focus) {
+    if (restore?.focus) {
       restore.focus({ preventScroll: true });
     }
     restore = null;

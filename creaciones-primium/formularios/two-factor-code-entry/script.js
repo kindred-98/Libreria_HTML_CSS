@@ -21,7 +21,7 @@ const CAMPOS = [
     error: "Ese código no es válido. Revisa el orden de las cifras.",
     prueba: () => {
       const v = casillas.map(c => c.value).join("");
-      return v.length === 6 && /^[0-9]{6}$/.test(v);
+      return v.length === 6 && /^[\d]{6}$/.test(v);
     }
   },
   {
@@ -29,7 +29,7 @@ const CAMPOS = [
     etiqueta: "Motivo del código",
     vacio: "Selecciona por qué has pedido el código.",
     error: "Ese motivo no está en la lista.",
-    prueba: v => MOTIVOS.indexOf(v) !== -1
+    prueba: v => MOTIVOS.includes(v)
   }
 ];
 
@@ -186,7 +186,7 @@ btnReenviar.addEventListener("click", () => {
 form.addEventListener("submit", e => {
   e.preventDefault();
   const falloCodigo = pintarCodigo();
-  const falloMotivo = pintarMotivo();
+  pintarMotivo();
   const fallos = problemas();
 
   if (fallos.length > 0) {

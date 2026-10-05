@@ -1,8 +1,8 @@
 (function () {
   var row = document.getElementById('row');
-  var switches = [].slice.call(row.querySelectorAll('[role="radio"]'));
-  var plans = [].slice.call(document.querySelectorAll('.plan'));
-  var records = [].slice.call(document.querySelectorAll('.records__list a'));
+  var switches = Array.prototype.slice.call(row.querySelectorAll('[role="radio"]'));
+  var plans = Array.prototype.slice.call(document.querySelectorAll('.plan'));
+  var records = Array.prototype.slice.call(document.querySelectorAll('.records__list a'));
   var tally = document.getElementById('tally');
   var say = document.getElementById('say');
   var index = 0;
@@ -22,7 +22,7 @@
       }
       if (on) {
         sw.classList.remove('is-hit');
-        void sw.offsetWidth;
+        sw.getBoundingClientRect();
         sw.classList.add('is-hit');
       }
     });

@@ -20,8 +20,8 @@
       if (i === indice) d.setAttribute("aria-current", "true");
       else d.removeAttribute("aria-current");
     });
-    num.textContent = destinos[indice].getAttribute("data-linea");
-    texto.textContent = destinos[indice].getAttribute("data-texto");
+    num.textContent = destinos[indice].dataset.linea;
+    texto.textContent = destinos[indice].dataset.texto;
     marca.style.setProperty("--giro", (indice * 60).toFixed(1) + "deg");
   }
 

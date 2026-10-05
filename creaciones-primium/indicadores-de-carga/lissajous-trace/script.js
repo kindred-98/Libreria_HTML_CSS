@@ -9,7 +9,7 @@
 
   var pts = new Array(n + 1);
   for (var i = 0; i < n; i++) {
-    pts[i] = [parseFloat(segs[i].style.left) || 0, parseFloat(segs[i].style.top) || 0];
+    pts[i] = [Number.parseFloat(segs[i].style.left) || 0, Number.parseFloat(segs[i].style.top) || 0];
   }
   pts[n] = pts[0];
 

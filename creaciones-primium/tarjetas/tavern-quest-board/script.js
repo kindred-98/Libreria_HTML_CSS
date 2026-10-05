@@ -30,7 +30,7 @@ function refreshCount() {
   const n = quests.filter(shown).length;
   countOut.textContent = n + (n === 1 ? " posting" : " postings");
   countOut.classList.remove("is-fresh");
-  void countOut.offsetWidth;
+  countOut.getBoundingClientRect();
   if (!reduce) {
     countOut.classList.add("is-fresh");
   }
@@ -65,14 +65,14 @@ function apply(mutate) {
     }
     quest.style.transition = "none";
     quest.style.transform = "translate3d(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px,0)";
-    void quest.offsetWidth;
+    quest.getBoundingClientRect();
     quest.style.transition = "transform 0.56s cubic-bezier(0.16, 1, 0.3, 1)";
     quest.style.transform = "";
     window.setTimeout(function () {
       quest.style.transition = "";
     }, 620);
     quest.classList.remove("is-flip");
-    void quest.offsetWidth;
+    quest.getBoundingClientRect();
     quest.classList.add("is-flip");
   });
   refreshCount();
@@ -118,7 +118,7 @@ filters.forEach(function (btn) {
     const key = state.rarity ? "legend" : state.level === "all" ? "all" : "l" + state.level;
     ledgerNote.textContent = NOTES[key];
     ledgerNote.classList.remove("is-fresh");
-    void ledgerNote.offsetWidth;
+    ledgerNote.getBoundingClientRect();
     if (!reduce) {
       ledgerNote.classList.add("is-fresh");
     }
@@ -133,7 +133,7 @@ sortBtn.addEventListener("click", function () {
     ? "Sorted by reward, largest first."
     : "Back in posting order, oldest on the left.";
   ledgerNote.classList.remove("is-fresh");
-  void ledgerNote.offsetWidth;
+  ledgerNote.getBoundingClientRect();
   if (!reduce) {
     ledgerNote.classList.add("is-fresh");
   }
@@ -150,7 +150,7 @@ pinBtn.addEventListener("click", function () {
     ? "Legend pinned in the centre of the board."
     : "Legend unpinned. Someone will move it by morning.";
   ledgerNote.classList.remove("is-fresh");
-  void ledgerNote.offsetWidth;
+  ledgerNote.getBoundingClientRect();
   if (!reduce) {
     ledgerNote.classList.add("is-fresh");
   }

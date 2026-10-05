@@ -24,25 +24,25 @@
   }
 
   function matches(el) {
-    return (el.getAttribute('data-cat') === cat) && (!len || el.getAttribute('data-len') === len);
+    return (el.dataset.cat === cat) && (!len || el.dataset.len === len);
   }
 
   function apply() {
     var shown = 0;
     var step = 0;
-    for (var i = 0; i < items.length; i++) {
-      var ok = matches(items[i]);
-      items[i].hidden = !ok;
+    for (const item of items) {
+      var ok = matches(item);
+      item.hidden = !ok;
       if (ok) shown++;
     }
-    for (var s = 0; s < sections.length; s++) {
-      var good = matches(sections[s]);
-      sections[s].hidden = !good;
-      sections[s].classList.remove('is-in');
+    for (const section of sections) {
+      var good = matches(section);
+      section.hidden = !good;
+      section.classList.remove('is-in');
       if (good) {
-        sections[s].style.setProperty('--d', (step * 0.055).toFixed(3) + 's');
-        void sections[s].offsetWidth;
-        sections[s].classList.add('is-in');
+        section.style.setProperty('--d', (step * 0.055).toFixed(3) + 's');
+        section.getBoundingClientRect();
+        section.classList.add('is-in');
         step++;
       }
     }
@@ -62,17 +62,17 @@
       opts[i].setAttribute('aria-checked', on ? 'true' : 'false');
       opts[i].tabIndex = on ? 0 : -1;
     }
-    cat = opts[index].getAttribute('data-cat');
+    cat = opts[index].dataset.cat;
     place();
     apply();
     if (focus) opts[index].focus();
   }
 
-  for (var i = 0; i < opts.length; i++) {
-    opts[i].addEventListener('click', function () {
+  for (const opt of opts) {
+    opt.addEventListener('click', function () {
       setCat(opts.indexOf(this), false);
     });
-    opts[i].addEventListener('keydown', function (event) {
+    opt.addEventListener('keydown', function (event) {
       var here = opts.indexOf(this);
       var next = null;
       switch (event.key) {
@@ -81,7 +81,7 @@
         case 'Home': next = 0; break;
         case 'End': next = opts.length - 1; break;
         case 'Escape': next = 0; break;
-        default: next = null;
+        default: break;
       }
       if (next === null) return;
       event.preventDefault();
@@ -89,15 +89,15 @@
     });
   }
 
-  for (var c = 0; c < chips.length; c++) {
-    chips[c].addEventListener('click', function () {
+  for (const chip of chips) {
+    chip.addEventListener('click', function () {
       var on = this.getAttribute('aria-pressed') === 'true';
-      for (var k = 0; k < chips.length; k++) chips[k].setAttribute('aria-pressed', 'false');
+      for (const other of chips) other.setAttribute('aria-pressed', 'false');
       if (on) {
         len = '';
         this.setAttribute('aria-pressed', 'false');
       } else {
-        len = this.getAttribute('data-len');
+        len = this.dataset.len;
         this.setAttribute('aria-pressed', 'true');
       }
       apply();

@@ -101,7 +101,7 @@ function pathLength(buf,n,s){
   for(let i=1;i<n;i++){
     const dx=(buf[i*2]-buf[(i-1)*2])*s;
     const dy=(buf[i*2+1]-buf[(i-1)*2+1])*s;
-    L+=Math.sqrt(dx*dx+dy*dy);
+    L+=Math.hypot(dx, dy);
   }
   return L;
 }

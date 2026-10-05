@@ -22,7 +22,7 @@
     }
     if (punch && list) punch.style.setProperty('--py', rows[i].offsetTop + 'px');
     if (readout) {
-      readout.textContent = 'Sc. ' + (i + 1) + ' of ' + links.length + ' \u00b7 ' + (links[i].getAttribute('data-pages') || '');
+      readout.textContent = 'Sc. ' + (i + 1) + ' of ' + links.length + ' \u00b7 ' + (links[i].dataset.pages || '');
     }
   }
 

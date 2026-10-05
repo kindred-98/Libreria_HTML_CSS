@@ -168,7 +168,7 @@ function fechaLarga(iso) {
 }
 
 function paisActual() {
-  for (let i = 0; i < PAISES.length; i++) if (PAISES[i].codigo === st.pais) return PAISES[i];
+  for (const pais of PAISES) if (pais.codigo === st.pais) return pais;
   return null;
 }
 
@@ -187,7 +187,7 @@ function textoDe(pasoActual) {
   if (pasoActual === "tamano") return TAMANOS.filter(t => t.clave === st.tamano).map(t => t.texto)[0] || "";
   if (pasoActual === "iva") return st.iva ? st.iva : "";
   if (pasoActual === "correo") return st.correo;
-  if (pasoActual === "servicios") return SERVICIOS.filter(s => st.servicios.indexOf(s.clave) > -1).map(s => s.texto).join(", ");
+  if (pasoActual === "servicios") return SERVICIOS.filter(s => st.servicios.includes(s.clave)).map(s => s.texto).join(", ");
   if (pasoActual === "arranque") return st.arranque ? fechaLarga(st.arranque) + ", " + (FRANJAS.filter(f => f.clave === st.franja).map(f => f.texto)[0] || "") : "";
   return "";
 }
@@ -201,11 +201,11 @@ function Fallos(p) {
       out.push({ campo: p.idCampo, mensaje: "Between 3 and 60 characters, and at least one letter. That is the limit the invoicing system accepts." });
     } else if (p.id === "correo" && !/^[^\s@,;]+@[^\s@,;]+\.[a-zA-Z]{2,}$/.test(v)) {
       out.push({ campo: p.idCampo, mensaje: "That is not the shape name@domain.com that the mail server expects." });
-    } else if (p.id === "correo" && TIRADOS.indexOf(v.split("@")[1].toLowerCase()) > -1) {
+    } else if (p.id === "correo" && TIRADOS.includes(v.split("@")[1].toLowerCase())) {
       out.push({ campo: p.idCampo, mensaje: v.split("@")[1] + " is a throwaway inbox. Contracts do not go to those." });
     }
   }
-  if (p.control === "opciones" && ETIQUETA_TAMANO.indexOf(textoDe(p.id)) === -1) {
+  if (p.control === "opciones" && ETIQUETA_TAMANO.includes(textoDe(p.id))) {
     out.push({ campo: "tamanoFichas", mensaje: "Choose one of the four head counts. There is no free text on this one." });
   }
   if (p.control === "iva") {
@@ -266,8 +266,9 @@ function pintarCampo(idCampo, mala, mensaje) {
     if (controlReal) controlReal.setAttribute("aria-invalid", "false");
   }
   const describedBy = described.join(" ");
-  if (control.tagName === "DIV") control.setAttribute("aria-describedby", describedBy);
-  else control.setAttribute("aria-describedby", describedBy);
+  // If/else simplificado: las dos ramas escribian el mismo atributo, asi que da
+  // igual que el control sea el contenedor o el input de dentro.
+  control.setAttribute("aria-describedby", describedBy);
 }
 
 function pintarPaso() {
@@ -426,7 +427,7 @@ function montarMulti(p) {
   SERVICIOS.forEach(s => {
     const b = nodo("button", "marca");
     b.type = "button";
-    b.setAttribute("aria-pressed", st.servicios.indexOf(s.clave) > -1 ? "true" : "false");
+    b.setAttribute("aria-pressed", st.servicios.includes(s.clave) ? "true" : "false");
     b.appendChild(nodo("span", "marca__punto"));
     const txt = nodo("span");
     txt.appendChild(document.createTextNode(s.texto));
@@ -678,7 +679,10 @@ function pintarDossier() {
   PASOS.forEach((x, i) => {
     const li = document.createElement("li");
     li.textContent = x.etiqueta;
-    li.dataset.estado = i < hechos ? "hecho" : (i === st.indice ? "activo" : "espera");
+    let estado = "espera";
+    if (i < hechos) estado = "hecho";
+    else if (i === st.indice) estado = "activo";
+    li.dataset.estado = estado;
     dossierPasos.appendChild(li);
   });
 
@@ -688,7 +692,7 @@ function pintarDossier() {
     ["Head count", TAMANOS.filter(t => t.clave === st.tamano).map(t => t.texto)[0] || ""],
     ["VAT", st.iva],
     ["Billing contact", st.correo],
-    ["Scope", SERVICIOS.filter(s => st.servicios.indexOf(s.clave) > -1).map(s => s.texto).join(", ")],
+    ["Scope", SERVICIOS.filter(s => st.servicios.includes(s.clave)).map(s => s.texto).join(", ")],
     ["Go live", st.arranque ? fechaLarga(st.arranque) : ""]
   ].forEach(par => {
     const div = document.createElement("div");

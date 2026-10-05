@@ -2,7 +2,6 @@
   var nav = document.querySelector('[data-organism]');
   if (!nav) { return; }
 
-  var net = nav.querySelector('.net');
   var links = Array.prototype.slice.call(nav.querySelectorAll('.node[href^="#"]'));
   var sections = [];
   var names = [];
@@ -24,7 +23,7 @@
   var queued = false;
 
   function setOpen(open) {
-    nav.setAttribute('data-open', open ? 'true' : 'false');
+    nav.dataset.open = open ? 'true' : 'false';
     if (toggle) { toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); }
   }
 
@@ -47,9 +46,9 @@
         else { links[i].removeAttribute('aria-current'); }
       }
       nav.style.setProperty('--pos', String(index));
-      nav.setAttribute('data-at', String(index + 1));
+      nav.dataset.at = String(index + 1);
       var text = 'Node ' + (index + 1) + ' of ' + links.length + ' · ' + names[index];
-      for (var r = 0; r < readouts.length; r++) { readouts[r].textContent = text; }
+      for (const readout of readouts) { readout.textContent = text; }
     }
   }
 
@@ -64,23 +63,23 @@
       apply(i);
       setOpen(false);
     });
-    a.addEventListener('pointerenter', function () { nav.setAttribute('data-hot', String(i)); });
-    a.addEventListener('pointerleave', function () { nav.removeAttribute('data-hot'); });
-    a.addEventListener('focus', function () { nav.setAttribute('data-hot', String(i)); });
-    a.addEventListener('blur', function () { nav.removeAttribute('data-hot'); });
+    a.addEventListener('pointerenter', function () { nav.dataset.hot = String(i); });
+    a.addEventListener('pointerleave', function () { delete nav.dataset.hot; });
+    a.addEventListener('focus', function () { nav.dataset.hot = String(i); });
+    a.addEventListener('blur', function () { delete nav.dataset.hot; });
   });
 
-  nav.addEventListener('pointerleave', function () { nav.removeAttribute('data-hot'); });
+  nav.addEventListener('pointerleave', function () { delete nav.dataset.hot; });
 
   if (toggle) {
     toggle.addEventListener('click', function () {
-      setOpen(nav.getAttribute('data-open') !== 'true');
+      setOpen(nav.dataset.open !== 'true');
     });
   }
 
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') { return; }
-    if (nav.getAttribute('data-open') === 'false') { return; }
+    if (nav.dataset.open === 'false') { return; }
     setOpen(false);
     if (toggle) { toggle.focus(); }
   });

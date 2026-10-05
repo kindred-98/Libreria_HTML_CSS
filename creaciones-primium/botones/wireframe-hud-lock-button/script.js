@@ -1,7 +1,6 @@
 (function () {
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var hud = document.getElementById("hud");
-  var stage = document.getElementById("stage");
   var target = document.getElementById("target");
   var ring = document.getElementById("ring");
   var ring2 = document.getElementById("ring2");
@@ -34,8 +33,6 @@
 
   var T = 8400;
   var t0 = 0;
-  var cx = 0;
-  var cy = 0;
   var hw = 0;
   var hh = 0;
   var held = -1;
@@ -43,14 +40,14 @@
   var lastTxt = -999;
   var isLock = false;
   var ease = function (x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
-  var clamp = function (x, a, b) { return x < a ? a : x > b ? b : x; };
-  var hex = function (n) { n = clamp(Math.round(n), 0, 255); return n < 16 ? "0" + n.toString(16) : n.toString(16); };
+  var clamp = function (x, a, b) {
+    if (x < a) return a;
+    if (x > b) return b;
+    return x;
+  };
 
   function measure() {
-    var sr = stage.getBoundingClientRect();
     var tr = target.getBoundingClientRect();
-    cx = sr.left + sr.width / 2;
-    cy = sr.top + sr.height / 2;
     hw = tr.width / 2;
     hh = tr.height / 2;
   }

@@ -50,21 +50,21 @@ function placeGloss() {
 
 function restartMeasures() {
   grid.classList.add("is-restart");
-  void grid.offsetWidth;
+  grid.getBoundingClientRect();
   grid.classList.remove("is-restart");
-  figures.forEach(runCounter);
+  figures.forEach(function (node) { return runCounter(node); });
 }
 
 let flipTimer = 0;
 
 function applyMode(mode) {
-  if (grid.getAttribute("data-mode") === mode) {
+  if (grid.dataset.mode === mode) {
     return;
   }
   const first = blocks.map(function (node) {
     return node.getBoundingClientRect();
   });
-  grid.setAttribute("data-mode", mode);
+  grid.dataset.mode = mode;
   const last = blocks.map(function (node) {
     return node.getBoundingClientRect();
   });
@@ -79,7 +79,7 @@ function applyMode(mode) {
     window.clearTimeout(flipTimer);
     node.style.transition = "none";
     node.style.transform = moved ? "translate3d(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px,0)" : "";
-    void node.offsetWidth;
+    node.getBoundingClientRect();
     node.style.transition = "transform .46s " + EASE;
     node.style.transform = "";
     flipTimer = window.setTimeout(function () {
@@ -107,7 +107,7 @@ goBtn.addEventListener("click", function () {
   goText.textContent = "Recomputed";
 });
 
-figures.forEach(runCounter);
+figures.forEach(function (node) { return runCounter(node); });
 placeGloss();
 gloss.classList.add("is-live");
 window.setTimeout(placeGloss, 720);

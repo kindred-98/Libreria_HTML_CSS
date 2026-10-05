@@ -156,7 +156,7 @@
       t.g.style.transitionDelay = ((t.i + t.j) * 18 + (t.i + n - t.j) * 6) + 'ms';
       place(t, (t.rot * 90 + 180) % 360);
     }
-    void lab.getBoundingClientRect().width;
+    lab.getBoundingClientRect();
     for (const t of tiles) {
       place(t, t.rot * 90);
     }
@@ -167,8 +167,7 @@
 
   const wave = (clock) => {
     const u = (clock - LEAD) / PERIOD;
-    for (let idx = 0; idx < tiles.length; idx++) {
-      const t = tiles[idx];
+    for (const t of tiles) {
       const raw = u - (t.i + t.j) / (2 * n);
       const ph = raw - Math.floor(raw);
       const step = Math.floor(ph * 2);

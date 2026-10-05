@@ -41,7 +41,7 @@
         links[i].style.setProperty('--slot', String(i));
       }
       nav.style.setProperty('--pos', String(index));
-      nav.setAttribute('data-at', String(index + 1));
+      nav.dataset.at = String(index + 1);
       if (readout) {
         readout.textContent = 'Frond ' + (index + 1) + ' of ' + links.length + ' · ' + names[index];
       }

@@ -2,7 +2,7 @@
   var hand = document.querySelector('.hand');
   var fold = document.getElementById('fold');
   var mark = document.getElementById('mark');
-  var slots = [].slice.call(document.querySelectorAll('.fan__slot'));
+  var slots = Array.prototype.slice.call(document.querySelectorAll('.fan__slot'));
   var links = slots.map(function (s) { return s.querySelector('a'); });
   var roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var secs = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
@@ -22,7 +22,7 @@
 
   function read() {
     var line = window.innerHeight * 0.46;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var bestD = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -47,7 +47,7 @@
   });
 
   function shut(closed) {
-    hand.setAttribute('data-fold', closed ? 'closed' : 'open');
+    hand.dataset.fold = closed ? 'closed' : 'open';
     document.documentElement.style.setProperty('--open', closed ? '0.16' : '1');
     fold.setAttribute('aria-expanded', closed ? 'false' : 'true');
     fold.querySelector('.fold__text').textContent = closed ? 'Open the fan' : 'Fold the fan';

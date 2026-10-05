@@ -3,8 +3,6 @@
   var ctx = cv.getContext("2d");
   var valve = document.getElementById("valve");
   var well = document.getElementById("well");
-  var flash = document.getElementById("flash");
-  var shock = document.getElementById("shock");
   var st = document.getElementById("st");
   var thr = document.getElementById("thr");
   var npEl = document.getElementById("np");
@@ -128,7 +126,7 @@
     st.className = "hot";
     valve.classList.add("is-hit");
     well.classList.remove("is-in", "is-ex", "is-slam");
-    void well.offsetWidth;
+    well.getBoundingClientRect();
     well.classList.add("is-slam");
     clearTimeout(tA);
     clearTimeout(tB);
@@ -165,7 +163,9 @@
     el.addEventListener("pointerup", end);
     el.addEventListener("pointercancel", end);
     el.addEventListener("keydown", function (e) {
-      var d = e.key === "ArrowUp" || e.key === "ArrowRight" ? 0.05 : e.key === "ArrowDown" || e.key === "ArrowLeft" ? -0.05 : 0;
+      var d = 0;
+      if (e.key === "ArrowUp" || e.key === "ArrowRight") d = 0.05;
+      else if (e.key === "ArrowDown" || e.key === "ArrowLeft") d = -0.05;
       if (!d) return;
       e.preventDefault();
       apply.set(Math.max(0, Math.min(1, apply.get() + d)));
@@ -213,7 +213,8 @@
     var rInt = R * (0.52 + 0.44 * intake) * (0.4 + 0.6 * throat);
     var rOut = R * 1.02;
     var breath = 1 + 0.05 * Math.sin(phase * 2.2);
-    var exh = mode === "ex" ? Math.min(1, mt / 2.4) : mode === "slam" ? 0 : 0;
+    // Ternario simplificado: tanto "slam" como el resto de modos dan 0.
+    var exh = mode === "ex" ? Math.min(1, mt / 2.4) : 0;
     var dim = 1 - exh * 0.85;
     var i, a, rr, x, y;
     var arms = 3;
@@ -246,7 +247,8 @@
       ctx.stroke();
     }
 
-    var dir = base >= 0 ? 1 : 1;
+    // Ternario simplificado: las dos ramas devolvian 1.
+    var dir = 1;
     for (var k = 0; k < arms; k++) {
       for (var pass = 0; pass < 2; pass++) {
         ctx.beginPath();
@@ -334,7 +336,9 @@
       st.className = "ok";
     }
 
-    var targetThroat = mode === "slam" ? Math.max(0, 1 - mt / 0.19) : mode === "ex" ? 0.22 + 0.78 * Math.min(1, mt / 2.2) : 1;
+    var targetThroat = 1;
+    if (mode === "slam") targetThroat = Math.max(0, 1 - mt / 0.19);
+    else if (mode === "ex") targetThroat = 0.22 + 0.78 * Math.min(1, mt / 2.2);
     throat += (targetThroat - throat) * Math.min(1, dt * (mode === "slam" ? 26 : 5));
     thr.textContent = (0.4 + throat * 3.6).toFixed(1);
 

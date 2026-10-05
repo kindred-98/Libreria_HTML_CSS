@@ -58,14 +58,14 @@ const CAMPOS = [
     etiqueta: "Discipline",
     vacio: "Pick the discipline this record belongs to.",
     error: "That discipline is not in the academy list.",
-    prueba: v => DEPORTES.indexOf(v) !== -1
+    prueba: v => DEPORTES.includes(v)
   },
   {
     id: "pais",
     etiqueta: "Country",
     vacio: "Pick the country of registration.",
     error: "That country code is not on the federation list.",
-    prueba: v => PAISES.indexOf(v) !== -1
+    prueba: v => PAISES.includes(v)
   },
   {
     id: "club",
@@ -79,7 +79,7 @@ const CAMPOS = [
     etiqueta: "Licence number",
     vacio: "",
     error: "Three capitals, four digits and one capital, like FED-4021-E.",
-    prueba: v => v === "" || /^[A-Z]{3}-[0-9]{4}-[A-Z]$/.test(v)
+    prueba: v => v === "" || /^[A-Z]{3}-[\d]{4}-[A-Z]$/.test(v)
   },
   {
     id: "nacimiento",
@@ -215,7 +215,10 @@ function pintarTarjeta() {
   }
 
   const altura = el("altura").value.trim();
-  el("datoAltura").textContent = /^\d{3}$/.test(altura) ? altura + " cm" : (altura === "" ? "not set" : altura + " cm, check this");
+  let textoAltura = altura + " cm, check this";
+  if (altura === "") textoAltura = "not set";
+  else if (/^\d{3}$/.test(altura)) textoAltura = altura + " cm";
+  el("datoAltura").textContent = textoAltura;
 
   const marcadas = elegidas();
   el("datoEspeciales").textContent = marcadas.length === 0 ? "none ticked" : marcadas.length + " ticked";

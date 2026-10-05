@@ -12,7 +12,7 @@
     if (!target) { return; }
     a.setAttribute('aria-controls', id);
     sections.push(target);
-    names.push(a.getAttribute('data-name') || a.textContent.trim());
+    names.push(a.dataset.name || a.textContent.trim());
   });
 
   if (!sections.length) { return; }
@@ -37,11 +37,11 @@
     for (var i = 0; i < links.length; i++) {
       if (i === index) { links[i].setAttribute('aria-current', 'true'); }
       else { links[i].removeAttribute('aria-current'); }
-      if (i <= index) { links[i].setAttribute('data-reached', ''); }
-      else { links[i].removeAttribute('data-reached'); }
+      if (i <= index) { links[i].dataset.reached = ''; }
+      else { delete links[i].dataset.reached; }
     }
     nav.style.setProperty('--pos', String(index));
-    nav.setAttribute('data-at', String(index + 1));
+    nav.dataset.at = String(index + 1);
     if (readout) {
       readout.textContent = 'Chapter ' + (index + 1) + ' of ' + links.length + ' · ' + names[index];
     }

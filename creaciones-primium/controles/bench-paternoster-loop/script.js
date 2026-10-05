@@ -18,9 +18,7 @@
   var still = false;
   try {
     still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch (err) {
-    void err;
-  }
+  } catch {}
 
   var cells = set.querySelectorAll(".cell");
 
@@ -54,10 +52,10 @@
       copy.setAttribute("aria-hidden", "true");
       copy.removeAttribute("id");
       var inner = copy.querySelectorAll(".cell");
-      for (var k = 0; k < inner.length; k += 1) {
-        inner[k].removeAttribute("role");
-        inner[k].removeAttribute("id");
-        inner[k].removeAttribute("aria-selected");
+      for (var cell of inner) {
+        cell.removeAttribute("role");
+        cell.removeAttribute("id");
+        cell.removeAttribute("aria-selected");
       }
       track.appendChild(copy);
     }
@@ -149,7 +147,7 @@
     track.style.transition = "none";
     track.style.transform = "none";
     track.style.animation = "none";
-    void track.offsetHeight;
+    track.getBoundingClientRect();
     track.style.animation = "chain " + DUR + "s linear " + (-(phase / H) * DUR).toFixed(3) + "s infinite";
     setSpeed(1, "coasting", "#1aa862");
     window.clearTimeout(restTimer);
@@ -211,7 +209,7 @@
     track.style.animationPlayState = "paused";
     track.style.transition = "none";
     track.style.transform = "translate3d(0," + (-now).toFixed(2) + "px,0)";
-    void track.offsetHeight;
+    track.getBoundingClientRect();
     track.style.transition = "transform " + d1 + "ms cubic-bezier(.24,.72,.3,1)";
     track.style.transform = "translate3d(0," + (-(target + over)).toFixed(2) + "px,0)";
 
@@ -259,7 +257,7 @@
     var node = event.target;
     while (node && node !== loop) {
       if (node.classList && node.classList.contains("cell")) {
-        var idx = Number(node.getAttribute("data-i"));
+        var idx = Number(node.dataset.i);
         brake(((idx % COUNT) + COUNT) % COUNT);
         return;
       }

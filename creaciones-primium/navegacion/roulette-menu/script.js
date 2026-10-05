@@ -19,7 +19,7 @@
   function settle() {
     if (!wheel) return;
     wheel.classList.remove('is-set');
-    void wheel.offsetWidth;
+    wheel.getBoundingClientRect();
     wheel.classList.add('is-set');
   }
 
@@ -37,12 +37,12 @@
       if (first) angle = i * STEP;
       else angle += (back ? 1 + (current - i) : (SPINS[i] || 1)) * 360 + i * STEP;
       wheel.style.transform = 'rotate(' + angle + 'deg)';
-      if (first) { void wheel.offsetWidth; wheel.style.transition = ''; }
+      if (first) { wheel.getBoundingClientRect(); wheel.style.transition = ''; }
     }
-    hall.setAttribute('data-at', i);
-    if (up) up.textContent = 'no.' + nums[i].getAttribute('data-no');
+    hall.dataset.at = i;
+    if (up) up.textContent = 'no.' + nums[i].dataset.no;
     if (turn) turn.textContent = first ? 'first spin' : (back ? 'back one house' : 'turn ' + (SPINS[i] || 1));
-    if (say) say.textContent = nums[i].getAttribute('data-say') || '';
+    if (say) say.textContent = nums[i].dataset.say || '';
     settle();
   }
 

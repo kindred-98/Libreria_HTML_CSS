@@ -41,9 +41,9 @@ const PAL=new Uint32Array(PAL_SIZE);
     const a=STOPS[seg],b=STOPS[seg+1];
     const span=b[0]-a[0]||1;
     const f=Math.min(1,Math.max(0,(t-a[0])/span));
-    const r=(a[1]+(b[1]-a[1])*f)|0;
-    const g=(a[2]+(b[2]-a[2])*f)|0;
-    const bl=(a[3]+(b[3]-a[3])*f)|0;
+    const r=(a[1]+(b[1]-a[1])*f | 0);
+    const g=(a[2]+(b[2]-a[2])*f | 0);
+    const bl=(a[3]+(b[3]-a[3])*f | 0);
     PAL[i]=0xff000000|(bl<<16)|(g<<8)|r;
   }
   PAL[PAL_SIZE-1]=0xff000000|(12<<16)|(11<<8)|5;
@@ -117,7 +117,7 @@ function renderRow(row){
       sm*=inv;
       if(sm<0) sm=0;
       else if(sm>1) sm=1;
-      const v=(Math.pow(sm,0.42)*(PAL_SIZE-2))|0;
+      const v=(Math.pow(sm,0.42)*(PAL_SIZE-2 | 0));
       pix[idx]=PAL[v];
     }
     idx++;

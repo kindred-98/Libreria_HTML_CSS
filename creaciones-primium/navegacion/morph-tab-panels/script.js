@@ -8,7 +8,6 @@
     panels.push(document.getElementById(buttons[i].getAttribute("aria-controls")));
   }
   var ink = document.querySelector(".tabs__ink");
-  var bar = document.querySelector(".tabs");
   var lab = document.getElementById("lab");
   var readout = document.getElementById("scopeBench");
   var current = 0;
@@ -21,7 +20,7 @@
     ink.style.height = tab.offsetHeight + "px";
     ink.style.transform = "translate(" + tab.offsetLeft + "px," + tab.offsetTop + "px)";
     if (!animate) {
-      void ink.offsetWidth;
+      ink.getBoundingClientRect();
       ink.style.transition = "";
     }
   }
@@ -36,7 +35,7 @@
       tabs[k].setAttribute("tabindex", on ? "0" : "-1");
       if (panels[k]) panels[k].classList.toggle("is-on", on);
     }
-    lab.setAttribute("data-bench", String(index + 1));
+    lab.dataset.bench = String(index + 1);
     readout.textContent = index + 1 < 10 ? "0" + (index + 1) : String(index + 1);
     place(index, true);
     if (focus) tabs[index].focus();

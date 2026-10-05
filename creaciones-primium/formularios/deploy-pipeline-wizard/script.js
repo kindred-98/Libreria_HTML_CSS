@@ -68,7 +68,10 @@ function pintarRiel() {
   rielPasos.innerHTML = "";
   PASOS.forEach((p, i) => {
     const li = document.createElement("li");
-    li.dataset.estado = i < st.paso ? "hecho" : (i === st.paso ? "activo" : "espera");
+    let estado = "espera";
+    if (i < st.paso) estado = "hecho";
+    else if (i === st.paso) estado = "activo";
+    li.dataset.estado = estado;
     const alcanzado = i < st.paso || (i === st.paso);
     li.dataset.navega = alcanzado ? "1" : "0";
     const b = document.createElement("button");
@@ -312,7 +315,7 @@ function montarTrafico() {
     const c = document.createElement("input");
     c.type = "checkbox";
     c.id = "region_" + r.clave;
-    c.checked = st.regiones.indexOf(r.clave) > -1;
+    c.checked = st.regiones.includes(r.clave);
     c.addEventListener("change", () => {
       const i = st.regiones.indexOf(r.clave);
       if (c.checked && i === -1) st.regiones.push(r.clave);
@@ -395,7 +398,7 @@ function resumenDe(i) {
   }
   if (i === 1) return [st.comando, NODOS.filter(n => n.clave === st.nodo).map(n => n.texto)[0], st.instalar ? "install yes" : "install no", st.cache ? "cache yes" : "cache no"];
   if (i === 2) return [st.entorno, st.secretos.map(s => s.clave).join(", ")];
-  if (i === 3) return [REGIONES.filter(r => st.regiones.indexOf(r.clave) > -1).map(r => r.nombre).join(", "), st.canario + " per cent", st.salud];
+  if (i === 3) return [REGIONES.filter(r => st.regiones.includes(r.clave)).map(r => r.nombre).join(", "), st.canario + " per cent", st.salud];
   return [];
 }
 
@@ -495,7 +498,7 @@ function pintarErrores() {
   };
   Object.keys(campos).forEach(id => {
     const n = el(id);
-    if (n && n.closest(".campo")) pintarCampo(id, "");
+    if (n?.closest(".campo")) pintarCampo(id, "");
   });
 
   if (st.paso === 2) {
@@ -576,7 +579,7 @@ function lanzar() {
   const ref = "REL-" + String(Math.floor(1000 + Math.random() * 8999));
   el("lanzadoRef").textContent = ref;
   el("lanzadoCommit").textContent = st.commit.trim() === "" ? st.rama + " tip" : st.commit.trim().slice(0, 10);
-  el("lanzadoRegiones").textContent = REGIONES.filter(r => st.regiones.indexOf(r.clave) > -1).map(r => r.nombre).join(", ");
+  el("lanzadoRegiones").textContent = REGIONES.filter(r => st.regiones.includes(r.clave)).map(r => r.nombre).join(", ");
   el("lanzadoCanario").textContent = st.canario + " per cent first";
   el("lanzadoTitulo").textContent = "2026.10.4 for " + (st.entorno.trim() || "production") + " is on its way";
   el("lanzadoLead").textContent = "The runner picked it up from " +

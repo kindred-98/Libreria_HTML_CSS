@@ -28,7 +28,7 @@
   keys.forEach(function (k) {
     k.addEventListener('click', function () {
       k.classList.remove('hit');
-      void k.offsetWidth;
+      k.getBoundingClientRect();
       k.classList.add('hit');
     });
   });

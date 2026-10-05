@@ -33,7 +33,7 @@ const CAMPOS = [
     etiqueta: "Seat type",
     vacio: "Choose one of the three seat types.",
     error: "That seat type is not on the list.",
-    prueba: v => PLANES.indexOf(v) !== -1
+    prueba: v => PLANES.includes(v)
   },
   {
     id: "condiciones",
@@ -108,7 +108,7 @@ function marcar(marca, texto, clase) {
   p.appendChild(t);
   registro.appendChild(p);
   registro.scrollTop = registro.scrollHeight;
-  while (registro.children.length > 40) registro.removeChild(registro.firstChild);
+  while (registro.children.length > 40) registro.firstChild.remove();
   return p;
 }
 

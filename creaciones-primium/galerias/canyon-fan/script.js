@@ -118,13 +118,13 @@
   fan.addEventListener("click", function (ev) {
     var b = ev.target.closest(".blade");
     if (!b) { return; }
-    openAt(Number(b.getAttribute("data-shot")), b);
+    openAt(Number(b.dataset.shot), b);
   });
 
   indexLinks.forEach(function (a) {
     a.addEventListener("click", function (ev) {
       ev.preventDefault();
-      go(Number(a.getAttribute("data-shot")));
+      go(Number(a.dataset.shot));
     });
   });
 

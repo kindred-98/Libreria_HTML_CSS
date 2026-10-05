@@ -5,8 +5,8 @@
   var parts = document.getElementById("parts");
   var bxr = [0, 1, 2, 3, 4].map(function (i) { return document.getElementById("bx" + i); });
   var gxt = [0, 1, 2, 3, 4].map(function (i) { return document.getElementById("gx" + i); });
-  var dims = [].slice.call(document.querySelectorAll(".dim"));
-  var leads = [].slice.call(document.querySelectorAll(".lead"));
+  var dims = Array.prototype.slice.call(document.querySelectorAll(".dim"));
+  var leads = Array.prototype.slice.call(document.querySelectorAll(".lead"));
   var cal = [0, 1, 2, 3].map(function (i) { return document.getElementById("c" + i); });
   var brk = document.getElementById("brk");
   var joint = document.getElementById("joint");
@@ -15,15 +15,16 @@
   var mm = document.getElementById("mm");
   var fig = document.getElementById("figState");
   var sheet = document.querySelector(".sheet");
-  var guides = [].slice.call(document.querySelectorAll(".guide"));
+  var guides = Array.prototype.slice.call(document.querySelectorAll(".guide"));
   var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   var CYCLE = 13200, STEP = 16;
   var t0 = 0, jump = -1, lastMM = "", lastFig = "";
-  var gx = [0, 0, 0, 0, 0], fs = 100, midY = 0, wsum = 0;
+  var gx = [0, 0, 0, 0, 0], fs = 100, glyphY = 0, wsum = 0;
 
   function ease(k) {
-    k = k < 0 ? 0 : k > 1 ? 1 : k;
+    if (k < 0) k = 0;
+    else if (k > 1) k = 1;
     return k * k * (3 - 2 * k);
   }
 
@@ -81,7 +82,6 @@
     var pr = spec.getBoundingClientRect();
     var dy = pr.top - sh.top;
     var baseY = (sr.top - pr.top) + sr.height * 0.775;
-    midY = (sr.top - pr.top) + sr.height * 0.5;
     glyphY = baseY - fs * 0.335;
     guides[0].style.transform = "translateY(" + (baseY + dy).toFixed(1) + "px)";
     guides[1].style.transform = "translateY(" + (baseY - fs * 0.47 + dy).toFixed(1) + "px)";
@@ -220,10 +220,11 @@
       mm.textContent = txt;
     }
 
-    var f2 = s.sep > 0.4 ? "anatomy \u00b7 parts drawn" :
-      s.joint > 0.3 ? "ligature ffi \u00b7 joined" :
-      s.wipe > 0.05 && s.wipe < 0.95 ? "morphing \u00b7 " + Math.round(s.wipe * 100) + "%" :
-      s.wipe > 0.5 ? "ligature ffi \u00b7 joined" : "letterforms \u00b7 liga off";
+    var f2 = "letterforms \u00b7 liga off";
+    if (s.sep > 0.4) f2 = "anatomy \u00b7 parts drawn";
+    else if (s.joint > 0.3) f2 = "ligature ffi \u00b7 joined";
+    else if (s.wipe > 0.05 && s.wipe < 0.95) f2 = "morphing \u00b7 " + Math.round(s.wipe * 100) + "%";
+    else if (s.wipe > 0.5) f2 = "ligature ffi \u00b7 joined";
     if (f2 !== lastFig) {
       lastFig = f2;
       fig.textContent = f2;
@@ -238,10 +239,10 @@
     var now = Date.now();
     var u = jump >= 0 ? jump : ((now - t0) % CYCLE) / CYCLE;
     var marks = [0.02, 0.5, 0.7];
-    for (var i = 0; i < marks.length; i++) {
-      if (u < marks[i]) {
+    for (const mark of marks) {
+      if (u < mark) {
         var at = now + 900;
-        t0 = at - marks[i] * CYCLE;
+        t0 = at - mark * CYCLE;
         jump = at;
         return;
       }

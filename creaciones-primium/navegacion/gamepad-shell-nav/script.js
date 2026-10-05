@@ -7,9 +7,9 @@
     down: document.getElementById('dD')
   };
   var order = [dir.up, dir.left, dir.right, dir.down];
-  var rooms = [].slice.call(document.querySelectorAll('.room[id]'));
-  var mapDots = [].slice.call(document.querySelectorAll('#sMap i'));
-  var boardLinks = [].slice.call(document.querySelectorAll('.board-nav__list a'));
+  var rooms = Array.prototype.slice.call(document.querySelectorAll('.room[id]'));
+  var mapDots = Array.prototype.slice.call(document.querySelectorAll('#sMap i'));
+  var boardLinks = Array.prototype.slice.call(document.querySelectorAll('.board-nav__list a'));
   var sNo = document.getElementById('sNo');
   var sTitle = document.getElementById('sTitle');
   var sSub = document.getElementById('sSub');

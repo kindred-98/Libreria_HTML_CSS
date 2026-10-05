@@ -35,7 +35,7 @@ function cast() {
   }
   window.clearTimeout(castTimer);
   card.classList.remove("is-cast");
-  void card.offsetWidth;
+  card.getBoundingClientRect();
   card.classList.add("is-cast");
   castTimer = window.setTimeout(function () {
     card.classList.remove("is-cast");
@@ -48,7 +48,7 @@ castBtn.addEventListener("click", function () {
   castText.textContent = "Vault unsealed";
 });
 
-figures.forEach(runCounter);
+figures.forEach(function (node) { return runCounter(node); });
 window.setTimeout(cast, 1150);
 window.setTimeout(function () {
   stage.classList.add("is-settled");

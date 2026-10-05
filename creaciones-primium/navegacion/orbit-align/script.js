@@ -9,9 +9,9 @@
     { el: document.getElementById('orbitB'), rot: null }
   ];
   var list = document.querySelectorAll('.station');
-  var stations = [].slice.call(list);
+  var stations = Array.prototype.slice.call(list);
   var ringOf = stations.map(function (s) { return s.parentNode.id === 'orbitA' ? 0 : 1; });
-  var base = stations.map(function (s) { return parseFloat(s.getAttribute('data-a')) || 0; });
+  var base = stations.map(function (s) { return Number.parseFloat(s.dataset.a) || 0; });
   var secs = stations.map(function (s) {
     return document.getElementById(s.getAttribute('href').slice(1));
   });
@@ -76,7 +76,7 @@
 
   function read() {
     var line = window.innerHeight * 0.42;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var gap = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -107,7 +107,7 @@
         key !== 'ArrowUp' && key !== 'Home' && key !== 'End') return;
     var from = stations.indexOf(document.activeElement);
     if (from < 0) return;
-    var to = from;
+    var to;
     if (key === 'ArrowRight' || key === 'ArrowDown') to = from + 1;
     else if (key === 'ArrowLeft' || key === 'ArrowUp') to = from - 1;
     else if (key === 'Home') to = 0;

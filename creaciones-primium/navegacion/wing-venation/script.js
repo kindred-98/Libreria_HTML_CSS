@@ -12,7 +12,7 @@
     if (!target) { return; }
     a.setAttribute('aria-controls', id);
     sections.push(target);
-    names.push(a.getAttribute('data-name') || a.textContent.trim());
+    names.push(a.dataset.name || a.textContent.trim());
   });
 
   if (!sections.length) { return; }
@@ -23,7 +23,7 @@
   var queued = false;
 
   function setOpen(open) {
-    nav.setAttribute('data-open', open ? 'true' : 'false');
+    nav.dataset.open = open ? 'true' : 'false';
     if (toggle) { toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); }
   }
 
@@ -44,13 +44,13 @@
       for (var i = 0; i < links.length; i++) {
         if (i === index) { links[i].setAttribute('aria-current', 'true'); }
         else { links[i].removeAttribute('aria-current'); }
-        if (i <= index) { links[i].setAttribute('data-drawn', ''); }
-        else { links[i].removeAttribute('data-drawn'); }
+        if (i <= index) { links[i].dataset.drawn = ''; }
+        else { delete links[i].dataset.drawn; }
       }
       nav.style.setProperty('--pos', String(index));
-      nav.setAttribute('data-at', String(index + 1));
+      nav.dataset.at = String(index + 1);
       var text = 'Vein ' + (index + 1) + ' of ' + links.length + ' · ' + names[index];
-      for (var r = 0; r < readouts.length; r++) { readouts[r].textContent = text; }
+      for (const readout of readouts) { readout.textContent = text; }
     }
   }
 
@@ -66,13 +66,13 @@
 
   if (toggle) {
     toggle.addEventListener('click', function () {
-      setOpen(nav.getAttribute('data-open') !== 'true');
+      setOpen(nav.dataset.open !== 'true');
     });
   }
 
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') { return; }
-    if (nav.getAttribute('data-open') === 'false') { return; }
+    if (nav.dataset.open === 'false') { return; }
     setOpen(false);
     if (toggle) { toggle.focus(); }
   });

@@ -12,7 +12,7 @@ function draw(){
   ctx.fillStyle='rgba(5,5,16,.15)';ctx.fillRect(0,0,c.width,c.height);
   pts.forEach(p=>{
     const dx=mx-p.x,dy=my-p.y;
-    const dist=Math.sqrt(dx*dx+dy*dy)||1;
+    const dist=Math.hypot(dx, dy)||1;
     const force=Math.min(2000/(dist*dist),2);
     p.vx=(p.vx+(dx/dist)*force)*.9;
     p.vy=(p.vy+(dy/dist)*force)*.9;

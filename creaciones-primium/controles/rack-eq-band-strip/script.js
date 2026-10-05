@@ -43,7 +43,9 @@ if (bands.length) {
       ringFill.style.setProperty("--peak", String(Math.min(100, level + 8)));
     }
     if (mixOut) {
-      mixOut.textContent = spread < 2 ? "flat" : sum > 0 ? `${sum > 0 ? "+" : ""}${sum} db overall` : `${sum} db overall`;
+      if (spread < 2) mixOut.textContent = "flat";
+      else if (sum > 0) mixOut.textContent = `+${sum} db overall`;
+      else mixOut.textContent = `${sum} db overall`;
     }
   };
 

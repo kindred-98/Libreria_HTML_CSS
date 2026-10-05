@@ -1,12 +1,11 @@
 (function () {
-  var rail = document.getElementById("rail");
   var list = document.getElementById("railList");
   var marker = document.getElementById("railMarker");
   var btns = Array.prototype.slice.call(list.querySelectorAll(".rail__btn"));
 
   function current() {
-    for (var i = 0; i < btns.length; i++) {
-      if (btns[i].getAttribute("aria-current") === "true") return btns[i];
+    for (const btn of btns) {
+      if (btn.getAttribute("aria-current") === "true") return btn;
     }
     return btns[0];
   }
@@ -48,9 +47,9 @@
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
         var id = en.target.id;
-        for (var i = 0; i < btns.length; i++) {
-          if (btns[i].getAttribute("href") === "#" + id) {
-            setCurrent(btns[i]);
+        for (const btn of btns) {
+          if (btn.getAttribute("href") === "#" + id) {
+            setCurrent(btn);
             return;
           }
         }

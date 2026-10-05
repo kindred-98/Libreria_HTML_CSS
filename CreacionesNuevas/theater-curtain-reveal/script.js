@@ -11,7 +11,7 @@ replay.addEventListener("click", () => {
     left.style.animation = "none";
     right.style.animation = "none";
     msg.style.animation = "none";
-    void stage.offsetWidth;
+    stage.getBoundingClientRect();
     left.style.animation = "";
     right.style.animation = "";
     msg.style.animation = "";

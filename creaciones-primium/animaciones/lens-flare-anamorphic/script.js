@@ -7,7 +7,11 @@ const bloomEl = document.getElementById('bloom');
 const barEl = document.getElementById('bar');
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const clamp01 = v => (v < 0 ? 0 : v > 1 ? 1 : v);
+const clamp01 = (v) => {
+  if (v < 0) return 0;
+  if (v > 1) return 1;
+  return v;
+};
 const TAU = Math.PI * 2;
 const LOOP = 12.9;
 const GHOSTS = 11;
@@ -24,7 +28,7 @@ function seedGrain(){
   const im = gx.createImageData(128, 128);
   const d = im.data;
   for (let i = 0; i < d.length; i += 4){
-    const v = (Math.random() * 255) | 0;
+    const v = (Math.random() * 255 | 0);
     d[i] = v;
     d[i + 1] = v;
     d[i + 2] = v;

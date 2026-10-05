@@ -29,7 +29,7 @@
     c.height = r * 2;
     var g = c.getContext("2d");
     var rg = g.createRadialGradient(r, r, 0, r, r, r);
-    for (var i = 0; i < stops.length; i++) rg.addColorStop(stops[i][0], stops[i][1]);
+    for (var stop of stops) rg.addColorStop(stop[0], stop[1]);
     g.fillStyle = rg;
     g.fillRect(0, 0, r * 2, r * 2);
     return c;
@@ -480,7 +480,7 @@
     btn.addEventListener("click", function () {
       Array.prototype.forEach.call(buttons, function (other) { other.classList.remove("is-on"); });
       btn.classList.add("is-on");
-      gain = parseFloat(btn.getAttribute("data-gain")) || 1;
+      gain = Number.parseFloat(btn.dataset.gain) || 1;
       if (outField) outField.textContent = gain.toFixed(2) + " T";
     });
   });

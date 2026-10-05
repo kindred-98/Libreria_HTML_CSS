@@ -86,7 +86,7 @@
     term = (term || '').trim().toLowerCase();
     var shown = 0;
     lots.forEach(function (li) {
-      var hit = !term || li.textContent.toLowerCase().indexOf(term) > -1;
+      var hit = !term || li.textContent.toLowerCase().includes(term);
       li.hidden = !hit;
       if (hit) shown++;
     });

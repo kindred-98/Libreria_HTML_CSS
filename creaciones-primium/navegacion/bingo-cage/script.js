@@ -17,7 +17,7 @@
   function rollOut(ball) {
     if (calm.matches) return;
     ball.classList.remove('is-out');
-    void ball.offsetWidth;
+    ball.getBoundingClientRect();
     ball.classList.add('is-out');
   }
 
@@ -32,10 +32,10 @@
     }
     balls.forEach(function (b) { b.classList.remove('is-out'); });
     if (!first) rollOut(moved);
-    hall.setAttribute('data-at', i);
-    if (called) called.textContent = balls[i].getAttribute('data-no');
+    hall.dataset.at = i;
+    if (called) called.textContent = balls[i].dataset.no;
     if (left) left.textContent = WORDS[balls.length - 1 - i] + (balls.length - 1 - i === 1 ? ' still in' : ' still in the cage');
-    if (say) say.textContent = balls[i].getAttribute('data-say') || '';
+    if (say) say.textContent = balls[i].dataset.say || '';
   }
 
   function scan() {
@@ -68,7 +68,7 @@
     if (!key || !panel) return;
     key.setAttribute('aria-expanded', open ? 'true' : 'false');
     panel.hidden = !open;
-    hall.setAttribute('data-open', open ? 'true' : 'false');
+    hall.dataset.open = open ? 'true' : 'false';
   }
 
   balls.forEach(function (a, k) {

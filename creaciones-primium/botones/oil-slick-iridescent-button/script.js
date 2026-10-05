@@ -3,7 +3,7 @@
   if(!el)return;
   var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var nm=el.querySelector(".slick__nm");
-  var px=0,py=0,tx=0,ty=0,over=0,press=0,pressT=0,t0=performance.now(),pressTimer=0;
+  var px=0,py=0,tx=0,ty=0,over=0,press=0,t0=performance.now(),pressTimer=0;
   var band=[472,498,534,568,612,650,436,478,556,588,634,462];
 
   if(reduce){
@@ -27,8 +27,8 @@
     var r=el.getBoundingClientRect();
     var nx=((e.clientX-r.left)/r.width)*2-1;
     var ny=((e.clientY-r.top)/r.height)*2-1;
-    var d=Math.sqrt(nx*nx+ny*ny);
-    if(d>1.34){nx=nx/d*1.34;ny=ny/d*1.34;d=1.34}
+    var d=Math.hypot(nx, ny);
+    if(d>1.34){nx=nx/d*1.34;ny=ny/d*1.34}
     tx=nx;ty=ny;over=1;
   }
   el.addEventListener("pointermove",track);
@@ -55,7 +55,7 @@
     }
     px+=(tx-px)*.085;
     py+=(ty-py)*.085;
-    var rad=Math.min(1,Math.sqrt(px*px+py*py));
+    var rad=Math.min(1,Math.hypot(px, py));
     var ang=Math.atan2(py,px);
     var deg=ang*57.29577951+90;
     var th=.36+.2*Math.sin(t*.62)+rad*.2+press*.1;

@@ -18,17 +18,13 @@
   var MAX = 720;
   var STEP = 2;
   var DETENT = 10;
-  var CATCH = 3;
   var PAGE = 40;
   var HALF_RAIL = 11;
-  var CAP_W = 34;
 
   var still = false;
   try {
     still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch (err) {
-    void err;
-  }
+  } catch {}
 
   var value = 512;
   var span = 240;
@@ -159,9 +155,7 @@
     if (grip.setPointerCapture) {
       try {
         grip.setPointerCapture(event.pointerId);
-      } catch (err) {
-        void err;
-      }
+      } catch {}
     }
     event.preventDefault();
   });
@@ -184,9 +178,7 @@
     if (event && event.pointerId !== undefined && grip.releasePointerCapture) {
       try {
         grip.releasePointerCapture(event.pointerId);
-      } catch (err) {
-        void err;
-      }
+      } catch {}
     }
     paint(seat(value), true);
   }
@@ -198,6 +190,5 @@
   });
   window.addEventListener("resize", measure);
 
-  void still;
   measure();
 })();

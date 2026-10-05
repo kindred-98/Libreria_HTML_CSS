@@ -2,7 +2,7 @@
   var bay = document.getElementById('bay');
   var shut = document.getElementById('shut');
   var mark = document.getElementById('mark');
-  var rows = [].slice.call(document.querySelectorAll('.lattice__row'));
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.lattice__row'));
   var links = rows.map(function (r) { return r.querySelector('a'); });
   var roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var secs = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
@@ -22,7 +22,7 @@
 
   function read() {
     var line = window.innerHeight * 0.45;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var bestD = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -47,7 +47,7 @@
   });
 
   function screen(openNow) {
-    bay.setAttribute('data-shut', openNow ? 'open' : 'closed');
+    bay.dataset.shut = openNow ? 'open' : 'closed';
     shut.setAttribute('aria-expanded', openNow ? 'true' : 'false');
     shut.querySelector('.shut__text').textContent = openNow ? 'Close the screen' : 'Open the screen';
   }

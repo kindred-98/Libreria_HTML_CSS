@@ -38,7 +38,7 @@
       if (i === indice) c.setAttribute("aria-current", "true");
       else c.removeAttribute("aria-current");
     });
-    contador.textContent = campos[indice].getAttribute("data-col");
+    contador.textContent = campos[indice].dataset.col;
     taladros.forEach(function (t, i) {
       if (i <= indice) t.classList.add("lleno");
       else t.classList.remove("lleno");
@@ -47,7 +47,7 @@
     if (zona) {
       punzon.style.setProperty("--x", zona.x.toFixed(1) + "px");
       punzon.classList.remove("taladrando");
-      void punzon.offsetWidth;
+      punzon.getBoundingClientRect();
       punzon.classList.add("taladrando");
     }
   }

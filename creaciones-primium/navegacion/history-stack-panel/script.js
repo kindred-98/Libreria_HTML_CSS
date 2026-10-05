@@ -55,7 +55,7 @@
       if (k > pos) li.className = "is-future";
       var a = document.createElement("a");
       a.href = "#" + e.id;
-      a.setAttribute("data-i", String(k));
+      a.dataset.i = String(k);
       if (k === pos) a.setAttribute("aria-current", "true");
       var num = document.createElement("span");
       num.className = "stack__n";
@@ -103,9 +103,9 @@
   }
 
   function mark(id) {
-    for (var n = 0; n < menuLinks.length; n++) {
-      if (menuLinks[n].getAttribute("href") === "#" + id) menuLinks[n].setAttribute("aria-current", "true");
-      else menuLinks[n].removeAttribute("aria-current");
+    for (const link of menuLinks) {
+      if (link.getAttribute("href") === "#" + id) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
     }
   }
 
@@ -136,13 +136,13 @@
     scrollTo(id);
   }
 
-  for (var n = 0; n < menuLinks.length; n++) {
+  for (const a of menuLinks) {
     (function (a) {
       a.addEventListener("click", function (ev) {
         ev.preventDefault();
         push(a.getAttribute("href").slice(1));
       });
-    })(menuLinks[n]);
+    })(a);
   }
 
   function focusables() {
@@ -166,7 +166,7 @@
     isOpen = false;
     histBtn.setAttribute("aria-expanded", "false");
     if (back) {
-      if (backFocus && backFocus.focus) backFocus.focus();
+      if (backFocus?.focus) backFocus.focus();
       else histBtn.focus();
     }
   }
@@ -218,10 +218,10 @@
     pending = false;
     var markY = window.innerHeight * 0.34;
     var current = "";
-    for (var k = 0; k < leaves.length; k++) {
-      if (leaves[k].getBoundingClientRect().top <= markY) current = leaves[k].id;
+    for (const leaf of leaves) {
+      if (leaf.getBoundingClientRect().top <= markY) current = leaf.id;
     }
-    for (var n = 0; n < leaves.length; n++) leaves[n].classList.toggle("is-here", leaves[n].id === current);
+    for (const other of leaves) other.classList.toggle("is-here", other.id === current);
     if (current && isOpen) mark(current);
   }
 

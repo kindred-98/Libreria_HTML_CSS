@@ -7,7 +7,6 @@
   var bars = Array.prototype.slice.call(sig.querySelectorAll('i'));
   var tc = document.getElementById('tc');
   var flakes = document.getElementById('flakes');
-  var cells = [];
   var frames = 0;
   var tFrames = 0;
   var base = 14 * 60 + 23;
@@ -15,7 +14,7 @@
 
   function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
   function clearTimers() {
-    for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]);
+    for (var t of timers) clearTimeout(t);
     timers.length = 0;
   }
   function pad(n, w) {

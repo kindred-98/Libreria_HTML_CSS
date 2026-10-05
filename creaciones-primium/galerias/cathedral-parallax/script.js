@@ -40,10 +40,10 @@
     var walkW = walk.getBoundingClientRect().width;
     var cap = walkW < 560 ? 0 : walkW * 0.05;
     var k = 0;
-    for (var b = 0; b < bays.length; b += 1) {
-      var r = bays[b].getBoundingClientRect();
+    for (var bay of bays) {
+      var r = bay.getBoundingClientRect();
       var mid = Math.max(-1, Math.min(1, (r.top + r.height / 2 - centre) / vh));
-      var span = bays[b].querySelector(".arcade").getBoundingClientRect().width;
+      var span = bay.querySelector(".arcade").getBoundingClientRect().width;
       for (var c = 0; c < 3; c += 1) {
         base[k] = Math.max(-cap, Math.min(cap, mid * rates[c] * span));
         lift[k] = Math.max(-26, Math.min(26, -mid * lifts[c] * 28));

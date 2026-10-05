@@ -32,7 +32,7 @@ const CAMPOS = [
     etiqueta: "Discipline",
     vacio: "Choose the discipline this piece belongs to.",
     error: "That discipline is not on the list.",
-    prueba: v => ["fotografia", "video", "3d", "ilustracion", "producto"].indexOf(v) !== -1
+    prueba: v => ["fotografia", "video", "3d", "ilustracion", "producto"].includes(v)
   },
   {
     id: "email",
@@ -240,7 +240,7 @@ function anadir(lista) {
   lista.forEach(f => {
     if (piezas.length + admitidos.length >= MAX_PIEZAS) return;
     if (f.size > MAX_PESO * 1048576) { rechazados += 1; return; }
-    if (ACCEPTADOS.indexOf(extension(f.name)) === -1) { rechazados += 1; return; }
+    if (ACCEPTADOS.includes(extension(f.name))) { rechazados += 1; return; }
     const url = f.type.indexOf("image/") === 0 ? URL.createObjectURL(f) : "";
     admitidos.push({ nombre: f.name, peso: f.size, estado: "subiendo", progreso: 0, intentos: 0, motivo: "", url: url });
   });

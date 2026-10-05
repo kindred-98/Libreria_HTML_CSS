@@ -10,11 +10,9 @@
 
   var CYCLE = 6400;
   var t0 = performance.now();
-  var t = 0;
   var idx = -1;
   var lastState = '';
   var lastTc = '';
-  var lastLbl = '';
 
   function pad(n, w) {
     var s = String(n);
@@ -37,7 +35,6 @@
     var now = performance.now();
     var p = ((now - t0) % CYCLE) / CYCLE;
     var v = curve(p);
-    t = v;
     root.style.setProperty('--t', v.toFixed(4));
     for (var i = 0; i < fills.length; i++) {
       fills[i].style.transform = 'scaleX(' + Math.max(0, Math.min(1, v * 1.06 - i * 0.02)).toFixed(3) + ')';

@@ -45,9 +45,7 @@ function pintarPlanes() {
     input.checked = planElegido === p.id;
     input.addEventListener("change", () => {
       planElegido = p.id;
-var vacio = true;
-
-pintarPlanes();
+      pintarPlanes();
       pintarPlanesEstado();
     });
 
@@ -100,7 +98,7 @@ function abrirPlanes(abrir) {
 
 function correoPrueba(v) {
   if (!/^[^\s@,;]+@[^\s@,;]+\.[A-Za-z]{2,}$/.test(v)) return "forma";
-  if (TIRADOS.indexOf(v.split("@")[1].toLowerCase()) > -1) return "tirado";
+  if (TIRADOS.includes(v.split("@")[1].toLowerCase())) return "tirado";
   return "ok";
 }
 

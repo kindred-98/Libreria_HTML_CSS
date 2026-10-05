@@ -8,7 +8,6 @@
   var useB = document.getElementById("useB");
   var shards = document.getElementById("shards");
   var frac = document.getElementById("frac");
-  var dCount = document.getElementById("dCount");
   var dTravel = document.getElementById("dTravel");
   var dState = document.getElementById("dState");
   var dBar = document.getElementById("dBar");
@@ -29,7 +28,7 @@
   var FLY = [];
   for (var i = 0; i < N; i++) {
     var dx = CENT[i][0] - CX, dy = CENT[i][1] - CY;
-    var len = Math.sqrt(dx * dx + dy * dy) || 1;
+    var len = Math.hypot(dx, dy) || 1;
     var reach = 40 + ((i * 29) % 44) + (i % 3) * 7;
     FLY.push({
       x: (dx / len) * reach,
@@ -39,11 +38,6 @@
       cx: CENT[i][0],
       cy: CENT[i][1]
     });
-  }
-
-  function ease(k) {
-    k = k < 0 ? 0 : k > 1 ? 1 : k;
-    return k * k * (3 - 2 * k);
   }
 
   function outBack(k) {
@@ -89,7 +83,8 @@
     var p = phase(t);
 
     var shown = p.st !== "intact" && p.st !== "reseated";
-    if (useB.getAttribute("display") !== (shown ? "inline" : "inline")) {
+    // Ternario simplificado: las dos ramas comparaban contra "inline".
+    if (useB.getAttribute("display") !== "inline") {
       useB.setAttribute("display", shown ? "none" : "inline");
     }
     shards.setAttribute("display", shown ? "inline" : "none");
@@ -106,12 +101,14 @@
         "translate(" + f.cx + "," + f.cy + ") rotate(" + gr.toFixed(2) + ") translate(" +
         (-f.cx).toFixed(2) + "," + (-f.cy).toFixed(2) + ") translate(" +
         gx.toFixed(2) + "," + gy.toFixed(2) + ")");
-      var d = Math.sqrt(gx * gx + gy * gy);
+      var d = Math.hypot(gx, gy);
       if (d > maxT) maxT = d;
     }
 
-    frac.setAttribute("stroke-width", p.k < 0.02 ? "0" :
-      p.k > 0.99 ? "0.4" : (1.15 * p.k * (1 - p.k * 0.3)).toFixed(3));
+    var ancho = (1.15 * p.k * (1 - p.k * 0.3)).toFixed(3);
+    if (p.k < 0.02) ancho = "0";
+    else if (p.k > 0.99) ancho = "0.4";
+    frac.setAttribute("stroke-width", ancho);
 
     var dyA = downA > 0 ? 4 : 0;
     rectA.setAttribute("y", (2 + dyA).toFixed(1));
@@ -130,10 +127,15 @@
     if (p.st !== lastState) {
       lastState = p.st;
       dState.textContent = p.st;
-      noteB.textContent = p.st === "intact" || p.st === "reseated" ?
-        "twelve shards at rest, flush with the outline" :
-        p.st === "scattered" ? "twelve shards clear of the outline, 12 seams open" :
-        p.st === "gathering" ? "shards returning, seams closing" : "seams opening, shards leaving the outline";
+      var nota = "seams opening, shards leaving the outline";
+      if (p.st === "intact" || p.st === "reseated") {
+        nota = "twelve shards at rest, flush with the outline";
+      } else if (p.st === "scattered") {
+        nota = "twelve shards clear of the outline, 12 seams open";
+      } else if (p.st === "gathering") {
+        nota = "shards returning, seams closing";
+      }
+      noteB.textContent = nota;
     }
     var bar = p.k;
     if (Math.abs(bar - lastBar) > 0.004) {

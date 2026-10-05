@@ -248,8 +248,8 @@ function problemas() {
   const sinNada = gente.filter(p => Object.keys(p.platos).length === 0);
   if (sinNada.length > 0) {
     salida.push("Table: " + sinNada.map(p => p.nombre).join(", ") + " " +
-      (sinNada.length === 1 ? "has" : "have") + " no shares. Either claim something or take " +
-      (sinNada.length === 1 ? "them" : "them") + " off the table.");
+      (sinNada.length === 1 ? "has" : "have") + " no shares. Either claim something or take them " +
+      "off the table.");
   }
   if (resto() > 0.005) {
     salida.push("Dish claims: " + dinero(resto()) + " is still on the table. Claim the rest or add it as a shared plate on the last person.");

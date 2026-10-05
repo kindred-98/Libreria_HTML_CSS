@@ -16,11 +16,11 @@ const CAMPOS = [
     label: "Email address",
     msg: v => {
       if (v === "") return "We need an address to send the ledger to.";
-      if (v.indexOf("@") === -1 || !/[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}/.test(v)) {
+      if (v.includes("@") || !/[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}/.test(v)) {
         return "That does not look like an address. Try the shape name@domain.com.";
       }
       const domain = v.split("@")[1].toLowerCase();
-      if (TIRADOS.indexOf(domain) > -1) {
+      if (TIRADOS.includes(domain)) {
         return domain + " is a throwaway inbox, we cannot send the ledger there. Use the mailbox you read every day.";
       }
       if (v.length < 6 || v.length > 80) return "Keep the address between 6 and 80 characters.";
@@ -29,7 +29,7 @@ const CAMPOS = [
     ok: v => {
       if (v.length < 6 || v.length > 80) return false;
       if (!/^[^\s@,;]+@[^\s@,;]+\.[a-zA-Z]{2,}$/.test(v)) return false;
-      return TIRADOS.indexOf(v.split("@")[1].toLowerCase()) === -1;
+      return TIRADOS.includes(v.split("@")[1].toLowerCase());
     }
   },
   {
@@ -81,7 +81,7 @@ consent.addEventListener("change", () => paint(CAMPOS[1]));
 form.addEventListener("submit", e => {
   e.preventDefault();
   const fallos = CAMPOS.filter(broken);
-  CAMPOS.forEach(paint);
+  CAMPOS.forEach(f => paint(f));
 
   if (fallos.length > 0) {
     summaryTitle.textContent = fallos.length === 1

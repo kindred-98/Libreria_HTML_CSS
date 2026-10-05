@@ -64,7 +64,7 @@ function paint() {
     h.setAttribute("aria-pressed", on ? "true" : "false");
   });
   cards.forEach((c, k) => {
-    const show = visible.indexOf(k) !== -1;
+    const show = visible.includes(k);
     c.hidden = !show;
     c.classList.toggle("on", visible[sel] === k);
   });
@@ -82,8 +82,8 @@ function reindex() {
 
 function filter() {
   const term = q.value.trim().toLowerCase();
-  visible = DATA.map((_, k) => k).filter(k => !term || haystack(k).indexOf(term) !== -1);
-  if (visible.indexOf(sel) === -1) sel = 0;
+  visible = DATA.map((_, k) => k).filter(k => !term || haystack(k).includes(term));
+  if (visible.includes(sel)) sel = 0;
   paint();
 }
 

@@ -19,7 +19,11 @@ if (wheel && strip && field) {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   const FRICTION = 0.035;
   const STEP = 1 / 240;
-  const clamp = (n, lo, hi) => (n < lo ? lo : n > hi ? hi : n);
+  const clamp = (n, lo, hi) => {
+    if (n < lo) return lo;
+    if (n > hi) return hi;
+    return n;
+  };
   const now = () => performance.now();
 
   let pos = 7;
@@ -253,7 +257,7 @@ if (wheel && strip && field) {
     const moved = drag.moved;
     drag = null;
     if (event && typeof wheel.releasePointerCapture === "function") {
-      try { wheel.releasePointerCapture(event.pointerId); } catch (err) { void err; }
+      try { wheel.releasePointerCapture(event.pointerId); } catch { }
     }
     if (!moved) {
       const box = wheel.getBoundingClientRect();

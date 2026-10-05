@@ -69,8 +69,6 @@
   var plateA = document.getElementById("plateA");
   var tally = document.querySelector(".rail__tally");
 
-  function pad(n) { return n < 10 ? "0" + n : "" + n; }
-
   var steps = STEPS.map(function (step, i) {
     var wrap = document.createElement("div");
     wrap.className = "tread";

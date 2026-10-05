@@ -150,9 +150,10 @@ function pintar(f) {
   const desc = [ayuda.id];
 
   if (f.tipo === "check" || f.tipo === "radio" || f.tipo === "muestras") {
-    const foco = f.tipo === "radio"
-      ? document.querySelector('input[name="estadoArticulo"]')
-      : f.tipo === "check" ? normas : fotos;
+    let foco;
+    if (f.tipo === "radio") foco = document.querySelector('input[name="estadoArticulo"]');
+    else if (f.tipo === "check") foco = normas;
+    else foco = fotos;
     foco.setAttribute("aria-invalid", (vacio || malo) ? "true" : "false");
   } else {
     el(f.id).setAttribute("aria-invalid", (vacio || malo) ? "true" : "false");
@@ -228,9 +229,12 @@ function cuenta() {
     ? dinero(Number(precio.value.replace(",", ".")))
     : "Sin precio";
   el("miniaturaTitulo").textContent = t.trim() || "Sin título";
-  el("miniaturaLugar").textContent = municipio.value.trim()
-    ? municipio.value.trim() + ", " + (provincia.value ? provincia.options[provincia.selectedIndex].text : "sin provincia")
-    : "sin municipio";
+  let lugar = "sin municipio";
+  if (municipio.value.trim()) {
+    const provinciaTexto = provincia.value ? provincia.options[provincia.selectedIndex].text : "sin provincia";
+    lugar = municipio.value.trim() + ", " + provinciaTexto;
+  }
+  el("miniaturaLugar").textContent = lugar;
 }
 
 tituloAnuncio.addEventListener("input", cuenta);

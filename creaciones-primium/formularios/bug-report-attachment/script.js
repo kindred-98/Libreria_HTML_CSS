@@ -196,9 +196,10 @@ function pintarLista() {
     const izquierda = document.createElement("span");
     izquierda.textContent = pesoLegible(a.peso);
     const derecha = document.createElement("span");
-    derecha.textContent = a.estado === "fallo"
-      ? "Se cortó al " + a.progreso + " por ciento"
-      : a.estado === "listo" ? "Subido" : a.progreso + " por ciento";
+    let estadoTexto = a.progreso + " por ciento";
+    if (a.estado === "fallo") estadoTexto = "Se cortó al " + a.progreso + " por ciento";
+    else if (a.estado === "listo") estadoTexto = "Subido";
+    derecha.textContent = estadoTexto;
     datos.appendChild(izquierda);
     datos.appendChild(derecha);
 

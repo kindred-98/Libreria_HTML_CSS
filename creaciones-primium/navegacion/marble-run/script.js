@@ -15,7 +15,7 @@
   function line() {
     for (var k = 0; k < beads.length; k++) {
       var at = k === current ? 'L' : (k < current ? k : k - 1);
-      beads[k].setAttribute('data-slot', at);
+      beads[k].dataset.slot = at;
     }
   }
 
@@ -32,9 +32,9 @@
       }
     }
     line();
-    hall.setAttribute('data-at', i);
-    if (lead) lead.textContent = stops[i].getAttribute('data-no');
-    if (say) say.textContent = stops[i].getAttribute('data-say') || '';
+    hall.dataset.at = i;
+    if (lead) lead.textContent = stops[i].dataset.no;
+    if (say) say.textContent = stops[i].dataset.say || '';
   }
 
   function scan() {

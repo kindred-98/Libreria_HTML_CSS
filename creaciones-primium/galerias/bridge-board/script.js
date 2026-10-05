@@ -16,7 +16,7 @@
   var lastFocus = null;
 
   function load(el) {
-    return Number(el.getAttribute("data-load"));
+    return Number(el.dataset.load);
   }
 
   function rated(el, n) {
@@ -31,7 +31,7 @@
   function rank(a, b) {
     var d = load(b) - load(a);
     if (d !== 0) return d;
-    return Number(a.getAttribute("data-k")) - Number(b.getAttribute("data-k"));
+    return Number(a.dataset.k) - Number(b.dataset.k);
   }
 
   function render() {
@@ -75,7 +75,7 @@
     var keep = active && active.classList && active.classList.contains("slot") ? active : null;
     var before = {};
     order.forEach(function (el) {
-      before[el.getAttribute("data-k")] = el.getBoundingClientRect();
+      before[el.dataset.k] = el.getBoundingClientRect();
     });
 
     var next = order.slice().sort(rank);
@@ -95,7 +95,7 @@
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { render(); return; }
 
     next.forEach(function (el) {
-      var k = el.getAttribute("data-k");
+      var k = el.dataset.k;
       var a = before[k];
       var b = el.getBoundingClientRect();
       var dy = a.top - b.top;
@@ -105,7 +105,7 @@
       el.style.transform = "translate(" + dx + "px," + dy + "px)";
     });
 
-    void board.offsetWidth;
+    board.getBoundingClientRect();
 
     next.forEach(function (el) {
       if (el.classList.contains("is-flip")) {
@@ -133,7 +133,7 @@
     if (n < 1) n = 1;
     if (n > 5) n = 5;
     if (n === load(el)) return;
-    el.setAttribute("data-load", n);
+    el.dataset.load = n;
     repack();
   }
 

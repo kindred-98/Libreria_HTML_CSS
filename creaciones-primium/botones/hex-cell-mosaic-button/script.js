@@ -10,16 +10,15 @@
 
   function rnd(a, b) { return a + Math.random() * (b - a); }
 
-  for (var c = 0; c < cells.length; c++) {
-    var cell = cells[c];
+  for (var cell of cells) {
     var mx = cell.querySelector(".cell__mx");
-    var kind = cell.getAttribute("data-s");
+    var kind = cell.dataset.s;
     var frag = document.createDocumentFragment();
     for (var i = 0; i < 12; i++) {
       var hx = document.createElement("i");
       hx.className = "hx";
       var col = i % COLS;
-      var row = (i / COLS) | 0;
+      var row = (i / COLS | 0);
       var d;
       if (kind === "load") {
         d = -(col / COLS) * 2.2 - row * 0.06;
@@ -41,7 +40,7 @@
     if (cell.disabled || reduce) return;
     fires++;
     cell.classList.remove("is-fire");
-    void cell.offsetWidth;
+    cell.getBoundingClientRect();
     cell.classList.add("is-fire");
     window.setTimeout(function () { cell.classList.remove("is-fire"); }, 560);
     code.textContent = "Fires " + (fires < 1000 ? ("00" + fires).slice(-3) : fires);
@@ -49,7 +48,7 @@
     state.textContent = "Cell " + id + " fired \ array holding";
   }
 
-  for (var k = 0; k < cells.length; k++) {
-    cells[k].addEventListener("click", function (e) { fire(e.currentTarget); });
+  for (var cel of cells) {
+    cel.addEventListener("click", function (e) { fire(e.currentTarget); });
   }
 })();

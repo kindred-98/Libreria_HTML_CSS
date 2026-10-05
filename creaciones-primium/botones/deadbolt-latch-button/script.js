@@ -31,7 +31,7 @@
     li.appendChild(b);
     li.appendChild(document.createTextNode(txt));
     log.insertBefore(li,log.firstChild);
-    while(log.children.length>4)log.removeChild(log.lastChild);
+    while(log.children.length>4)log.lastChild.remove();
   }
   function paint(){
     var out="";
@@ -60,7 +60,7 @@
     door.style.setProperty("--liftB","0");
     door.style.setProperty("--liftC","0");
     form.classList.remove("is-bad");
-    void form.offsetWidth;
+    form.getBoundingClientRect();
     form.classList.add("is-bad");
     boltTxt.textContent="open";
     stateTxt.textContent="fault";
@@ -78,7 +78,7 @@
     var k=e.target.closest?e.target.closest(".key"):null;
     if(!k)return;
     if(performance.now()<lockUntil)return;
-    var v=k.getAttribute("data-k");
+    var v=k.dataset.k;
     k.classList.add("is-hit");
     setTimeout(function(){k.classList.remove("is-hit")},120);
     if(v==="c"){entry="";paint();addLine("entry cleared");return}

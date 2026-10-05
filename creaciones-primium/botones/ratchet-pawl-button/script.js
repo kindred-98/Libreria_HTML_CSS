@@ -14,7 +14,7 @@
     wheel.appendChild(b);
     teeth.push(b);
   }
-  var step=137,phase=0,dur=1.15,heat=0,push=0,last=0,t0=performance.now(),lastCount=-1,burst=0,cool=1;
+  var step=137,phase=0,dur=1.15,heat=0,push=0,last=0,lastCount=-1,burst=0,cool=1;
 
   function ratchet(x){
     if(x<.3){var u=x/.3;return 1-Math.pow(1-u,3.4)}
@@ -60,7 +60,6 @@
   });
 
   function frame(now){
-    var t=(now-t0)/1000;
     var dt=last?Math.min(.06,(now-last)/1000):.016;
     last=now;
     push+=(0-push)*Math.min(1,dt*9);

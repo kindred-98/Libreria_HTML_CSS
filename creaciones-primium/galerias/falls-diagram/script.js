@@ -81,7 +81,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   nd.forEach(function (b, i) { b.addEventListener("click", function () { openAt(i); }); });
@@ -95,7 +95,7 @@
   document.getElementById("vPrev").addEventListener("click", function () { openAt((at - 1 + nd.length) % nd.length); });
   document.getElementById("vNext").addEventListener("click", function () { openAt((at + 1) % nd.length); });
   document.getElementById("vClose").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   flow.addEventListener("keydown", function (e) {
     var k = e.key;

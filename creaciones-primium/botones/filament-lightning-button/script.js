@@ -12,7 +12,11 @@
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function rnd(a, b) { return a + Math.random() * (b - a); }
-  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function clamp(v, a, b) {
+    if (v < a) return a;
+    if (v > b) return b;
+    return v;
+  }
 
   var seg = [], gseg = [], i;
   for (i = 0; i < SEGS; i++) {
@@ -81,7 +85,7 @@
 
   function ripple(nodes, n, bx, by, ph, off, amp) {
     var i, s0, s1, x0, y0, x1, y1, ex, ey, a, len, w0, w1;
-    var D = Math.sqrt(bx * bx + by * by) || 1;
+    var D = Math.hypot(bx, by) || 1;
     var nx = -by / D, ny = bx / D;
     var k = amp * D;
     for (i = 0; i < n; i++) {
@@ -96,7 +100,7 @@
       ex = x1 - x0;
       ey = y1 - y0;
       a = Math.atan2(ey, ex);
-      len = Math.sqrt(ex * ex + ey * ey);
+      len = Math.hypot(ex, ey);
       nodes[i].style.transform = "translate3d(" + x0.toFixed(2) + "px," + y0.toFixed(2) + "px,0) rotate(" + a.toFixed(4) + "rad) scaleX(" + clamp(len / SEGW, 0.12, 1.7).toFixed(3) + ")";
       if (i === (n >> 1)) bend = a;
     }
@@ -185,7 +189,7 @@
       tx = Math.sin(orbit) * rx;
       ty = -Math.cos(orbit) * ry;
     }
-    var d = Math.sqrt(tx * tx + ty * ty);
+    var d = Math.hypot(tx, ty);
     if (d < 0.001) { tx = 1; ty = 0; d = 1; }
     var dd = clamp(d, MIN, MAX);
     var ux = tx / d, uy = ty / d;
@@ -224,18 +228,18 @@
       s2.n.style.opacity = (1 - u * u).toFixed(3);
       s2.n.style.transform = "translate3d(" + (s2.x + s2.dx * e2).toFixed(1) + "px," + (s2.y + s2.dy * e2 * 0.86 + 16 * u * u).toFixed(1) + "px,0) scale(" + (s2.z * (1 - u * 0.8)).toFixed(2) + ")";
     }
-    for (var q = 0; q < bolts.length; q++) {
-      var bo2 = bolts[q];
+    for (var bo2 of bolts) {
       if (!bo2.on) continue;
       bo2.t += dt;
       var bu = bo2.t / 430;
       if (bu >= 1) { bo2.on = false; bo2.n.style.opacity = "0"; continue; }
-      var sy2 = bu < 0.16 ? bu / 0.16 * 1.12 : bu < 0.42 ? 1.12 - (bu - 0.16) / 0.26 * 0.2 : 0.92 + (bu - 0.42) * 0.3;
+      var sy2 = 0.92 + (bu - 0.42) * 0.3;
+      if (bu < 0.16) sy2 = bu / 0.16 * 1.12;
+      else if (bu < 0.42) sy2 = 1.12 - (bu - 0.16) / 0.26 * 0.2;
       bo2.n.style.opacity = (bu < 0.1 ? bu / 0.1 : 1 - Math.pow((bu - 0.1) / 0.9, 1.6)).toFixed(3);
       bo2.n.style.transform = "translate3d(0,0,0) rotate(" + bo2.a.toFixed(3) + "rad) scaleY(" + sy2.toFixed(3) + ")";
     }
-    for (var v = 0; v < ooze.length; v++) {
-      var oz2 = ooze[v];
+    for (var oz2 of ooze) {
       if (!oz2.on) continue;
       oz2.t += dt;
       if (oz2.t < 0) continue;
@@ -245,8 +249,7 @@
       oz2.n.style.opacity = (ou < 0.12 ? ou / 0.12 : 1 - Math.pow((ou - 0.12) / 0.88, 1.7)).toFixed(3);
       oz2.n.style.transform = "translate3d(0,0,0) scale(" + os.toFixed(3) + ")";
     }
-    for (var w = 0; w < stains.length; w++) {
-      var st2 = stains[w];
+    for (var st2 of stains) {
       if (!st2.on) continue;
       st2.t += dt;
       if (st2.t < 0) continue;

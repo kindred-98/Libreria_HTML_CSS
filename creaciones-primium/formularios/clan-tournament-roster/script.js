@@ -45,14 +45,14 @@ const CAMPOS = [
     etiqueta: "Region",
     vacio: "Pick the region you play from.",
     error: "That region is not in the circuit.",
-    prueba: v => REGIONES.indexOf(v) !== -1
+    prueba: v => REGIONES.includes(v)
   },
   {
     id: "semilla",
     etiqueta: "Seeding",
     vacio: "Say how you qualified.",
     error: "That seeding route is not one we accept.",
-    prueba: v => SEMILLAS.indexOf(v) !== -1
+    prueba: v => SEMILLAS.includes(v)
   },
   {
     id: "cerrado",
@@ -96,7 +96,9 @@ function pintar(f) {
     env.dataset.estado = "error";
     control.setAttribute("aria-invalid", "true");
     desc.push(mensaje.id);
-    mensaje.textContent = f.id === "cerrado" ? f.vacio : (valor === "" ? f.vacio : f.error);
+    let textoError = f.error;
+    if (f.id === "cerrado" || valor === "") textoError = f.vacio;
+    mensaje.textContent = textoError;
   } else {
     env.dataset.estado = "ok";
     control.setAttribute("aria-invalid", "false");
@@ -114,7 +116,7 @@ function problemaBanquillo() {
   if (seleccionados.length !== 5) {
     return "Call up exactly five players. You have " + seleccionados.length + " on the bench.";
   }
-  if (seleccionados.indexOf(capitan) === -1) {
+  if (seleccionados.includes(capitan)) {
     return "The captain has to be one of the five on the bench.";
   }
   const repetidos = seleccionados.map(id => jugador(id).rol).filter((r, i, a) => a.indexOf(r) !== i);
@@ -135,7 +137,10 @@ function pintarPaso1() {
 function actualizarIndicadores() {
   document.querySelectorAll(".paso-ind").forEach(li => {
     const n = Number(li.dataset.paso);
-    li.dataset.estado = n === paso ? "actual" : (n < paso ? "hecho" : "pendiente");
+    let estado = "pendiente";
+    if (n === paso) estado = "actual";
+    else if (n < paso) estado = "hecho";
+    li.dataset.estado = estado;
   });
 }
 
@@ -202,7 +207,7 @@ function pintarDisponibles() {
   listaJugadores.innerHTML = "";
   JUGADORES.forEach(j => {
     const li = document.createElement("li");
-    const marcado = seleccionados.indexOf(j.id) !== -1;
+    const marcado = seleccionados.includes(j.id);
     const lleno = seleccionados.length >= 5;
 
     const input = document.createElement("input");

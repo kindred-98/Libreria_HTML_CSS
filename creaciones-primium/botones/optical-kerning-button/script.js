@@ -5,14 +5,14 @@
   var plate=slug.querySelector(".slug__plate");
   var strut=type.querySelector(".gstrut");
   var letters=[];
-  for(var q=0;q<type.children.length;q++){
-    if(type.children[q].className==="g")letters.push(type.children[q]);
+  for(var ch of type.children){
+    if(ch.className==="g")letters.push(ch);
   }
   var n=letters.length;
   if(n<2)return;
   var optics=document.getElementById("optics").children;
   var oLines=[];
-  for(var o=0;o<optics.length;o++)oLines.push(optics[o]);
+  for(var o of optics)oLines.push(o);
   var measL=document.querySelector(".meas__line--l");
   var measR=document.querySelector(".meas__line--r");
   var dim=document.getElementById("dim");
@@ -36,7 +36,6 @@
     {name:"T A",opt:-64,amp:88,ph:3.50},
     {name:"A R",opt:-48,amp:64,ph:4.70}
   ];
-  var pc=PAIR.length;
   while(PAIR.length<n-1)PAIR.push({name:"pair",opt:-60,amp:70,ph:PAIR.length*1.3});
 
   var TAU=Math.PI*2;
@@ -48,7 +47,7 @@
   var pos=new Float32Array(n);
   var optPos=new Float32Array(n);
   var ox=0,fs=40;
-  var idx=0,lockAt=-1,locked=false,devs=0;
+  var idx=0,lockAt=-1,locked=false;
   var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var hist=new Float32Array(80);
   var hi=0;
@@ -69,7 +68,7 @@
     }
     var gb=strut.getBoundingClientRect();
     plate.style.setProperty("--base",(gb.top-pb.top).toFixed(2)+"px");
-    fs=parseFloat(getComputedStyle(type).fontSize)||40;
+    fs=Number.parseFloat(getComputedStyle(type).fontSize)||40;
     var cum=0;
     for(i=0;i<n;i++){
       optPos[i]=ox+baseRel[i]+cum;
@@ -110,7 +109,10 @@
     cKern.textContent=sign(kern[idx]);
     cOpt.textContent=sign(optK[idx]);
     cFit.textContent=fit.toFixed(2);
-    cState.textContent=locked?(fit>0.995?"locked":"seating"):(dev>44?"drift":"near");
+    var estadoTxt="near";
+    if(locked)estadoTxt=fit>0.995?"locked":"seating";
+    else if(dev>44)estadoTxt="drift";
+    cState.textContent=estadoTxt;
     dim.textContent=PAIR[idx].name+" "+sign(kern[idx]);
     dim.style.setProperty("--x",((pos[idx]+pos[idx+1]+wid[idx+1])/2).toFixed(2));
     for(i=0;i<2;i++){
@@ -169,7 +171,7 @@
     var dt=last?Math.min(.05,(t-last)/1000):.016;
     last=t;
     var e=t-lockAt;
-    var i,cum=0,dev=0;
+    var i,dev=0;
     if(sweep){
       var u=t/340;
       if(u>=1){

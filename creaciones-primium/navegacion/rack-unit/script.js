@@ -16,8 +16,8 @@
       else u.removeAttribute("aria-current");
     });
     luz.style.setProperty("--pos", indice);
-    unidad.textContent = unidades[indice].getAttribute("data-u");
-    nombre.textContent = unidades[indice].getAttribute("data-nombre");
+    unidad.textContent = unidades[indice].dataset.u;
+    nombre.textContent = unidades[indice].dataset.nombre;
   }
 
   function medir() {

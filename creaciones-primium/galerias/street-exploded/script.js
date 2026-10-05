@@ -83,9 +83,9 @@
       sheet.classList.toggle("is-front", depth === 0);
     }
     var wires = stage.querySelectorAll(".wire");
-    for (var w = 0; w < wires.length; w++) {
-      wires[w].style.transform = "scaleX(" + (g / 150).toFixed(3) + ")";
-      wires[w].style.opacity = g > 46 ? "1" : "0";
+    for (var wire of wires) {
+      wire.style.transform = "scaleX(" + (g / 150).toFixed(3) + ")";
+      wire.style.opacity = g > 46 ? "1" : "0";
     }
     gapOut.textContent = Math.round(g) + " px";
 
@@ -131,7 +131,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   gap.addEventListener("input", paint);
@@ -141,7 +141,7 @@
   document.getElementById("v-prev").addEventListener("click", function () { openAt(flatIndex() - 1); });
   document.getElementById("v-next").addEventListener("click", function () { openAt(flatIndex() + 1); });
   document.getElementById("v-close").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   stage.addEventListener("keydown", function (e) {
     var k = e.key;

@@ -75,7 +75,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   slot.forEach(function (b, i) { b.addEventListener("click", function () { openAt(i); }); });
@@ -86,7 +86,7 @@
   document.getElementById("vPrev").addEventListener("click", function () { openAt((at - 1 + slot.length) % slot.length); });
   document.getElementById("vNext").addEventListener("click", function () { openAt((at + 1) % slot.length); });
   document.getElementById("vClose").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   window.addEventListener("resize", travel);
 

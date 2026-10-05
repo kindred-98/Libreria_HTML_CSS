@@ -259,7 +259,7 @@ const CAMPOS = [
     valor: () => el("servicio").value,
     vacio: "Say where you want to sit, the host plans the room around it.",
     error: "That seating option is not on the list.",
-    prueba: v => Object.prototype.hasOwnProperty.call(SERVICIOS, v)
+    prueba: v => Object.hasOwn(SERVICIOS, v)
   },
   {
     id: "hora",
@@ -267,7 +267,7 @@ const CAMPOS = [
     valor: () => el("hora").value,
     vacio: "Choose a time from the list for this day.",
     error: "That slot is not on the list for this room on this day.",
-    prueba: () => franjasDe(SALAS[st.sala]).indexOf(el("hora").value) > -1
+    prueba: () => franjasDe(SALAS[st.sala]).includes(el("hora").value)
   },
   {
     id: "personas",

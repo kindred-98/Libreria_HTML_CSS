@@ -76,7 +76,7 @@
 
     if (animate === false) { return; }
     fog.classList.remove("is-passing");
-    void fog.offsetWidth;
+    fog.getBoundingClientRect();
     fog.classList.add("is-passing");
     window.clearTimeout(fogTimer);
     fogTimer = window.setTimeout(function () { fog.classList.remove("is-passing"); }, 1400);

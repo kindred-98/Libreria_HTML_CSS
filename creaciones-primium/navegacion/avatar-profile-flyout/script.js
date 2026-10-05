@@ -17,17 +17,15 @@
   var isOpen = false;
   var backFocus = null;
   var pending = false;
-  var state = 0;
 
   function setStatus(i) {
-    state = i;
-    whoBtn.setAttribute("data-state", STATUS[i].state);
-    fly.setAttribute("data-state", STATUS[i].state);
+    whoBtn.dataset.state = STATUS[i].state;
+    fly.dataset.state = STATUS[i].state;
     whoStatus.textContent = STATUS[i].name;
     flyStatus.textContent = STATUS[i].name;
     var radios = menu.querySelectorAll('[role="menuitemradio"]');
-    for (var n = 0; n < radios.length; n++) {
-      radios[n].setAttribute("aria-checked", parseInt(radios[n].getAttribute("data-status"), 10) === i ? "true" : "false");
+    for (var radio of radios) {
+      radio.setAttribute("aria-checked", Number.parseInt(radio.dataset.status, 10) === i ? "true" : "false");
     }
   }
 
@@ -58,7 +56,7 @@
     isOpen = false;
     whoBtn.setAttribute("aria-expanded", "false");
     if (back) {
-      if (backFocus && backFocus.focus) backFocus.focus();
+      if (backFocus?.focus) backFocus.focus();
       else whoBtn.focus();
     }
   }
@@ -96,12 +94,12 @@
     var item = e.target.closest ? e.target.closest(".mi") : null;
     if (!item) return;
     if (item.getAttribute("role") === "menuitemradio") {
-      setStatus(parseInt(item.getAttribute("data-status"), 10));
+      setStatus(Number.parseInt(item.dataset.status, 10));
     }
-    if (item.hasAttribute("data-act")) {
+    if ("act" in item.dataset) {
       var card = fly.querySelector(".fly__card");
       card.classList.remove("is-off");
-      void card.offsetWidth;
+      card.getBoundingClientRect();
       card.classList.add("is-off");
     }
     if (item.tagName === "A") close(false);
@@ -138,14 +136,14 @@
     pending = false;
     var markY = window.innerHeight * 0.36;
     var now = "";
-    for (var k = 0; k < bays.length; k++) {
-      if (bays[k].getBoundingClientRect().top <= markY) now = bays[k].id;
+    for (var bay of bays) {
+      if (bay.getBoundingClientRect().top <= markY) now = bay.id;
     }
-    for (var n = 0; n < navLinks.length; n++) {
-      if (navLinks[n].getAttribute("href") === "#" + now) navLinks[n].setAttribute("aria-current", "true");
-      else navLinks[n].removeAttribute("aria-current");
+    for (var link of navLinks) {
+      if (link.getAttribute("href") === "#" + now) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
     }
-    for (var s = 0; s < bays.length; s++) bays[s].classList.toggle("is-here", bays[s].id === now);
+    for (var b of bays) b.classList.toggle("is-here", b.id === now);
   }
 
   function queue() {

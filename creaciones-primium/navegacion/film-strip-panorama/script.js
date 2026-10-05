@@ -4,8 +4,8 @@
   var prog = document.getElementById("prog");
   var frameNo = document.getElementById("frameNo");
   var frameName = document.getElementById("frameName");
-  var frames = [].slice.call(run.querySelectorAll(".frame"));
-  var legs = [].slice.call(document.querySelectorAll(".legs a"));
+  var frames = Array.prototype.slice.call(run.querySelectorAll(".frame"));
+  var legs = Array.prototype.slice.call(document.querySelectorAll(".legs a"));
   var legLinks = frames.map(function (f) { return f.getAttribute("href"); });
   var override = null;
   var current = -1;
@@ -33,9 +33,9 @@
       if (k === i) frames[k].setAttribute("aria-current", "page");
       else frames[k].removeAttribute("aria-current");
     }
-    for (var j = 0; j < legs.length; j++) {
-      if (legs[j].getAttribute("href") === legLinks[i]) legs[j].setAttribute("aria-current", "page");
-      else legs[j].removeAttribute("aria-current");
+    for (const leg of legs) {
+      if (leg.getAttribute("href") === legLinks[i]) leg.setAttribute("aria-current", "page");
+      else leg.removeAttribute("aria-current");
     }
     frameNo.textContent = String(i + 1).padStart(2, "0");
     frameName.textContent = frames[i].querySelector("b").textContent;
@@ -67,7 +67,7 @@
   }
 
   function bind(list, scroll) {
-    for (var i = 0; i < list.length; i++) {
+    for (const el of list) {
       (function (el) {
         var idx = frames.indexOf(el);
         if (idx < 0) idx = legs.indexOf(el);
@@ -85,7 +85,7 @@
           el.addEventListener("focus", function () { override = idx; render(); });
           el.addEventListener("blur", function () { override = null; render(); });
         }
-      })(list[i]);
+      })(el);
     }
   }
 

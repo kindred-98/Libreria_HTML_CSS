@@ -61,7 +61,7 @@ function reflow(mutate) {
     const before = first.get(cell);
     if (!before) {
       cell.classList.remove("is-fresh");
-      void cell.offsetWidth;
+      cell.getBoundingClientRect();
       cell.classList.add("is-fresh");
       return;
     }
@@ -73,7 +73,7 @@ function reflow(mutate) {
     }
     cell.style.transition = "none";
     cell.style.transform = "translate3d(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px,0)";
-    void cell.offsetWidth;
+    cell.getBoundingClientRect();
     cell.style.transition = "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)";
     cell.style.transform = "";
     window.setTimeout(function () {

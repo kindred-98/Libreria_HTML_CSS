@@ -1,7 +1,7 @@
 (function () {
   var lamp = document.getElementById('lamp');
   var mark = document.getElementById('mark');
-  var bays = [].slice.call(document.querySelectorAll('.lights__bay'));
+  var bays = Array.prototype.slice.call(document.querySelectorAll('.lights__bay'));
   var panes = bays.map(function (b) { return b.querySelector('a'); });
   var roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var secs = panes.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
@@ -21,7 +21,7 @@
 
   function read() {
     var line = window.innerHeight * 0.45;
-    var best = lit < 0 ? 0 : lit;
+    var best = Math.max(lit, 0);
     var bestD = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -46,7 +46,7 @@
   });
 
   function light(on) {
-    document.documentElement.setAttribute('data-lit', on ? 'on' : 'off');
+    document.documentElement.dataset.lit = on ? 'on' : 'off';
     lamp.setAttribute('aria-expanded', on ? 'true' : 'false');
     lamp.querySelector('.lamp__text').textContent = on ? 'Put out the lamp' : 'Light the window';
   }

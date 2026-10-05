@@ -44,16 +44,16 @@
   function drawBowl() {
     var g = Number(gate.value);
     var need = (8 - g) / 8 * 1.16;
-    for (var k = 0; k < dots.length; k++) {
-      var u = parseFloat(dots[k].dataset.u);
-      var v = parseFloat(dots[k].dataset.v);
+    for (var dot of dots) {
+      var u = Number.parseFloat(dot.dataset.u);
+      var v = Number.parseFloat(dot.dataset.v);
       var rr = Math.sqrt(Math.pow((u - 0.5) / 0.48, 2) + Math.pow((v - 0.5) / 0.47, 2));
       var pitch = v > 0.34 && v < 0.7 && u > 0.22 && u < 0.78;
       var w = Math.max(0, 1 - Math.abs(rr - 0.74) / 0.74);
       var wob = 0.5 + 0.5 * Math.sin(u * 29.3 + v * 21.1);
       var on = !pitch && rr < 0.99 && (w + 0.22 * wob) > need;
-      dots[k].style.setProperty("--o", on ? (0.52 + 0.48 * w).toFixed(3) : "0.3");
-      dots[k].style.setProperty("--a", on ? (0.3 + 0.7 * w).toFixed(3) : "0.09");
+      dot.style.setProperty("--o", on ? (0.52 + 0.48 * w).toFixed(3) : "0.3");
+      dot.style.setProperty("--a", on ? (0.3 + 0.7 * w).toFixed(3) : "0.09");
     }
   }
 
@@ -107,7 +107,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   buildBowl();
@@ -127,7 +127,7 @@
   document.getElementById("vPrev").addEventListener("click", function () { openAt((at - 1 + F.length) % F.length); });
   document.getElementById("vNext").addEventListener("click", function () { openAt((at + 1) % F.length); });
   document.getElementById("vClose").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   vf.addEventListener("keydown", function (e) {
     var k = e.key;

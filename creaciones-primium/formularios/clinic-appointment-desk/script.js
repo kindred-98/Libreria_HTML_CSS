@@ -70,7 +70,7 @@ const CAMPOS = [
     etiqueta: "Specialty",
     vacio: "Choose a specialty so we can offer you the right clinicians.",
     error: "That specialty is not in the clinic list.",
-    prueba: v => Object.prototype.hasOwnProperty.call(ESPECIALIDADES, v)
+    prueba: v => Object.hasOwn(ESPECIALIDADES, v)
   },
   {
     id: "profesional",
@@ -91,7 +91,7 @@ const CAMPOS = [
     etiqueta: "Phone",
     vacio: "Without a number the reminder text has nowhere to go.",
     error: "Between 8 and 18 characters, digits with spaces, plus and dashes.",
-    prueba: v => /^\+?[0-9][0-9 \-]{6,17}$/.test(v)
+    prueba: v => /^\+?[\d][0-9 -]{6,17}$/.test(v)
   },
   {
     id: "motivo",
@@ -136,13 +136,13 @@ function pasado(d) {
 function clinicianExiste(v) {
   const esp = especialidad.value;
   if (v === "") return false;
-  if (!Object.prototype.hasOwnProperty.call(ESPECIALIDADES, esp)) return false;
+  if (!Object.hasOwn(ESPECIALIDADES, esp)) return false;
   return ESPECIALIDADES[esp].equipo.some(e => e.id === v);
 }
 
 function clinicianActual() {
   const esp = especialidad.value;
-  if (!Object.prototype.hasOwnProperty.call(ESPECIALIDADES, esp)) return null;
+  if (!Object.hasOwn(ESPECIALIDADES, esp)) return null;
   return ESPECIALIDADES[esp].equipo.find(e => e.id === profesional.value) || null;
 }
 
@@ -194,7 +194,10 @@ function pintarDias() {
     if (clave(d) === clave(hoy)) boton.classList.add("dia-hoy");
     boton.textContent = String(n);
     boton.dataset.fecha = clave(d);
-    boton.setAttribute("aria-label", textoFecha(d) + (cerrada(d) ? ", clinic closed" : (pasado(d) ? ", in the past" : ", free")));
+    let estadoDia = ", free";
+    if (cerrada(d)) estadoDia = ", clinic closed";
+    else if (pasado(d)) estadoDia = ", in the past";
+    boton.setAttribute("aria-label", textoFecha(d) + estadoDia);
     boton.setAttribute("aria-pressed", String(diaElegido !== null && clave(diaElegido) === clave(d)));
     boton.disabled = cerrada(d) || pasado(d);
     boton.addEventListener("click", () => {
@@ -249,14 +252,16 @@ function pintarHoras() {
 
 function pintarResumen() {
   const esp = especialidad.value;
-  const espDatos = Object.prototype.hasOwnProperty.call(ESPECIALIDADES, esp) ? ESPECIALIDADES[esp] : null;
+  const espDatos = Object.hasOwn(ESPECIALIDADES, esp) ? ESPECIALIDADES[esp] : null;
   const clinico = clinicianActual();
-  const minutos = espDatos ? espDatos.min + (nueva.checked ? 10 : 0) : 40;
-  const precio = espDatos ? espDatos.precio + (nueva.checked ? 12 : 0) : 0;
+  const extraMin = nueva.checked ? 10 : 0;
+  const extraEuros = nueva.checked ? 12 : 0;
+  const minutos = espDatos ? espDatos.min + extraMin : 40;
+  const precio = espDatos ? espDatos.precio + extraEuros : 0;
 
   el("rCuando").textContent = diaElegido === null
     ? "Pick a day and an hour"
-    : (horaElegida === "" ? textoFecha(diaElegido) : textoFecha(diaElegido) + " at " + horaElegida);
+    : horaElegida === "" ? textoFecha(diaElegido) : textoFecha(diaElegido) + " at " + horaElegida;
   el("rQuien").textContent = clinico === null ? "No clinician chosen yet" : clinico.nombre + ", " + clinico.consulta;
   el("rEspecialidad").textContent = espDatos === null ? "not chosen" : espDatos.nombre;
   el("rDuracion").textContent = minutos + " minutes" + (nueva.checked ? ", ten for the record" : "");

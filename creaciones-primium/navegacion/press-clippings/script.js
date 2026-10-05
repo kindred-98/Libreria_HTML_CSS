@@ -21,7 +21,7 @@
     }
     if (fill) fill.style.height = ((i + 1) / clips.length * 100).toFixed(2) + '%';
     if (readout) {
-      var raw = clips[i].getAttribute('data-say') || '';
+      var raw = clips[i].dataset.say || '';
       var cut = raw.split(',');
       readout.textContent = 'Day ' + (i + 1) + ' of ' + clips.length + (cut[1] ? ' \u00b7 ' + cut[1] : '');
     }

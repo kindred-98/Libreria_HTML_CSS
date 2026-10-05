@@ -32,7 +32,11 @@ var W=1,H=1,VR=180,scale=1;
 var ptr={x:-1e4,y:-1e4,age:9,act:false};
 var strength=0,ringOn=false;
 
-function cl(v,a,b){return v<a?a:(v>b?b:v);}
+function cl(v,a,b){
+  if(v<a)return a;
+  if(v>b)return b;
+  return v;
+}
 function rn(a,b){return a+Math.random()*(b-a);}
 function setP(el,k,v){el.style.setProperty(k,v);}
 
@@ -60,7 +64,7 @@ function build(){
     p.w=rn(t.w[0],t.w[1])*scale;
     p.a=rn(t.a[0],t.a[1]);
     p.streak=rn(t.sk[0],t.sk[1])*p.a;
-    p.c=t.pal[(Math.random()*t.pal.length)|0];
+    p.c=t.pal[(Math.random()*t.pal.length | 0)];
     p.rate=Math.random();
     p.wob=rn(0,TAU);
     p.k=0;
@@ -155,7 +159,7 @@ function loop(ts){
     var k=0;
     if(strength>0.002){
       var dx=x-px,dy=y-py;
-      var d=Math.sqrt(dx*dx+dy*dy);
+      var d=Math.hypot(dx, dy);
       if(d<VR){
         var f=1-d/VR;
         k=strength*f*f*(0.68+p.rate*0.64);
@@ -165,7 +169,7 @@ function loop(ts){
     if(p.k<0.0015)p.k=0;
     if(p.k>0){
       var dx2=x-px,dy2=y-py;
-      var d2=Math.sqrt(dx2*dx2+dy2*dy2)||1;
+      var d2=Math.hypot(dx2, dy2)||1;
       var tx=-dy2/d2,ty=dx2/d2;
       var sp=(84+p.rate*28)*p.k*(p.w>28?1.5:1);
       sp+=Math.sin(time*3.1+p.wob)*11*p.k;

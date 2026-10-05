@@ -101,19 +101,21 @@ if (stick) {
     if (event.key === "Home") {
       event.preventDefault();
       paint(0, 0);
-      report("home  stick centred", true);
+      // El segundo argumento que se pasaba aqui lo ignoraba `report`, que solo
+      // recibe la etiqueta: se quita por eso.
+      report("home  stick centred");
       return;
     }
     if (event.key === "End") {
       event.preventDefault();
       paint(100, -100);
-      report("end   stick pinned to the corner", true);
+      report("end   stick pinned to the corner");
       return;
     }
     if (event.key === " " || event.key === "Enter") {
       event.preventDefault();
       paint(0, 0);
-      report("zero  stick recentred", true);
+      report("zero  stick recentred");
     }
   });
 

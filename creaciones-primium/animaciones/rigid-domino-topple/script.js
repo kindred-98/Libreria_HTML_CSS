@@ -12,6 +12,7 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const G_ACC = 30;
 const REST = 1.5;
 const MAX_OM = 9.2;
+const ACENTOS = ['#ff9d5c', '#ffd08a', '#7fd8e6'];
 const STEP = 1 / 240;
 const IDLE_T = 0.8;
 const HOLD_T = 1.5;
@@ -55,7 +56,7 @@ let motePtr = 0;
 function mulberry32(a) {
   return function () {
     a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
+    a = (a + 0x6d2b79f5 | 0);
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -93,7 +94,7 @@ function buildGrain() {
   const im = g.createImageData(size, size);
   const rnd = mulberry32(0x51aa);
   for (let i = 0; i < im.data.length; i += 4) {
-    const v = (rnd() * 255) | 0;
+    const v = (rnd() * 255 | 0);
     im.data[i] = v;
     im.data[i + 1] = v;
     im.data[i + 2] = v;
@@ -155,7 +156,8 @@ function layout() {
         sq: 1,
         hit: -1,
         on: false,
-        accent: i % 3 === 0 ? '#ff9d5c' : i % 3 === 1 ? '#ffd08a' : '#7fd8e6'
+        // El acento se repite cada tres fichas; la tabla evita el ternario anidado.
+        accent: ACENTOS[i % 3]
       });
       run = 0;
       if (D.length >= 48) break;
@@ -201,8 +203,7 @@ function layout() {
 }
 
 function armRun() {
-  for (let i = 0; i < D.length; i++) {
-    const d = D[i];
+  for (const d of D) {
     d.th = 0;
     d.om = 0;
     d.tau = 0;
@@ -290,7 +291,7 @@ function step(dt) {
 }
 
 function allDown() {
-  for (let i = 0; i < D.length; i++) if (D[i].hit < 0) return false;
+  for (const d of D) if (d.hit < 0) return false;
   return true;
 }
 
@@ -423,9 +424,9 @@ function draw(dt) {
       }
     }
   } else {
-    for (let i = 0; i < D.length; i++) {
-      if (D[i].hit < 0) {
-        focusX = D[i].x;
+    for (const d of D) {
+      if (d.hit < 0) {
+        focusX = d.x;
         focus = 1;
         break;
       }
@@ -434,8 +435,7 @@ function draw(dt) {
 
   drawBackdrop(focus);
 
-  for (let i = 0; i < motes.length; i++) {
-    const m = motes[i];
+  for (const m of motes) {
     const y = m.y - ((clock * m.sp) % (yJ + 40));
     const x = m.x + Math.sin(clock * 0.5 + m.ph) * 9;
     ctx.globalAlpha = m.a * (0.5 + 0.5 * Math.sin(clock * 1.3 + m.ph));
@@ -454,8 +454,8 @@ function draw(dt) {
     ctx.fillRect(focusX - H * 0.2, yJ - 2, H * 0.4, H * 0.24);
   }
 
-  for (let k = 0; k < order.length; k++) {
-    const d = D[order[k]];
+  for (const idx of order) {
+    const d = D[idx];
     const c = Math.cos(d.th);
     drawSlab(d, c > 0.04 ? 0.16 * Math.pow(c, 1.2) : 0, true);
   }
@@ -466,8 +466,8 @@ function draw(dt) {
   ctx.fillStyle = fadeGrad;
   ctx.fillRect(0, H * 0.7, W, H * 0.3);
 
-  for (let k = 0; k < order.length; k++) {
-    const d = D[order[k]];
+  for (const idx of order) {
+    const d = D[idx];
     const reach = Math.max(0, d.h * Math.sin(d.a + d.th));
     ctx.globalAlpha = 0.36;
     ctx.fillStyle = '#070409';
@@ -485,7 +485,7 @@ function draw(dt) {
   }
   ctx.globalAlpha = 1;
 
-  for (let k = 0; k < order.length; k++) drawSlab(D[order[k]], 1, false);
+  for (const idx of order) drawSlab(D[idx], 1, false);
 
   drawFX(state === STATE_RESET ? Math.max(0, 1 - stateT / 0.3) : 1);
 
@@ -493,8 +493,8 @@ function draw(dt) {
   ctx.fillRect(0, 0, W, H);
 
   if (grainPattern) {
-    const ox = (Math.random() * 146) | 0;
-    const oy = (Math.random() * 146) | 0;
+    const ox = (Math.random() * 146 | 0);
+    const oy = (Math.random() * 146 | 0);
     ctx.save();
     ctx.globalCompositeOperation = 'overlay';
     ctx.globalAlpha = 0.055;
@@ -505,7 +505,7 @@ function draw(dt) {
   }
 
   let down = 0;
-  for (let i = 0; i < D.length; i++) if (D[i].hit >= 0) down++;
+  for (const d of D) if (d.hit >= 0) down++;
   if (down !== lastDown) {
     lastDown = down;
     downEl.textContent = down + ' / ' + D.length + ' down';
@@ -607,10 +607,10 @@ function frame(now) {
 
 function replay() {
   if (REDUCED) {
-    for (let i = 0; i < D.length; i++) {
-      D[i].th = REST;
-      D[i].hit = 0;
-      D[i].sq = 1;
+    for (const d of D) {
+      d.th = REST;
+      d.hit = 0;
+      d.sq = 1;
     }
     state = STATE_HOLD;
     stateT = 0;
@@ -641,10 +641,10 @@ replayBtn.addEventListener('click', function (e) {
 layout();
 
 if (REDUCED) {
-  for (let i = 0; i < D.length; i++) {
-    D[i].th = REST;
-    D[i].hit = 0;
-    D[i].sq = 1;
+  for (const d of D) {
+    d.th = REST;
+    d.hit = 0;
+    d.sq = 1;
   }
   state = STATE_HOLD;
   stateT = 0;
@@ -661,10 +661,10 @@ window.addEventListener('resize', function () {
   resizeTimer = setTimeout(function () {
     layout();
     if (REDUCED) {
-      for (let i = 0; i < D.length; i++) {
-        D[i].th = REST;
-        D[i].hit = 0;
-        D[i].sq = 1;
+      for (const d of D) {
+        d.th = REST;
+        d.hit = 0;
+        d.sq = 1;
       }
       impacts = D.length;
       state = STATE_HOLD;

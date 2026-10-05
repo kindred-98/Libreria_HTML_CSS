@@ -29,14 +29,14 @@ const CAMPOS = [
     etiqueta: "Department",
     vacio: "Choose the department that pays for this.",
     error: "That department is not in the cost centre list.",
-    prueba: v => ["ventas", "soporte", "ingenieria", "finanzas", "operaciones"].indexOf(v) > -1
+    prueba: v => ["ventas", "soporte", "ingenieria", "finanzas", "operaciones"].includes(v)
   },
   {
     id: "periodo",
     etiqueta: "Claim period",
     vacio: "Pick the month the money was spent in.",
     error: "That period is not open for claims.",
-    prueba: v => ["cerrado", "actual", "anterior"].indexOf(v) > -1
+    prueba: v => ["cerrado", "actual", "anterior"].includes(v)
   },
   {
     id: "motivo",
@@ -50,7 +50,7 @@ const CAMPOS = [
     etiqueta: "Receipt status",
     vacio: "Tell us whether the receipts are in place.",
     error: "That receipt answer is not on the form.",
-    prueba: v => ["todos", "algunos", "ninguno"].indexOf(v) > -1
+    prueba: v => ["todos", "algunos", "ninguno"].includes(v)
   },
   {
     id: "aprobador",
@@ -64,7 +64,7 @@ const CAMPOS = [
     etiqueta: "Payment",
     vacio: "Choose how the money reaches you.",
     error: "That payment route is not available.",
-    prueba: v => ["nomina", "transferencia", "tarjeta"].indexOf(v) > -1
+    prueba: v => ["nomina", "transferencia", "tarjeta"].includes(v)
   },
   {
     id: "declaro",
@@ -177,7 +177,6 @@ function crearLinea(indice) {
   fila.appendChild(izq);
 
   const der = nodo("div", "linea-gasto__der");
-  const cuerpo = cuerpoLinea(indice);
 
   const sel = document.createElement("select");
   sel.id = "gastoCat" + indice;
@@ -287,7 +286,7 @@ function pintarGasto(indice) {
   fila.dataset.estado = errores.length > 0 ? "error" : "ok";
   aviso.textContent = errores.length === 0
     ? ""
-    : (errores.length === 1 ? errores[0] : "Line " + indice + " needs " + errores.length + " fixes: " + errores.join(" "));
+    : errores.length === 1 ? errores[0] : "Line " + indice + " needs " + errores.length + " fixes: " + errores.join(" ");
   return errores;
 }
 
@@ -356,7 +355,7 @@ function quitarUltima() {
 function mostrarBrindis(texto) {
   el("brindisTexto").textContent = texto;
   brindis.hidden = true;
-  void brindis.offsetWidth;
+  brindis.getBoundingClientRect();
   brindis.hidden = false;
   window.setTimeout(() => { brindis.hidden = true; }, 2600);
 }
@@ -414,9 +413,10 @@ form.addEventListener("keydown", e => {
 
 function guardarBorrador() {
   const incompletas = CAMPOS.filter(problema).length;
+  const plural = incompletas === 1 ? "" : "s";
   mostrarBrindis(incompletas === 0
     ? "Draft saved, everything is filled in"
-    : "Draft saved with " + incompletas + " thing" + (incompletas === 1 ? "" : "s") + " still empty");
+    : "Draft saved with " + incompletas + " thing" + plural + " still empty");
 }
 
 form.addEventListener("submit", e => {

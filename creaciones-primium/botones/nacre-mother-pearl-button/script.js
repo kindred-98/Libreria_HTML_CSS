@@ -4,27 +4,27 @@
   var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var T=4200;
   var layers=[];
-  for(var i=0;i<plates.length;i++){
-    var ls=plates[i].querySelectorAll(".lay");
+  for(var pl of plates){
+    var ls=pl.querySelectorAll(".lay");
     layers.push(ls);
   }
 
   function rip(p){
     p.classList.remove("is-rip");
-    void p.offsetWidth;
+    p.getBoundingClientRect();
     p.classList.add("is-rip");
     p.classList.add("is-hit");
     setTimeout(function(){p.classList.remove("is-hit")},150);
   }
 
-  for(var k=0;k<plates.length;k++){
-    (function(p){
-      p.addEventListener("click",function(){rip(p)});
-    })(plates[k]);
+  for (let pl of plates) {
+    (function (p) {
+      p.addEventListener("click", function () { rip(p); });
+    })(pl);
   }
 
   function frame(t){
-    var s=t/1000,i,j;
+    var i,j;
     for(i=0;i<plates.length;i++){
       for(j=0;j<5;j++){
         var a=t/T+i*0.9+j*0.42;

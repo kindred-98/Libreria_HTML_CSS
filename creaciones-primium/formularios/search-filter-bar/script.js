@@ -241,7 +241,7 @@ limpiar.addEventListener("click", () => {
 });
 
 document.addEventListener("keydown", e => {
-  const enCampo = document.activeElement && ["INPUT", "SELECT", "TEXTAREA"].indexOf(document.activeElement.tagName) > -1;
+  const enCampo = document.activeElement && ["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName);
   if ((e.key === "/" && !enCampo) || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k")) {
     e.preventDefault();
     consulta.focus();

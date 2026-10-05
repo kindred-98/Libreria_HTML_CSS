@@ -62,7 +62,7 @@
   }
 
   function jag(x1,y1,x2,y2,amp,seg){
-    var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy)||1;
+    var dx=x2-x1,dy=y2-y1,len=Math.hypot(dx, dy)||1;
     var nx=-dy/len,ny=dx/len,pts=[],i,f,o;
     for(i=1;i<seg;i++){
       f=i/seg;
@@ -102,7 +102,7 @@
     n.style.left=x.toFixed(1)+"px";
     n.style.top=y.toFixed(1)+"px";
     p.b.appendChild(n);
-    setTimeout(function(){if(n.parentNode)n.parentNode.removeChild(n)},760);
+    setTimeout(function(){if(n.parentNode)n.remove()},760);
   }
 
   function fire(p,force,double){
@@ -115,7 +115,7 @@
     else{p.a=[lx,ly];p.c=[e2[0],e2[1]];}
     p.amp=rnd(p.amp*0.6,p.amp);
     p.seg=6+Math.round(Math.random()*4);
-    p.br=rnd(2,3)|0;
+    p.br=rnd(2,3 | 0);
     p.life=force?340:300;
     p.strike=p.life;
     p.vol=Math.min(p.cap,p.vol+(force?3.4:rnd(1.6,2.8)));
@@ -164,7 +164,7 @@
     ctx.lineWidth=1.4;
     ctx.stroke();
     for(i=0;i<p.br;i++){
-      k=pts[(Math.random()*pts.length)|0];
+      k=pts[(Math.random()*pts.length | 0)];
       trace(ctx,k[0],k[1],k[0]+rnd(-28,28),k[1]+rnd(-20,20),rnd(3,8),3);
       ctx.shadowBlur=7;ctx.shadowColor="rgba(169,123,255,.8)";
       ctx.strokeStyle="rgba(200,164,255,"+(alpha*.7).toFixed(3)+")";
@@ -224,7 +224,7 @@
   }
 
   function loop(ts){
-    for(var i=0;i<plates.length;i++)tick(plates[i],ts);
+    for(var pl of plates)tick(pl,ts);
     requestAnimationFrame(loop);
   }
 
@@ -247,12 +247,12 @@
       }
     }
     window.addEventListener("resize",function(){
-      for(var j=0;j<plates.length;j++)fit(plates[j]);
+      for(var pl of plates)fit(pl);
     });
   }
 
   function plateOf(b){
-    for(var i=0;i<plates.length;i++)if(plates[i].b===b)return plates[i];
+    for(var pl of plates)if(pl.b===b)return pl;
     return null;
   }
 
@@ -263,11 +263,11 @@
     requestAnimationFrame(loop);
   }else{
     setTimeout(function(){
-      for(var i=0;i<plates.length;i++){
-        fit(plates[i]);
-        drawCrawl(plates[i],0);
-        plates[i].kv.textContent="0.00 kV";
-        plates[i].fill.style.transform="scaleX(.02)";
+      for(var pl of plates){
+        fit(pl);
+        drawCrawl(pl,0);
+        pl.kv.textContent="0.00 kV";
+        pl.fill.style.transform="scaleX(.02)";
       }
     },60);
   }

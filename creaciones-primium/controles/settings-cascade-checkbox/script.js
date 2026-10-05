@@ -20,7 +20,7 @@ if (master && list) {
 
   const play = () => {
     rows.forEach((row) => row.classList.remove("enter"));
-    void list.offsetWidth;
+    list.getBoundingClientRect();
     rows.forEach((row) => row.classList.add("enter"));
   };
 
@@ -33,24 +33,26 @@ if (master && list) {
       const out = label(box);
       if (out) out.textContent = box.checked ? "on" : "off";
     });
-    const mode = full ? "all on" : on === 0 ? "all off" : "partial";
+    let mode = "partial";
+    if (full) mode = "all on";
+    else if (on === 0) mode = "all off";
     if (state) {
       state.textContent = mode;
       state.classList.remove("pop");
-      void state.offsetWidth;
+      state.getBoundingClientRect();
       state.classList.add("pop");
     }
     if (foot) {
-      foot.textContent = `${on} of ${boxes.length} children on · master ${
-        full ? "checked" : on === 0 ? "cleared" : "indeterminate"
-      }`;
+      let maestro = "indeterminate";
+      if (full) maestro = "checked";
+      else if (on === 0) maestro = "cleared";
+      foot.textContent = `${on} of ${boxes.length} children on · master ${maestro}`;
     }
     if (status) {
-      status.textContent = full
-        ? "Master switch checked, every child on"
-        : on === 0
-          ? "Master switch cleared, every child off"
-          : `Master switch indeterminate, ${on} of ${boxes.length} children on`;
+      let texto = `Master switch indeterminate, ${on} of ${boxes.length} children on`;
+      if (full) texto = "Master switch checked, every child on";
+      else if (on === 0) texto = "Master switch cleared, every child off";
+      status.textContent = texto;
     }
   };
 
@@ -83,7 +85,7 @@ if (master && list) {
   const place = () => {
     if (!railInd || !railBtns.length) return;
     const active = railBtns.findIndex((btn) => btn.classList.contains("is-on"));
-    const btn = railBtns[active < 0 ? 0 : active];
+    const btn = railBtns[Math.max(active, 0)];
     railInd.style.transform = `translate3d(${btn.offsetLeft - 6}px,${btn.offsetTop - 6}px,0)`;
   };
 

@@ -42,7 +42,7 @@ if (input && box && rotor && reticle && armBtn && cmdRows.length) {
 
   const pulse = () => {
     reticle.classList.remove("is-pulse");
-    void reticle.offsetWidth;
+    reticle.getBoundingClientRect();
     reticle.classList.add("is-pulse");
   };
 

@@ -46,7 +46,7 @@
     tSub.textContent = text;
     toast.classList.toggle('bad', !!bad);
     toast.classList.remove('up');
-    void toast.offsetWidth;
+    toast.getBoundingClientRect();
     toast.classList.add('up');
   }
 
@@ -161,7 +161,7 @@
 
   btn.addEventListener('pointerdown', function (e) {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    try { hold.setPointerCapture(e.pointerId); } catch (err) {}
+    try { hold.setPointerCapture(e.pointerId); } catch {}
     live();
   });
   hold.addEventListener('pointerup', cancel);

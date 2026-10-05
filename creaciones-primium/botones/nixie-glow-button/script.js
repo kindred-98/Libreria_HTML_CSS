@@ -15,7 +15,7 @@
   var timers = [];
 
   function clearTimers() {
-    for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]);
+    for (var t of timers) clearTimeout(t);
     timers.length = 0;
   }
 

@@ -24,11 +24,11 @@
   });
 
   function h(card) {
-    return Number(card.getAttribute("data-h"));
+    return Number(card.dataset.h);
   }
 
   function keep(tpl) {
-    return kind === "all" || tpl.getAttribute("data-kind") === kind;
+    return kind === "all" || tpl.dataset.kind === kind;
   }
 
   function order(a, b) {
@@ -135,8 +135,8 @@
     viewer.setAttribute("hidden", "");
     var all = allCards();
     var back = null;
-    for (var i = 0; i < all.length; i++) {
-      if (all[i].querySelector(".card__n").textContent === lastName) { back = all[i]; break; }
+    for (var card of all) {
+      if (card.querySelector(".card__n").textContent === lastName) { back = card; break; }
     }
     if (back) {
       back.setAttribute("tabindex", "0");
@@ -162,7 +162,7 @@
 
   kinds.forEach(function (btn) {
     btn.addEventListener("click", function () {
-      kind = btn.getAttribute("data-kind");
+      kind = btn.dataset.kind;
       kinds.forEach(function (b) {
         var on = b === btn;
         b.classList.toggle("is-on", on);

@@ -1,8 +1,8 @@
 (function(){
   var ids=["k0","k1","k2"];
   var knobs=[],dials=[],rings=[],nums=[];
-  for(var i=0;i<ids.length;i++){
-    var k=document.getElementById(ids[i]);
+  for(var id of ids){
+    var k=document.getElementById(id);
     if(!k)return;
     knobs.push(k);
     dials.push(k.querySelector(".knob__dial"));

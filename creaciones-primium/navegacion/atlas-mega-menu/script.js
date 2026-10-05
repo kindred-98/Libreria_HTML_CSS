@@ -8,13 +8,13 @@
 
   function setScene(name) {
     if (!name) return;
-    for (var i = 0; i < cols.length; i++) {
-      cols[i].classList.toggle("is-live", cols[i].getAttribute("data-scene") === name);
+    for (var col of cols) {
+      col.classList.toggle("is-live", col.dataset.scene === name);
     }
     if (name === current) return;
     current = name;
-    for (var k = 0; k < scenes.length; k++) {
-      scenes[k].classList.toggle("is-on", scenes[k].getAttribute("data-scene") === name);
+    for (var scene of scenes) {
+      scene.classList.toggle("is-on", scene.dataset.scene === name);
     }
   }
 
@@ -72,12 +72,12 @@
 
   mega.addEventListener("focusin", function (e) {
     var col = e.target.closest(".mega__col");
-    if (col) setScene(col.getAttribute("data-scene"));
+    if (col) setScene(col.dataset.scene);
   });
 
   mega.addEventListener("mouseover", function (e) {
     var col = e.target.closest(".mega__col");
-    if (col) setScene(col.getAttribute("data-scene"));
+    if (col) setScene(col.dataset.scene);
   });
 
   mega.addEventListener("click", function (e) {

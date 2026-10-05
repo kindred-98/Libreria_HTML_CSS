@@ -32,5 +32,5 @@ function runCounter(node) {
 }
 
 if (!reduceMotion) {
-  counters.forEach(runCounter);
+  counters.forEach(function (node) { return runCounter(node); });
 }

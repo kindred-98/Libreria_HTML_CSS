@@ -29,7 +29,7 @@
     }
     if (fill) fill.style.width = ((i + 1) / mounts.length * 100).toFixed(2) + '%';
     if (readout) {
-      var raw = mounts[i].getAttribute('data-say') || '';
+      var raw = mounts[i].dataset.say || '';
       var cut = raw.split(',');
       readout.textContent = 'Stamp ' + (i + 1) + ' of ' + mounts.length + (cut[1] ? ' \u00b7 ' + cut[1] : '') + (cut[2] ? ', ' + cut[2] : '');
     }

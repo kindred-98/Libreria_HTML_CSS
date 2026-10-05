@@ -120,7 +120,7 @@ function rotateHeld() {
   const node = swatches[tour % swatches.length];
   showSpec(node);
   node.classList.remove("is-turn");
-  void node.offsetWidth;
+  node.getBoundingClientRect();
   node.classList.add("is-turn");
   setTimeout(rotateHeld, 2600);
 }

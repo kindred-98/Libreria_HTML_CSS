@@ -33,7 +33,7 @@ if (input && box) {
     if (word) {
       word.textContent = view.name;
       word.classList.remove("is-hit");
-      void word.offsetWidth;
+      word.getBoundingClientRect();
       word.classList.add("is-hit");
     }
     if (lamp) {

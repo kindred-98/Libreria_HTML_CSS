@@ -17,12 +17,12 @@
 
   function maxShift() {
     var d = track.scrollWidth - view.clientWidth;
-    return d > 0 ? d : 0;
+    return Math.max(d, 0);
   }
 
   function current() {
-    for (var i = 0; i < links.length; i++) {
-      if (links[i].getAttribute("aria-current") === "page") return links[i];
+    for (const link of links) {
+      if (link.getAttribute("aria-current") === "page") return link;
     }
     return links[0];
   }
@@ -96,9 +96,9 @@
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
         var id = en.target.id;
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].getAttribute("href") === "#" + id) {
-            setCurrent(links[i]);
+        for (const link of links) {
+          if (link.getAttribute("href") === "#" + id) {
+            setCurrent(link);
             return;
           }
         }

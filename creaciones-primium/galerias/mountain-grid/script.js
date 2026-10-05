@@ -37,12 +37,12 @@
     var list = [];
     plates.forEach(function (plate) {
       var tags = plate.dataset.tags.split(" ");
-      var keep = key === "all" || tags.indexOf(key) > -1;
+      var keep = key === "all" || tags.includes(key);
       plate.classList.toggle("is-out", !keep);
       if (!keep) { return; }
       plate.classList.remove("lead", "broad", "duo", "one", "is-in");
       plate.classList.add(MEASURE[pattern[list.length % pattern.length]]);
-      void plate.offsetWidth;
+      plate.getBoundingClientRect();
       plate.classList.add("is-in");
       list.push(plate);
     });

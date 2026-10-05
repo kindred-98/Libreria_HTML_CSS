@@ -74,7 +74,7 @@
     c.height = r * 2;
     var g = c.getContext("2d");
     var rg = g.createRadialGradient(r, r, 0, r, r, r);
-    for (var k = 0; k < stops.length; k++) rg.addColorStop(stops[k][0], stops[k][1]);
+    for (var stop of stops) rg.addColorStop(stop[0], stop[1]);
     g.fillStyle = rg;
     g.fillRect(0, 0, r * 2, r * 2);
     return c;
@@ -132,7 +132,7 @@
       out[a].push(k);
       var ax = nx[a], ay = ny[a], bx = nx[b], by = ny[b];
       var dx = bx - ax, dy = by - ay;
-      var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      var dist = Math.hypot(dx, dy) || 1;
       var px = -dy / dist, py = dx / dist;
       var bow = Math.min(dist * 0.16, W * 0.07) * (k % 2 === 0 ? 1 : -1);
       var c1x = ax + dx * 0.34 + px * bow, c1y = ay + dy * 0.34 + py * bow;
@@ -434,7 +434,7 @@
     btn.addEventListener("click", function () {
       Array.prototype.forEach.call(buttons, function (other) { other.classList.remove("is-on"); });
       btn.classList.add("is-on");
-      rate = parseFloat(btn.getAttribute("data-rate")) || 1;
+      rate = Number.parseFloat(btn.dataset.rate) || 1;
     });
   });
 

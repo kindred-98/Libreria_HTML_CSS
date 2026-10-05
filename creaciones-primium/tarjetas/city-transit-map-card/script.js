@@ -51,7 +51,7 @@ function activate(index) {
     pin.setAttribute("aria-pressed", String(k === index));
   });
   sheet.classList.remove("tsheet--swap");
-  void sheet.offsetWidth;
+  sheet.getBoundingClientRect();
   sheet.classList.add("tsheet--swap");
 }
 

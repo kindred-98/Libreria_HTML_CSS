@@ -11,7 +11,11 @@ const statMode = document.querySelector("#statMode");
 
 if (scope && input) {
   const MAX = Number(input.max || 100);
-  const clamp = (n, lo, hi) => (n < lo ? lo : n > hi ? hi : n);
+  const clamp = (n, lo, hi) => {
+    if (n < lo) return lo;
+    if (n > hi) return hi;
+    return n;
+  };
   const signed = (n) => (n >= 0 ? "+" : "-") + Math.abs(n).toFixed(1);
 
   const paint = () => {
@@ -35,7 +39,11 @@ if (scope && input) {
 
     if (statMode) {
       const n = clamp(Number(raw), 0, MAX);
-      statMode.textContent = n === MAX ? "gain at stop" : n === 0 ? "gain at floor" : thr < 0 ? "threshold tripped" : "manual trim";
+      let modo = "manual trim";
+      if (n === MAX) modo = "gain at stop";
+      else if (n === 0) modo = "gain at floor";
+      else if (thr < 0) modo = "threshold tripped";
+      statMode.textContent = modo;
     }
   };
 
@@ -101,7 +109,7 @@ if (scope && input) {
     if (!drag) return;
     drag = null;
     if (event && typeof scope.releasePointerCapture === "function") {
-      try { scope.releasePointerCapture(event.pointerId); } catch (err) { void err; }
+      try { scope.releasePointerCapture(event.pointerId); } catch { }
     }
   };
 

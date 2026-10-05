@@ -61,7 +61,7 @@ let lastGrid = '';
 function mulberry32(a) {
   return function () {
     a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
+    a = (a + 0x6d2b79f5 | 0);
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -90,7 +90,7 @@ function paintSource(cw, ch) {
     const y = rnd() * hz * 0.7;
     const b = rnd();
     g.fillStyle =
-      'rgba(' + (198 + ((rnd() * 57) | 0)) + ',' + (216 + ((rnd() * 39) | 0)) + ',255,' + (0.22 + b * 0.62).toFixed(3) + ')';
+      'rgba(' + (198 + ((rnd() * 57 | 0))) + ',' + (216 + ((rnd() * 39 | 0))) + ',255,' + (0.22 + b * 0.62).toFixed(3) + ')';
     g.fillRect(x, y, b > 0.9 ? 2 : 1, b > 0.9 ? 2 : 1);
   }
 
@@ -113,8 +113,7 @@ function paintSource(cw, ch) {
     { amp: ch * 0.108, col: '#25103f', seed: 1.71 },
     { amp: ch * 0.062, col: '#100724', seed: 3.13 }
   ];
-  for (let r = 0; r < ridges.length; r++) {
-    const rg = ridges[r];
+  for (const rg of ridges) {
     g.beginPath();
     g.moveTo(0, ch);
     for (let x = 0; x <= cw; x++) {
@@ -141,7 +140,7 @@ function paintSource(cw, ch) {
     const t = (y - hz) / Math.max(1, ch - hz);
     const w = (1 - t) * sr * 2.9 + 1;
     const a = 0.52 * (1 - t) * (1 - t);
-    g.fillStyle = 'rgba(255,' + (176 - ((t * 66) | 0)) + ',' + (128 + ((t * 40) | 0)) + ',' + a.toFixed(3) + ')';
+    g.fillStyle = 'rgba(255,' + (176 - ((t * 66 | 0))) + ',' + (128 + ((t * 40 | 0))) + ',' + a.toFixed(3) + ')';
     g.fillRect(sx - w / 2 + (rnd() - 0.5) * (1 + t) * sr * 0.85, y, w, 1);
   }
   for (let y = hz + 1; y < ch; y += 2) {
@@ -185,7 +184,7 @@ function buildGrain() {
   const im = g.createImageData(size, size);
   const rnd = mulberry32(0x1d3f);
   for (let i = 0; i < im.data.length; i += 4) {
-    const v = (rnd() * 255) | 0;
+    const v = (rnd() * 255 | 0);
     im.data[i] = v;
     im.data[i + 1] = v;
     im.data[i + 2] = v;
@@ -299,7 +298,10 @@ function modeAt(tt) {
 
 function draw(tt) {
   const mode = modeAt(tt);
-  const local = mode === 1 ? tt - T_DISSOLVE : mode === 3 ? tt - T_REFORM : 0;
+  // El ternario era anidado; el if/else deja claro que solo hay tres modos.
+  let local = 0;
+  if (mode === 1) local = tt - T_DISSOLVE;
+  else if (mode === 3) local = tt - T_REFORM;
   const outward = mode === 1;
 
   ctx.globalCompositeOperation = 'source-over';
@@ -315,12 +317,19 @@ function draw(tt) {
   let ghost = 0;
   if (mode === 1) {
     const f = (local - SPREAD_D * 0.3) / (DIM_D - SPREAD_D * 0.3);
-    ghost = (f < 0 ? 0 : f > 1 ? 1 : f) * 0.34;
+    // clip de f a [0,1] sin ternario anidado
+    let fc = f;
+    if (fc < 0) fc = 0;
+    else if (fc > 1) fc = 1;
+    ghost = fc * 0.34;
   } else if (mode === 2) {
     ghost = 0.34;
   } else if (mode === 3) {
     const f = 1 - local / (DIM_R * 0.6);
-    ghost = (f < 0 ? 0 : f > 1 ? 1 : f) * 0.34;
+    let fc = f;
+    if (fc < 0) fc = 0;
+    else if (fc > 1) fc = 1;
+    ghost = fc * 0.34;
   }
 
   if (ghost > 0.012) {
@@ -373,9 +382,9 @@ function draw(tt) {
     ctx.globalAlpha = 1 - p * p;
     ctx.fillStyle =
       '#' +
-      HEX[Math.min(255, (r + (255 - r) * lit * 0.62) | 0)] +
-      HEX[Math.min(255, (g + (238 - g) * lit * 0.5) | 0)] +
-      HEX[Math.min(255, (b + (255 - b) * lit * 0.64) | 0)];
+      HEX[Math.min(255, (r + (255 - r) * lit * 0.62 | 0))] +
+      HEX[Math.min(255, (g + (238 - g) * lit * 0.5 | 0))] +
+      HEX[Math.min(255, (b + (255 - b) * lit * 0.64 | 0))];
     ctx.fillRect(tx - w / 2, ty - h / 2, w, h);
     if (lit > 0.4) {
       ctx.globalAlpha = lit * 0.42;
@@ -426,8 +435,8 @@ function draw(tt) {
   ctx.fillRect(0, 0, W, H);
 
   if (grainPattern) {
-    const ox = (Math.random() * 148) | 0;
-    const oy = (Math.random() * 148) | 0;
+    const ox = (Math.random() * 148 | 0);
+    const oy = (Math.random() * 148 | 0);
     ctx.save();
     ctx.globalCompositeOperation = 'overlay';
     ctx.globalAlpha = 0.05;

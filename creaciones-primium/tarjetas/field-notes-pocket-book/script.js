@@ -37,14 +37,14 @@ function showPage(index) {
 
   if (!reduce) {
     curl.classList.remove("is-turning");
-    void curl.offsetWidth;
+    curl.getBoundingClientRect();
     curl.classList.add("is-turning");
     window.setTimeout(function () {
       curl.classList.remove("is-turning");
     }, 660);
 
     ripple.classList.remove("is-bump");
-    void ripple.offsetWidth;
+    ripple.getBoundingClientRect();
     ripple.classList.add("is-bump");
     window.setTimeout(function () {
       ripple.classList.remove("is-bump");
@@ -53,7 +53,7 @@ function showPage(index) {
     ribbon.style.setProperty("--fx", RIBBON_X[current] + "px");
     ribbon.style.setProperty("--rx", RIBBON_X[target] + "px");
     ribbon.classList.remove("is-sliding");
-    void ribbon.offsetWidth;
+    ribbon.getBoundingClientRect();
     ribbon.classList.add("is-sliding");
     window.setTimeout(function () {
       ribbon.classList.remove("is-sliding");

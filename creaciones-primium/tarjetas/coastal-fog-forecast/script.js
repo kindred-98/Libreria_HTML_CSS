@@ -8,7 +8,7 @@ const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function stepWidth() {
   const first = rail.querySelector(".hour");
-  const gap = parseFloat(getComputedStyle(rail.querySelector(".strip__track")).columnGap || "0") || 8;
+  const gap = Number.parseFloat(getComputedStyle(rail.querySelector(".strip__track")).columnGap || "0") || 8;
   return first ? first.getBoundingClientRect().width + gap : 96;
 }
 

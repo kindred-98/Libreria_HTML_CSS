@@ -1,5 +1,5 @@
 (function () {
-  var cells = [].slice.call(document.querySelectorAll(".cell"));
+  var cells = Array.prototype.slice.call(document.querySelectorAll(".cell"));
   var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var durs = [4.6, 3.9, 5.4, 4.3, 6.1, 3.4];
   var lags = [0, 1.4, 2.9, 0.7, 3.8, 2.1];
@@ -12,12 +12,11 @@
   var collapses = 0;
   var lastPhase = [];
   var press = [0, 0, 0, 0, 0, 0];
-  var lastColl = 0;
 
   for (var i = 0; i < 6; i++) lastPhase.push(0);
 
   var refs = cells.map(function (c, i) {
-    var bufs = [].slice.call(c.querySelectorAll(".bub")).map(function (b, s) {
+    var bufs = Array.prototype.slice.call(c.querySelectorAll(".bub")).map(function (b, s) {
       return {
         w: b,
         bb: b.querySelector(".bb"),
@@ -79,8 +78,7 @@
         var ringS = 1;
         var flashA = 0;
         if (qq < 0.08) {
-          size = 0;
-          alpha = 0;
+          // size y alpha ya vienen a 0 desde su declaracion
         } else if (qq < 0.6) {
           var u = (qq - 0.08) / 0.52;
           size = 0.1 + ease(u) * B.mx;
@@ -101,8 +99,6 @@
           grow = Math.max(grow, size);
         } else {
           var u4 = (qq - 0.855) / 0.145;
-          size = 0;
-          alpha = 0;
           ringA = Math.max(0, 1 - u4);
           ringS = 1.4 + ease(u4) * 2.2;
           if (ringA > 0.02) state = "RING";
@@ -169,10 +165,10 @@
   });
 
   if (calm) {
-    for (var i = 0; i < refs.length; i++) {
-      refs[i].bufs[0].bb.style.opacity = "0.85";
-      refs[i].bufs[1].bb.style.opacity = "0.6";
-      refs[i].bar.style.transform = "scaleX(0.52)";
+    for (var ref of refs) {
+      ref.bufs[0].bb.style.opacity = "0.85";
+      ref.bufs[1].bb.style.opacity = "0.6";
+      ref.bar.style.transform = "scaleX(0.52)";
     }
     bp.style.transform = "scaleX(0.42)";
     return;

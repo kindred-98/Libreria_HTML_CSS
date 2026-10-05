@@ -1,5 +1,5 @@
 (function () {
-  var rows = [].slice.call(document.querySelectorAll(".row"));
+  var rows = Array.prototype.slice.call(document.querySelectorAll(".row"));
   var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var LOOP = 11000, STEP = 16;
   var t0 = 0;
@@ -18,8 +18,8 @@
   }
 
   var parts = rows.map(sets);
-  var drops = [].slice.call(document.querySelectorAll(".drop"));
-  var motes = [].slice.call(document.querySelectorAll(".mote"));
+  var drops = Array.prototype.slice.call(document.querySelectorAll(".drop"));
+  var motes = Array.prototype.slice.call(document.querySelectorAll(".mote"));
   var last = drops.map(function () { return ""; });
   var lastM = motes.map(function () { return ""; });
 
@@ -75,7 +75,9 @@
       }
 
       var u = ((ms + i * LOOP / 2) % LOOP) / LOOP;
-      var nibT = u < 0.14 ? -1 : u < 0.46 ? (u - 0.14) / 0.32 : 1;
+      var nibT = 1;
+      if (u < 0.14) nibT = -1;
+      else if (u < 0.46) nibT = (u - 0.14) / 0.32;
       if (nibT < 0 || hover[i]) {
         if (p.nib.style.opacity !== "0") p.nib.style.opacity = "0";
       } else {
@@ -84,7 +86,8 @@
           (8 + 74 * nibT).toFixed(1) + "px)";
       }
 
-      var sh = u < 0.3 ? 0 : u < 0.52 ? (u - 0.3) / 0.22 : 0;
+      var sh = 0;
+      if (u >= 0.3 && u < 0.52) sh = (u - 0.3) / 0.22;
       var key = sh.toFixed(3);
       if (sheen[i] !== key) {
         sheen[i] = key;
@@ -112,7 +115,10 @@
         }
         continue;
       }
-      var op = (f < 0.1 ? f / 0.1 : f > 0.9 ? (1 - f) / 0.1 : 1) * 0.9;
+      var fade = 1;
+      if (f < 0.1) fade = f / 0.1;
+      else if (f > 0.9) fade = (1 - f) / 0.1;
+      var op = fade * 0.9;
       var tf = "translate(" + (f * 5).toFixed(1) + "px," + (f * f * 58).toFixed(1) + "px) scale(" +
         (1 - f * 0.3).toFixed(2) + "," + (1 + f * 0.2).toFixed(2) + ")";
       var key2 = op.toFixed(2) + tf;
@@ -127,7 +133,9 @@
       var dur = [13000, 17000, 21000][m];
       var off2 = [0, -4000, -9000][m];
       var g = ((ms + off2) % dur) / dur;
-      var op2 = g < 0.12 ? g / 0.12 : g > 0.88 ? (1 - g) / 0.12 : 0.7;
+      var op2 = 0.7;
+      if (g < 0.12) op2 = g / 0.12;
+      else if (g > 0.88) op2 = (1 - g) / 0.12;
       var key3 = op2.toFixed(2) + g.toFixed(3);
       if (key3 !== lastM[m]) {
         lastM[m] = key3;
@@ -140,7 +148,7 @@
     setTimeout(step, STEP);
   }
 
-  var btns = [].slice.call(document.querySelectorAll(".sk"));
+  var btns = Array.prototype.slice.call(document.querySelectorAll(".sk"));
   for (var b = 0; b < btns.length; b++) {
     (function (el, idx) {
       el.addEventListener("pointerenter", function () { hover[idx] = true; });
@@ -151,17 +159,17 @@
   }
 
   if (calm) {
-    for (var c = 0; c < parts.length; c++) {
-      clip(parts[c].wet, 1);
-      parts[c].wet.style.clipPath = "inset(0px 0px 0px 0px)";
-      parts[c].halo.style.opacity = "0.34";
-      parts[c].hov.style.opacity = "0";
-      clip(parts[c].hov, 0);
-      parts[c].nib.style.opacity = "0";
-      parts[c].sheen.style.opacity = "0";
+    for (var part of parts) {
+      clip(part.wet, 1);
+      part.wet.style.clipPath = "inset(0px 0px 0px 0px)";
+      part.halo.style.opacity = "0.34";
+      part.hov.style.opacity = "0";
+      clip(part.hov, 0);
+      part.nib.style.opacity = "0";
+      part.sheen.style.opacity = "0";
     }
-    for (var q = 0; q < drops.length; q++) drops[q].style.opacity = "0";
-    for (var r = 0; r < motes.length; r++) motes[r].style.opacity = "0";
+    for (var drop of drops) drop.style.opacity = "0";
+    for (var mote of motes) mote.style.opacity = "0";
   } else {
     setTimeout(step, STEP);
   }

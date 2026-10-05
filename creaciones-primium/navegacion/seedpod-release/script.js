@@ -24,7 +24,7 @@
   var queued = false;
 
   function setOpen(open) {
-    nav.setAttribute('data-open', open ? 'true' : 'false');
+    nav.dataset.open = open ? 'true' : 'false';
     if (toggle) { toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); }
   }
 
@@ -45,13 +45,13 @@
       for (var i = 0; i < links.length; i++) {
         if (i === index) { links[i].setAttribute('aria-current', 'true'); }
         else { links[i].removeAttribute('aria-current'); }
-        if (i <= index) { seeds[i].setAttribute('data-released', ''); }
-        else { seeds[i].removeAttribute('data-released'); }
+        if (i <= index) { seeds[i].dataset.released = ''; }
+        else { delete seeds[i].dataset.released; }
       }
       nav.style.setProperty('--pos', String(index));
-      nav.setAttribute('data-at', String(index + 1));
+      nav.dataset.at = String(index + 1);
       var text = 'Seed ' + (index + 1) + ' of ' + links.length + ' · ' + names[index];
-      for (var r = 0; r < readouts.length; r++) { readouts[r].textContent = text; }
+      for (const readout of readouts) { readout.textContent = text; }
     }
   }
 
@@ -67,13 +67,13 @@
 
   if (toggle) {
     toggle.addEventListener('click', function () {
-      setOpen(nav.getAttribute('data-open') !== 'true');
+      setOpen(nav.dataset.open !== 'true');
     });
   }
 
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') { return; }
-    if (nav.getAttribute('data-open') === 'false') { return; }
+    if (nav.dataset.open === 'false') { return; }
     setOpen(false);
     if (toggle) { toggle.focus(); }
   });

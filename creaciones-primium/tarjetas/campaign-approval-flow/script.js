@@ -45,7 +45,7 @@ function moveAxis(next) {
     return;
   }
   fill.classList.remove("is-growing");
-  void fill.offsetWidth;
+  fill.getBoundingClientRect();
   fill.classList.add("is-growing");
   window.setTimeout(function () {
     fill.classList.remove("is-growing");

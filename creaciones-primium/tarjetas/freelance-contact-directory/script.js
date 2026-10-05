@@ -23,7 +23,7 @@ function runCounter(node) {
   step();
 }
 
-Array.from(document.querySelectorAll("[data-count]")).forEach(runCounter);
+Array.from(document.querySelectorAll("[data-count]")).forEach(function (node) { return runCounter(node); });
 
 const rows = Array.from(document.querySelectorAll(".row"));
 let open = 0;

@@ -25,7 +25,7 @@
   }
   var px=0,py=0,pdx=1,pdy=0;
   var passes=0,pressAt=-9999,lastPress=-9999,ringAt=-9999;
-  var cx=0,cy=0,fw=0,fh=0;
+  var fw=0,fh=0;
   var LIFE=1.75;
   var U0=0.28;
 
@@ -33,8 +33,6 @@
     var r=field.getBoundingClientRect();
     fw=r.width;
     fh=r.height;
-    cx=r.width*0.5;
-    cy=fh*0.41;
   }
 
   function path(u){
@@ -73,7 +71,7 @@
     var u=((t/6300)+U0)%1;
     var p=path(u);
     var dx=p[0]-px,dy=p[1]-py;
-    var dist=Math.sqrt(dx*dx+dy*dy);
+    var dist=Math.hypot(dx, dy);
     if(dist>0.6){
       pdx=dx/Math.max(dist,0.001);
       pdy=dy/Math.max(dist,0.001);
@@ -154,7 +152,7 @@
       var b=path((uu+0.006)%1);
       var dx=b[0]-a[0],dy=b[1]-a[1];
       if(Math.abs(dx)+Math.abs(dy)<0.01)continue;
-      var k=Math.sqrt(dx*dx+dy*dy);
+      var k=Math.hypot(dx, dy);
       spawn(a[0],a[1],dx/k,dy/k,t-j*82);
     }
   }

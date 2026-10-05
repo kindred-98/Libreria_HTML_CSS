@@ -23,8 +23,8 @@
     var panel = document.getElementById(id);
     if (!panel) return;
     var button = null;
-    for (var i = 0; i < buttons.length; i++) {
-      if (buttons[i].getAttribute('data-mega') === id) button = buttons[i];
+    for (const candidate of buttons) {
+      if (candidate.dataset.mega === id) button = candidate;
     }
     openId = id;
     panel.hidden = false;
@@ -34,14 +34,14 @@
     }
   }
 
-  for (var i = 0; i < buttons.length; i++) {
-    buttons[i].addEventListener('click', function () {
-      var id = this.getAttribute('data-mega');
+  for (const btn of buttons) {
+    btn.addEventListener('click', function () {
+      var id = this.dataset.mega;
       if (openId === id) close(true);
       else open(id, false);
     });
-    buttons[i].addEventListener('keydown', function (event) {
-      var id = this.getAttribute('data-mega');
+    btn.addEventListener('keydown', function (event) {
+      var id = this.dataset.mega;
       var panel = document.getElementById(id);
       var list = panel ? linksOf(panel) : [];
       var here = buttons.indexOf(this);
@@ -68,8 +68,8 @@
     });
   }
 
-  for (var p = 0; p < panels.length; p++) {
-    panels[p].addEventListener('keydown', function (event) {
+  for (const panel of panels) {
+    panel.addEventListener('keydown', function (event) {
       var list = linksOf(this);
       var here = list.indexOf(document.activeElement);
       if (here < 0) return;
@@ -98,8 +98,8 @@
     if (!openId) return;
     var panel = document.getElementById(openId);
     if (panel.contains(event.target)) return;
-    for (var i = 0; i < buttons.length; i++) {
-      if (buttons[i].contains(event.target)) return;
+    for (const btn of buttons) {
+      if (btn.contains(event.target)) return;
     }
     close(false);
   });
@@ -112,8 +112,8 @@
     if (!openId) return;
     var panel = document.getElementById(openId);
     if (panel.contains(event.target)) return;
-    for (var i = 0; i < buttons.length; i++) {
-      if (buttons[i].contains(event.target)) return;
+    for (const btn of buttons) {
+      if (btn.contains(event.target)) return;
     }
     close(false);
   });

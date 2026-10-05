@@ -26,5 +26,5 @@ function render(text){
 const inp=document.getElementById('aInput');
 const out=document.getElementById('aOutput');
 document.getElementById('aGen').addEventListener('click',()=>{out.textContent=render(inp.value);});
-document.getElementById('aCopy').addEventListener('click',()=>{navigator.clipboard?.writeText(out.textContent);});
+document.getElementById('aCopy').addEventListener('click',()=>{navigator.clipboard?.writeText(out.textContent).catch(()=>{});});
 out.textContent=render('HELLO');

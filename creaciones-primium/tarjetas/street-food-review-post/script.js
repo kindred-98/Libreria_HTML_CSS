@@ -109,7 +109,7 @@ function rise(node, to) {
     return;
   }
   node.classList.remove("is-pop");
-  void node.offsetWidth;
+  node.getBoundingClientRect();
   node.classList.add("is-pop");
   const began = Date.now();
   const span = 620;
@@ -152,7 +152,7 @@ noteBtn.addEventListener("click", function () {
   noteClosed.classList.add("is-gone");
   noteOpen.hidden = false;
   noteOpen.classList.remove("note__open");
-  void noteOpen.offsetWidth;
+  noteOpen.getBoundingClientRect();
   noteOpen.classList.add("note__open");
 });
 
@@ -184,7 +184,7 @@ shuffleBtn.addEventListener("click", function () {
     blk.style.transform =
       "translate3d(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px,0) scale(" +
       (1 + Math.max(Math.abs(dh), Math.abs(dw)) / 900).toFixed(3) + ")";
-    void blk.offsetWidth;
+    blk.getBoundingClientRect();
     blk.style.transition = "transform 0.62s cubic-bezier(0.34, 1.2, 0.5, 1)";
     blk.style.transform = "";
     window.setTimeout(function () {
@@ -195,14 +195,14 @@ shuffleBtn.addEventListener("click", function () {
   footNote.textContent = NOTES[n % NOTES.length];
   if (!reduce) {
     footNote.classList.remove("is-fresh");
-    void footNote.offsetWidth;
+    footNote.getBoundingClientRect();
     footNote.classList.add("is-fresh");
   }
 });
 
 function runCount(node) {
   const to = Number(node.dataset.count) || 0;
-  const decimals = String(to).indexOf(".") >= 0 ? 1 : 0;
+  const decimals = String(to).includes(".") ? 1 : 0;
   if (reduce) {
     node.textContent = String(to);
     return;

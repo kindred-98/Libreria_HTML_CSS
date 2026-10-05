@@ -2,7 +2,7 @@
   var rail = document.getElementById('rail');
   var cord = document.getElementById('cord');
   var pos = document.getElementById('pos');
-  var links = [].slice.call(document.querySelectorAll('.fold'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.fold'));
   var roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var secs = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
   var cur = -1;
@@ -43,7 +43,7 @@
   }
 
   function setState(open) {
-    rail.setAttribute('data-state', open ? 'open' : 'closed');
+    rail.dataset.state = open ? 'open' : 'closed';
     cord.setAttribute('aria-expanded', open ? 'true' : 'false');
     cord.querySelector('.cord__text').textContent = open ? 'Gather the curtain' : 'Draw the curtain';
   }

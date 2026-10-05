@@ -82,7 +82,7 @@ function dropNotice() {
 
   list.insertBefore(li, list.firstChild);
   while (list.children.length > 5) {
-    list.removeChild(list.lastChild);
+    list.lastChild.remove();
   }
 
   total += 1;

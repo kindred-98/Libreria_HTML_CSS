@@ -22,10 +22,10 @@
   var queued = false;
 
   function drop(link) {
-    link.removeAttribute('data-press');
-    void link.offsetWidth;
-    link.setAttribute('data-press', '');
-    window.setTimeout(function () { link.removeAttribute('data-press'); }, 2200);
+    delete link.dataset.press;
+    link.getBoundingClientRect();
+    link.dataset.press = '';
+    window.setTimeout(function () { delete link.dataset.press; }, 2200);
   }
 
   function measure() {
@@ -45,13 +45,13 @@
     for (var i = 0; i < links.length; i++) {
       if (i === index) { links[i].setAttribute('aria-current', 'true'); }
       else { links[i].removeAttribute('aria-current'); }
-      if (i <= index) { links[i].setAttribute('data-reached', ''); }
-      else { links[i].removeAttribute('data-reached'); }
+      if (i <= index) { links[i].dataset.reached = ''; }
+      else { delete links[i].dataset.reached; }
     }
     nav.style.setProperty('--pos', String(index));
-    nav.setAttribute('data-at', String(index + 1));
+    nav.dataset.at = String(index + 1);
     var text = 'Spot ' + (index + 1) + ' of ' + links.length + ' · ' + names[index];
-    for (var r = 0; r < readouts.length; r++) { readouts[r].textContent = text; }
+    for (const readout of readouts) { readout.textContent = text; }
     if (changed || pressed) { drop(links[index]); }
   }
 

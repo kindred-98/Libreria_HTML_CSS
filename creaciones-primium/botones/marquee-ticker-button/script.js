@@ -10,7 +10,6 @@
   var sales = document.getElementById("sales");
   var ladder = document.getElementById("ladder");
   var go = document.getElementById("go");
-  var goLed = go.querySelector(".go__led");
   var pxTag = document.getElementById("pxTag");
   var tickTag = document.getElementById("tickTag");
   var stateTag = document.getElementById("stateTag");
@@ -25,13 +24,13 @@
   var markLine = document.getElementById("markLine");
   var markDot = document.getElementById("markDot");
   var scanBand = document.getElementById("scanBand");
-  var flashes = [].slice.call(document.querySelectorAll(".q__flash"));
+  var flashes = Array.prototype.slice.call(document.querySelectorAll(".q__flash"));
 
   var STEP = 16, NS = 74, BASE = 184.62, START = 9 * 3600 + 41 * 60 + 2;
   var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var price = BASE, open = 182.48, high = 185.04, low = 181.9, vol = 1.42;
   var walk = [], seed = 7, runs = 0, t0 = 0, tickAcc = 0;
-  var sweepT = -1, runT = -1, pulse = 0, liveAcc = 0;
+  var sweepT = -1, runT = -1, liveAcc = 0;
 
   function rnd() {
     seed = (seed * 1103515245 + 12345) & 0x7fffffff;
@@ -167,10 +166,10 @@
     }
     var html = rows.join("");
     sales.insertAdjacentHTML("afterbegin", html);
-    while (sales.children.length > 7) sales.removeChild(sales.lastChild);
+    while (sales.children.length > 7) sales.lastChild.remove();
     var kids = ladder.children;
-    for (var l = 0; l < kids.length; l++) {
-      var bar = kids[l].querySelector("u");
+    for (var kid of kids) {
+      var bar = kid.querySelector("u");
       bar.style.setProperty("--w", (14 + rnd() * 52).toFixed(0) + "%");
     }
     stateTag.textContent = "redrawing tape";
@@ -245,8 +244,7 @@
       }
     }
 
-    for (var i = 0; i < flashes.length; i++) {
-      var f = flashes[i];
+    for (var f of flashes) {
       if (f._on) {
         f._t += 16;
         var q = f._t / 620;
@@ -289,9 +287,9 @@
   if (calm) {
     sweepRect.setAttribute("width", "600");
     stateTag.textContent = "stream settled";
-    for (var z = 0; z < flashes.length; z++) {
-      flashes[z].style.opacity = "0";
-      flashes[z]._on = false;
+    for (var fl of flashes) {
+      fl.style.opacity = "0";
+      fl._on = false;
     }
   } else {
     setTimeout(step, STEP);

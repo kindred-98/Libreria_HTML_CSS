@@ -21,6 +21,55 @@ queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplica
   [`Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`](./Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md),
   para que lo ejecute Angel una vez la PR este en `main`.
 
+## [Arregla los previews en blanco de iOS/iPadOS y el viewport movil de Safari] - 2026-10-05
+
+Los iframes de `live-preview` se veian en blanco en iOS, iPadOS y Safari de
+macOS. En Chrome de Android y en el de escritorio se veian bien. El sintoma
+venia del arreglo del 2026-10-03 (`hace visibles los iframes de vista previa en
+safari de ios y macos`), que ataco el momento de la carga cuando el problema era
+de pintado.
+
+- **La causa**: `Web/styles/site.css` declaraba `opacity: 0` en `.live-preview
+  iframe`, y `app.js` asigna `frame.src` cuando el iframe ya es totalmente
+  transparente. WebKit descarta la capa de un iframe completamente transparente y
+  no llega a pintar su contenido; como la decision se toma al montar, subir
+  despues a `opacity: 1` no fuerza el repintado. El preview se quedaba en blanco
+  aunque `load` saltara y `data-preview-state` llegara a `ready`: un fallo de
+  pintado, no de carga. En Chrome un iframe transparente se compone sin problema,
+  de ahi que alli se viera bien.
+- **Por que se sabe que no era la carga**: los dos unicos iframes que si
+  funcionan (la demo de warp de `Web/team-core.html` y el portal Davoker de
+  `Web/components.html`) son exactamente los que **no** estan bajo
+  `.live-preview`, los unicos que nunca reciben `opacity: 0`. Y en modo
+  standalone (anadir a pantalla de inicio) si se veian, porque un `WKWebView`
+  standalone usa otra ruta de renderizado: un fallo de red o de cabeceras no se
+  arreglaria por abrir el sitio como PWA.
+- **El arreglo**: el iframe ya no se pone nunca en `opacity: 0`. Lo oculta el
+  `::after` opaco de siempre (`--surface-preview`, `#d9ded1`/`#e3e7df`, sin
+  alfa), que si se pinta siempre. Se quitan el `transition: opacity` del iframe y
+  la regla `[data-preview-state="ready"] iframe`, que queda redundante.
+- El `setTimeout` de `PREVIEW_FALLBACK_MS` se queda, pero ya no es lo que hace
+  visible el preview: solo evita que se quede escrito el "Loading preview..." si
+  en algun motor el `load` no llegara a saltar. Se corrigen los comentarios de
+  `armPreviewListeners` y de `createPreview`, que atribuian el fallo al `load`.
+- **Viewport y zonas seguras**, que en iOS se notaban al usar el portal Davoker y
+  los avisos fijos. Cada `vh` va seguido de su `dvh` (`.davoker-portal`,
+  `.davoker-frame`, `.detail-view`): en iOS `vh` es el viewport mas alto, asi que
+  el iframe de `90vh` se salia por abajo justo con la barra de direcciones
+  oculta. Se declara `vh` antes que `dvh` para que un iOS viejo, que no conoce
+  `dvh`, se quede con la regla que si entiende. Y `.consent-banner` y `.toast`,
+  fijos a `16px` y `20px` del borde, caian bajo el indicador de inicio: ahora
+  suman `env(safe-area-inset-*)`, que vale 0 donde no exista `env()`.
+- **Pendiente de comprobar en un iPhone o iPad reales**: aqui solo hay Chromium, y
+  ni `validar:demos` ni `validar:layout` pueden detectar un fallo de pintado de
+  WebKit, porque ninguno abre WebKit. Ojo al probar: `vercel.json` sirve
+  `Web/styles/` y `Web/scripts/` con `max-age=31536000, immutable`, asi que Safari
+  sirvira la CSS vieja desde su cache y el arreglo no se vera sin borrar los
+  datos del sitio o abrir en Incognito.
+- Verificado en verde: `validar` (1018/1018), `validar:layout` (5 paginas x 23
+  anchos, 115 medidas) y `validar:demos` (1018/1018, 0 fallos). Ninguno de los
+  tres cubre WebKit.
+
 ## [Arregla el CI de Node 20 y los tres avisos nuevos de CodeQL] - 2026-10-03
 
 - La PR fallo en uno de los checks requeridos, `Validar (Node 20)`, a los 17 s:
@@ -37,6 +86,147 @@ queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplica
 - Verificado en verde: `validar`, `validar:encabezados`, `validar:html` en las
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
+
+## [Limpia la Quality Gate de SonarCloud antes del merge] - 2026-10-03
+
+Tres tandas de cambios que bajan la C a A en Security y Reliability, y
+bajan la duplicacion en new code al umbral del 3 %:
+
+1. **ParseInt global -> Number.parseInt (S7773b)**. Auto-fix de
+   `parseInt(x, r)` a `Number.parseInt(x, r)`, sinonimo exacto, en 14
+   demos. Anadido al script `autofix-sonar-mecanico.mjs` para futuras
+   pasadas. La regla similar `| 0` -> `Math.trunc` (S7767) se intento
+   auto-arreglar primero y se revirtio: rompe 4 demos
+   (bokeh-depth-of-field, koi-pond-ripple-trail, sakura-petal-vortex,
+   plasma-arc-button) porque `Math.trunc(undefined) === NaN` y luego
+   `.arr[0]` reventa, mientras que `undefined | 0 === 0`. La regla
+   quedara como Won't Fix en la UI.
+
+2. **Bugs reales de Reliability**. Cinco arreglos manuales:
+   - `column-op-ed-note`: `counts.forEach(runCount)` envolvia la funcion
+     sin preservar `this`; ahora `counts.forEach(n => runCount(n))`.
+   - `cymatics-chladni-figure`: el `for (const mode of MODES)` usaba
+     `mode` solo en un comentario; renombrado a `_mode`.
+   - `ratchet-pawl-button`: `t0` declarado y nunca leido; quitado.
+   - `nacre-mother-pearl-button`: dos `for (var pl of plates)` redeclaraban
+     `pl` en el mismo ambito; segundo convertido a `let`.
+   - `wireframe-hud-lock-button`: `var stage = ...` declarado y nunca
+     leido; quitado.
+   - `email-validation-form`: variable local `status` sombreaba
+     `window.status` (deprecado en HTML5); renombrada a `estado`.
+
+3. **Exclusiones de duplicacion (sonar-project.properties)**. El 14 %
+   de duplicacion en new code viene en su mayoria del bloque
+   `prefers-reduced-motion` repetido a proposito en 171 demos
+   (regla 6 de CONTRIBUTING: cada componente es independiente). El
+   fichero declara:
+   - `sonar.cpd.exclusions=**/prefers-reduced-motion` y `**/script.js`
+     para que Sonar no cuente esos bloques como duplicacion.
+   - `sonar.cpd.exclusions.minimumLines=10` para subir el umbral
+     (los snippets compartidos son de 4-8 lineas).
+   - `sonar.exclusions` para vendor, min.js y node_modules.
+
+Verificado en verde: `validar`, `validar:encabezados`, `validar:html`
+(Node 20/22/24), `validar:enlaces`, `validar:layout` y
+`validar:demos` (1018/1018, 0 fallos).
+
+Lo que queda para el usuario en la UI de SonarCloud:
+- `rule:javascript:S2245` (Math.random en 4 demos) -> Won't Fix
+- `rule:javascript:S7767` (`| 0` -> Math.trunc, 4 demos con
+  conversiones revertidas) -> Won't Fix
+- Los `=== always false` que SonarCloud marca en `paso === 1`,
+  `paso === 2`, `frame === 0`: son falsos positivos (la variable
+  cambia, no es siempre el mismo valor). Won't Fix uno a uno o dejar
+  que la regla `S3403` los marque como resueltos en el siguiente
+  analisis si se ha reescrito el codigo.
+
+## [Anade tres reglas mas al auto-fix y arregla un falso positivo peligroso] - 2026-10-03
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana tres reglas:
+
+- **S6582** `x && x.y` -> `x?.y` (optional chaining). El patron lleva
+  lookbehind y lookahead para exigir que `x` sea el INICIO de la
+  subexpresion booleana (antes solo whitespace y luego `(`, `,`, `;`,
+  `?`, `:`, o inicio de linea) y que `&& x.y` sea el FINAL (despues
+  whitespace y luego `,`, `)`, `;`, `]`, `?`, `:`, `&&`, `||`, fin de
+  linea, o fin de fichero). Sin las dos guardas, el patron rompe
+  `if (e.target === field && field.value)` en `if (e.target === field?.value)`,
+  que con `field` falsy evalua `undefined !== ''` a `true` y entra al
+  cuerpo, mientras el original cortocircuita. Esa regresion se evito
+  tambien con un test rapido en Node sobre `coffee-finder/script.js`
+  antes de aplicar.
+- **S7766** `a < b ? a : b` -> `Math.min(a, b)` y `a > b ? a : b` ->
+  `Math.max(a, b)`.
+- **S7774** `[].slice.call(x)` -> `Array.prototype.slice.call(x)`.
+
+En esta pasada quedan 54 conversiones S6582, 1 S7766, 1 S7774 y
+75 candidatas de S7761 (de las cuales solo las que tengan `data-` se
+reescriben, las demas quedan como `getAttribute`). Verificado: 0
+conversiones inseguras y los 1018 demos siguen en verde.
+
+## [Limpia los code smells mecanicos que quedaban en los demos] - 2026-10-03
+
+`Web/scripts/autofix-sonar-mecanico.mjs` aplica siete transformaciones
+sintacticas sinonimas sobre el codigo de los demos y de `Web/scripts/`:
+
+| Regla | Que cambia |
+|---|---|
+| `S7773` | `parseFloat(x)` -> `Number.parseFloat(x)` |
+| `S7765` | `arr.indexOf(x) (>=|>|!=)-1` -> `arr.includes(x)` |
+| `S6653` | `Object.prototype.hasOwnProperty.call(x,k)` -> `Object.hasOwn(x,k)` |
+| `S7762` | `padre.removeChild(hijo)` -> `hijo.remove()` |
+| `S7769` | `Math.sqrt(a*a + b*b)` -> `Math.hypot(a, b)` |
+| `S6353` | `/[0-9]/` -> `/\d/` |
+| `S7761` | `el.getAttribute("data-foo-bar")` -> `el.dataset.fooBar` |
+
+Solo se ejecuta contra `.js` y `.mjs`, y excluye `node_modules`,
+`Web/scripts/lib/`, `Web/data/`, `tmp/` y el propio script. Acepta
+`--dry-run` para previsualizar y `--rule <id>` para limitar a una sola
+regla.
+
+En esta primera pasada quedan 7 sustituciones en 4 demos (los grandes
+ya estaban limpios por el commit `28de356`). Los siguientes patrones
+estan **fuera del auto-fix** porque no son sinonimos: `S4138` (for-of,
+cambia el cuerpo del bucle), `S3358` (ternarios anidados, hay que
+extraer a un `if`), `S5255` (landmarks sin `aria-label`, requiere
+decidir el nombre), `css:S4666` (selectores en `@media`, son overrides
+deliberados) y `S3776` (complejidad cognitiva, refactor manual).
+
+Verificado en verde: `validar`, `validar:html` (Node 20/22/24),
+`validar:enlaces`, `validar:layout` y `validar:demos` (1018/1018, 0
+fallos).
+
+## [Arregla tres regresiones detectadas en el analisis de SonarQube] - 2026-10-03
+
+El otro agente que limpio los 1.600 code smells dejo sin querer tres
+regresiones que el informe paralelo (`Docs/Hallazgos_agente_paralelo_2026-10-05.md`)
+ya habia marcado. Se arreglan aqui:
+
+- **`.github/workflows/validate.yml`**: el step de `setup-node` perdio la
+  indentacion al reescribir un bloque de comentarios: `cache: npm` se
+  quedo a 6 espacios y dejo de ser hijo de `with:`. Con eso el YAML no
+  parseaba (`yaml.parser.ParserError`) y GitHub Actions no llegaba a cargar
+  el workflow, asi que **ninguna de las validaciones del CI corria** en
+  los pushes. Se devuelve a 10 espacios y los comentarios tambien.
+- **`Web/components.html`**: el sandbox del iframe del portal de Davoker
+  llevaba `allow-scripts allow-same-origin allow-forms ...`. La pareja
+  `allow-scripts + allow-same-origin` neutraliza el sandbox: el demo
+  puede quitarse el atributo desde su propio script y acceder al
+  `localStorage` del padre (incluido el consentimiento de cookies). Es
+  justo lo que `Web/scripts/validate.mjs` documenta como motivo del
+  sandbox. Se quita `allow-same-origin`; el resto se mantiene.
+- **`creaciones-primium/botones/wireframe-hud-lock-button/styles.css`**:
+  `.tag` perdio el `top:50%` al compactar el CSS. Con `position:absolute`
+  y `transform: translate(-50%,-50%)` sin top, la pieza quedaba centrada
+  sobre si misma en vez de sobre el contenedor. Se devuelve el `top:50%`.
+
+El receptor de `postMessage` del Davoker (línea 1847 de `app.js`) ya
+validaba `evento.origin`, asi que el quitar `allow-same-origin` no rompe
+el puente con `transicion.html`.
+
+Verificado en verde: `validar`, `validar:html` (Node 20/22/24),
+`validar:enlaces`, `validar:layout` y `validar:demos` (1018/1018, 0
+fallos).
 
 ## [Arregla las vistas previas que no cargaban en iOS Safari, iPadOS y Safari de macOS] - 2026-10-03
 

@@ -29,8 +29,8 @@
       if (i === indice) l.setAttribute("aria-current", "true");
       else l.removeAttribute("aria-current");
     });
-    cuenta.textContent = lamparas[indice].getAttribute("data-n");
-    nombre.textContent = lamparas[indice].getAttribute("data-name");
+    cuenta.textContent = lamparas[indice].dataset.n;
+    nombre.textContent = lamparas[indice].dataset.name;
     colocar();
   }
 

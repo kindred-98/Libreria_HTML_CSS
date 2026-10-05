@@ -12,7 +12,6 @@
   ];
 
   var chart = document.getElementById("chart");
-  var plot = document.getElementById("plot");
   var fix = Array.prototype.slice.call(chart.querySelectorAll(".fix"));
   var row = Array.prototype.slice.call(document.querySelectorAll("#log .row"));
   var prof = document.getElementById("profile");
@@ -91,9 +90,9 @@
   }
 
   function measure() {
-    for (var k = 0; k < fix.length; k++) {
-      var m = /(-?[\d.]+)%/.exec(fix[k].getAttribute("style") || "");
-      fix[k].__x = m ? parseFloat(m[1]) : 50;
+    for (var pin of fix) {
+      var m = /(-?[\d.]+)%/.exec(pin.getAttribute("style") || "");
+      pin.__x = m ? Number.parseFloat(m[1]) : 50;
     }
   }
 
@@ -121,7 +120,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   buildSoundings();
@@ -146,7 +145,7 @@
   document.getElementById("vPrev").addEventListener("click", function () { openAt((at - 1 + fix.length) % fix.length); });
   document.getElementById("vNext").addEventListener("click", function () { openAt((at + 1) % fix.length); });
   document.getElementById("vClose").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   chart.addEventListener("keydown", function (e) {
     var k = e.key;

@@ -21,7 +21,7 @@ const CAMPOS = [
     vacio: "Pick a bag, the subscription is a bag every fortnight.",
     error: "That bag size is not one we roast.",
     tipo: "radio",
-    prueba: v => Object.prototype.hasOwnProperty.call(PESOS, v)
+    prueba: v => Object.hasOwn(PESOS, v)
   },
   {
     id: "molienda",
@@ -29,7 +29,7 @@ const CAMPOS = [
     vacio: "Pick a grind, or the roastery has to guess.",
     error: "That grind is not on the list.",
     tipo: "radio",
-    prueba: v => MOLIENDAS.indexOf(v) !== -1
+    prueba: v => MOLIENDAS.includes(v)
   },
   {
     id: "correo",
@@ -193,7 +193,7 @@ primera.addEventListener("change", () => {
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-  CAMPOS.forEach(pintarCampo);
+  CAMPOS.forEach(f => pintarCampo(f));
   const fallos = problemas();
 
   if (fallos.length > 0) {

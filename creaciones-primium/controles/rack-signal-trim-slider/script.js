@@ -9,7 +9,12 @@ if (rowsBox && trims.length) {
   const capOf = (input) => rowOf(input).querySelector(".row__cap");
   const trackOf = (input) => rowOf(input).querySelector(".row__track");
   const readOf = (input) => document.querySelector("#read" + rowOf(input).dataset.key);
-  const msg = (value) => (value > 0 ? "plus " : value < 0 ? "minus " : "flat, ") + Math.abs(value).toFixed(1) + " decibels";
+  const msg = (value) => {
+    let prefijo = "flat, ";
+    if (value > 0) prefijo = "plus ";
+    else if (value < 0) prefijo = "minus ";
+    return prefijo + Math.abs(value).toFixed(1) + " decibels";
+  };
 
   const move = (input, value) => {
     const min = Number(input.min);
@@ -70,7 +75,6 @@ if (rowsBox && trims.length) {
     const row = event.target.closest(".row");
     if (!row) return;
     select(row);
-    const input = row.querySelector(".row__input");
     const name = row.querySelector(".row__name b");
     if (live) live.textContent = (name ? name.textContent : "trim") + " row selected";
   });
@@ -99,7 +103,9 @@ if (rowsBox && trims.length) {
     trims.forEach((input) => spy.observe(trackOf(input)));
   }
 
-  if (document.fonts && document.fonts.ready) {
+  // "ready" es una promesa: como condicion siempre seria cierta, asi que solo
+  // se comprueba que exista el FontFaceSet.
+  if (document.fonts) {
     document.fonts.ready.then(measure).catch(() => {});
   }
 

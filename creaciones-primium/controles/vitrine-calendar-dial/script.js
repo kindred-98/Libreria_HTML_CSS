@@ -35,9 +35,7 @@
   var still = false;
   try {
     still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch (err) {
-    void err;
-  }
+  } catch {}
 
   var spin = 0;
   var reachMonth = 150;
@@ -79,7 +77,7 @@
     }
     if (!still && win) {
       win.classList.remove("is-turning");
-      void win.offsetWidth;
+      win.getBoundingClientRect();
     }
     winFlip.textContent = text;
     if (win) {
@@ -101,7 +99,7 @@
       return;
     }
     plaque.classList.remove("is-stamping");
-    void plaque.offsetWidth;
+    plaque.getBoundingClientRect();
     plaque.classList.add("is-stamping");
   }
 
@@ -131,7 +129,8 @@
       win.classList.toggle("is-void", bad);
     }
     if (winText) {
-      winText.textContent = bad ? upper : upper;
+      // Ternario simplificado: las dos ramas escribian la misma lectura.
+      winText.textContent = upper;
     }
     if (plaqueDate) {
       plaqueDate.textContent = text;

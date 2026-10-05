@@ -30,7 +30,7 @@
       if (!keep) { return; }
       band.classList.remove("is-in", "is-wide");
       if (order === 2 || order === 6) { band.classList.add("is-wide"); }
-      void band.offsetWidth;
+      band.getBoundingClientRect();
       band.classList.add("is-in");
       order++;
       shown.push(band);

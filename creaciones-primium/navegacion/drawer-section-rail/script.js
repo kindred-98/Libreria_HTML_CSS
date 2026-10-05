@@ -5,10 +5,10 @@
   var scrim = document.getElementById("scrim");
   var nav = document.getElementById("drawerNav");
   var marker = document.getElementById("marker");
-  var links = [].slice.call(nav.querySelectorAll("a[href^='#']"));
-  var chips = [].slice.call(document.querySelectorAll(".rooms a[href^='#']"));
-  var sections = [].slice.call(document.querySelectorAll("main .sec[id]"));
-  var views = [].slice.call(document.querySelectorAll(".view"));
+  var links = Array.prototype.slice.call(nav.querySelectorAll("a[href^='#']"));
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".rooms a[href^='#']"));
+  var sections = Array.prototype.slice.call(document.querySelectorAll("main .sec[id]"));
+  var views = Array.prototype.slice.call(document.querySelectorAll(".view"));
   var frame = document.getElementById("previewFrame");
   var label = document.getElementById("previewLabel");
   var open = false;
@@ -24,13 +24,13 @@
     if (!link || link === active) return;
     active = link;
     var href = link.getAttribute("href");
-    for (var i = 0; i < links.length; i++) {
-      if (links[i] === link) links[i].setAttribute("aria-current", "page");
-      else links[i].removeAttribute("aria-current");
+    for (const item of links) {
+      if (item === link) item.setAttribute("aria-current", "page");
+      else item.removeAttribute("aria-current");
     }
-    for (var c = 0; c < chips.length; c++) {
-      if (chips[c].getAttribute("href") === href) chips[c].setAttribute("aria-current", "page");
-      else chips[c].removeAttribute("aria-current");
+    for (const chip of chips) {
+      if (chip.getAttribute("href") === href) chip.setAttribute("aria-current", "page");
+      else chip.removeAttribute("aria-current");
     }
     placeMarker(link);
   }
@@ -38,13 +38,13 @@
   function spy() {
     var mark = window.scrollY + window.innerHeight * 0.34;
     var current = sections[0];
-    for (var i = 0; i < sections.length; i++) {
-      if (sections[i].offsetTop <= mark) current = sections[i];
+    for (const section of sections) {
+      if (section.offsetTop <= mark) current = section;
     }
     if (!current) return;
     var id = "#" + current.id;
-    for (var k = 0; k < links.length; k++) {
-      if (links[k].getAttribute("href") === id) { setActive(links[k]); break; }
+    for (const link of links) {
+      if (link.getAttribute("href") === id) { setActive(link); break; }
     }
   }
 
@@ -72,8 +72,8 @@
     if (e.key === "Escape" && open) setOpen(false, true);
   });
 
-  for (var i = 0; i < links.length; i++) {
-    links[i].addEventListener("click", function (e) {
+  for (const link of links) {
+    link.addEventListener("click", function (e) {
       var href = this.getAttribute("href");
       var target = document.querySelector(href);
       setActive(this);
@@ -86,12 +86,12 @@
     });
   }
 
-  for (var v = 0; v < views.length; v++) {
-    views[v].addEventListener("click", function () {
-      for (var j = 0; j < views.length; j++) views[j].setAttribute("aria-pressed", "false");
+  for (const view of views) {
+    view.addEventListener("click", function () {
+      for (const other of views) other.setAttribute("aria-pressed", "false");
       this.setAttribute("aria-pressed", "true");
-      frame.style.aspectRatio = this.getAttribute("data-ratio");
-      label.textContent = this.getAttribute("data-label");
+      frame.style.aspectRatio = this.dataset.ratio;
+      label.textContent = this.dataset.label;
     });
   }
 

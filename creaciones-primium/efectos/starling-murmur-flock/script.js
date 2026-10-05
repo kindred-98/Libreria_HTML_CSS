@@ -163,7 +163,7 @@ function stats(){
   for (let i = 0; i < N; i++){
     const dx = px[i] - cx;
     const dy = py[i] - cy;
-    vr += Math.sqrt(dx * dx + dy * dy);
+    vr += Math.hypot(dx, dy);
   }
   const spread = vr / N;
   const span = Math.min(W, H) * 0.34;

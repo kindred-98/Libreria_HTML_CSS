@@ -7,8 +7,8 @@
   var sigma = 108;
 
   function current() {
-    for (var i = 0; i < apps.length; i++) {
-      if (apps[i].classList.contains("is-active")) return apps[i];
+    for (const app of apps) {
+      if (app.classList.contains("is-active")) return app;
     }
     return apps[0];
   }
@@ -82,9 +82,9 @@
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
         var id = en.target.id;
-        for (var i = 0; i < apps.length; i++) {
-          if (apps[i].getAttribute("href") === "#" + id) {
-            setCurrent(apps[i]);
+        for (const app of apps) {
+          if (app.getAttribute("href") === "#" + id) {
+            setCurrent(app);
             return;
           }
         }

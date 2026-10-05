@@ -39,7 +39,7 @@ const CAMPOS = [
     etiqueta: "Teléfono",
     vacio: "Necesitamos un teléfono para coordinar la entrega.",
     error: "Debe ser un móvil español de nueve cifras, del 600 al 799.",
-    prueba: v => /^[6-7][0-9]{8}$/.test(v.replace(/[\s.-]/g, ""))
+    prueba: v => /^[6-7][\d]{8}$/.test(v.replace(/[\s.-]/g, ""))
   },
   {
     id: "direccion", panel: 2,
@@ -264,7 +264,10 @@ function totales() {
   const items = seleccion();
   const bruto = items.reduce((s, a) => s + a.precio * a.cant, 0);
   const transporte = transporteActual();
-  const portes = items.length === 0 ? 0 : (transporte === "estandar" && bruto >= 45 ? 0 : PORTES[transporte]);
+  let portes = 0;
+  if (items.length !== 0) {
+    portes = transporte === "estandar" && bruto >= 45 ? 0 : PORTES[transporte];
+  }
   const dto = transporte === "recogida" ? bruto * 0.05 : 0;
   return { items, bruto, portes, transporte, dto, final: bruto + portes - dto };
 }
@@ -291,7 +294,7 @@ function actualizarRiel() {
   el("rielSubtotal").textContent = dinero(t.bruto);
   el("rielEnvio").textContent = t.items.length === 0
     ? "sin portes"
-    : (t.portes === 0 ? "gratis" : dinero(t.portes));
+    : t.portes === 0 ? "gratis" : dinero(t.portes);
   el("rielTotal").textContent = dinero(t.final);
   el("rielPiso").textContent = t.transporte === "recogida" && t.dto > 0
     ? "Descuento del 5 por ciento por recoger en el vivero. " + PLAZO.recogida

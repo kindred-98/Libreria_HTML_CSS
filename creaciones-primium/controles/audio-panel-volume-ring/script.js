@@ -8,7 +8,6 @@ const segs = [...document.querySelectorAll(".vu i")];
 
 if (input && ring && fill) {
   const MAX = Number(input.max || 100);
-  const START = 225;
   const SWEEP = 270;
   const bases = segs.map((seg, index) => Number(seg.style.getPropertyValue("--s")) || 0.6 + (index % 5) * 0.08);
   const clamp = (n) => Math.max(0, Math.min(MAX, Math.round(n)));

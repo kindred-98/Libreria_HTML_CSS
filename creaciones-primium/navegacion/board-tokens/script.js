@@ -16,7 +16,7 @@
   function hop() {
     if (!token || calm.matches) return;
     token.classList.remove('is-hop');
-    void token.offsetWidth;
+    token.getBoundingClientRect();
     token.classList.add('is-hop');
   }
 
@@ -40,9 +40,9 @@
         else squares[k].classList.remove('is-past');
       }
     }
-    hall.setAttribute('data-at', i);
+    hall.dataset.at = i;
     if (turn) turn.textContent = squares[i].querySelector('.sq__no').textContent;
-    if (say) say.textContent = squares[i].getAttribute('data-say') || '';
+    if (say) say.textContent = squares[i].dataset.say || '';
     if (!first) hop();
   }
 

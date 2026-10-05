@@ -51,7 +51,10 @@ if (input && box && track && cap) {
     const left = MAX - value;
     if (lcdValue) lcdValue.textContent = `${left} : ${value}`;
     if (lcdSub) {
-      lcdSub.textContent = left === value ? "equal power" : left > value ? "leaning a" : "leaning b";
+      let sub = "leaning b";
+      if (left === value) sub = "equal power";
+      else if (left > value) sub = "leaning a";
+      lcdSub.textContent = sub;
     }
 
     input.setAttribute("aria-valuetext", `bus A ${left} per cent, bus B ${value} per cent`);

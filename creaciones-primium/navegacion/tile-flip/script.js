@@ -2,7 +2,7 @@
   var ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var TITULOS = ['The Stock', 'The Grain', 'The Face', 'The Inks', 'The Index', 'The Turn'];
   var TINTAS = ['oxblood', 'teal'];
-  var fichas = [].slice.call(document.querySelectorAll('.ficha'));
+  var fichas = Array.prototype.slice.call(document.querySelectorAll('.ficha'));
   var secciones = fichas.map(function (f) { return document.getElementById(f.getAttribute('href').slice(1)); });
   var tira = document.getElementById('tira');
   var vivo = document.getElementById('vivo');
@@ -25,7 +25,7 @@
 
   function leer() {
     var linea = window.innerHeight * 0.46;
-    var mejor = actual < 0 ? 0 : actual;
+    var mejor = Math.max(actual, 0);
     var distancia = Infinity;
     for (var k = 0; k < secciones.length; k++) {
       var s = secciones[k];
@@ -51,7 +51,7 @@
 
   function extender(abierto) {
     boton.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-    fichero.setAttribute('data-abierta', abierto ? 'si' : 'no');
+    fichero.dataset.abierta = abierto ? 'si' : 'no';
     leyenda.hidden = !abierto;
   }
 
@@ -70,7 +70,7 @@
   window.addEventListener('scroll', alDesplazar, { passive: true });
   window.addEventListener('resize', alDesplazar, { passive: true });
 
-  fichero.setAttribute('data-abierta', 'no');
+  fichero.dataset.abierta = 'no';
   var arranque = fichas.map(function (f) { return f.getAttribute('href'); }).indexOf('#' + (location.hash || '').slice(1));
   if (arranque >= 0) sacar(arranque); else { sacar(0); leer(); }
 })();

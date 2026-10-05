@@ -13,7 +13,7 @@
     if (!btn.classList.contains("is-a")) return;
     btn.classList.remove("is-a");
     btn.classList.remove("rec-a", "rec-b");
-    void btn.offsetWidth;
+    btn.getBoundingClientRect();
     btn.classList.add(btn.classList.contains("rec-b") ? "rec-a" : "rec-b");
   }
 

@@ -143,14 +143,14 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   document.getElementById("v-prev").addEventListener("click", function () { open((active - 1 + TOTAL) % TOTAL); });
   document.getElementById("v-next").addEventListener("click", function () { open((active + 1) % TOTAL); });
   document.getElementById("v-close").addEventListener("click", close);
   viewer.addEventListener("click", function (e) {
-    if (e.target.hasAttribute("data-close")) close();
+    if ("close" in e.target.dataset) close();
   });
 
   document.addEventListener("keydown", function (e) {

@@ -68,7 +68,7 @@
     var band = strata[0].offsetHeight;
     beam.style.transform = "translate3d(" + (x * w - 75).toFixed(1) + "px," + ((layer + 0.5) * band).toFixed(1) + "px,0)";
     for (var i = 0; i < TOTAL; i++) {
-      var nx = parseFloat(nodes[i].style.getPropertyValue("--x")) / 100;
+      var nx = Number.parseFloat(nodes[i].style.getPropertyValue("--x")) / 100;
       var near = Math.abs(nx - x) < 0.1;
       nodes[i].classList.toggle("is-lit", near);
     }
@@ -112,7 +112,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   nodes.forEach(function (b, i) {
@@ -130,7 +130,7 @@
   document.getElementById("v-prev").addEventListener("click", function () { openAt((index() - 1 + TOTAL) % TOTAL); });
   document.getElementById("v-next").addEventListener("click", function () { openAt((index() + 1) % TOTAL); });
   document.getElementById("v-close").addEventListener("click", close);
-  viewer.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  viewer.addEventListener("click", function (e) { if ("close" in e.target.dataset) close(); });
 
   section.addEventListener("keydown", function (e) {
     var k = e.key;

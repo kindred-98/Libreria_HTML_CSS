@@ -177,8 +177,7 @@
 
     var dec = 0;
     var err = 0;
-    for (var i = 0; i < cells.length; i++) {
-      var c = cells[i];
+    for (var c of cells) {
       var front = smooth(f + 0.07, f - 0.05, c.u);
       var d = front;
       var edge = Math.abs(c.u - f);
@@ -195,8 +194,7 @@
     dec = dec / N;
     err = err / N;
 
-    for (var s = 0; s < sm.length; s++) {
-      var o = sm[s];
+    for (var o of sm) {
       var ph = (el / 1400 * o.s + o.p) % 1;
       o.el.style.transform = "translate3d(" + (ph * 130 - 15).toFixed(1) + "%,0,0)";
       o.el.style.opacity = ((1 - Math.abs(ph - 0.5) * 2) * (0.3 + err * 0.9)).toFixed(3);
@@ -207,7 +205,7 @@
     wave.style.opacity = (t > 0.14 && t < 0.82 ? 0.85 : 0).toFixed(2);
 
     btn.style.transform = press > 0 ? "scale(" + (1 - press * 0.035).toFixed(3) + ")" : "";
-    var ringA = press > 0 ? press : 0;
+    var ringA = Math.max(press, 0);
     cursor.querySelector(".cur-ring").style.transform = "scale(" + (0.5 + ringA * 2.4).toFixed(2) + ")";
     cursor.querySelector(".cur-ring").style.opacity = ringA.toFixed(2);
 

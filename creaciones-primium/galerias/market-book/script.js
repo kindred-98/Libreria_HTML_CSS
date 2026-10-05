@@ -132,12 +132,12 @@
   book.addEventListener("click", function (ev) {
     var b = ev.target.closest(".entry");
     if (!b) { return; }
-    openAt(Number(b.getAttribute("data-shot")), b);
+    openAt(Number(b.dataset.shot), b);
   });
 
   tabs.forEach(function (b) {
     b.addEventListener("click", function () {
-      var n = Number(b.getAttribute("data-shot"));
+      var n = Number(b.dataset.shot);
       readSheet(Math.floor(n / 2));
       side = n % 2;
       sync();

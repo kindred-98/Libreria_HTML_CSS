@@ -61,7 +61,7 @@ let grainPattern = null;
 function mulberry32(a) {
   return function () {
     a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
+    a = (a + 0x6d2b79f5 | 0);
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -95,7 +95,7 @@ function buildGrain() {
   const im = g.createImageData(size, size);
   const rnd = mulberry32(0x8e21);
   for (let i = 0; i < im.data.length; i += 4) {
-    const v = (rnd() * 255) | 0;
+    const v = (rnd() * 255 | 0);
     im.data[i] = v;
     im.data[i + 1] = v;
     im.data[i + 2] = v;
@@ -323,8 +323,8 @@ function draw(dt) {
   tctx.fillRect(0, 0, W, H);
 
   if (grainPattern) {
-    const gx = (Math.random() * 144) | 0;
-    const gy = (Math.random() * 144) | 0;
+    const gx = (Math.random() * 144 | 0);
+    const gy = (Math.random() * 144 | 0);
     tctx.save();
     tctx.globalCompositeOperation = 'overlay';
     tctx.globalAlpha = 0.05;

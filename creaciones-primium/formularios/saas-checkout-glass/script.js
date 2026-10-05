@@ -74,7 +74,7 @@ const CAMPOS = [
     etiqueta: "Country",
     vacio: "Choose the country the invoice is issued in.",
     error: "That country is not in the billing catalogue.",
-    prueba: v => Object.prototype.hasOwnProperty.call(IVA_PAIS, v)
+    prueba: v => Object.hasOwn(IVA_PAIS, v)
   },
   {
     id: "cp",
@@ -218,7 +218,7 @@ function refrescarCristal() {
   const nodoMarca = el("verMarca");
   nodoMarca.textContent = texto;
   if (marca === "mc" || marca === "amex") nodoMarca.dataset.marca = marca;
-  else nodoMarca.removeAttribute("data-marca");
+  else delete nodoMarca.dataset.marca;
 
   const fantasma = el("marcaFantasma");
   if (marca) {
@@ -392,7 +392,7 @@ escenario.addEventListener("pointerleave", alSalir);
 escenario.addEventListener("pointerdown", e => {
   alMover(e);
   if (escenario.setPointerCapture && e.pointerId !== undefined) {
-    try { escenario.setPointerCapture(e.pointerId); } catch (x) { }
+    try { escenario.setPointerCapture(e.pointerId); } catch {}
   }
 });
 escenario.addEventListener("pointerup", e => { if (e.pointerType !== "mouse") alSalir(); });
@@ -440,7 +440,6 @@ function terminar() {
   const d = el("numero").value.replace(/\s/g, "");
   const marca = detectaMarca(d);
   const ahora = new Date();
-  const dos = n => String(n).padStart(2, "0");
   const meses = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   const renovo = new Date(ahora.getTime());
@@ -476,7 +475,7 @@ el("otra").addEventListener("click", () => {
   el("verCvc").setAttribute("aria-pressed", "false");
   el("verCvc").setAttribute("aria-label", "Show the security code");
   pagar.disabled = false;
-  pagar.removeAttribute("data-estado");
+  delete pagar.dataset.estado;
   CAMPOS.forEach(f => {
     el(f.id).closest(".campo").dataset.estado = "neutro";
     el(f.id).setAttribute("aria-invalid", "false");

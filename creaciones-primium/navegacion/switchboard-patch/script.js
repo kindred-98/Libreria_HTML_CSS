@@ -36,8 +36,8 @@
       if (i === indice) c.setAttribute("aria-current", "true");
       else c.removeAttribute("aria-current");
     });
-    num.textContent = clavijas[indice].getAttribute("data-linea");
-    texto.textContent = clavijas[indice].getAttribute("data-nombre");
+    num.textContent = clavijas[indice].dataset.linea;
+    texto.textContent = clavijas[indice].dataset.nombre;
     tensar(indice);
   }
 

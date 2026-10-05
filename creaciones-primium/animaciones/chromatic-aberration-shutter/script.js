@@ -11,7 +11,11 @@ const tdistEl = document.getElementById('tdist');
 const fmarkEl = document.getElementById('fmark');
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const clamp01 = v => (v < 0 ? 0 : v > 1 ? 1 : v);
+const clamp01 = (v) => {
+  if (v < 0) return 0;
+  if (v > 1) return 1;
+  return v;
+};
 const lerp = (a, b, t) => a + (b - a) * t;
 const eIO = x => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 const eOut = x => 1 - Math.pow(1 - x, 4);
@@ -37,7 +41,7 @@ function seedGrain(){
   const im = gx.createImageData(128, 128);
   const d = im.data;
   for (let i = 0; i < d.length; i += 4){
-    const v = (Math.random() * 255) | 0;
+    const v = (Math.random() * 255 | 0);
     d[i] = v;
     d[i + 1] = v;
     d[i + 2] = v;

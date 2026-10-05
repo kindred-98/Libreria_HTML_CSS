@@ -57,7 +57,7 @@
     s.style.animationDuration = "1.1s";
     s.style.animationDelay = "0s";
     p.b.appendChild(s);
-    setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); }, 1250);
+    setTimeout(function () { if (s.parentNode) s.remove(); }, 1250);
   }
 
   function warp(p) {
@@ -105,8 +105,7 @@
     if (!plates.length) return;
 
     window.addEventListener("resize", function () {
-      for (var j = 0; j < plates.length; j++) {
-        var q = plates[j];
+      for (var q of plates) {
         q.w = q.b.offsetWidth;
         q.h = q.b.offsetHeight;
       }

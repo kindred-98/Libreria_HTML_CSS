@@ -30,7 +30,7 @@ if (input && plus && minus && strips.length === 3) {
     moveTo(strip, 0);
     strip.dataset.pos = "0";
     strip.dataset.d = String(digit);
-    void strip.offsetHeight;
+    strip.getBoundingClientRect();
     strip.style.transition = "";
     strip.style.transitionDelay = `${delay}ms`;
     moveTo(strip, delta);
@@ -77,7 +77,7 @@ if (input && plus && minus && strips.length === 3) {
   const jolt = () => {
     if (!unitBox) return;
     unitBox.classList.remove("is-stop");
-    void unitBox.offsetWidth;
+    unitBox.getBoundingClientRect();
     unitBox.classList.add("is-stop");
   };
 
@@ -110,7 +110,7 @@ if (input && plus && minus && strips.length === 3) {
     strip.style.transition = "none";
     moveTo(strip, digit);
   });
-  void strips[0].offsetHeight;
+  strips[0].getBoundingClientRect();
   strips.forEach((strip) => { strip.style.transition = ""; });
   paint(start);
 
@@ -161,7 +161,11 @@ if (input && plus && minus && strips.length === 3) {
     const n = clamp(Number(raw));
     const over = Number(raw) !== n;
     if (unitBox) unitBox.classList.toggle("is-over", over);
-    if (unitTag) unitTag.textContent = over ? (Number(raw) > MAX ? "over 999" : "under 000") : "units";
+    if (unitTag) {
+      let texto = "units";
+      if (over) texto = Number(raw) > MAX ? "over 999" : "under 000";
+      unitTag.textContent = texto;
+    }
     paint(n);
     flashRun();
   });

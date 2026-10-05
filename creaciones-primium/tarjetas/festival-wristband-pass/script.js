@@ -86,7 +86,7 @@ function scramble() {
 
 turnBtn.addEventListener("click", function () {
   wrist.classList.remove("is-spin");
-  void wrist.offsetWidth;
+  wrist.getBoundingClientRect();
   wrist.classList.add("is-spin");
   window.setTimeout(function () {
     wrist.classList.remove("is-spin");

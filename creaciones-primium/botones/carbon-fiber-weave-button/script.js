@@ -78,9 +78,9 @@
 
   if(reduce){
     set(1);
-    for(var i2=0;i2<sheens.length;i2++){
-      sheens[i2].style.setProperty("--sh","40");
-      sheens[i2].style.opacity=".5";
+    for(var sh of sheens){
+      sh.style.setProperty("--sh","40");
+      sh.style.opacity=".5";
     }
     gloss.style.setProperty("--gl","70");
   }else{

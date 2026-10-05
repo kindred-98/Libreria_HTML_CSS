@@ -75,7 +75,7 @@ function peso(bytes) {
 
 function rechaza(archivo, cfg) {
   const ext = extension(archivo.name);
-  if (cfg.ext.indexOf(ext) === -1) {
+  if (cfg.ext.includes(ext)) {
     return "We do not open ." + (ext || "no extension") + " here. Accepted: " + cfg.ext.join(", ") + ".";
   }
   if (archivo.size === 0) {
@@ -155,7 +155,7 @@ function creaFila(item, cfg) {
   li.dataset.estado = item.estado;
 
   const minia = document.createElement("span");
-  const esImagen = cfg.ext.indexOf(extension(item.nombre)) !== -1 && item.estado !== "fallo";
+  const esImagen = cfg.ext.includes(extension(item.nombre)) && item.estado !== "fallo";
   const esVideo = cfg === ZONAS.videos;
   minia.className = "fichero__minia" + (esVideo ? " fichero__minia--video" : "");
 
@@ -474,7 +474,7 @@ function validaCorreo() {
     return false;
   }
   const dominio = v.split("@")[1].toLowerCase();
-  if (DOMINIOS_MAS_KEBAB.indexOf(dominio) !== -1) {
+  if (DOMINIOS_MAS_KEBAB.includes(dominio)) {
     errorDe(correo, "errorCorreo", dominio + " burns the brief after an hour. Use a mailbox you read every day.");
     return false;
   }
@@ -586,9 +586,9 @@ function enfocaPrimero(fallos) {
     ["Brand files", "#zonaMarca .zona__cara"],
     ["Rights", "#licencia"]
   ];
-  for (let i = 0; i < mapa.length; i++) {
-    if (fallos.some(function (f) { return f.indexOf(mapa[i][0]) === 0; })) {
-      form.querySelector(mapa[i][1]).focus();
+  for (const campo of mapa) {
+    if (fallos.some(function (f) { return f.indexOf(campo[0]) === 0; })) {
+      form.querySelector(campo[1]).focus();
       return;
     }
   }

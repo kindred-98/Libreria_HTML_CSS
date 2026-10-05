@@ -9,7 +9,7 @@
   var note = document.getElementById('fieldNote');
 
   var list = document.querySelectorAll('.lattice .node');
-  var nodes = [].slice.call(list);
+  var nodes = Array.prototype.slice.call(list);
   var secs = nodes.map(function (n) {
     return document.getElementById(n.getAttribute('href').slice(1));
   });
@@ -89,7 +89,7 @@
 
   function read() {
     var line = window.innerHeight * 0.42;
-    var best = cur < 0 ? 0 : cur;
+    var best = Math.max(cur, 0);
     var gap = Infinity;
     for (var k = 0; k < secs.length; k++) {
       var s = secs[k];
@@ -112,12 +112,11 @@
   function field() {
     var t = still ? 1 : 0.16;
     var strongest = 0;
-    for (var k = 0; k < nodes.length; k++) {
-      var n = nodes[k];
+    for (const n of nodes) {
       var tx = 0, ty = 0, tp = 0;
       if (ptr.on) {
         var dx = ptr.x - n._cx, dy = ptr.y - n._cy;
-        var d = Math.sqrt(dx * dx + dy * dy) || 1;
+        var d = Math.hypot(dx, dy) || 1;
         if (d < RANGE) {
           var s = 1 - d / RANGE;
           s = s * s;
@@ -189,7 +188,7 @@
     var from = nodes.indexOf(document.activeElement);
     if (from < 0) return;
     var cols = window.innerWidth <= 560 ? 2 : (window.innerWidth <= 820 ? 3 : 6);
-    var to = from;
+    var to;
     if (e.key === 'ArrowRight') to = from + 1;
     else if (e.key === 'ArrowLeft') to = from - 1;
     else if (e.key === 'ArrowDown') to = from + cols;

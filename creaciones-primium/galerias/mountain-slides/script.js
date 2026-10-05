@@ -104,13 +104,13 @@
     gate.style.setProperty("--wipe", dir > 0 ? "1" : dir < 0 ? "-1" : "0");
     if (calm.matches) {
       gate.classList.remove("is-turning");
-      void gate.offsetWidth;
+      gate.getBoundingClientRect();
       gate.classList.add("is-turning");
       return;
     }
     wiping = true;
     gate.classList.remove("is-turning");
-    void gate.offsetWidth;
+    gate.getBoundingClientRect();
     gate.classList.add("is-turning");
     window.setTimeout(function () { wiping = false; }, 620);
   }
@@ -130,14 +130,6 @@
   var frame = document.getElementById("frame");
   var fClose = document.getElementById("frameClose");
   var opener = null;
-
-  function openFull(n, from) {
-    opener = from;
-    showFull(n);
-    frame.hidden = false;
-    requestAnimationFrame(function () { frame.classList.add("is-open"); });
-    fClose.focus();
-  }
 
   function shut() {
     frame.classList.remove("is-open");

@@ -64,7 +64,7 @@ function paintTip(next, burstIt) {
   frame();
   if (burstIt) {
     tipValue.classList.remove("is-bump");
-    void tipValue.offsetWidth;
+    tipValue.getBoundingClientRect();
     tipValue.classList.add("is-bump");
     window.setTimeout(function () {
       tipValue.classList.remove("is-bump");
@@ -78,7 +78,7 @@ function riseJar(to) {
   jarFill.style.setProperty("--fill", String(clamped));
   fill = clamped;
   jarFill.classList.remove("is-rise");
-  void jarFill.offsetWidth;
+  jarFill.getBoundingClientRect();
   jarFill.classList.add("is-rise");
   window.setTimeout(function () {
     jarFill.classList.remove("is-rise");
@@ -107,10 +107,10 @@ function popReaction() {
   reactEmpty.style.display = "none";
   while (chips.length > 6) {
     const old = chips.shift();
-    old.parentNode.removeChild(old);
+    old.remove();
   }
   burst.classList.remove("is-pop");
-  void burst.offsetWidth;
+  burst.getBoundingClientRect();
   burst.classList.add("is-pop");
   window.setTimeout(function () {
     burst.classList.remove("is-pop");
@@ -124,7 +124,7 @@ function nextLyric() {
     return;
   }
   lyricOut.classList.remove("is-turning");
-  void lyricOut.offsetWidth;
+  lyricOut.getBoundingClientRect();
   lyricOut.classList.add("is-turning");
   window.setTimeout(function () {
     lyricOut.classList.remove("is-turning");

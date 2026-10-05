@@ -122,7 +122,7 @@ function step(dt){
 
     const hx = px[i] - hookX;
     const hy = py[i] - hookY;
-    const hd = Math.sqrt(hx * hx + hy * hy) + 0.001;
+    const hd = Math.hypot(hx, hy) + 0.001;
     if (hd < 190){
       ax += (hx / hd) * (190 - hd) * 0.02;
       ay += (hy / hd) * (190 - hd) * 0.02;
@@ -172,7 +172,7 @@ function render(){
   for (let i = 0; i < N; i++){
     const dx = px[i] - cx;
     const dy = py[i] - cy;
-    spread += Math.sqrt(dx * dx + dy * dy);
+    spread += Math.hypot(dx, dy);
   }
   spread /= N;
 

@@ -16,7 +16,7 @@ const CAMPOS = [
     etiqueta: "Motivo de la baja",
     vacio: "Elige un motivo. Puedes cancelar igual, pero nos ayuda mucho saberlo.",
     error: "Ese motivo no está en la lista.",
-    prueba: v => MOTIVOS.indexOf(v) !== -1,
+    prueba: v => MOTIVOS.includes(v),
     etapa: 1
   },
   {

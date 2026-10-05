@@ -5,7 +5,6 @@
   });
   var cuenta = document.getElementById("cuenta");
   var nombre = document.getElementById("cuentaNombre");
-  var activa = -1;
   var colgado = null;
 
   function bajar(indice) {
@@ -15,8 +14,8 @@
       if (i === indice) l.setAttribute("aria-current", "true");
       else l.removeAttribute("aria-current");
     });
-    cuenta.textContent = locales[indice].getAttribute("data-n");
-    nombre.textContent = locales[indice].getAttribute("data-name");
+    cuenta.textContent = locales[indice].dataset.n;
+    nombre.textContent = locales[indice].dataset.name;
   }
 
   function medir() {

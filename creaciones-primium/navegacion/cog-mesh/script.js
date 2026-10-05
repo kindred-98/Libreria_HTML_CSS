@@ -1,7 +1,7 @@
 (function () {
   var NOMBRES = ['I', 'II', 'III', 'IV', 'V', 'VI'];
   var TITULOS = ['The Oil', 'The Pitch', 'The Train', 'The Key', 'The Wear', 'The Stop'];
-  var ruedas = [].slice.call(document.querySelectorAll('.wheel'));
+  var ruedas = Array.prototype.slice.call(document.querySelectorAll('.wheel'));
   var secciones = ruedas.map(function (r) { return document.getElementById(r.getAttribute('href').slice(1)); });
   var tambor = document.getElementById('strip');
   var aceite = document.getElementById('fill');
@@ -13,7 +13,6 @@
   function elegir(i) {
     if (i < 0 || i >= ruedas.length) return;
     actual = i;
-    var par = i % 2 === 0;
     ruedas.forEach(function (r, k) {
       var enlace = k === i;
       if (enlace) r.setAttribute('aria-current', 'true');
@@ -28,7 +27,7 @@
 
   function leer() {
     var linea = window.innerHeight * 0.46;
-    var mejor = actual < 0 ? 0 : actual;
+    var mejor = Math.max(actual, 0);
     var distancia = Infinity;
     for (var k = 0; k < secciones.length; k++) {
       var s = secciones[k];

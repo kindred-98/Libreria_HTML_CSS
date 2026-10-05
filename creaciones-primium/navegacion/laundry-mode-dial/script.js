@@ -50,7 +50,7 @@
     metaEl.textContent = metaFor(i);
     stateEl.textContent = "Programme " + no + " armed";
     if (footEl) {
-      footEl.textContent = "Programme " + parseInt(no, 10) + " of " +
+      footEl.textContent = "Programme " + Number.parseInt(no, 10) + " of " +
         radios.length + " · Wheel parked on " + label;
     }
 

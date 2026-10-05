@@ -59,7 +59,7 @@ const CAMPOS = [
     etiqueta: "Delivery day",
     vacio: "Pick a delivery day.",
     error: "That delivery slot is not on the van rota.",
-    prueba: v => Object.prototype.hasOwnProperty.call(DIAS, v)
+    prueba: v => Object.hasOwn(DIAS, v)
   }
 ];
 
@@ -85,7 +85,7 @@ function elegidas() {
 }
 
 function estaElegida(id) {
-  return consolaElegida.id === id || juegosElegidos.indexOf(id) !== -1 || extrasElegidos.indexOf(id) !== -1;
+  return consolaElegida.id === id || juegosElegidos.includes(id) || extrasElegidos.includes(id);
 }
 
 function posiciones() {
@@ -249,7 +249,8 @@ function totales() {
   const dentro = elegidas();
   const bruto = dentro.reduce((s, p) => s + p.precio, 0);
   const dia = diaActual();
-  const envio = dentro.length === 0 ? 0 : (dia === "estandar" && bruto >= UMBRAL_GRATIS ? 0 : PORTES[dia]);
+  let envio = 0;
+  if (dentro.length !== 0) envio = dia === "estandar" && bruto >= UMBRAL_GRATIS ? 0 : PORTES[dia];
   return { dentro, bruto, dia, envio, final: bruto + envio };
 }
 
@@ -262,7 +263,7 @@ function pintarTodo(antes) {
   [1, 2, 3].forEach(n => {
     const rejilla = el("rejilla" + n);
     rejilla.innerHTML = "";
-    const familia = n === 1 ? CONSOLAS : (n === 2 ? JUEGOS : EXTRAS);
+    const familia = n === 1 ? CONSOLAS : n === 2 ? JUEGOS : EXTRAS;
     familia.forEach(p => {
       if (estaElegida(p.id)) return;
       rejilla.appendChild(nodoPieza(p, false));
@@ -286,13 +287,13 @@ function pintarTodo(antes) {
   el("cSubtotal").textContent = dinero(t.bruto);
   el("cEnvio").textContent = dentro.length === 0
     ? "no delivery"
-    : (t.envio === 0 ? "free" : dinero(t.envio));
+    : t.envio === 0 ? "free" : dinero(t.envio);
   el("cTotal").textContent = dinero(t.final);
   el("cajaPie").textContent = dentro.length === 0
     ? "Delivery is worked out on what is in the crate right now."
-    : (t.envio === 0
+    : t.envio === 0
       ? "Free delivery, the crate is over " + UMBRAL_GRATIS + "."
-      : "Add " + dinero(UMBRAL_GRATIS - t.bruto) + " more and delivery comes free.");
+      : "Add " + dinero(UMBRAL_GRATIS - t.bruto) + " more and delivery comes free.";
 
   el("pista2").textContent = juegosElegidos.length === 0
     ? "No games yet. The crate can hold three, and a fourth comes back off the shelf."
@@ -311,10 +312,13 @@ function mostrar(n) {
   });
   pasosEl.forEach(m => {
     const num = Number(m.dataset.paso);
-    m.dataset.estado = num === n ? "activo" : (num < n ? "hecho" : "pendiente");
+    let estado = "pendiente";
+    if (num === n) estado = "activo";
+    else if (num < n) estado = "hecho";
+    m.dataset.estado = estado;
   });
   btnAtras.hidden = n === 1;
-  textoContinuar.textContent = n === 1 ? "To the games" : (n === 2 ? "To the extras" : "Place the order");
+  textoContinuar.textContent = n === 1 ? "To the games" : n === 2 ? "To the extras" : "Place the order";
   if (cambioDePaso) {
     pintarTodo(antes);
     pasoPrevio = n;
@@ -435,7 +439,7 @@ btnContinuar.addEventListener("click", e => {
     return;
   }
 
-  CAMPOS.forEach(pintarCampo);
+  CAMPOS.forEach(f => pintarCampo(f));
   const fallos = problemas();
   if (fallos.length > 0) {
     mostrarResumen(fallos);

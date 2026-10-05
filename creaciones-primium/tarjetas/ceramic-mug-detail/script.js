@@ -183,7 +183,7 @@ chips.forEach(function (chip) {
       handle.classList.add("cup__handle--" + glazeName);
     }
     viewer.classList.remove("is-morph");
-    void viewer.offsetWidth;
+    viewer.getBoundingClientRect();
     viewer.classList.add("is-morph");
   });
 });

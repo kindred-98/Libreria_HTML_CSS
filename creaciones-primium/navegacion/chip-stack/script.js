@@ -4,7 +4,7 @@
 
   var chips = Array.prototype.slice.call(hall.querySelectorAll('.chip'));
   var sections = chips.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
-  var vals = chips.map(function (a) { return Number(a.getAttribute('data-val')) || 0; });
+  var vals = chips.map(function (a) { return Number(a.dataset.val) || 0; });
   var pot = hall.querySelector('[data-pot]');
   var count = hall.querySelector('[data-chips]');
   var say = hall.querySelector('[data-say]');
@@ -20,7 +20,7 @@
     var total = 0;
     for (var k = 0; k < chips.length; k++) {
       var slot = k === i ? 'L' : (k < i ? 'p' + k : 'r' + (k - i - 1));
-      chips[k].setAttribute('data-slot', slot);
+      chips[k].dataset.slot = slot;
       if (k === i) {
         chips[k].setAttribute('aria-current', 'true');
         total += vals[k];
@@ -29,10 +29,10 @@
         if (k < i) total += vals[k];
       }
     }
-    hall.setAttribute('data-at', i);
+    hall.dataset.at = i;
     if (pot) pot.textContent = total;
     if (count) count.textContent = WORDS[i + 1] + (i === 0 ? ' chip in the stack' : ' chips in the stack');
-    if (say) say.textContent = chips[i].getAttribute('data-say') || '';
+    if (say) say.textContent = chips[i].dataset.say || '';
   }
 
   function scan() {

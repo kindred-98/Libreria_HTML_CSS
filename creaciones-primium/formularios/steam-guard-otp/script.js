@@ -18,14 +18,14 @@ const CAMPOS = [
     etiqueta: "Six digit code",
     vacio: "Type the six digits your guard app is showing.",
     error: "That code is not one of ours. Read the order again, the app rotates it every thirty seconds.",
-    prueba: () => /^[0-9]{6}$/.test(codigoActual())
+    prueba: () => /^[\d]{6}$/.test(codigoActual())
   },
   {
     id: "motivo",
     etiqueta: "Reason for the code",
     vacio: "Say why the code is being asked for, so we can flag a strange one.",
     error: "That reason is not in the list.",
-    prueba: v => MOTIVOS.indexOf(v) !== -1
+    prueba: v => MOTIVOS.includes(v)
   }
 ];
 
@@ -190,13 +190,17 @@ function pegarDelPortapapeles() {
     return;
   }
   const espera = new Promise(resolve => { setTimeout(resolve, 500); });
-  Promise.race([navigator.clipboard.readText().catch(() => ""), espera]).then(resultado => {
-    if (resultado === undefined) {
-      pedirPegadoManual("The browser kept the clipboard to itself");
-      return;
-    }
-    conTexto(resultado);
-  });
+  // La carrera nunca se rechaza (el texto va con catch y el temporizador solo
+  // resuelve), pero se recoge el error por si el navegador rompe otra vez.
+  Promise.race([navigator.clipboard.readText().catch(() => ""), espera])
+    .then(resultado => {
+      if (resultado === undefined) {
+        pedirPegadoManual("The browser kept the clipboard to itself");
+        return;
+      }
+      conTexto(resultado);
+    })
+    .catch(() => {});
 }
 
 btnPegar.addEventListener("click", pegarDelPortapapeles);

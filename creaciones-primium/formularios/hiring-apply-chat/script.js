@@ -151,7 +151,7 @@ function anadirNota(texto) {
 function textoDe(id) {
   if (id === "puesto") return OPCIONES.puesto.filter(o => o.clave === st.puesto).map(o => o.texto)[0] || "";
   if (id === "anos") return OPCIONES.anos.filter(o => o.clave === st.anos).map(o => o.texto)[0] || "";
-  if (id === "pila") return PILA.filter(p => st.pila.indexOf(p) !== -1).join(", ");
+  if (id === "pila") return PILA.filter(p => st.pila.includes(p)).join(", ");
   return st[id];
 }
 
@@ -218,7 +218,7 @@ function Fallos(p) {
       salida.push({ campo: p.idCampo, mensaje: "Between three and forty characters, and at least two letters. The badge printer has a limit too." });
     } else if (p.id === "correo" && !/^[^\s@,;]+@[^\s@,;]+\.[A-Za-z]{2,}$/.test(v)) {
       salida.push({ campo: p.idCampo, mensaje: "That is not the shape name@domain.tld the mail server expects." });
-    } else if (p.id === "correo" && TIRADOS.indexOf(v.split("@")[1].toLowerCase()) > -1) {
+    } else if (p.id === "correo" && TIRADOS.includes(v.split("@")[1].toLowerCase())) {
       salida.push({ campo: p.idCampo, mensaje: v.split("@")[1] + " is a throwaway inbox. The offer would bounce before anybody read it." });
     } else if (p.id === "motivacion" && v.length < 80) {
       salida.push({ campo: p.idCampo, mensaje: "Eighty characters at the very least, otherwise there is nothing here to read. Tell me about the work, not the mission statement." });
@@ -378,7 +378,7 @@ function montarMulti(p) {
     input.type = "checkbox";
     input.id = "pila-" + item;
     input.value = item;
-    input.checked = st.pila.indexOf(item) !== -1;
+    input.checked = st.pila.includes(item);
     input.addEventListener("change", () => {
       const donde = st.pila.indexOf(item);
       if (input.checked) {

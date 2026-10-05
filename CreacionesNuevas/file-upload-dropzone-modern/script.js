@@ -14,7 +14,9 @@ function addFiles(files){
     // reinterpreted as HTML" aunque el demo solo lo ve quien arrastra sus
     // propios archivos.
     const li=document.createElement('li');
-    const icon=f.type.includes('image')?'🖼️':f.type.includes('pdf')?'📄':'📎';
+    let icon='📎';
+    if(f.type.includes('image'))icon='🖼️';
+    else if(f.type.includes('pdf'))icon='📄';
     const size=(f.size/1024).toFixed(1)+'KB';
     const s1=document.createElement('span'); s1.textContent=icon+' '+f.name;
     const s2=document.createElement('span'); s2.textContent=size; s2.style.color='#475569';

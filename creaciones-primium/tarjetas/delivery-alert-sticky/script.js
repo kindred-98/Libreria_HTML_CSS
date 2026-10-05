@@ -28,7 +28,7 @@ if (sticky && clip && !reduceMotion) {
 
   sticky.addEventListener("pointerdown", function (event) {
     const target = event.target;
-    if (target && target.closest && target.closest("button")) {
+    if (target?.closest && target.closest("button")) {
       return;
     }
     dragging = true;

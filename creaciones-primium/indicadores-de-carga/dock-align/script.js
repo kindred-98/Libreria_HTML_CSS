@@ -57,7 +57,7 @@
     craft.style.transform = "translate(" + x.toFixed(2) + "%," + y.toFixed(2) + "%) scale(" + scale.toFixed(4) + ") rotate(" + rot.toFixed(3) + "deg)";
 
     var s = curve(p, swing);
-    for (var i = 0; i < arms.length; i++) arms[i].style.transform = "rotate(" + s.toFixed(2) + "deg)";
+    for (var arm of arms) arm.style.transform = "rotate(" + s.toFixed(2) + "deg)";
 
     var lit = [curve(p, litA), curve(p, litB), curve(p, litC), curve(p, litD)];
     for (var j = 0; j < crosses.length; j++) {

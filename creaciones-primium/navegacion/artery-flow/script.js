@@ -39,7 +39,7 @@
       else { links[i].removeAttribute('aria-current'); }
     }
     nav.style.setProperty('--pos', String(index));
-    nav.setAttribute('data-at', String(index + 1));
+    nav.dataset.at = String(index + 1);
     if (readout) {
       readout.textContent = 'Vessel ' + (index + 1) + ' of ' + links.length + ' · ' + names[index];
     }

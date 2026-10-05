@@ -132,7 +132,7 @@
   deck.addEventListener("click", function (ev) {
     var b = ev.target.closest(".card__face");
     if (!b) { return; }
-    openAt(Number(b.getAttribute("data-shot")), b);
+    openAt(Number(b.dataset.shot), b);
   });
 
   rows.forEach(function (r, k) {

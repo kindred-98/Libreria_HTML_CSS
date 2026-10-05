@@ -91,7 +91,7 @@
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function () { placeInk(current < 0 ? 0 : current); onScroll(); });
+  window.addEventListener('resize', function () { placeInk(Math.max(current, 0)); onScroll(); });
 
   list.addEventListener('keydown', function (e) {
     var i = links.indexOf(document.activeElement);

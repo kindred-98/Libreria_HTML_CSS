@@ -55,11 +55,9 @@ ${MARCA}
 `;
 
 const argumentos = process.argv.slice(2);
-const modo = argumentos.includes("--piloto")
-  ? "piloto"
-  : argumentos.includes("--todos")
-    ? "todos"
-    : "dry-run";
+let modo = "dry-run";
+if (argumentos.includes("--piloto")) modo = "piloto";
+else if (argumentos.includes("--todos")) modo = "todos";
 const aplicar = modo !== "dry-run";
 
 async function buscarDemos(directorio) {
