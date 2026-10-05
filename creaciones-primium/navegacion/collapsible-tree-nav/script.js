@@ -220,7 +220,7 @@
 
   if (window.location.hash) {
     var target = document.querySelector(window.location.hash);
-    if (target && target.classList && target.classList.contains('leaf')) {
+    if (target?.classList && target.classList.contains('leaf')) {
       target.setAttribute('aria-current', 'true');
       var branch = target.closest('.sub');
       while (branch) {

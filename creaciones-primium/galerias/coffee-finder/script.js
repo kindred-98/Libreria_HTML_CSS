@@ -196,7 +196,7 @@
   function close() {
     readerOpen = false;
     reader.setAttribute("hidden", "");
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   function step(d) {

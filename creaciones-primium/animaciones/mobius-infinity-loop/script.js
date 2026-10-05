@@ -137,7 +137,7 @@
 
   const surf = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   surf.setAttribute('class', 'surf');
-  if (elBody && elBody.parentNode) elBody.parentNode.insertBefore(surf, elBody);
+  if (elBody?.parentNode) elBody.parentNode.insertBefore(surf, elBody);
   const surfPool = [];
   for (let i = 0; i < SEG; i++) {
     const q = document.createElementNS('http://www.w3.org/2000/svg', 'path');

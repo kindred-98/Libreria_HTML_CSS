@@ -129,7 +129,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   document.getElementById("back").addEventListener("click", function () { go(at - 1); });

@@ -101,6 +101,41 @@ const PATRONES = [
         return `${receptor}.dataset.${camel}`;
       },
   },
+  {
+    // x && x.y -> x?.y. Tres condiciones para que la conversion sea
+    // sinonima: (1) el mismo identificador simple a ambos lados, (2) `x` es
+    // el COMIENZO de la subexpresion booleana (antes solo whitespace y luego
+    // uno de `(`, `,`, `;`, `?`, `:`, o el inicio), y (3) `&& x.y` es el
+    // FINAL (despues solo whitespace y luego uno de `,`, `)`, `;`, `]`, `?`,
+    // `:`, o un `&&`/`||` que encadene). Sin (2), `e.target === x && x.y` se
+    // reescribe a `e.target === x?.y` y cambia semantica.
+    id: "S6582",
+    descripcion: "x && x.y -> x?.y (optional chaining, en posicion aislada)",
+    regex: /(?<=\s*[(,;?:]|^)\b([A-Za-z_$][\w$]*)\s*&&\s*\1\.([A-Za-z_$][\w$]*(?:\([^\)]*\))?)(?=\s*(?:[,);\]?:&|?]|\n|$))/g,
+    reemplazo: "$1?.$2",
+  },
+  {
+    // a < b ? a : b -> Math.min(a, b)
+    // a > b ? a : b -> Math.max(a, b)
+    // (a debe ser el mismo operando a ambos lados para que la traduccion sea
+    // equivalente: el ternario escoge el menor de los dos operandos.)
+    id: "S7766",
+    descripcion: "a < b ? a : b -> Math.min(a,b)  y  a > b ? a : b -> Math.max(a,b)",
+    regex: /([A-Za-z_$][\w$.]*)\s*<\s*([A-Za-z_$][\w$.]*)\s*\?\s*\1\s*:\s*\2/g,
+    reemplazo: "Math.min($1, $2)",
+  },
+  {
+    id: "S7766b",
+    descripcion: "a > b ? a : b -> Math.max(a,b)",
+    regex: /([A-Za-z_$][\w$.]*)\s*>\s*([A-Za-z_$][\w$.]*)\s*\?\s*\1\s*:\s*\2/g,
+    reemplazo: "Math.max($1, $2)",
+  },
+  {
+    id: "S7774",
+    descripcion: "[].slice.call(x) -> Array.prototype.slice.call(x)",
+    regex: /\[\]\.slice\.call\(/g,
+    reemplazo: "Array.prototype.slice.call(",
+  },
 ];
 
 const EXCLUIR = ["node_modules", ".git", "Web/scripts/lib/", ".sonarlint/", "Web/data/", "tmp/", "dist/"];

@@ -69,7 +69,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   pl.forEach(function (b, i) { b.addEventListener("click", function () { openAt(i); }); });

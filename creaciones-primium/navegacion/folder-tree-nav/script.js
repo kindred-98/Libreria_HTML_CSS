@@ -122,7 +122,7 @@
     } else if (e.key === 'ArrowRight' && isBranch) {
       e.preventDefault();
       var kids = child(li, 'ul');
-      if (kids && kids.hidden) setBranch(li, true);
+      if (kids?.hidden) setBranch(li, true);
       else if (kids) {
         var first = kids.querySelector('.row');
         if (first) first.focus();

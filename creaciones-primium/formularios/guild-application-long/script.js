@@ -85,9 +85,9 @@ function pintarEstado(campo, forzar) {
   const ayuda = document.getElementById(campo.id + '-ayuda');
   if (ayuda) ayuda.setAttribute('aria-live', 'polite');
   const control = document.getElementById(campo.id);
-  if (control && control.hasAttribute('aria-invalid')) control.setAttribute('aria-invalid', fallo && tocado ? 'true' : 'false');
+  if (control?.hasAttribute('aria-invalid')) control.setAttribute('aria-invalid', fallo && tocado ? 'true' : 'false');
   const grupo = document.getElementById(campo.id);
-  if (grupo && grupo.hasAttribute('aria-invalid')) grupo.setAttribute('aria-invalid', fallo && tocado ? 'true' : 'false');
+  if (grupo?.hasAttribute('aria-invalid')) grupo.setAttribute('aria-invalid', fallo && tocado ? 'true' : 'false');
   return fallo;
 }
 
@@ -348,7 +348,7 @@ function resumenDeErrores() {
     li.textContent = baseTexto + ': ' + f.fallo;
     li.tabIndex = -1;
     li.addEventListener('click', () => {
-      if (control && control.focus) control.focus();
+      if (control?.focus) control.focus();
       else if (cajaF) cajaF.scrollIntoView({ behavior: suave() ? 'smooth' : 'auto', block: 'center' });
     });
     lista.appendChild(li);

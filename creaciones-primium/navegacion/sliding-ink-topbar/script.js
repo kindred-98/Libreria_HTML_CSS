@@ -53,7 +53,7 @@
 
   nav.addEventListener("click", function (e) {
     var t = e.target;
-    if (t && t.classList && t.classList.contains("nav__link")) {
+    if (t?.classList && t.classList.contains("nav__link")) {
       setCurrent(t);
       if (mqSmall.matches) setOpen(false);
     }

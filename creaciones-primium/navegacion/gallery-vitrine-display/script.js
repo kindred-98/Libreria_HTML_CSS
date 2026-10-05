@@ -100,7 +100,7 @@
 
   if (window.location.hash) {
     var target = document.querySelector(window.location.hash);
-    if (target && target.classList && target.classList.contains('ficha')) {
+    if (target?.classList && target.classList.contains('ficha')) {
       peds.forEach(function (ped, i) {
         if (ped.getAttribute('aria-controls') === target.id) sheet(i, false);
       });

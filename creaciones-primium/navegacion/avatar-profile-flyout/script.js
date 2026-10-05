@@ -56,7 +56,7 @@
     isOpen = false;
     whoBtn.setAttribute("aria-expanded", "false");
     if (back) {
-      if (backFocus && backFocus.focus) backFocus.focus();
+      if (backFocus?.focus) backFocus.focus();
       else whoBtn.focus();
     }
   }

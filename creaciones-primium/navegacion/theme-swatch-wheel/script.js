@@ -109,7 +109,7 @@
     isOpen = false;
     wheelBtn.setAttribute("aria-expanded", "false");
     if (back) {
-      if (backFocus && backFocus.focus) backFocus.focus();
+      if (backFocus?.focus) backFocus.focus();
       else wheelBtn.focus();
     }
   }

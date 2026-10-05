@@ -87,6 +87,30 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Anade tres reglas mas al auto-fix y arregla un falso positivo peligroso] - 2026-10-03
+
+`Web/scripts/autofix-sonar-mecanico.mjs` gana tres reglas:
+
+- **S6582** `x && x.y` -> `x?.y` (optional chaining). El patron lleva
+  lookbehind y lookahead para exigir que `x` sea el INICIO de la
+  subexpresion booleana (antes solo whitespace y luego `(`, `,`, `;`,
+  `?`, `:`, o inicio de linea) y que `&& x.y` sea el FINAL (despues
+  whitespace y luego `,`, `)`, `;`, `]`, `?`, `:`, `&&`, `||`, fin de
+  linea, o fin de fichero). Sin las dos guardas, el patron rompe
+  `if (e.target === field && field.value)` en `if (e.target === field?.value)`,
+  que con `field` falsy evalua `undefined !== ''` a `true` y entra al
+  cuerpo, mientras el original cortocircuita. Esa regresion se evito
+  tambien con un test rapido en Node sobre `coffee-finder/script.js`
+  antes de aplicar.
+- **S7766** `a < b ? a : b` -> `Math.min(a, b)` y `a > b ? a : b` ->
+  `Math.max(a, b)`.
+- **S7774** `[].slice.call(x)` -> `Array.prototype.slice.call(x)`.
+
+En esta pasada quedan 54 conversiones S6582, 1 S7766, 1 S7774 y
+75 candidatas de S7761 (de las cuales solo las que tengan `data-` se
+reescriben, las demas quedan como `getAttribute`). Verificado: 0
+conversiones inseguras y los 1018 demos siguen en verde.
+
 ## [Limpia los code smells mecanicos que quedaban en los demos] - 2026-10-03
 
 `Web/scripts/autofix-sonar-mecanico.mjs` aplica siete transformaciones

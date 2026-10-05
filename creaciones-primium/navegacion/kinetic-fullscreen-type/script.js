@@ -115,7 +115,7 @@
       return;
     }
     if (e.key === "Tab") {
-      var focusables = [].slice.call(overlay.querySelectorAll("a[href], button"));
+      var focusables = Array.prototype.slice.call(overlay.querySelectorAll("a[href], button"));
       var first = focusables[0];
       var last = focusables[focusables.length - 1];
       if (e.shiftKey && document.activeElement === first) {

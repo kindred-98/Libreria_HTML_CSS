@@ -122,7 +122,7 @@
 
   function close() {
     viewer.hidden = true;
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   document.getElementById("v-prev").addEventListener("click", function () { openAt((active - 1 + TOTAL) % TOTAL); });

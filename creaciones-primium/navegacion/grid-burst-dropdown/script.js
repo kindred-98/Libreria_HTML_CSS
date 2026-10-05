@@ -20,7 +20,7 @@
     var owner = document.querySelector('[aria-controls="' + sub.id + '"]');
     if (owner) owner.setAttribute('aria-expanded', 'false');
     var host = sub.parentNode;
-    if (host && host.classList) {
+    if (host?.classList) {
       var stillOpen = host.querySelector('.sub.is-open');
       if (!stillOpen && host.parentNode && host.parentNode.classList &&
         host.parentNode.classList.contains('cell')) host.parentNode.classList.remove('is-host');
@@ -52,7 +52,7 @@
     sub.classList.add('is-open');
     var owner = document.querySelector('[aria-controls="' + sub.id + '"]');
     if (owner) owner.setAttribute('aria-expanded', 'true');
-    if (owner && owner.classList && owner.classList.contains('cell__btn')) {
+    if (owner?.classList && owner.classList.contains('cell__btn')) {
       owner.parentNode.classList.add('is-host');
     }
   }

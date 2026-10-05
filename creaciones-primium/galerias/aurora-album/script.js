@@ -63,7 +63,7 @@
     viewer.hidden = true;
     open = false;
     for (var page of pages) page.style.display = "none";
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   leaf.forEach(function (b, i) { b.addEventListener("click", openAlbum); });

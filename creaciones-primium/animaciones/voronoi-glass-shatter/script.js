@@ -164,7 +164,7 @@ function network(cells){
       const a = node(cell[i]);
       const b = node(cell[(i + 1) % cell.length]);
       if (a === b) continue;
-      const lo = a < b ? a : b;
+      const lo = Math.min(a, b);
       const hi = a < b ? b : a;
       const k = lo + '-' + hi;
       if (seen.has(k)) continue;

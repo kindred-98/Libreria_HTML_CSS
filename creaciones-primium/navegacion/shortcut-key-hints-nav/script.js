@@ -112,7 +112,7 @@
     mapOpen = false;
     mapBtn.setAttribute("aria-expanded", "false");
     if (back) {
-      if (lastFocus && lastFocus.focus) lastFocus.focus();
+      if (lastFocus?.focus) lastFocus.focus();
       else mapBtn.focus();
     }
   }

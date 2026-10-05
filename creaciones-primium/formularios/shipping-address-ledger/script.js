@@ -151,7 +151,7 @@ function sincronizarProvincia() {
   const prefijo = cp.slice(0, 2);
   const opciones = Array.from(sel.options);
   const encontrada = opciones.find(o => o.textContent.toLowerCase().startsWith(PREFIJOS[prefijo].toLowerCase()));
-  if (encontrada && encontrada.value) {
+  if (encontrada?.value) {
     sel.value = encontrada.value;
     if (sel.closest(".campo").dataset.estado !== "neutro") pintar(CAMPOS.find(f => f.id === "provincia"));
   }

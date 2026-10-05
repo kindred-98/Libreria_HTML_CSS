@@ -104,7 +104,7 @@
   function close() {
     viewerOpen = false;
     viewer.setAttribute("hidden", "");
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus?.focus) lastFocus.focus();
   }
 
   runBtn.addEventListener("click", function () { setRun(!running); });

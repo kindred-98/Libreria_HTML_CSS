@@ -498,7 +498,7 @@ function pintarErrores() {
   };
   Object.keys(campos).forEach(id => {
     const n = el(id);
-    if (n && n.closest(".campo")) pintarCampo(id, "");
+    if (n?.closest(".campo")) pintarCampo(id, "");
   });
 
   if (st.paso === 2) {
