@@ -87,6 +87,37 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Hace responsivos los 119 showcases de Davoker (texto que se salia de la caja en movil)] - 2026-10-06
+
+En movil, dentro del apartado de Davoker, letras grandes como `BENGALA`
+o `extraccion` se salian de su caja y tiraban la pagina hacia la
+derecha. La causa estaba en la maquetacion de los 119 `index.html` de
+`DavokerDiseñador/**/`:
+
+- **Cero `@media` en los 119 ficheros** y cuatro tamanos fijos en `rem`:
+  `h1` 2.6rem, `.grande` 3rem, `.mediano` 1.6rem, mas `padding: 2rem`
+  en `body` y en `.demo`. Con un iframe de ~360px, `3rem` de texto en
+  negrita ocupa ~270px dentro de una caja de ~230px: se desborda.
+- **Arreglo con `clamp()` en vez de `@media`**, porque el showcase se
+  ve en tres sitios distintos (suelto, en el portal de Davoker y en un
+  iframe): `clamp(1.75rem, 11vw, 3rem)` para `.grande`,
+  `clamp(1.05rem, 6.5vw, 1.6rem)` para `.mediano`,
+  `clamp(1.5rem, 9vw, 2.6rem)` para `h1`, `clamp(1rem, 5vw, 2rem)` en
+  `body` y `clamp(.75rem, 4.5vw, 2rem)` en `.demo`. En escritorio el
+  valor maximo es identico al anterior: nada cambia a partir de ~700px.
+- **Red de seguridad**: `overflow-x: hidden` en `body` (se propaga al
+  viewport) para que ningun efecto con letras muy largas pueda abrir
+  scroll horizontal. El `overflow-x: auto` de los `<pre>` sigue
+  funcionando por ser contenedor anidado.
+- `davoker.html` y `transicion.html` no hacen falta: el primero ya
+  recorta dentro de la muestra (`overflow: hidden` en un circulo de
+  200px) y el segundo no declara ni un ancho fijo ni un `nowrap`.
+
+Verificado en verde: `validar`, `validar:layout` (5 paginas x 23
+anchos), `validar:encabezados`, `validar:html`, `validar:enlaces`,
+`validar:a11y` (sin violaciones serious/critical), `validar:demos`
+(1018/1018) y `duplicados` (0).
+
 ## [Auto-fix: S5869 (char class duplicada), S6557, S7773-isfinite, S7759, S7719 (12 issues)] - 2026-10-05
 
 `Web/scripts/autofix-sonar-mecanico.mjs` gana dos patrones y se
