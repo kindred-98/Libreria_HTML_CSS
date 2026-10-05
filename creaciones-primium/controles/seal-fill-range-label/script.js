@@ -5,7 +5,7 @@ const liquid = document.querySelector("#liquid");
 const minOut = document.querySelector("#minOut");
 const maxOut = document.querySelector("#maxOut");
 const bandOut = document.querySelector("#bandOut");
-const status = document.querySelector("#status");
+const statusEl = document.querySelector("#status");
 
 if (minIn && maxIn && band && liquid) {
   let last = "min";
@@ -35,7 +35,7 @@ if (minIn && maxIn && band && liquid) {
     if (bandOut) bandOut.textContent = String(hi - lo);
     minIn.setAttribute("aria-valuetext", `${lo} centilitres`);
     maxIn.setAttribute("aria-valuetext", `${hi} centilitres`);
-    if (status) status.textContent = `Fill window ${lo} to ${hi} centilitres`;
+    if (statusEl) status.textContent = `Fill window ${lo} to ${hi} centilitres`;
   };
 
   const raise = (input) => {

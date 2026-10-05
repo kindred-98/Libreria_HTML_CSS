@@ -87,6 +87,26 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Rename de variable `status` a `statusEl` en 7 demos (14 issues)] - 2026-10-05
+
+`status` es una variable deprecada en HTML5 (sobra con
+`window.status`); declararla con `let/var/const` en un script la
+sombrea y dispara S1874. La regla no aparecia en los auto-fixes
+genericos porque necesita un rename PER-FICHERO (no solo un
+`replaceAll`), asi que se ha aplicado con un script de un solo uso
+(`tmp/sonar-export/rename-status.mjs`, NO commiteado al repo) a los
+7 archivos que SonarCloud marcaba.
+
+El script usa la regex `/(?<![.\w'\"])status(?![.\w'\"])/g` que
+excluye los accesos a miembros (`xhr.status`) Y los literales de
+cadena (`"#status"`). Esto fallo en una primera version que
+sobreescribia el selector CSS; la guarda de comillas lo soluciona.
+
+Aplicado: 14 sustituciones en 7 ficheros. Verificado en verde:
+`validar`, `validar:encabezados`, `validar:html` (Node 20/22/24),
+`validar:enlaces`, `validar:layout` y `validar:demos` (1018/1018, 0
+fallos).
+
 ## [Auto-fix de code smells mecanicos: [\d] -> \d y mq.addListener -> mq.addEventListener (32 issues)] - 2026-10-05
 
 `Web/scripts/autofix-sonar-mecanico.mjs` gana dos patrones:

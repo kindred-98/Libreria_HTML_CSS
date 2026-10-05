@@ -9,7 +9,7 @@ const lcdMeta = document.querySelector("#lcdMeta");
 const strip = document.querySelector("#lcdStrip");
 const enter = document.querySelector("#enter");
 const remote = document.querySelector("#remote");
-const status = document.querySelector("#status");
+const statusEl = document.querySelector("#status");
 
 if (nav && knob && ring && enter) {
   const arms = [...ring.querySelectorAll(".arm")];
@@ -33,7 +33,7 @@ if (nav && knob && ring && enter) {
     }
     if (lcdMeta) lcdMeta.textContent = `station ${i + 1} of ${ITEMS.length}`;
     nav.setAttribute("aria-valuetext", say(i));
-    if (status && announce) status.textContent = `Station ${i + 1} of ${ITEMS.length} · ${ITEMS[i]}`;
+    if (statusEl && announce) status.textContent = `Station ${i + 1} of ${ITEMS.length} · ${ITEMS[i]}`;
   };
 
   const press = () => {
@@ -46,7 +46,7 @@ if (nav && knob && ring && enter) {
       remote.getBoundingClientRect();
       remote.classList.add("jolt");
     }
-    if (status) status.textContent = `Opened ${ITEMS[i]}`;
+    if (statusEl) status.textContent = `Opened ${ITEMS[i]}`;
     if (lcdMeta) lcdMeta.textContent = `opened ${ITEMS[i]}`;
   };
 

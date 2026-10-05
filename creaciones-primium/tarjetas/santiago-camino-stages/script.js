@@ -3,7 +3,7 @@ const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const route = document.getElementById("camRoute");
 const odo = document.querySelector("[data-odo]");
 const fill = document.getElementById("camFill");
-const status = document.getElementById("camStatus");
+const statusEl = document.getElementById("camStatus");
 const logBtn = document.getElementById("camLog");
 const nextBtn = document.getElementById("camNext");
 

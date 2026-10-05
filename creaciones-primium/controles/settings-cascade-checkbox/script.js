@@ -2,7 +2,7 @@ const master = document.querySelector("#master");
 const list = document.querySelector("#children");
 const state = document.querySelector("#masterState");
 const foot = document.querySelector("#footOut");
-const status = document.querySelector("#status");
+const statusEl = document.querySelector("#status");
 const secTitle = document.querySelector("#secTitle");
 const secHint = document.querySelector("#secHint");
 const rail = document.querySelector(".rail");
@@ -48,7 +48,7 @@ if (master && list) {
       else if (on === 0) maestro = "cleared";
       foot.textContent = `${on} of ${boxes.length} children on · master ${maestro}`;
     }
-    if (status) {
+    if (statusEl) {
       let texto = `Master switch indeterminate, ${on} of ${boxes.length} children on`;
       if (full) texto = "Master switch checked, every child on";
       else if (on === 0) texto = "Master switch cleared, every child off";
@@ -96,7 +96,7 @@ if (master && list) {
       if (secHint) secHint.textContent = btn.dataset.hint || "";
       place();
       play();
-      if (status) status.textContent = `Section ${btn.dataset.title || ""} opened`;
+      if (statusEl) status.textContent = `Section ${btn.dataset.title || ""} opened`;
     });
   });
 

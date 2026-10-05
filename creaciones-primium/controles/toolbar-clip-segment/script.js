@@ -1,7 +1,7 @@
 const seg = document.querySelector("#seg");
 const subject = document.querySelector("#subject");
 const hud = document.querySelector("#hud");
-const status = document.querySelector("#status");
+const statusEl = document.querySelector("#status");
 const undo = document.querySelector("#undo");
 const redo = document.querySelector("#redo");
 const modes = ["clip", "crop", "mask"];
@@ -43,7 +43,7 @@ if (seg) {
       window.setTimeout(() => subject.classList.remove("swap"), 200);
     }
     if (hud) hud.textContent = copy[modes[i]];
-    if (status) status.textContent = `${modes[i][0].toUpperCase()}${modes[i].slice(1)} mode selected`;
+    if (statusEl) status.textContent = `${modes[i][0].toUpperCase()}${modes[i].slice(1)} mode selected`;
     if (undo) undo.disabled = history.length === 0;
     if (redo) redo.disabled = forward.length === 0;
   };
