@@ -97,8 +97,8 @@ for (const url of lista) {
       // 405/403 en HEAD es habitual en sitios que solo responden a GET.
       if (metodo === "HEAD" && [403, 405, 400, 501].includes(respuesta.status)) continue;
       break;
-    } catch (caught) {
-      error = caught;
+    } catch (error_) {
+      error = error_;
       respuesta = null;
     }
   }
@@ -116,7 +116,8 @@ console.log(`\n${comprobadas} comprobadas, ${rotas.length} sin respuesta util`);
 
 if (rotas.length) {
   console.error(`\nEnlaces externos rotos:\n`);
-  for (const rota of rotas) console.error(`  x [${rota.estado}] ${rota.url}\n      usado en: ${rota.fuentes}`);
+  for (const rota of rotas)
+    console.error(`  x [${rota.estado}] ${rota.url}\n      usado en: ${rota.fuentes}`);
   process.exit(1);
 }
 

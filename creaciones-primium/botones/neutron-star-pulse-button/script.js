@@ -53,10 +53,9 @@
         p.next=now+rnd(1500,3800);
         recon(p);
       }
-      // is-jet manda sobre is-live: por eso el if va antes que el else if.
+      // is-jet manda sobre is-live: si la pastilla tiene is-jet, want se queda en 1.42.
       var want=1.42;
-      if(p.classList.contains("is-jet"))want=1.42;
-      else if(p.classList.contains("is-live"))want=3.08;
+      if(!p.classList.contains("is-jet")&&p.classList.contains("is-live"))want=3.08;
       p.spd+=(want-p.spd)*.1;
       if(p.hzEl)p.hzEl.textContent=p.spd.toFixed(2)+" Hz";
     }

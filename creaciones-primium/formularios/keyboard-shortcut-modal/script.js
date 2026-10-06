@@ -125,7 +125,7 @@ function asignar(id, tecla) {
 
 function repetida(id) {
   const propio = filas.querySelector('.tecla[data-accion="' + id + '"]').dataset.tecla;
-  if (!propio) return "";
+  if (!propio) return false;
   return filas.querySelectorAll(".tecla").length > 1 &&
     Array.from(filas.querySelectorAll(".tecla")).filter(b => b.dataset.tecla === propio).length > 1;
 }

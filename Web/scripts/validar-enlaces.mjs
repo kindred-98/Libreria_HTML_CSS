@@ -31,7 +31,15 @@ const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "../..");
 
 // Las mismas paginas que mira `html-validate` y que el CI construye.
-const PAGINAS = ["Web/index.html", "Web/components.html", "Web/team-core.html", "404.html", "index.html"];
+const PAGINAS = [
+  "Web/index.html",
+  "Web/components.html",
+  "Web/team-core.html",
+  "Web/privacidad.html",
+  "Web/legal.html",
+  "404.html",
+  "index.html",
+];
 
 const fallos = [];
 const avisos = [];
@@ -123,9 +131,7 @@ for (const pagina of PAGINAS) {
     }
 
     if (ancla) {
-      const destinoAbsoluto = rutaLimpia.endsWith("/")
-        ? path.join(objetivo, "index.html")
-        : objetivo;
+      const destinoAbsoluto = rutaLimpia.endsWith("/") ? path.join(objetivo, "index.html") : objetivo;
       const idsDestino = await idsDe(destinoAbsoluto);
       if (!idsDestino) {
         avisos.push(`${pagina}: ${atributo}="${destino}" no se puede leer para comprobar la ancla`);
@@ -136,7 +142,9 @@ for (const pagina of PAGINAS) {
   }
 }
 
-console.log(`info  ${PAGINAS.length} paginas del sitio, ${comprobados} destinos locales comprobados, ${externos} externos`);
+console.log(
+  `info  ${PAGINAS.length} paginas del sitio, ${comprobados} destinos locales comprobados, ${externos} externos`,
+);
 
 if (avisos.length) {
   for (const aviso of avisos) console.log(`AVISO: ${aviso}`);

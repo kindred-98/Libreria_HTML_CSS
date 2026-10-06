@@ -4457,13 +4457,34 @@
                     if (carpeta && !carpeta.open) carpeta.open = true;
                 }
                 // Apunta al propio <section>: la .escena es position:fixed y
-                // no se puede usar de objetivo para scrollIntoView.
+                // no sirve de objetivo de scroll. Tampoco se usa scrollIntoView: ese
+                // metodo no solo desplaza el documento de este iframe, sino que
+                // el navegador repite el ajuste en los documentos ancestros, y
+                // asi se lleva por delante el scroll del shell (que ya ha
+                // centrado el iframe al recibir el aviso de transicion.html).
+                // window.scrollTo toca unicamente el scroll de aqui.
                 var objetivo = seccion;
-                // "nearest" hace lo que haria el navegador al pulsar Tab:
-                // si la seccion ya esta visible no se mueve, y si no,
-                // ajusta lo minimo para que entre entera en el viewport.
+                // "nearest" a mano: si la seccion ya esta entera en el viewport
+                // (o lo abarca entera) no se mueve nada; si se sale por arriba
+                // o por abajo, ajusta lo minimo para que entre. Respeta el
+                // scroll-margin de .tarjeta, que es el aire que deja el
+                // navegador al saltar a una.
                 setTimeout(function () {
-                    objetivo.scrollIntoView({ block: "nearest", behavior: "auto" });
+                    var estilo = getComputedStyle(objetivo);
+                    var caja = objetivo.getBoundingClientRect();
+                    var alto = window.innerHeight;
+                    var arriba = parseFloat(estilo.scrollMarginTop) || 0;
+                    var abajo = alto - (parseFloat(estilo.scrollMarginBottom) || 0);
+                    var delta = 0;
+                    if (caja.top < arriba && caja.bottom <= abajo) {
+                        delta = caja.top - arriba;
+                    } else if (caja.bottom > abajo && caja.top >= arriba) {
+                        // mas alta que el viewport: alinea su inicio
+                        delta = caja.height > abajo - arriba ? caja.top - arriba : caja.bottom - abajo;
+                    }
+                    if (delta) {
+                        window.scrollTo({ top: window.scrollY + delta, behavior: "auto" });
+                    }
                 }, 400);
             }
 

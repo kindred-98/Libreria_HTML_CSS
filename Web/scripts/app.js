@@ -61,6 +61,8 @@ const translations = {
     marqueeLabel: "Featured strip",
     pageComponents: "Components",
     pageTeamCore: "Team Core",
+    pagePrivacy: "Privacy",
+    pageLegal: "Legal",
     teamCoreEyebrow: "TEAM CORE",
     teamCoreTitle: "The people behind the library",
     teamCoreLead: "Three programming students and one repository that lit the fuse.",
@@ -188,6 +190,85 @@ const translations = {
     consentAccepted: "Thank you. Analytics enabled",
     consentRejected: "Analytics disabled. You can change this from the footer",
     cookies: "Cookies",
+    // Paginas de texto largo (Web/privacidad.html y Web/legal.html). Van en el
+    // mismo diccionario que el resto para que el conmutador de idioma las
+    // traduzca igual que a la portada, sin logica extra.
+    privacyLink: "Privacy",
+    legalLink: "Legal",
+    privacyTitle: "Privacy",
+    privacyUpdated: "Last updated: 2026-10-02",
+    privacyIntro: "What this site collects and what it does not. It is a static library of HTML and CSS demos: no accounts, no submission forms, no payments, no advertising and no analytics loaded by default.",
+    privacyTocLabel: "Index",
+    privacyTocTitle: "On this page",
+    privacyTocLocal: "What is stored in your browser",
+    privacyTocAnalytics: "Google Analytics",
+    privacyTocCookies: "Cookies",
+    privacyTocThird: "Requests to other domains",
+    privacyTocNone: "Data that is not collected",
+    privacyTocHost: "Who hosts the site",
+    privacyTocContact: "Contact",
+    privacyLocalTitle: "What is stored in your browser",
+    privacyLocalIntro: "The application uses localStorage for three things, all of them local to your browser and never sent to any server:",
+    privacyColKey: "Key",
+    privacyColWhat: "What it stores",
+    privacyColWhy: "Why",
+    privacyRowTheme: "remember the theme you picked",
+    privacyRowLanguage: "remember the language you picked",
+    privacyRowConsentValue: "your decision about statistics",
+    privacyRowConsentWhy: "whether you accepted or rejected Google Analytics",
+    privacyLocalOutro: "You can delete them at any time from your browser settings, and the statistics decision also from the Cookies button in the footer of any page.",
+    privacyAnalyticsTitle: "Google Analytics",
+    privacyAnalyticsIntro: "It is used to measure visits and pages opened, with the measurement ID G-3TRY9F4G0Z.",
+    privacyAnalyticsWhen: "When: the script only loads if you accept in the notice. Without your acceptance there is no request to Google and no cookie is created.",
+    privacyAnalyticsWhere: "Where it goes: www.googletagmanager.com (script load) and www.google-analytics.com / region1.google-analytics.com (collection).",
+    privacyAnalyticsChange: "How to change your mind: the Cookies button in the footer, which rejects and deletes the key, or clearing localStorage from your browser.",
+    privacyCookiesTitle: "Cookies",
+    privacyCookiesText: "This site does not create its own cookies. Google Analytics cookies only appear if you accept the statistics.",
+    privacyThirdTitle: "Requests to other domains",
+    privacyThirdIntro: "The typefaces are in the repository, not on a CDN. The only external destinations are:",
+    privacyNoneTitle: "Data that is not collected",
+    privacyNoneText: "There is no user registration, what you type in the search box is never sent, there are no advertising networks, no information is bought or sold, and no device fingerprinting is done.",
+    privacyHostTitle: "Who hosts the site",
+    privacyHostText: "The site is static and is served from Vercel (libreria-html-css.vercel.app), which logs requests for operational and security purposes under its own policy. This project has no server of its own and no database.",
+    privacyContactTitle: "Contact",
+    privacyContactText: "Privacy questions: open an issue on GitHub. For security reports, use the private channel described in SECURITY.md.",
+    privacyChanges: "If this policy changes, the change is recorded in the repository CHANGELOG and the date above is updated in the same commit.",
+    legalTitle: "Legal",
+    legalUpdated: "Last updated: 2026-10-06",
+    legalTocLabel: "Index",
+    legalTocTitle: "On this page",
+    legalTocOwner: "Ownership",
+    legalTocLicenses: "Licenses",
+    legalTocThirdParty: "Third-party material",
+    legalTocWarranty: "No warranty",
+    legalTocA11y: "Accessibility",
+    legalTocContact: "Contact",
+    legalOwnerTitle: "Ownership",
+    legalOwnerText: "This site is an open source project published on GitHub. The components have their own authorship: each demo folder declares its author and its license in the repository itself.",
+    legalLicensesTitle: "Licenses",
+    legalColWhat: "What",
+    legalColLicense: "License",
+    legalRowSite: "The site and its scripts",
+    legalRowMit: "MIT",
+    legalRowDemos: "The downloadable components",
+    legalRowEachOwn: "MIT, with its author declared in the ZIP",
+    legalRowDavoker: "davoker's effects",
+    legalRowDavokerLicense: "MIT from the original author",
+    legalLicenseNote: "You may copy, modify and use the components in your projects, including for commercial purposes. No permission needs to be requested and no attribution beyond what each ZIP already carries.",
+    legalThirdTitle: "Third-party material",
+    legalThirdText: "Some demos link images from Wikimedia Commons under their original licenses, and some material is listed in the repository's THIRD_PARTY_NOTICES.md file. Content removed for having no declared license is listed in the README and is not part of the catalogue.",
+    legalWarrantyTitle: "No warranty",
+    legalWarrantyText: "The components are provided as is, as interface experiments. Use them with judgement: they are demonstrations of a technique, not audited production code.",
+    legalA11yTitle: "Accessibility",
+    legalA11yIntro: "This site works towards WCAG 2.2 level AA. Specifically:",
+    legalA11yAuto: "The automated checks (axe-core over the three pages, in both languages and both themes) detect no serious or critical violations.",
+    legalA11yMotion: "Animations respect the prefers-reduced-motion system setting.",
+    legalA11yKeyboard: "Everything can be used without a mouse: there is a skip link to the content, visible focus on every control, and the language and theme controls are real buttons.",
+    legalA11yZoom: "The content reads correctly at 200% zoom.",
+    legalA11yPartial: "Some moderate and minor findings are still being fixed; this statement is updated when that count reaches zero.",
+    legalA11yReport: "If you find a barrier this statement does not cover, report it on GitHub Issues: it gets fixed and noted here.",
+    legalContactTitle: "Contact",
+    legalContactText: "Legal or licensing questions: CONTRIBUTING.md or a GitHub issue. Security reports go through the private channel described in SECURITY.md.",
   },
   es: {
     categories: {
@@ -208,6 +289,8 @@ const translations = {
     marqueeLabel: "Cinta destacada",
     pageComponents: "Componentes",
     pageTeamCore: "Núcleo del equipo",
+    pagePrivacy: "Privacidad",
+    pageLegal: "Legal",
     teamCoreEyebrow: "NÚCLEO DEL EQUIPO",
     teamCoreTitle: "Quién está detrás de la biblioteca",
     teamCoreLead: "Tres estudiantes de programación y un repositorio que encendió la mecha.",
@@ -335,6 +418,82 @@ const translations = {
     consentAccepted: "Gracias. Estadísticas activadas",
     consentRejected: "Estadísticas desactivadas. Puedes cambiarlo desde el pie",
     cookies: "Cookies",
+    privacyLink: "Privacidad",
+    legalLink: "Legal",
+    privacyTitle: "Privacidad",
+    privacyUpdated: "Última actualización: 2026-10-02",
+    privacyIntro: "Qué recoge esta web y qué no. Es una biblioteca estática de demos de HTML y CSS: no hay cuentas, ni formularios de envío, ni pagos, ni publicidad, ni analítica cargada por defecto.",
+    privacyTocLabel: "Índice",
+    privacyTocTitle: "En esta página",
+    privacyTocLocal: "Lo que se guarda en tu navegador",
+    privacyTocAnalytics: "Google Analytics",
+    privacyTocCookies: "Cookies",
+    privacyTocThird: "Peticiones a otros dominios",
+    privacyTocNone: "Datos que no se recogen",
+    privacyTocHost: "Quién aloja la web",
+    privacyTocContact: "Contacto",
+    privacyLocalTitle: "Lo que se guarda en tu navegador",
+    privacyLocalIntro: "La aplicación usa localStorage para tres cosas, todas locales a tu navegador y que no se envían a ningún servidor:",
+    privacyColKey: "Clave",
+    privacyColWhat: "Qué guarda",
+    privacyColWhy: "Para qué",
+    privacyRowTheme: "recordar el tema elegido",
+    privacyRowLanguage: "recordar el idioma elegido",
+    privacyRowConsentValue: "tu decisión sobre estadísticas",
+    privacyRowConsentWhy: "si aceptaste o rechazaste Google Analytics",
+    privacyLocalOutro: "Puedes borrarlas en cualquier momento desde la configuración de tu navegador, y la decisión sobre estadísticas también desde el botón Cookies del pie de cualquier página.",
+    privacyAnalyticsTitle: "Google Analytics",
+    privacyAnalyticsIntro: "Se usa para medir visitas y páginas abiertas, con el ID de medición G-3TRY9F4G0Z.",
+    privacyAnalyticsWhen: "Cuándo: el script solo se carga si aceptas en el aviso. Sin aceptación no se hace ninguna petición a Google ni se crea ninguna cookie.",
+    privacyAnalyticsWhere: "A dónde va: www.googletagmanager.com (carga del script) y www.google-analytics.com / region1.google-analytics.com (recogida).",
+    privacyAnalyticsChange: "Cómo cambiar de opinión: el botón Cookies del pie, que rechaza y borra la clave, o borrar localStorage desde tu navegador.",
+    privacyCookiesTitle: "Cookies",
+    privacyCookiesText: "Este sitio no crea cookies propias. Las cookies de Google Analytics solo aparecen si aceptas las estadísticas.",
+    privacyThirdTitle: "Peticiones a otros dominios",
+    privacyThirdIntro: "Las fuentes tipográficas están en el repositorio, no en un CDN. Los únicos destinos externos son:",
+    privacyNoneTitle: "Datos que no se recogen",
+    privacyNoneText: "No hay registro de usuarios, no se envía el contenido de lo que escribes en el buscador, no hay redes publicitarias, no se compra ni se vende información personal y no se hace fingerprinting del dispositivo.",
+    privacyHostTitle: "Quién aloja la web",
+    privacyHostText: "La web es estática y se sirve desde Vercel (libreria-html-css.vercel.app), que registra las peticiones con fines de operación y seguridad conforme a su propia política. Este proyecto no tiene servidor propio ni base de datos.",
+    privacyContactTitle: "Contacto",
+    privacyContactText: "Dudas sobre privacidad: abre una incidencia en GitHub. Para avisos de seguridad, la vía privada es la que describe SECURITY.md.",
+    privacyChanges: "Si esta política cambia, el hecho queda registrado en el CHANGELOG del repositorio y la fecha de arriba se actualiza en el mismo commit.",
+    legalTitle: "Legal",
+    legalUpdated: "Última actualización: 2026-10-06",
+    legalTocLabel: "Índice",
+    legalTocTitle: "En esta página",
+    legalTocOwner: "Titularidad",
+    legalTocLicenses: "Licencias",
+    legalTocThirdParty: "Material de terceros",
+    legalTocWarranty: "Sin garantía",
+    legalTocA11y: "Accesibilidad",
+    legalTocContact: "Contacto",
+    legalOwnerTitle: "Titularidad",
+    legalOwnerText: "Este sitio es un proyecto de código abierto publicado en GitHub. Los componentes tienen autoría propia: cada carpeta de demos declara su autor y su licencia en el propio repositorio.",
+    legalLicensesTitle: "Licencias",
+    legalColWhat: "Qué",
+    legalColLicense: "Licencia",
+    legalRowSite: "El sitio y sus scripts",
+    legalRowMit: "MIT",
+    legalRowDemos: "Los componentes descargables",
+    legalRowEachOwn: "MIT, con su autor declarado en el ZIP",
+    legalRowDavoker: "Los efectos de davoker",
+    legalRowDavokerLicense: "MIT del autor de origen",
+    legalLicenseNote: "Puedes copiar, modificar y usar los componentes en tus proyectos, incluso con fines comerciales. No hace falta pedir permiso ni atribuir más allá de lo que ya lleva cada ZIP.",
+    legalThirdTitle: "Material de terceros",
+    legalThirdText: "Algunas demos enlazan imágenes de Wikimedia Commons bajo sus licencias originales, y hay material citado en el fichero THIRD_PARTY_NOTICES.md del repositorio. El contenido retirado por no tener licencia declarada se lista en el README y no forma parte del catálogo.",
+    legalWarrantyTitle: "Sin garantía",
+    legalWarrantyText: "Los componentes se ofrecen tal cual, como experimentos de interfaz. Úsalos con criterio: son demostraciones de una técnica, no código de producción auditado.",
+    legalA11yTitle: "Accesibilidad",
+    legalA11yIntro: "Este sitio trabaja por alcanzar el nivel WCAG 2.2 AA. Concretamente:",
+    legalA11yAuto: "Las comprobaciones automáticas (axe-core sobre las tres páginas, en los dos idiomas y los dos temas) no detectan violaciones serious ni critical.",
+    legalA11yMotion: "Las animaciones respetan la preferencia prefers-reduced-motion del sistema.",
+    legalA11yKeyboard: "Todo se puede usar sin ratón: hay enlace de salto al contenido, foco visible en todos los controles y los controles de idioma y tema son botones reales.",
+    legalA11yZoom: "El contenido se lee correctamente con zoom al 200 %.",
+    legalA11yPartial: "Todavía quedan avisos moderate y minor en curso de corrección, y la declaración se actualiza cuando ese recuento llegue a cero.",
+    legalA11yReport: "Si encuentras una barrera que esta declaración no recoge, cuéntalo en GitHub Issues: se trata y se anota aquí.",
+    legalContactTitle: "Contacto",
+    legalContactText: "Cuestiones legales o de licencia: CONTRIBUTING.md o una incidencia en GitHub. Avisos de seguridad por la vía privada que describe SECURITY.md.",
   },
 };
 
@@ -439,10 +598,19 @@ function applyTypewriterMetrics() {
 
 // Reinicia la animacion: quitar y volver a poner la propiedad obliga al motor a
 // recalcularla, porque si solo se cambia el texto se veria el cambio en seco.
+// `forzarReflujo` lee una propiedad de geometria sin usarla. El navegador
+// tiene que recalcular el layout al leerla, y eso es justo lo que dispara el
+// reinicio de la animacion. Con `void` delante era lo mismo, pero `void`
+// marca un uso inutilizado y Sonar lo senala (S3735); un helper con nombre
+// documenta la intencion en el sitio donde se usa.
+function forzarReflujo(elemento) {
+  return elemento.offsetWidth;
+}
+
 function restartTypewriter() {
   for (const element of document.querySelectorAll("[data-typewriter]")) {
     element.style.animation = "none";
-    void element.offsetWidth;
+    forzarReflujo(element);
     element.style.removeProperty("animation");
   }
 }
@@ -682,11 +850,15 @@ function renderFilters() {
         state.author = null;
         syncSearchAvailability();
       }
-      state.currentPage = 1;
-      renderFilters();
-      renderAuthorFilters();
-      renderComponents();
-    });
+state.currentPage = 1;
+    renderFilters();
+    renderAuthorFilters();
+    renderComponents();
+    // Que se filtra y por que: con esto se sabe que categorias miran la gente
+    // y cuales se quedan vacias. El nombre de la categoria va tal cual (no es
+    // dato personal, es un filtro de la propia interfaz).
+    trackAnalyticsEvent("filtro_categoria", { categoria: category });
+  });
     elements.filters.append(button);
   }
 }
@@ -712,6 +884,10 @@ function renderAuthorFilters() {
       renderFilters();
       renderAuthorFilters();
       renderComponents();
+      // Entrar al apartado de davoker carga su portal entero (218 KB): es el
+      // paso mas caro del sitio, asi que se mide aparte para saber si vale la
+      // pena mantenerlo cargado de golpe.
+      trackAnalyticsEvent("filtro_autor", { autor: state.author ?? "ninguno" });
     });
     elements.authorFilters.append(button);
   }
@@ -1043,7 +1219,7 @@ function positionFeatured(index, animate) {
   const step = card.getBoundingClientRect().width + gap;
   track.style.transition = animate ? `transform ${featuredTransitionMs}ms ease` : "none";
   track.style.transform = `translateX(${-index * step}px)`;
-  if (!animate) void track.offsetHeight;
+  if (!animate) forzarReflujo(track);
 }
 
 function stopFeaturedCarousel() {
@@ -1252,7 +1428,9 @@ async function downloadComponentZip(component) {
   const licenseFile = files.find((file) => file.name === component.licenseFile
     || file.name.endsWith(`/${component.licenseFile}`));
   if (licenseFile) {
-    const copyright = new TextDecoder().decode(licenseFile.bytes).match(/^\s*(copyright[^\r\n]*)$/im);
+    const copyright = /^\s*(copyright[^\r\n]*)$/im.exec(
+      new TextDecoder().decode(licenseFile.bytes),
+    );
     if (copyright) attribution.push(copyright[1].trim());
   }
   files.push({
@@ -1312,6 +1490,13 @@ function createDetailHeading(component) {
       try {
         await downloadComponentZip(component);
         showToast(t("zipDownloaded"));
+        // Evento del embudo: sin esto no se sabe si la biblioteca se usa o solo
+        // se mira. Es la accion de valor del sitio (descargar un componente).
+        trackAnalyticsEvent("descarga_zip", {
+          id: component.id,
+          categoria: component.category,
+          autor: component.author,
+        });
       } catch (error) {
         showToast(t("zipFailed", { message: error.message }));
       } finally {
@@ -1763,6 +1948,11 @@ function initializeSearch() {
     state.query = elements.search.value;
     state.currentPage = 1;
     renderComponents();
+    // El primer paso del embudo: se busca algo. Se manda **la longitud** de la
+    // busqueda y no el texto: el texto es lo que la persona escribe y puede ser
+    // cualquier cosa, mandarlo seria espiar sin aviso ni una palabra util.
+    // Con la longitud se sabe si la gente busca ("a") o solo teclea.
+    if (state.query.length === 1) trackAnalyticsEvent("busqueda_iniciada");
   });
   document.addEventListener("keydown", (event) => {
     const activeTag = document.activeElement?.tagName;
@@ -1841,13 +2031,21 @@ function installDavokerTransitionBridge() {
   window.addEventListener("message", (evento) => {
     // Lo primero es de quien viene el mensaje. Sin esto, cualquier pagina
     // abierta en otra pestana (o cualquier sitio que embeba este) podria
-    // mandar un "davoker-transicion" y mover el scroll del portal. El origen
-    // se comprueba contra el de esta misma pagina porque el iframe del portal
-    // es de este sitio.
-    if (evento.origin !== window.location.origin) return;
+    // mandar un "davoker-transicion" y mover el scroll del portal.
+    //
+    // El filtro de origen no puede ir solo: el iframe del portal lleva
+    // `sandbox` sin `allow-same-origin`, asi que su documento tiene origen
+    // opaco y `evento.origin` es siempre "null", nunca el de esta pagina.
+    // Por eso se admite tambien "null" —que es lo que trae cualquier
+    // documento con origen opaco, el del portal entre ellos— y el que
+    // autentica de verdad es la ventana: `contentWindow` es el WindowProxy
+    // del iframe, que no cambia al navegar (davoker.html -> transicion.html
+    // -> davoker.html), y solo esa ventana puede mandar este mensaje.
+    if (evento.origin !== "null" && evento.origin !== window.location.origin) return;
     if (!evento.data || typeof evento.data !== "object") return;
     if (evento.data.type !== "davoker-transicion") return;
     if (!elements.davokerFrame) return;
+    if (evento.source !== elements.davokerFrame.contentWindow) return;
     const marco = elements.davokerFrame.getBoundingClientRect();
     const objetivo = marco.top + window.scrollY - (window.innerHeight - marco.height) / 2;
     // `auto` y no `smooth`: si no, el scroll todavia recorreria el camino
@@ -1858,5 +2056,11 @@ function installDavokerTransitionBridge() {
 
 window.addEventListener("DOMContentLoaded", () => {
   installDavokerTransitionBridge();
-  void initializeApp();
+  // Antes era `void initializeApp()`, que ademas de marcarse como uso
+  // inutilizado (S3735) se comia el error si el arranque fallaba (por ejemplo
+  // si el catalogo no llegara): la pagina se quedaba a medio pintar y sin que
+  // nadie supiera por que. Aqui el fallo se ve en consola.
+  initializeApp().catch((error) => {
+    console.error("No se pudo iniciar la aplicacion:", error);
+  });
 }, { once: true });

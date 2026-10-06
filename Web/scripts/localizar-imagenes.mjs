@@ -48,7 +48,7 @@ async function caminar(directorio) {
   const entradas = await readdir(directorio, { withFileTypes: true });
   for (const entrada of entradas) {
     const ruta = path.join(directorio, entrada.name);
-    if (entrada.isDirectory()) encontrados.push(...await caminar(ruta));
+    if (entrada.isDirectory()) encontrados.push(...(await caminar(ruta)));
     else if (EXTENSIONES.has(path.extname(entrada.name))) encontrados.push(ruta);
   }
   return encontrados;
@@ -59,20 +59,10 @@ async function caminar(directorio) {
 const URL_IMAGEN = /https:\/\/upload\.wikimedia\.org\/[^\s"'`<>)\]]+/g;
 const URL_PAGINA = /https:\/\/commons\.wikimedia\.org\/\S+/g;
 
-function extensionDe(url) {
-  const sinQuery = url.split("?")[0];
-  const ultimo = sinQuery.slice(sinQuery.lastIndexOf("/") + 1);
-  // `.../thumb/a/ab/X.jpg/960px-X.jpg` o `.../lossy-page1-960px-X.tif.jpg`
-  const punto = ultimo.lastIndexOf(".");
-  if (punto <= 0) return ".jpg";
-  const ext = ultimo.slice(punto).toLowerCase();
-  return /^\.[a-z0-9]{1,5}$/.test(ext) ? ext : ".jpg";
-}
-
 async function leerInventario() {
   const imagenes = new Map(); // url -> { url, demos: Set<dir>, usos: number }
-  const paginas = new Map();  // url de ficha de Commons -> Set<dir>
-  const literales = [];       // referencias construidas, no literales
+  const paginas = new Map(); // url de ficha de Commons -> Set<dir>
+  const literales = []; // referencias construidas, no literales
   const archivos = [];
 
   for (const raiz of RAICES) {
@@ -98,7 +88,10 @@ async function leerInventario() {
 
       for (const url of linea.match(URL_IMAGEN) ?? []) {
         let registro = imagenes.get(url);
-        if (!registro) imagenes.set(url, (registro = { url, demos: new Set(), usos: 0 }));
+        if (!registro) {
+          registro = { url, demos: new Set(), usos: 0 };
+          imagenes.set(url, registro);
+        }
         registro.demos.add(demo);
         registro.usos += 1;
       }
@@ -109,9 +102,7 @@ async function leerInventario() {
 
       // Lo que quede citando a wikimedia despues de quitar las URLs literales
       // es una referencia construida: hay que verla a mano.
-      const resto = linea
-        .replace(URL_IMAGEN, "")
-        .replace(URL_PAGINA, "");
+      const resto = linea.replace(URL_IMAGEN, "").replace(URL_PAGINA, "");
       if (resto.includes("wikimedia")) {
         literales.push({
           archivo: relativo,
@@ -140,8 +131,12 @@ async function peticion(url, metodo) {
 
     let respuesta;
     try {
-      respuesta = await fetch(url, { method: metodo, headers: { "User-Agent": USER_AGENT }, redirect: "follow" });
-    } catch (error) {
+      respuesta = await fetch(url, {
+        method: metodo,
+        headers: { "User-Agent": USER_AGENT },
+        redirect: "follow",
+      });
+    } catch {
       await esperar(1000 * 2 ** intento);
       continue;
     }
@@ -157,7 +152,8 @@ async function peticion(url, metodo) {
 
 async function medir(url) {
   const respuesta = await peticion(url, "HEAD");
-  if (!respuesta || !respuesta.ok) return { bytes: null, motivo: respuesta ? `HTTP ${respuesta.status}` : "sin respuesta" };
+  if (!respuesta || !respuesta.ok)
+    return { bytes: null, motivo: respuesta ? `HTTP ${respuesta.status}` : "sin respuesta" };
   const largo = Number(respuesta.headers.get("content-length"));
   if (!Number.isFinite(largo)) return { bytes: null, motivo: "sin Content-Length" };
   return { bytes: largo, motivo: null };
@@ -187,7 +183,10 @@ for (const registro of imagenes.values()) {
 }
 
 const lineas = [];
-const empujar = (texto = "") => { lineas.push(texto); console.log(texto); };
+const empujar = (texto = "") => {
+  lineas.push(texto);
+  console.log(texto);
+};
 
 empujar("");
 empujar(`INVENTARIO DE IMAGENES DE WIKIMEDIA  (${soloInventario ? "dry-run" : "descarga"})`);
@@ -201,7 +200,7 @@ empujar(`fichas de Commons (no imagen)  : ${paginas.size}`);
 // --- Tamano ---
 
 const cache = await cargarCache();
-const bytes = new Map();      // url -> bytes conocidos (null si sin tamano)
+const bytes = new Map(); // url -> bytes conocidos (null si sin tamano)
 const pendientes = [];
 for (const url of urls) {
   if (Object.hasOwn(cache, url)) bytes.set(url, cache[url]);
@@ -250,13 +249,19 @@ const totalDuplicado = [...bytesPorDemo.values()].reduce((a, b) => a + b, 0);
 const MB = 1024 * 1024;
 empujar("");
 empujar("-".repeat(74));
-empujar(`TAMANO ESTIMADO (URLs unicas)  : ${(total / MB).toFixed(2)} MB  (${total.toLocaleString("es-ES")} bytes)`);
-empujar(`TAMANO EN EL DESPLIEGUE        : ${(totalDuplicado / MB).toFixed(2)} MB  (${totalDuplicado.toLocaleString("es-ES")} bytes)`);
+empujar(
+  `TAMANO ESTIMADO (URLs unicas)  : ${(total / MB).toFixed(2)} MB  (${total.toLocaleString("es-ES")} bytes)`,
+);
+empujar(
+  `TAMANO EN EL DESPLIEGUE        : ${(totalDuplicado / MB).toFixed(2)} MB  (${totalDuplicado.toLocaleString("es-ES")} bytes)`,
+);
 empujar(`  (git guarda cada contenido una sola vez, asi que el repositorio crece`);
 empujar(`   por el primero; el segundo es lo que pesa el despliegue, porque cada`);
 empujar(`   demo lleva su propia copia dentro de su carpeta)`);
 if (sinTamano) empujar(`sin Content-Length             : ${sinTamano} (no contabilizados)`);
-empujar(`UMBRAL DEL PLAN                : 40 MB -> ${total / MB > 40 ? "SUPERADO: STOP, decision de Angel" : "NO superado"}`);
+empujar(
+  `UMBRAL DEL PLAN                : 40 MB -> ${total / MB > 40 ? "SUPERADO: STOP, decision de Angel" : "NO superado"}`,
+);
 empujar("-".repeat(74));
 
 // --- Por demo ---
@@ -268,7 +273,9 @@ const distribucion = [...porDemo.entries()]
 empujar("");
 empujar("DISTRIBUCION POR DEMO (ordenado por tamano)");
 for (const fila of distribucion) {
-  empujar(`  ${String(fila.urls).padStart(3)} url  ${(fila.bytes / MB).toFixed(1).padStart(6)} MB  ${fila.demo}`);
+  empujar(
+    `  ${String(fila.urls).padStart(3)} url  ${(fila.bytes / MB).toFixed(1).padStart(6)} MB  ${fila.demo}`,
+  );
 }
 
 // --- No literales ---

@@ -299,7 +299,7 @@ function problemas() {
     if (f.id === "habitacion" && habitacionActual() === null) { salida.push(f.etiqueta + ": " + f.error); return; }
     if (f.id === "tarifa" && tarifaActual() === null) { salida.push(f.etiqueta + ": " + f.error); return; }
     if (f.id === "huesped" && !/^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ '\-.'.]{2,39}$/.test(v)) { salida.push(f.etiqueta + ": " + f.error); return; }
-    if (f.id === "correo" && !/^[^\s@,;]+@[^\s@,;]+\.[A-Za-z]{2,}$/.test(v)) { salida.push(f.etiqueta + ": " + f.error); return; }
+    if (f.id === "correo" && !/^[^\s@,;]+@[^\s@,;]+\.[A-Za-z]{2,}$/.test(v)) { salida.push(f.etiqueta + ": " + f.error); }
   });
 
   const hab = habitacionActual();

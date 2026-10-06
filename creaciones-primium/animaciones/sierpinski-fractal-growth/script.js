@@ -193,7 +193,7 @@ function report(now,gen,cells,live){
   outCells.textContent=String(cells);
   outLive.textContent=String(live);
   outInt.textContent=Math.round((cells/TOTAL)*100)+"%";
-  var fase="Collapse";
+  let fase="Collapse";
   if(now<T_END)fase="Divergence";
   else if(now<T_END+HOLD*0.5)fase="Full gasket";
   outPhase.textContent=fase;

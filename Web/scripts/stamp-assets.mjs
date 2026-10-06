@@ -87,6 +87,8 @@ for (const nombre of htmlFiles) {
   await writeFile(rutaHtml, salida, "utf8");
 }
 
-console.log(`Sellados ${sellados} recursos en ${htmlFiles.length} HTML (huella de ${largoHuella} caracteres por asset).`);
+console.log(
+  `Sellados ${sellados} recursos en ${htmlFiles.length} HTML (huella de ${largoHuella} caracteres por asset).`,
+);
 for (const linea of pendientes.slice(0, 12)) console.log(`  ${linea}`);
 if (pendientes.length > 12) console.log(`  ... y ${pendientes.length - 12} mas`);

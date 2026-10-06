@@ -65,7 +65,14 @@ for (const relative of javascriptFiles) {
   try {
     execFileSync(process.execPath, ["--check", absolute], { stdio: "pipe" });
   } catch (error) {
-    fail("sintaxis", `${relative}: ${String(error.stderr ?? error.message).trim().split("\n")[0]}`);
+    fail(
+      "sintaxis",
+      `${relative}: ${
+        String(error.stderr ?? error.message)
+          .trim()
+          .split("\n")[0]
+      }`,
+    );
   }
 }
 
@@ -73,10 +80,10 @@ for (const relative of javascriptFiles) {
 // primero que se comprueba para no soltar un error de Node ilegible.
 if (!(await exists(catalogFile))) {
   console.error(
-    "x Web/data/catalog.json no existe.\n"
-    + "  El catalogo es un artefacto generado y no se versiona.\n"
-    + "  Genera el primero:  node Web/scripts/generate-catalog.mjs\n"
-    + "  (Vercel lo hace solo en el build; en local hay que lanzarlo a mano.)",
+    "x Web/data/catalog.json no existe.\n" +
+      "  El catalogo es un artefacto generado y no se versiona.\n" +
+      "  Genera el primero:  node Web/scripts/generate-catalog.mjs\n" +
+      "  (Vercel lo hace solo en el build; en local hay que lanzarlo a mano.)",
   );
   process.exit(1);
 }
@@ -117,7 +124,10 @@ for (const component of catalog) {
   if (component.missingReferences?.length) brokenReferences.set(component.id, component.missingReferences);
 }
 for (const [id, references] of brokenReferences) {
-  fail("referencias", `${id} apunta a ${references.length} fichero(s) inexistente(s): ${references.join(", ")}`);
+  fail(
+    "referencias",
+    `${id} apunta a ${references.length} fichero(s) inexistente(s): ${references.join(", ")}`,
+  );
 }
 
 // 5. Todo demo del disco tiene que estar en el catalogo. Este es el aviso que
@@ -128,7 +138,13 @@ for (const root of libraryRoots) {
   const rootDirectory = path.join(repositoryDirectory, root);
   const onDisk = new Set(
     (await findHtmlPages(rootDirectory)).map((page) =>
-      path.relative(rootDirectory, path.dirname(page)).split(path.sep).join("/").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+      path
+        .relative(rootDirectory, path.dirname(page))
+        .split(path.sep)
+        .join("/")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, ""),
     ),
   );
   const indexed = new Set(
@@ -136,7 +152,10 @@ for (const root of libraryRoots) {
   );
   for (const id of onDisk) {
     if (!indexed.has(id)) {
-      fail("catalogo desactualizado", `${root}/${id}/ tiene index.html pero no esta en catalog.json; ejecuta node Web/scripts/generate-catalog.mjs`);
+      fail(
+        "catalogo desactualizado",
+        `${root}/${id}/ tiene index.html pero no esta en catalog.json; ejecuta node Web/scripts/generate-catalog.mjs`,
+      );
     }
   }
   for (const id of indexed) {
@@ -148,7 +167,9 @@ for (const root of libraryRoots) {
 
 // 6. Aviso, no fallo: los demos de terceros no se pueden redistribuir.
 const unverifiable = catalog.filter((component) => !component.downloadable).length;
-notes.push(`${catalog.length} componentes · ${catalog.length - unverifiable} descargables · ${unverifiable} sin redistribucion`);
+notes.push(
+  `${catalog.length} componentes · ${catalog.length - unverifiable} descargables · ${unverifiable} sin redistribucion`,
+);
 
 // 7. Todo <iframe> de las paginas del sitio lleva sandbox. Si no, el demo
 //    corre en el mismo origen y ve el `localStorage` (incluido el consentimiento
@@ -214,8 +235,9 @@ for (const donationFile of donationFiles) {
 const warnings = [];
 const catalogFolder = new Map();
 for (const component of catalog) {
-  const folder = component.folder
-    ?? (typeof component.preview === "string"
+  const folder =
+    component.folder ??
+    (typeof component.preview === "string"
       ? component.preview.replace(/^\.\.\//, "").replace(/\/index\.html$/, "")
       : null);
   if (folder) catalogFolder.set(component.id, folder);
@@ -245,16 +267,17 @@ for (const component of catalog) {
     css = [...page.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]).join("\n");
   }
   const limpio = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  const animaConCSS = /@keyframes\b/.test(limpio)
-    || /\banimation(?:-\w+)?\s*:/.test(limpio)
-    || /\btransition(?:-\w+)?\s*:/.test(limpio);
+  const animaConCSS =
+    /@keyframes\b/.test(limpio) ||
+    /\banimation(?:-\w+)?\s*:/.test(limpio) ||
+    /\btransition(?:-\w+)?\s*:/.test(limpio);
   if (animaConCSS && !/prefers-reduced-motion/.test(css)) warnings.push(component.id);
 }
 if (warnings.length) {
   const lista = warnings.slice(0, 20).join(", ") + (warnings.length > 20 ? ", ..." : "");
   console.log(
-    `AVISO: ${warnings.length} demo(s) animan con CSS sin escuchar prefers-reduced-motion: ${lista}\n`
-    + "       Anade el bloque de Web/scripts/add-reduced-motion.mjs (ver CONTRIBUTING, regla 7).",
+    `AVISO: ${warnings.length} demo(s) animan con CSS sin escuchar prefers-reduced-motion: ${lista}\n` +
+      "       Anade el bloque de Web/scripts/add-reduced-motion.mjs (ver CONTRIBUTING, regla 7).",
   );
 }
 

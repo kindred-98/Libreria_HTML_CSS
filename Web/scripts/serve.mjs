@@ -70,13 +70,17 @@ for (const block of vercel.headers ?? []) {
   if (!valor) continue;
   const source = String(block.source);
   if (source.includes(":")) {
-    console.warn(`aviso: no se aplica en local la regla de cache "${source}" (sintaxis de parametros de Vercel).`);
+    console.warn(
+      `aviso: no se aplica en local la regla de cache "${source}" (sintaxis de parametros de Vercel).`,
+    );
     continue;
   }
   try {
     cacheRules.push({ source, expression: new RegExp(`^${source}$`), valor });
   } catch (error) {
-    console.warn(`aviso: la regla de cache "${source}" no es una expresion regular valida (${error.message}).`);
+    console.warn(
+      `aviso: la regla de cache "${source}" no es una expresion regular valida (${error.message}).`,
+    );
   }
 }
 
@@ -121,7 +125,8 @@ const compressFromBytes = 1024;
 // inicial basta: una lista cerrada siempre se queda corta (.env, .nvmrc,
 // .editorconfig...), y ninguno de ellos es un recurso que el sitio necesite.
 const noServir = /^\./;
-const noServirTambien = /^(?:Docs|CHANGELOG\.md|CONTRIBUTING\.md|SECURITY\.md|CODE_OF_CONDUCT\.md|vercel\.json|package\.json)(?:\/|$)/;
+const noServirTambien =
+  /^(?:Docs|CHANGELOG\.md|CONTRIBUTING\.md|SECURITY\.md|CODE_OF_CONDUCT\.md|vercel\.json|package\.json)(?:\/|$)/;
 
 function resolveRequest(url) {
   let requested;
@@ -267,7 +272,9 @@ function avisarSiListo() {
 let avisado = false;
 server.on("error", (error) => {
   if (error.code === "EADDRINUSE") {
-    console.error(`Aviso: no se escucho ${error.address}:${error.port} (puerto ocupado por otro proceso): ${error.message}`);
+    console.error(
+      `Aviso: no se escucho ${error.address}:${error.port} (puerto ocupado por otro proceso): ${error.message}`,
+    );
   } else {
     throw error;
   }

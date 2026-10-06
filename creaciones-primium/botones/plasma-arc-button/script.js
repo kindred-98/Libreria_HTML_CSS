@@ -237,8 +237,7 @@
       if(p.on){
         p.next=rnd(120,900)+i*260;
         list[i].addEventListener("pointerdown",function(){
-          var t=this;
-          fire(plateOf(t),true,t===list[2]);
+          fire(plateOf(this),true,this===list[2]);
         });
         list[i].addEventListener("pointerenter",function(){this.classList.add("is-hot")});
         list[i].addEventListener("pointerleave",function(){this.classList.remove("is-hot")});

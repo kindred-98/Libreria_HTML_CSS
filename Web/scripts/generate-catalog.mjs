@@ -39,7 +39,11 @@ const libraryRoots = [
     description: "CSS text effect with its own showcase page and a downloadable pack.",
     descriptionEs: "Efecto de texto CSS con su propia página de showcase y su pack descargable.",
     // Los titulos son "Efecto GLITCH - Showcase": la tarjeta se queda con GLITCH.
-    titleCleanup: (title) => title.replace(/^Efecto\s+/i, "").replace(/\s*[-|:]\s*Showcase$/i, "").trim(),
+    titleCleanup: (title) =>
+      title
+        .replace(/^Efecto\s+/i, "")
+        .replace(/\s*[-|:]\s*Showcase$/i, "")
+        .trim(),
   },
   {
     name: "CreacionesNuevas",
@@ -81,9 +85,24 @@ const libraryRoots = [
     // LICENSE la nombra a ella y a kindred-98, y este mapa deja constancia de
     // que estas tres carpetas son suyas.
     licenses: {
-      "indicadores-de-carga": { license: "MIT", licenseFile: "LICENSE", source: "https://github.com/kindred-98/Libreria_HTML_CSS", redistributable: true },
-      navegacion: { license: "MIT", licenseFile: "LICENSE", source: "https://github.com/kindred-98/Libreria_HTML_CSS", redistributable: true },
-      tarjetas: { license: "MIT", licenseFile: "LICENSE", source: "https://github.com/kindred-98/Libreria_HTML_CSS", redistributable: true },
+      "indicadores-de-carga": {
+        license: "MIT",
+        licenseFile: "LICENSE",
+        source: "https://github.com/kindred-98/Libreria_HTML_CSS",
+        redistributable: true,
+      },
+      navegacion: {
+        license: "MIT",
+        licenseFile: "LICENSE",
+        source: "https://github.com/kindred-98/Libreria_HTML_CSS",
+        redistributable: true,
+      },
+      tarjetas: {
+        license: "MIT",
+        licenseFile: "LICENSE",
+        source: "https://github.com/kindred-98/Libreria_HTML_CSS",
+        redistributable: true,
+      },
     },
   },
 ];
@@ -112,25 +131,41 @@ async function findHtmlPages(directory) {
 }
 
 function readAttribute(tag, attribute) {
-  const match = tag.match(new RegExp(String.raw`\b${attribute}\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))`, "i"));
+  const match = tag.match(
+    new RegExp(String.raw`\b${attribute}\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))`, "i"),
+  );
   return match?.[1] ?? match?.[2] ?? match?.[3] ?? "";
 }
 
 function cleanText(value) {
-  return value
-    .replace(/<[^<>]*>/g, " ")
-    // Una sola pasada para los cinco entidades: encadenar `&amp; -> &` y luego
-    // `&lt; -> <` da doble descodificacion (`&amp;lt;` acaba en `<` cuando
-    // tendria que ser `&lt;`), que es justo el patron que CodeQL marca como
-    // "Double escaping or unescaping".
-    .replace(/&(amp|lt|gt|quot|#39|apos);/gi, (_, nombre) =>
-      ({ amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'", apos: "'" })[nombre.toLowerCase()])
-    .replace(/\s+/g, " ")
-    .trim();
+  return (
+    value
+      .replace(/<[^<>]*>/g, " ")
+      // Una sola pasada para los cinco entidades: encadenar `&amp; -> &` y luego
+      // `&lt; -> <` da doble descodificacion (`&amp;lt;` acaba en `<` cuando
+      // tendria que ser `&lt;`), que es justo el patron que CodeQL marca como
+      // "Double escaping or unescaping".
+      .replace(
+        /&(amp|lt|gt|quot|#39|apos);/gi,
+        (_, nombre) =>
+          ({ amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'", apos: "'" })[nombre.toLowerCase()],
+      )
+      .replace(/\s+/g, " ")
+      .trim()
+  );
 }
 
 function removeBrandSuffix(value) {
-  const suffixes = [" - gevstack", " - gev stack", " | gevstack", " | gev stack", ": gevstack", ": gev stack", " gevstack", " gev stack"];
+  const suffixes = [
+    " - gevstack",
+    " - gev stack",
+    " | gevstack",
+    " | gev stack",
+    ": gevstack",
+    ": gev stack",
+    " gevstack",
+    " gev stack",
+  ];
   const normalizedValue = value.toLowerCase();
   const suffix = suffixes.find((candidate) => normalizedValue.endsWith(candidate));
   return suffix ? value.slice(0, -suffix.length).trim() : value.trim();
@@ -146,19 +181,37 @@ function createSlug(value) {
 }
 
 const categoryRules = [
+  // Los tres primeros patrones se pueden escribir como una alternancia en vez
+  // de una secuencia de `|`: `[a-z]` sigue al menos tan restringido y el
+  // motor lo evalua mas rapido (S5843 pide simplificar la complejidad).
   ["Loaders", /loader|loading|preloader|skeleton|spinner|shimmer|placeholder|progress/],
-  ["Forms", /form|input|email|login|log-in|signin|sign-in|signup|sign-up|dropzone|upload|subscribe|subscription|contact|reservation|reserve|booking|otp|captcha|validation|checklist/],
-  ["Navigation", /navbar|nav-|navigation|breadcrumb|pagination|tab-|tabs|menu|footer|header|sidebar|side-bar|dock|command-palette|scroll-spy|mega-menu|marquee|ticker|breadcrumb/],
+  [
+    "Forms",
+    /form|input|email|login|log-in|signin|sign-in|signup|sign-up|dropzone|upload|subscribe|subscription|contact|reservation|reserve|booking|otp|captcha|validation|checklist/,
+  ],
+  [
+    "Navigation",
+    /navbar|nav-|navigation|breadcrumb|pagination|tab-|tabs|menu|footer|header|sidebar|side-bar|dock|command-palette|scroll-spy|mega-menu|marquee|ticker/,
+  ],
   ["Galleries", /gallery|carousel|slider|photo|image-grid|image-gallery|lightbox|thumbnail/],
   ["Buttons", /button|btn|submit|fab|chip|badge|pill|tag|stepper/],
   ["Cards", /card|pricing|tier|testimonial|profile|product|movie|stat-card/],
-  ["Controls", /toggle|switch|range|slider|knob|dial|rotary|volume|checkbox|radio|slider|picker|selector|select|lever|gauge|meter|clock|timer|calendar|lock|safe|compass|joystick|scrub/],
-  ["Effects", /gradient|glow|blur|shadow|glass|glassmorphic|frost|neumorph|hover|reveal|glitch|mask|liquid|neon|chrome|metaball|particle|3d|cube|depth|reflect|holograph|prism|caustic|aurora|plasma|vapor|steam|smoke|frost/],
-  ["Animations", /animation|animated|animate|morph|spin|float|drift|pulse|flicker|bounce|shake|orbit|fall|rise|swing|flip|unfold|confetti|firework|rain|meteor|snow|trail|draw|scribble|typewriter|blink|cascade|tumble|twist|ripple|wave|parallax|countdown|boot|reveal-text/],
+  [
+    "Controls",
+    /toggle|switch|range|slider|knob|dial|rotary|volume|checkbox|radio|picker|selector|select|lever|gauge|meter|clock|timer|calendar|lock|safe|compass|joystick|scrub/,
+  ],
+  [
+    "Effects",
+    /gradient|glow|blur|shadow|glass|glassmorphic|frost|neumorph|hover|reveal|glitch|mask|liquid|neon|chrome|metaball|particle|3d|cube|depth|reflect|holograph|prism|caustic|aurora|plasma|vapor|steam|smoke/,
+  ],
+  [
+    "Animations",
+    /animation|animated|animate|morph|spin|float|drift|pulse|flicker|bounce|shake|orbit|fall|rise|swing|flip|unfold|confetti|firework|rain|meteor|snow|trail|draw|scribble|typewriter|blink|cascade|tumble|twist|ripple|wave|parallax|countdown|boot|reveal-text/,
+  ],
 ];
 
 function getCategory(value) {
-  const name = value.toLowerCase();
+  const name = String(value).toLowerCase();
   for (const [category, pattern] of categoryRules) {
     if (pattern.test(name)) return category;
   }
@@ -187,7 +240,14 @@ function getInlineBlocks(html, tagName, shouldInclude) {
   return blocks.filter(Boolean);
 }
 
-async function getLocalReferences(html, pageDirectory, rootDirectory, tagName, referenceAttribute, includeTag) {
+async function getLocalReferences(
+  html,
+  pageDirectory,
+  rootDirectory,
+  tagName,
+  referenceAttribute,
+  includeTag,
+) {
   const references = [];
   const tagPattern = new RegExp(String.raw`<${tagName}\b[^>]*>`, "gi");
 
@@ -313,21 +373,26 @@ async function createComponent(root, pagePath) {
   const folderLicense = root.licenses?.[folderPath.split("/")[0]] ?? {};
   const descriptionMatch = html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description["'])[^>]*>/i);
   const descriptionType = category === "Other" ? "HTML and CSS" : category.toLowerCase();
-  const description = override.description ?? (descriptionMatch
-    ? readAttribute(descriptionMatch[0], "content")
-    : root.description ?? `Standalone ${descriptionType} demo from the component collection.`);
-  const descriptionEsMatch = html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description[-:]es["'])[^>]*>/i)
-    ?? html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description["'])[^>]*\bhreflang\s*=\s*["']es["'][^>]*>/i)
-    ?? html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description["'])[^>]*\blang\s*=\s*["']es["'][^>]*>/i);
-  const descriptionEs = override.descriptionEs ?? (descriptionEsMatch
-    ? readAttribute(descriptionEsMatch[0], "content")
-    : root.descriptionEs ?? null);
+  const description =
+    override.description ??
+    (descriptionMatch
+      ? readAttribute(descriptionMatch[0], "content")
+      : (root.description ?? `Standalone ${descriptionType} demo from the component collection.`));
+  const descriptionEsMatch =
+    html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description[-:]es["'])[^>]*>/i) ??
+    html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description["'])[^>]*\bhreflang\s*=\s*["']es["'][^>]*>/i) ??
+    html.match(/<meta\b(?=[^>]*\bname\s*=\s*["']description["'])[^>]*\blang\s*=\s*["']es["'][^>]*>/i);
+  const descriptionEs =
+    override.descriptionEs ??
+    (descriptionEsMatch ? readAttribute(descriptionEsMatch[0], "content") : (root.descriptionEs ?? null));
   const previewPath = path.relative(repositoryDirectory, pagePath).split(path.sep).join("/");
   const missingReferences = await getMissingReferences(html, pageDirectory, root.directory);
   const files = await collectComponentFiles(pageDirectory, id);
   const license = override.license ?? folderLicense.license ?? root.license ?? "Unverified";
   const source = override.source ?? folderLicense.source ?? root.source ?? "Unverified";
-  const rawLicenseFile = String(override.licenseFile ?? folderLicense.licenseFile ?? root.licenseFile ?? "").replaceAll("\\", "/");
+  const rawLicenseFile = String(
+    override.licenseFile ?? folderLicense.licenseFile ?? root.licenseFile ?? "",
+  ).replaceAll("\\", "/");
   const licenseFile = rawLicenseFile.startsWith("./") ? rawLicenseFile.slice(2) : rawLicenseFile;
   // La licencia de la raiz entra en el ZIP de cada componente: si no, la descarga
   // saldria sin el texto que la ampara.
@@ -347,12 +412,14 @@ async function createComponent(root, pagePath) {
     }
   }
   const includesLicenseFile = files.some((file) => file.relativePath === licenseFile);
-  const redistributable = (override.redistributable ?? folderLicense.redistributable ?? root.redistributable) === true;
-  const downloadable = redistributable
-    && source !== "Unverified"
-    && license !== "Unverified"
-    && includesLicenseFile
-    && missingReferences.length === 0;
+  const redistributable =
+    (override.redistributable ?? folderLicense.redistributable ?? root.redistributable) === true;
+  const downloadable =
+    redistributable &&
+    source !== "Unverified" &&
+    license !== "Unverified" &&
+    includesLicenseFile &&
+    missingReferences.length === 0;
 
   return {
     id,
@@ -371,13 +438,8 @@ async function createComponent(root, pagePath) {
     folder: folderPath,
     preview: `../${previewPath}`,
     html: await readFile(pagePath, "utf8"),
-    stylesheets: await getLocalReferences(
-      html,
-      pageDirectory,
-      root.directory,
-      "link",
-      "href",
-      (tag) => /\brel\s*=\s*["'][^"']*\bstylesheet\b/i.test(tag),
+    stylesheets: await getLocalReferences(html, pageDirectory, root.directory, "link", "href", (tag) =>
+      /\brel\s*=\s*["'][^"']*\bstylesheet\b/i.test(tag),
     ),
     scripts: await getLocalReferences(html, pageDirectory, root.directory, "script", "src", () => true),
     missingReferences,
@@ -412,14 +474,18 @@ try {
   if (error.code !== "ENOENT") throw error;
 }
 
-const pages = (await Promise.all(
-  libraryRoots.map(async (root) => ({
-    root,
-    files: (await findHtmlPages(root.directory)).sort((first, second) => first.localeCompare(second)),
-  })),
-)).flatMap(({ root, files }) => files.map((page) => ({ root, page })));
+const pages = (
+  await Promise.all(
+    libraryRoots.map(async (root) => ({
+      root,
+      files: (await findHtmlPages(root.directory)).sort((first, second) => first.localeCompare(second)),
+    })),
+  )
+).flatMap(({ root, files }) => files.map((page) => ({ root, page })));
 const components = await Promise.all(pages.map(({ root, page }) => createComponent(root, page)));
-const duplicateIds = components.filter((component, index) => components.findIndex((entry) => entry.id === component.id) !== index);
+const duplicateIds = components.filter(
+  (component, index) => components.findIndex((entry) => entry.id === component.id) !== index,
+);
 
 if (duplicateIds.length) {
   throw new Error(`Duplicate component IDs: ${duplicateIds.map((component) => component.id).join(", ")}`);
@@ -429,13 +495,9 @@ await mkdir(path.dirname(catalogFile), { recursive: true });
 // Indice en una sola linea: el pretty-print anterior costaba 225 KB de
 // espacios en un fichero que solo se parsea en el navegador.
 await writeFile(catalogFile, `${JSON.stringify(components.map(toIndexEntry))}\n`, "utf8");
-await writeFile(
-  catalogScriptFile,
-  `window.COMPONENT_CATALOG = ${JSON.stringify(components)};\n`,
-  "utf8",
-);
+await writeFile(catalogScriptFile, `window.COMPONENT_CATALOG = ${JSON.stringify(components)};\n`, "utf8");
 await writeSources(sourcesDirectory, components);
 console.log(
-  `Generated ${components.length} component entries at ${path.relative(repositoryDirectory, catalogFile)} `
-  + `and ${components.length} source files at ${path.relative(repositoryDirectory, sourcesDirectory)}.`,
+  `Generated ${components.length} component entries at ${path.relative(repositoryDirectory, catalogFile)} ` +
+    `and ${components.length} source files at ${path.relative(repositoryDirectory, sourcesDirectory)}.`,
 );

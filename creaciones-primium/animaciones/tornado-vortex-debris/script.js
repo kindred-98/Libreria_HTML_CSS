@@ -279,8 +279,7 @@ function step(dt){
   if(ptr.act)after=Math.max(after,0.16);
 }
 
-function bandPath(t0,t1,k,ox,oy){
-  ox=ox||0;oy=oy||0;
+function bandPath(t0,t1,k,ox=0,oy=0){
   ctx.beginPath();
   ctx.moveTo(CX(t0)-R(t0)*k+ox,CY(t0)+oy);
   for(var t=t0;t<t1;t+=0.018)ctx.lineTo(CX(t)-R(t)*k+ox,CY(t)+oy);

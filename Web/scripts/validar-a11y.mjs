@@ -45,6 +45,8 @@ const PAGINAS = [
   { ruta: "/Web/index.html", nombre: "portada" },
   { ruta: "/Web/components.html", nombre: "componentes" },
   { ruta: "/Web/team-core.html", nombre: "team core" },
+  { ruta: "/Web/privacidad.html", nombre: "privacidad" },
+  { ruta: "/Web/legal.html", nombre: "legal" },
 ];
 
 const IDIOMAS = ["es", "en"];
@@ -54,7 +56,6 @@ const TEMAS = ["light", "dark"];
 // se toca sin decidirlo: bajar `serious` a "solo informe" convertiria este
 // script en un adorno.
 const CORTAN = new Set(["serious", "critical"]);
-const INFORMAN = new Set(["moderate", "minor"]);
 
 // Cuanto se tabula antes de dar por bueno el foco. El orden de tabulacion de la
 // portada pasa por el conmutador de idioma, el de tema, la navegacion, el
@@ -101,7 +102,9 @@ try {
 
         await pestana.click(`[data-language="${idioma}"]`);
         await pestana
-          .waitForFunction((esperado) => document.documentElement.lang === esperado, idioma, { timeout: 3000 })
+          .waitForFunction((esperado) => document.documentElement.lang === esperado, idioma, {
+            timeout: 3000,
+          })
           .catch(() => {});
         const idiomaReal = await pestana.evaluate(() => document.documentElement.lang);
         if (idiomaReal !== idioma) {
@@ -145,7 +148,14 @@ try {
 
             const esPropio = grupo.prefijo === "";
             if (esPropio && CORTAN.has(violacion.impact)) fallos.push(`${contextoPasada}: ${detalle}`);
-            else avisos.push({ regla: violacion.id, impacto: violacion.impact, ayuda: violacion.help, contexto: contextoPasada, detalle: grupo.prefijo + detalle });
+            else
+              avisos.push({
+                regla: violacion.id,
+                impacto: violacion.impact,
+                ayuda: violacion.help,
+                contexto: contextoPasada,
+                detalle: grupo.prefijo + detalle,
+              });
           }
         }
       }
@@ -155,12 +165,14 @@ try {
     // depende del orden de tabulacion, que es el mismo en todas.
     await pestana.goto(`${ORIGEN}${pagina.ruta}`, { waitUntil: "load" });
     const foco = await comprobarFoco(pestana);
-    if (!foco.boton) fallos.push(`${pagina.nombre}: ningun boton visible cambia al recibir el foco (:focus-visible)`);
-    if (!foco.enlace) fallos.push(`${pagina.nombre}: ningun enlace visible cambia al recibir el foco (:focus-visible)`);
+    if (!foco.boton)
+      fallos.push(`${pagina.nombre}: ningun boton visible cambia al recibir el foco (:focus-visible)`);
+    if (!foco.enlace)
+      fallos.push(`${pagina.nombre}: ningun enlace visible cambia al recibir el foco (:focus-visible)`);
     if (foco.boton || foco.enlace) {
       notas.push(
         `${pagina.nombre}: :focus-visible ok (boton ${foco.boton ?? "—"}, enlace ${foco.enlace ?? "—"}); ` +
-        `enfocados ${foco.enfocados} de ${foco.candidatos} elementos`,
+          `enfocados ${foco.enfocados} de ${foco.candidatos} elementos`,
       );
     }
 
@@ -190,7 +202,9 @@ async function comprobarFoco(pestana) {
         !el.disabled
       );
     });
-    visibles.forEach((el, i) => { el.dataset.probeFoco = String(i); });
+    visibles.forEach((el, i) => {
+      el.dataset.probeFoco = String(i);
+    });
     const leer = (el) => {
       const s = getComputedStyle(el);
       return JSON.stringify({
@@ -246,9 +260,7 @@ async function comprobarFoco(pestana) {
     const cambia = JSON.parse(actual.ahora);
     const contornoVisible = !cambia.outline.startsWith("none") && !/\b0px\b/.test(cambia.outline);
     const seVe =
-      contornoVisible ||
-      cambia.sombra !== "none" ||
-      cambia.texto !== JSON.parse(actual.antes).texto;
+      contornoVisible || cambia.sombra !== "none" || cambia.texto !== JSON.parse(actual.antes).texto;
     if (!seVe) continue;
     if (!vistos[actual.tipo]) vistos[actual.tipo] = `${actual.etiqueta} (${actual.texto || "sin texto"})`;
     if (vistos.boton && vistos.enlace) break;
@@ -257,7 +269,9 @@ async function comprobarFoco(pestana) {
   return { boton: vistos.boton, enlace: vistos.enlace, enfocados, candidatos: base.total };
 }
 
-console.log(`info  ${PAGINAS.length} paginas x ${IDIOMAS.length} idiomas x ${TEMAS.length} temas = ${pasadas} pasadas de axe`);
+console.log(
+  `info  ${PAGINAS.length} paginas x ${IDIOMAS.length} idiomas x ${TEMAS.length} temas = ${pasadas} pasadas de axe`,
+);
 
 // Los avisos se agrupan por regla: doce pasadas repiten los mismos `moderate`
 // una y otra vez, y sin agrupar el log no se puede leer. Se muestra ademas el

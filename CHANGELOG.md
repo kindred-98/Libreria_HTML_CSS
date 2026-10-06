@@ -87,6 +87,435 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Centra el shell en la animacion de despedida al volver de un showcase] - 2026-10-06
+
+Al salir de un showcase de Davoker (`transicion.html` -> `davoker.html`),
+`Web/components.html` dejaba de centrar el iframe: la animacion de despedida se
+veia con el shell a otra altura y, cuando el scroll llegaba, llegaba tarde.
+
+- **Por que se rompio**: `3333f03` anadio el aviso por `postMessage` y el
+  centrado en el shell, y `fdd9b59` endurecio el receptor con
+  `evento.origin !== window.location.origin`, que sobre el papel es lo
+  correcto. El iframe del portal lleva `sandbox` **sin** `allow-same-origin`
+  (lo quito `090ca05` al cerrar el punto 2 de
+  [`Docs/Hallazgos_agente_paralelo_2026-10-05.md`](./Docs/Hallazgos_agente_paralelo_2026-10-05.md)),
+  asi que su origen es opaco y `event.origin` llega **siempre como `"null"`**:
+  el chequeo descartaba todos los mensajes y el centrado no se ejecutaba nunca.
+  Solo funciono mientras `28de356` tuvo `allow-same-origin` puesto, que era
+  justo la vulnerabilidad que despues se retiro. Medido en Chromium, no
+  deducido: el receptor recibe el mensaje con `origin: "null"` y
+  `sourceIsFrame: true`, y no hacia nada.
+- **Arreglo en el receptor** (`installDavokerTransitionBridge`): admite
+  `evento.origin === "null"` ademas del origen propio y comprueba ademas que
+  `evento.source` sea la `contentWindow` del propio `#davoker-frame`. Esa
+  identidad si la puede verificar el navegador (el `WindowProxy` no cambia
+  aunque el iframe navegue), y es lo unico que distingue este aviso de otro
+  que pudiera mandar otra pagina. El emisor sigue publicando con
+  `window.location.origin`, que **dentro** del iframe si devuelve la URL real.
+- **El segundo movimiento**: al aterrizar en `davoker.html`, `centrar()` hacia
+  `scrollIntoView` sobre la `<section>` y Chrome repite ese ajuste en los
+  documentos ancestros: el padre volvia a moverse **~50 px hacia arriba** a los
+  1,9 s, justamente al terminar la animacion, y se quedaba ahi. Ese
+  `scrollIntoView` se sustituye por un `window.scrollTo` que solo toca el
+  scroll del iframe, con el `nearest` calculado a mano (se sale por arriba,
+  por abajo, o ya esta entera en el viewport y no se mueve nada) y respetando
+  el `scroll-margin-top: 1.5rem` de `.tarjeta`. `window.scrollTo` de un frame
+  hijo no se propaga al padre, cosa que `scrollIntoView` si hace.
+- **Medido de punta a punta** (Chromium con Playwright, click de verdad en
+  «Todos los efectos», muestreando el scroll del padre cada 150 ms): el aviso
+  llega a los **38 ms** y el padre pasa de y=209 a **y=457, que es el scroll
+  que centra el iframe** (720 px de alto en un viewport de 800), a los **334
+  ms**, con `transicion.html` aun en pantalla (desaparece sobre el segundo
+  1). Despues se queda clavado en 457 durante los 6,6 s siguientes. Dentro del
+  iframe la seccion `#glitch` queda visible (top 24 px, que es el
+  `scroll-margin` de `.tarjeta`) con su carpeta abierta.
+- Sin este arreglo, el receptor recibia el mensaje y no hacia nada: 0 px de
+  movimiento en 6 s. Con solo el arreglo del receptor (sin tocar `centrar()`),
+  llegaba a 457 y a los 1,9 s se iba a 408.
+- Las huellas `?v=` de `app.js` se re-sellan con `npm run sellar`
+  (`0810e243` en `components.html`, `index.html` y `team-core.html`): sin eso,
+  el `Cache-Control: immutable` de un ano serviria el `app.js` antiguo a
+  todo el que ya tenga la pagina cacheada.
+- Verificado en verde: `validar` (1018/1018), `validar:layout` (5 paginas x 23
+  anchos), `validar:html`, `validar:demos` (1018/1018, 0 fallos) y la
+  medicion de arriba, hecha con el cambio ya puesto.
+
+## [Documenta el plan para llevar el proyecto del 80 al 97] - 2026-10-06
+
+`Docs/Plan_de_nivel_siguiente.md` recoge el camino desde el 80 actual hasta
+un 97, con el producto/mercado en 100. No es una opinion: cada nota trae su
+comando y su medicion.
+
+- **Punto de partida medido**: calidad 88, seguridad 92, rendimiento 82,
+  accesibilidad 85, producto/mercado 68. Lighthouse movil 72-86, escritorio
+  99/100/100.
+- **Dos hallazgos que no estaban documentados**: el Quality Gate ya existe
+  y es `Sonar way` (el built-in, que SonarCloud aplica por defecto), asi que
+  no hay que crear ninguno; el `NONE` que devuelve la API significa "estado
+  no calculado", no "sin gate". Y el recuento real de incidencias abiertas
+  es **99** (1 bug, 0 vulnerabilidades, 98 code smells), no 0.
+- **`Sonar way` tiene dos condiciones que hoy no se pueden cumplir**:
+  cobertura >= 80% (no hay ni un test) y duplicacion <= 3,0% (con 1018
+  demos independientes). Por eso SonarCloud se engancha al CI en modo
+  informativo y solo se marca como obligatorio cuando haya tests.
+- **Ocho fases** ordenadas por retorno por hora y por riesgo, no por
+  numero: 1 (gate + 0), 4a (legal), 0 (herramientas y tests), 4b (SEO,
+  medicion, release), 2 (accesibilidad), 5 (robustez), 3 (rendimiento),
+  6 (lanzamiento).
+- **Invariantes** (5 reglas que ninguna fase puede romper) y **tabla de
+  riesgos**: que fase puede subir el contador de Sonar y como se evita.
+- **Definicion operativa de "producto = 100"**: 20 casillas verificables.
+  Sin eso, la nota seria una opinion.
+- Incluye tambien un apartado de **que no hace falta hacer** para no
+  dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
+  service worker en la primera entrega.
+
+## [Arregla los dos fallos que生生 rompieron el CI] - 2026-10-06
+
+El CI fallo en Node 20 y en el Quality Gate. Los dos por motivos distintos, y
+los dos por culpa de la fase 0.
+
+### 1. `npm test` reventaba en Node 20
+
+El script era `node --test "Web/scripts/__tests__/*.test.mjs"`. Los globs
+**internos** de `node --test` existen desde Node 21. En Node 20 —que este repo
+sigue soportando y con el que corre uno de los tres jobs obligatorios— el
+programa recibe la cadena tal cual, la toma por un nombre de fichero y muere con
+`Could not find '.../*.test.mjs'`.
+
+En local no se notaba: aqui se usa Node 24 y el glob se expande. **Un fallo que
+solo se ve en una de las tres versiones del CI.**
+
+Arreglo: `Web/scripts/test.mjs` resuelve la lista de ficheros con `fs.readdirSync`
+y se los pasa a `node --test`, que si funciona igual en cualquier version y en
+cualquier sistema (un directorio como argumento tampoco se comporta igual entre
+Windows y Linux). Comprobado en **Node 20, 22 y 24: 48/48 en las tres**.
+
+### 2. El Quality Gate fallo por 14% de duplicacion en codigo nuevo
+
+La condicion es *Duplication on New Code ≤ 3%*. Los ~1.100 lineas nuevas de la
+fase 0 los tres ficheros de tests repiten el mismo **andamiaje**: los imports de
+`node:test` y `node:assert/strict`, la funcion `abrir()` y todos los
+`test("nombre", () => {...})`. No es duplicacion accidental: es como se escribe
+en `node:test`, y "arreglarlo" obligaria a meter una capa de abstraccion que
+molestaria mas de lo que ayudaria.
+
+Se excluyen `__tests__` y `e2e` de `sonar.cpd.exclusions` (que es distinto de
+`sonar.tests`, que ya los marcaba como tests: esa propiedad saca el resto de
+metricas, pero **no la duplicacion**).
+
+### Bug de paso en `sonar-project.properties`
+
+Tenia **dos lineas `sonar.cpd.exclusions=`**. En un `.properties` la ultima
+asignacion de una clave gana, asi que la primera era configuracion muerta desde
+mucho antes de este plan. Se deja una sola, con las cuatro exclusiones juntas.
+
+## [Anade la etiqueta de verificacion de Search Console] - 2026-10-06
+
+Puesto en marcha el descubrimiento en buscadores (Fase 4b). Search Console solo
+acepta dos formas de verificar en un dominio `*.vercel.app`: por fichero HTML
+subido o por **etiqueta meta**. El registro TXT queda descartado porque el DNS de
+`vercel.app` lo controla Vercel y no admite registros propios.
+
+- La etiqueta va en **las dos paginas que sirven la portada**: el `index.html`
+  de la raiz (que es la URL verificada, prefijo
+  `https://libreria-html-css.vercel.app/`) y `Web/index.html` (la canonica, a la
+  que redirige la anterior). Si Google sigue la redireccion, la encuentra igual.
+- No es un secreto: una etiqueta de verificacion esta pensada para ir en el
+  HTML a la vista. Google pide que no se retire aunque la verificacion ya haya
+  funcionado, asi que se queda de forma permanente, y el motivo esta escrito en
+  el propio HTML para que nadie lo "clean" por error.
+- Comprobado sirviendo el sitio de verdad: la etiqueta aparece en `/` y en
+  `/Web/`, con status 200 en las dos.
+
+Con esto, el JSON-LD y el sitemap de la fase anterior ya tienen destinatario:
+falta enviar el sitemap desde Search Console, que es un paso de la interfaz.
+
+## [Fase 4b: SEO (JSON-LD y hreflang), instalable (PWA) y medicion de producto] - 2026-10-06
+
+Tercera parte de la Fase 4b. Con esto el sitio ya se **encuentra** (datos
+estructurados), se **instala** (manifest e iconos reales) y se **mide** (seis
+eventos de GA4 que cubren el embudo).
+
+- **JSON-LD en las paginas que lo merecen**: `WebSite` + `SearchAction` +
+  `SoftwareApplication` en la portada, y `CollectionPage` en el catalogo. El
+  `SearchAction` describe el buscador, que es lo que hace este sitio distinto
+  de una lista de enlaces: con el, un buscador puede ofrecer buscar
+  directamente desde la barra. Los tres bloques validados como JSON.
+- **`hreflang` (es, en y x-default) en las cinco paginas**: la traduccion es de
+  cliente (misma URL, distinto texto), asi que las dos variantes apuntan a la
+  misma direccion. Sin esto un buscador puede tratar los dos idiomas como
+  duplicados.
+- **Instalable como aplicacion**: `Web/manifest.webmanifest` + iconos PNG
+  **reales** generados del propio favicon por `Web/scripts/generar-iconos.mjs`
+  con el Chromium de Playwright que ya era dependencia (sin `sharp` ni ningun
+  paquete de imagen). Hay `192`, `512`, un `maskable` con margen (para que al
+  recortarlo en circulo no corte el dibujo) y el `apple-touch-icon`, que antes
+  era el SVG y Safari lo ignoraba. Atajos a Componentes y Privacidad.
+- **Seis eventos de GA4, el embudo completo**: `busqueda_iniciada` (al primer
+  caracter; solo se manda la **longitud**, nunca lo que se escribe, que es lo
+  que la persona teclea), `filtro_categoria`, `filtro_autor` (que ademas mide
+  cuanto pesa abrir el portal de Davoker, que son 218 KB), `ver_componente`,
+  `descarga_zip` (la accion de valor del sitio) y `cambio_idioma`. Antes solo
+  habia dos, y ninguno era una accion de valor.
+
+El `manifest` se sirve desde el propio dominio, asi que no hace falta tocar el
+CSP del despliegue: `validar:csp` sigue en verde.
+
+Verificado en verde: `validar:html`, `validar:csp`, `test` (48/48),
+`test:e2e` (15/15) y `validar:lighthouse` (**5 paginas, 99-100 en las cuatro
+categorias**).
+
+## [Fase 4a: privacidad y legal en el sitio, enlazadas desde el pie] - 2026-10-06
+
+Empieza la Fase 4a del plan, que es la que mas mueve la nota de producto (68).
+`PRIVACY.md` llevaba dias escrito en la raiz del repositorio, pero **nadie
+llegaba a el desde la web**: el pie solo tenia un boton de cookies. Para un
+sitio que dice recoger estadisticas con Google Analytics, eso es un problema,
+no un detalle.
+
+- **`Web/privacidad.html`**: la politica completa, bilingue, con indice de
+  secciones y el detalle de las tres claves de `localStorage` en tabla.
+- **`Web/legal.html`**: aviso legal, licencias (sitio, componentes y los
+  efectos de davoker), material de terceros, sin garantia y **declaracion de
+  accesibilidad** con el nivel que el proyecto ha medido de verdad.
+- **Ambas enlazadas desde el pie de las tres paginas**, que es el unico
+  camino que la gente tiene. Anadidas tambien a `sitemap.xml` para que los
+  buscadores las indexen.
+- **`.legal-doc` en `site.css`**: ancho de linea acotado a 68 caracteres,
+  interlineado mas amplio, `scroll-margin-top` en los encabezados (la cabecera
+  del sitio es fija y sin eso el titulo queda escondido al saltar a una
+  seccion) y `overflow-wrap` para que una URL larga no rompa el movil.
+- **Los validadores miden ya las paginas nuevas**: `validar:enlaces` pasa de 5
+  a 7 paginas (92 destinos), `validar:layout` de 115 a **161 medidas** (7
+  paginas x 23 anchos) y `validar:a11y` de 12 a **20 pasadas** (5 paginas x 2
+  idiomas x 2 temas). `validar:lighthouse` tambien las mide:
+  **100/100/100/100 en las dos**.
+- **3 tests e2e nuevos** (15 en total): se llega a cada pagina desde el pie, el
+  indice no tiene anclas rotas, el texto se traduce de verdad y las tres
+  paginas siguen enlazando las dos.
+
+Un apunte sobre el test que fallo al escribirlo: buscaba la palabra "WCAG"
+dentro del `<h2>` de la seccion, cuando el texto esta en el parrafo siguiente.
+El sitio estaba bien desde el principio; la asercion no.
+
+Verificado en verde: `validar`, `validar:html`, `validar:enlaces`,
+`validar:layout` (161/161), `validar:a11y` (0 serious/critical),
+`validar:lighthouse` (5 paginas x 4 categorias), `test` (48/48),
+`test:e2e` (15/15), `lint`, `format:check` y `typecheck` (18 de 38).
+
+## [Documenta que se deja de Sonar y por que] - 2026-10-06
+
+`Docs/Sonar_decisiones.md`: lo que **no** se toca de SonarQube y el motivo de
+cada caso. Un aviso sin tocar, sin explicacion escrita, no es un "won't fix":
+es deuda oculta que vuelve en seis meses sin que nadie sepa por que sigue ahi.
+
+- **Punto de partida medido**: 99 incidencias, de las que 20 ya estaban
+  arregladas en codigo y Sonar aun no habia re-analizado. Honesto: 79. Quedan
+  **46** sin tocar.
+- **Falsos positivos documentados con su prueba**: el `===` "siempre falso" de
+  `clinic-appointment-desk` (falso positivo por reasignacion dentro de un
+  callback; la correccion probada no arreglaba nada y se revirtio), el
+  `[...set]` de `detectar-duplicados` (borrar de un Set mientras se recorre se
+  salta elementos) y el S1940 de invertir operandos (rompio 5 demos porque
+  `a > b` y `b < a` no son equivalentes con coercion de strings).
+- **No arreglados a proposito, con el riesgo escrito**: `tracePath` de
+  `fourier-epicycles` (8 parametros; reducirlos puede romper el dibujo de las
+  estelas), las regex del propio auto-fix (son la herramienta que arregla el
+  resto; tocarlas propaga errores a 1.018 demos), los `catch` vacios y los
+  `fill()` de `Path2D` (que no son `console.log`, que es lo que la regla supone).
+- **Pendiente real, separado de lo anterior**: la tabla final marca los 7
+  grupos que si son trabajo pendiente, y distingue los que merece la pena
+  arreglar por valor propio (`S6793` y `S6821` son **accesibilidad**, que es
+  otra nota del plan) de los que solo son contador.
+
+La regla que se ha seguido queda escrita en el documento: **arreglar un aviso
+no es el objetivo; que el sitio siga funcionando si.** Cuando arreglar rompe
+algo, no arregla nada, o el riesgo supera el beneficio, el aviso se documenta y
+se marca en la web, y el codigo no se toca.
+
+## [Fase 1 (2): 8 issues mas de Sonar en el codigo de `Web/scripts`] - 2026-10-06
+
+Segunda tanda de la Fase 1, ya sobre codigo nuestro (el que corre en el CI y en
+el despliegue de Vercel) en vez de sobre demos.
+
+- **`generate-catalog.mjs` (4)**. Los cuatro avisos iban sobre las mismas tres
+  listas de `categoryRules`: `breadcrumb` estaba dos veces en Navigation,
+  `slider` dos veces en Controls y `frost` dos veces en Effects. Se quitan los
+  repetidos. Ademas `getCategory` ahora hace `String(value)` antes de
+  `toLowerCase()`, que es lo que pedia S3800 (la funcion declaraba devolver
+  `string` pero reventaba si le llegaba un valor no textual).
+- **`validar-csp.mjs` (1)**: `[].concat(directiva)` pasa a `[directiva].flat()`.
+  Comprobado que hay exactamente una entrada con array (`google-analytics.com`
+  con `connect-src` e `img-src`), que es el unico caso donde ambas cosas
+  difieren, y que aplanan igual. El validador sigue dando el mismo resultado.
+- **`lib/autofix-patrones.mjs` (1)**: dentro de la clase de caracteres de la
+  regex S6582, `)` y `]` van sin barra. El motor los aceptaba escapados, pero
+  era ruido que Sonar marcaba (S6535).
+- **`exportar-incidencias-sonar.mjs` (1)**: la cabecera `Basic` usaba dos
+  plantillas anidadas. Se saca el `base64(token:)` a una constante.
+- **`localizar-imagenes.mjs` (1)**: la asignacion de `registro` estaba dentro
+  de la llamada a `set()`; ahora es un `if` con llaves.
+- **`comprobar-enlaces-externos.mjs` (1)**: el `catch` se llamaba `caught`; ahora
+  `error_`.
+
+**Como se ha comprobado que nada cambia:** el `catalog.json` generado antes y
+despues es **byte a byte identico** (`sha256`), que es la forma mas directa de
+descartar que las reglas de categoria hayan cambiado el catalogo. El export de
+Sonar sigue autenticando y trayendo las mismas 99 incidencias, y
+`validar:csp` sigue en verde.
+
+Verificado en verde: `catalogo` (identico), `sonar:exportar`, `validar`,
+`validar:csp`, `validar:encabezados`, `test` (48/48), `test:e2e` (12/12),
+`lint`, `format:check` y `typecheck` (18 de 38).
+
+## [Fase 1 (1): 21 issues de Sonar en 18 ficheros (17 demos + `app.js`)] - 2026-10-06
+
+Empieza la Fase 1 del plan: bajar el contador de SonarQube Cloud de 99 a 0.
+Contexto medido hoy: de las 99, **20 ya estan arregladas en `main` y Sonar
+aun no ha re-analizado**, quedan **79 reales**. De esas, 24 estan en codigo
+nuestro (`Web/scripts/` + `DavokerDisenador/`) y 55 en demos.
+
+- **17 demos, 21 issues**, todos mecanicos y sin cambio de comportamiento:
+  `var` -> `const` (S3504), `filter().length` -> `some()` (S7754), separacion
+  del operador coma (S878), bloques CSS vacios borrados (S4658), ramas
+  duplicadas unificadas (S1871), parametros por defecto en vez de
+  reasignacion (S7760), `this` directo en vez de guardarlo en `t` (S7740),
+  nombres de argumentos distintos cuando son cosas distintas (S2234),
+  eliminacion de `return` inalcanzable (S3626), helper compartido en
+  `ramen-broth-recipe` para dos funciones identicas (S4144), y retirada de
+  variables muertas.
+- **`app.js`, 4 issues** (S3735 x3 y S6594):
+  - Las dos trampas de reflow (`void element.offsetWidth`) pasan por un helper
+    `forzarReflujo()`. Hace lo mismo, pero el nombre explica la intencion en
+    el sitio donde se usa, que es justo lo que `void` ocultaba.
+  - **`void initializeApp()` pasa a `.catch()` con log.** Antes, un fallo de
+    arranque (por ejemplo que el catalogo no llegara) se comia el error: la
+    pagina se quedaba a medio pintar y sin que nadie supiera por que.
+  - `String(...).match(re)` pasa a `re.exec(String(...))`.
+
+**Dos correcciones sobre el camino:**
+
+- **Un falso positivo revertido.** Sonar marcaba en
+  `clinic-appointment-desk/script.js:235` un `===` que "siempre da false". No
+  es un bug: `horaElegida` nace como `""` pero se reasigna dentro de un
+  callback, y el analizador no ve esa asignacion. La "correccion" que se probo
+  (`String()` en lugar de `""`) deja el mismo valor y no arregla nada, asi que
+  se deshizo el fichero entero.
+- **Otro falso positivo documentado en el codigo.** En
+  `detectar-duplicados.mjs` se marca S7747 (el spread `[...demo.tokens]` es
+  innecesario "porque `for...of` ya recorre iterables"). No lo es: dentro del
+  bucle se hace `demo.tokens.delete(token)`, y borrar de la coleccion que se
+  esta recorriendo puede saltarse el siguiente elemento. La copia es lo que
+  hace la poda segura. Se deja el codigo como estaba, con el porque escrito.
+
+**Un aviso que no se toca:** `fourier-epicycles/script.js` (S107, 8
+parametros). Reducirlos obliga a tocar el dibujo de las estelas y el riesgo no
+compensa un code smell.
+
+Verificado en verde: `validar:demos` (1018/1018, 0 fallos), `test:e2e` (12/12),
+`test` (48/48), `lint`, `format:check` y `typecheck` (18 de 38).
+
+## [Fase 0 (3): 12 tests e2e del recorrido real de las tres paginas] - 2026-10-06
+
+Tercera parte de la Fase 0. `npm test` cubre logica pura; esto cubre que la
+**web funcione**, que es otra cosa: un error en `app.js` rompe la pagina sin
+tocarle al HTML, asi que ningun validador estatico lo ve.
+
+- **`npm run test:e2e`**: abre las tres paginas en Chromium (el mismo que ya
+  usan `validar-a11y` y `validar-layout`, sin dependencias nuevas) y comprueba
+  el recorrido real: el catalogo rellena la rejilla y pagina, el buscador
+  filtra, la busqueda sin resultados saca el estado vacio, una tarjeta abre su
+  detalle, el portal de Davoker carga su iframe y apaga el buscador, el tema
+  alterna y se recuerda al recargar, el boton de idioma marca `aria-pressed` y
+  se guarda, y no queda ninguna etiqueta `data-i18n` vacia en ninguno de los dos
+  idiomas. El aviso de cookies aparece y "solo lo necesario" guarda `deny`.
+- **En el CI** como paso propio del job de Node 24, junto al Chromium.
+- **Presupuesto de tipos bajado de 38 a 18**: al anadir `"DOM"` a la `lib` de
+  `tsconfig.json` disappeared de golpe el `Cannot find name 'document'` de los
+  scripts que tocan el DOM, y se corrigio el unico error real que quedaba en el
+  test e2e (`hidden` no existe en `Element`). Los ficheros nuevos siguen a
+  cero.
+
+**Dos tests mios mal escritos que el e2e destapo** (la app estaba bien): los
+chips de autor no llevan `data-author` (se pintan solo con su texto), y filtrar
+no cambia el numero de tarjetas visibles porque la rejilla muestra una pagina
+(9) antes y despues; lo que cambia es el recuento de arriba. Ambos selectores
+y aserciones corregidos; la app no se toco.
+
+Verificado en verde: `format:check`, `lint`, `typecheck` (18), `test` (48/48),
+`test:e2e` (12/12), `validar`, `catalogo`, `validar:demos` (1018/1018).
+
+## [Fase 0 (2): ESLint, Prettier acotado, typecheck con presupuesto y CI] - 2026-10-06
+
+Segunda parte de la Fase 0. Cuatro comprobaciones nuevas en el CI que
+cubrren el codigo de Node del repositorio.
+
+- **`npm run lint`** con `eslint.config.mjs` (flat config). Cubre solo
+  `Web/scripts/`: son los scripts que corren en el CI y en el despliegue. Los
+  1018 demos de los autores **no** se lintean a proposito (ya los analiza
+  SonarQube y la regla 6 de CONTRIBUTING exige que sean copiables tal cual).
+  Reglas: `eqeqeq`, `no-var`, `prefer-const`, `no-implicit-globals` y
+  `no-unused-vars` con `ignoreRestSiblings` (el repo usa `const { fuera, ...dentro }`
+  para descartar campos a proposito).
+- **`npm run format` / `format:check`** con Prettier, tambien acotado a
+  `Web/scripts/**/*.mjs`. Formatear los demos reescribiria cientos de miles de
+  lineas sin cambiar comportamiento y romperia las metricas de SonarQube.
+  El formateo se aplico en un commit aparte, como pedia el plan.
+- **`npm run typecheck`**: `tsc --checkJs` sobre los scripts de Node, con
+  presupuesto en `Web/scripts/validar-tipos.mjs`. Hoy hay 37 errores de
+  tipado en codigo heredado; la puerta exige que `lib/` y `__tests__/` esten
+  **siempre a cero** y que el total no crezca. Asi la deuda solo puede bajar y
+  no bloquea el trabajo diario. Cuando llegue a 0, el script sobra.
+- **CI**: cuatro pasos nuevos (`format:check`, `lint`, `typecheck`, `test`)
+  antes de generar el catalogo, en los tres jobs de Node.
+
+**Limpieza que encontro el lint** (6 simbolos muertos): imports sin usar
+(`stat`, `createWriteStream`, `celda`), la funcion `extensionDe` de
+`localizar-imagenes.mjs`, la constante `INFORMAN` de `validar-a11y.mjs`, un
+`catch (error)` que no usaba el error, y un `let` que podia ser `const`.
+
+Verificado en verde: `format:check`, `lint`, `typecheck`, `test` (48/48),
+`validar`, `catalogo`, `validar:encabezados`, `validar:html`,
+`validar:enlaces`, `validar:layout`, `validar:demos` (1018/1018) y
+`duplicados`.
+
+## [Fase 0 (1): extrae las funciones puras a `lib/` y anade 48 tests] - 2026-10-06
+
+Empieza la Fase 0 del plan de nivel siguiente. Objetivo: que el codigo se
+autoverifique. Este commit solo pone la base; no cambia el comportamiento de
+ningun validador.
+
+- **`sonar.tests` declarado** en `sonar-project.properties` antes de escribir
+  el primer test. Sin eso Sonar analiza `__tests__` como codigo principal y
+  los asserts cuentan como code smells nuevos.
+- **Dos modulos nuevos en `Web/scripts/lib/`**, sin dependencias de Node, con
+  las funciones puras que estaban enterradas en scripts que hacen I/O:
+  - `sonar-csv.mjs`: `celda`, `csv`, `contar`, `tabla` y `sanearMensaje`.
+  - `autofix-patrones.mjs`: los 24 patrones, `EXCLUIR`, `aplicarPatrones` y
+    `contarPorPatron`. El script baja de 346 a 117 lineas.
+- **48 tests con `node:test`**, sin dependencias nuevas (`npm test`).
+  Cubren el formato del CSV y el saneo del log, y los 24 patrones con casos de
+  conversion **y de no-conversion**: los limites que evitan que el autofix
+  rompa un demo son la parte que importa.
+- **Cierra el segundo punto de inyeccion del S5145.** El saneo solo cubria el
+  `catch` de hotspots; ahora `sanearMensaje` se aplica tambien al cuerpo de
+  la respuesta de error en `pedir()`, que antes concatenaba crudo.
+
+**Dos bugs reales que encontraron los tests:**
+
+- `EXCLUIR` comparaba con `"Web/scripts/lib/"` sobre una ruta con
+  **backslashes de Windows**, asi que `includes()` no casaba nunca y `lib/` si
+  se autoeditaba. Se compara ya sobre la ruta normalizada.
+- `S7765` solo reescribia `> -1`, `>= -1` y `!= -1`, pero su documentacion
+  prometia tambien `>= 0`. Corregido el limite, con tests que protectan los
+  tres casos que NO deben convertirse: `!= 0`, `> 0` y `> -0` (este ultimo
+  es `> 0` porque `-0 === 0` en JavaScript, y convertirlos a `includes`
+  cambiaria el resultado).
+
+Verificado en verde: `npm test` (48/48), `npm run sonar:exportar` (99
+incidencias, mismos ficheros), `npm run validar` y `npm run catalogo`.
+
 ## [Deja el CLS de la pagina de componentes en 0 quitando el salto del pie] - 2026-10-06
 
 En el preset movil de Lighthouse, `Web/components.html` medía **CLS 0,29**.

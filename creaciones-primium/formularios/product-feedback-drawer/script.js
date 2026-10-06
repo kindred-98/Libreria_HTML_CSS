@@ -30,7 +30,7 @@ const CAMPOS = [
     etiqueta: "Temas del comentario",
     vacio: "Marca al menos un tema para que llegue al equipo adecuado.",
     error: "Marca entre uno y seis temas.",
-    prueba: () => CATEGORIAS.filter(c => el(c).checked).length > 0
+    prueba: () => CATEGORIAS.some(c => el(c).checked)
   },
   {
     id: "notas",

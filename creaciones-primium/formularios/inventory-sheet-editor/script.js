@@ -196,7 +196,10 @@ function moverA(f, c, seleccionar) {
         const r = document.createRange();
         r.selectNodeContents(span);
         const s = window.getSelection();
-        if (s) s.removeAllRanges(), s.addRange(r);
+        if (s) {
+          s.removeAllRanges();
+          s.addRange(r);
+        }
       }
     }
   }

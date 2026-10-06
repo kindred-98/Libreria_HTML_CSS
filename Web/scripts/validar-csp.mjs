@@ -50,14 +50,22 @@ const RELEVANCE = [
   { host: "fonts.gstatic.com", directiva: "font-src", why: "los ficheros de fuente" },
   { host: "use.typekit.net", directiva: "style-src", why: "Typekit, la hoja de estilos" },
   { host: "use.fontawesome.com", directiva: "style-src", why: "el CSS de Font Awesome" },
-  { host: "unicons.iconscout.com", directiva: ["style-src", "font-src"], why: "la hoja de estilos y la tipografia Unicons" },
+  {
+    host: "unicons.iconscout.com",
+    directiva: ["style-src", "font-src"],
+    why: "la hoja de estilos y la tipografia Unicons",
+  },
   { host: "upload.wikimedia.org", directiva: "img-src", why: "fotos de las galerias" },
   { host: "commons.wikimedia.org", directiva: "img-src", why: "fichas de Commons" },
   // Google Analytics: el script de gtag lo carga app.js solo con consentimiento,
   // y los hits salen por connect-src (beacon) y por un pixel en img-src.
   { host: "www.googletagmanager.com", directiva: "script-src", why: "el script de gtag" },
   { host: "www.google-analytics.com", directiva: ["connect-src", "img-src"], why: "los hits de Analytics" },
-  { host: "region1.google-analytics.com", directiva: "connect-src", why: "los hits de Analytics en la region de datos" },
+  {
+    host: "region1.google-analytics.com",
+    directiva: "connect-src",
+    why: "los hits de Analytics en la region de datos",
+  },
 ];
 
 // Hosts que no son recursos: solo los toca la navegacion, y el CSP no
@@ -163,7 +171,8 @@ function etiquetaEn(texto, posicion) {
 
 const vercel = JSON.parse(await readFile(vercelFile, "utf8"));
 
-const tieneCsp = (block) => (block.headers ?? []).some((h) => h.key?.toLowerCase() === "content-security-policy");
+const tieneCsp = (block) =>
+  (block.headers ?? []).some((h) => h.key?.toLowerCase() === "content-security-policy");
 const valorCsp = (block) =>
   (block.headers ?? []).find((h) => h.key?.toLowerCase() === "content-security-policy")?.value ?? "";
 
@@ -272,7 +281,7 @@ for (const { host, directiva, why } of RELEVANCE) {
   if (!usados.has(host)) continue;
   const d = usados.get(host);
   d.directivas.delete("*");
-  for (const dir of [].concat(directiva)) d.directivas.add(dir);
+  for (const dir of [directiva].flat()) d.directivas.add(dir);
   d.why = why;
 }
 
@@ -324,7 +333,7 @@ if (llevaSandbox(csp)) {
 
 const patronesSandbox = [];
 for (const block of bloquesSandbox) {
-  if (block.source === "/(.*)" ) continue;
+  if (block.source === "/(.*)") continue;
   if (valorCsp(block) !== csp + SANDBOX) {
     failures.push(`la politica del bloque "${block.source}" no es la global mas el sandbox`);
   }
@@ -336,7 +345,9 @@ for (const block of bloquesSandbox) {
 }
 
 if (!bloquesSandbox.length) {
-  failures.push("no hay ningun bloque con sandbox: los demos abiertos directamente corren en el origen del sitio");
+  failures.push(
+    "no hay ningun bloque con sandbox: los demos abiertos directamente corren en el origen del sitio",
+  );
 } else {
   const raicesDemo = ["creaciones-primium", "CreacionesNuevas", "DavokerDiseñador"];
   const demos = [];
@@ -353,7 +364,7 @@ if (!bloquesSandbox.length) {
   }
   if (sinAislar.length) {
     failures.push(
-      `${sinAislar.length} de ${demos.length} demos no quedan aisladas, p. ej. ${sinAislar.slice(0, 3).join(", ")}`
+      `${sinAislar.length} de ${demos.length} demos no quedan aisladas, p. ej. ${sinAislar.slice(0, 3).join(", ")}`,
     );
   } else {
     console.log(`demos aisladas con sandbox: ${demos.length} de ${demos.length}`);
@@ -372,7 +383,9 @@ console.log(`ficheros html/js/css escaneados: ${escaneados}`);
 console.log(`hosts externos en los demos: ${usados.size}`);
 console.log(`directivas del CSP: ${[...directivas.keys()].join(", ")}`);
 for (const [host, uso] of [...usados].sort((a, b) => b[1].veces - a[1].veces)) {
-  console.log(`  ${host.padEnd(28)} ${String(uso.veces).padStart(4)} usos  [${[...uso.directivas].join(", ")}]`);
+  console.log(
+    `  ${host.padEnd(28)} ${String(uso.veces).padStart(4)} usos  [${[...uso.directivas].join(", ")}]`,
+  );
 }
 
 if (avisos.length) {
