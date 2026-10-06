@@ -170,6 +170,36 @@ comando y su medicion.
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
 
+## [Fase 0 (3): 12 tests e2e del recorrido real de las tres paginas] - 2026-10-06
+
+Tercera parte de la Fase 0. `npm test` cubre logica pura; esto cubre que la
+**web funcione**, que es otra cosa: un error en `app.js` rompe la pagina sin
+tocarle al HTML, asi que ningun validador estatico lo ve.
+
+- **`npm run test:e2e`**: abre las tres paginas en Chromium (el mismo que ya
+  usan `validar-a11y` y `validar-layout`, sin dependencias nuevas) y comprueba
+  el recorrido real: el catalogo rellena la rejilla y pagina, el buscador
+  filtra, la busqueda sin resultados saca el estado vacio, una tarjeta abre su
+  detalle, el portal de Davoker carga su iframe y apaga el buscador, el tema
+  alterna y se recuerda al recargar, el boton de idioma marca `aria-pressed` y
+  se guarda, y no queda ninguna etiqueta `data-i18n` vacia en ninguno de los dos
+  idiomas. El aviso de cookies aparece y "solo lo necesario" guarda `deny`.
+- **En el CI** como paso propio del job de Node 24, junto al Chromium.
+- **Presupuesto de tipos bajado de 38 a 18**: al anadir `"DOM"` a la `lib` de
+  `tsconfig.json` disappeared de golpe el `Cannot find name 'document'` de los
+  scripts que tocan el DOM, y se corrigio el unico error real que quedaba en el
+  test e2e (`hidden` no existe en `Element`). Los ficheros nuevos siguen a
+  cero.
+
+**Dos tests mios mal escritos que el e2e destapo** (la app estaba bien): los
+chips de autor no llevan `data-author` (se pintan solo con su texto), y filtrar
+no cambia el numero de tarjetas visibles porque la rejilla muestra una pagina
+(9) antes y despues; lo que cambia es el recuento de arriba. Ambos selectores
+y aserciones corregidos; la app no se toco.
+
+Verificado en verde: `format:check`, `lint`, `typecheck` (18), `test` (48/48),
+`test:e2e` (12/12), `validar`, `catalogo`, `validar:demos` (1018/1018).
+
 ## [Fase 0 (2): ESLint, Prettier acotado, typecheck con presupuesto y CI] - 2026-10-06
 
 Segunda parte de la Fase 0. Cuatro comprobaciones nuevas en el CI que
