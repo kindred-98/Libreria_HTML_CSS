@@ -170,6 +170,27 @@ comando y su medicion.
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
 
+## [Anade la etiqueta de verificacion de Search Console] - 2026-10-06
+
+Puesto en marcha el descubrimiento en buscadores (Fase 4b). Search Console solo
+acepta dos formas de verificar en un dominio `*.vercel.app`: por fichero HTML
+subido o por **etiqueta meta**. El registro TXT queda descartado porque el DNS de
+`vercel.app` lo controla Vercel y no admite registros propios.
+
+- La etiqueta va en **las dos paginas que sirven la portada**: el `index.html`
+  de la raiz (que es la URL verificada, prefijo
+  `https://libreria-html-css.vercel.app/`) y `Web/index.html` (la canonica, a la
+  que redirige la anterior). Si Google sigue la redireccion, la encuentra igual.
+- No es un secreto: una etiqueta de verificacion esta pensada para ir en el
+  HTML a la vista. Google pide que no se retire aunque la verificacion ya haya
+  funcionado, asi que se queda de forma permanente, y el motivo esta escrito en
+  el propio HTML para que nadie lo "clean" por error.
+- Comprobado sirviendo el sitio de verdad: la etiqueta aparece en `/` y en
+  `/Web/`, con status 200 en las dos.
+
+Con esto, el JSON-LD y el sitemap de la fase anterior ya tienen destinatario:
+falta enviar el sitemap desde Search Console, que es un paso de la interfaz.
+
 ## [Fase 4b: SEO (JSON-LD y hreflang), instalable (PWA) y medicion de producto] - 2026-10-06
 
 Tercera parte de la Fase 4b. Con esto el sitio ya se **encuentra** (datos
