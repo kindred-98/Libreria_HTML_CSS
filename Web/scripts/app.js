@@ -63,6 +63,18 @@ const translations = {
     pageTeamCore: "Team Core",
     pagePrivacy: "Privacy",
     pageLegal: "Legal",
+    // Nombre accesible de cada <main>. Sin esto las cinco paginas tienen un
+    // landmark igual (`main`) y axe lo marca (landmark-unique): quien recorre
+    // la pagina con un lector de pantalla no puede saber en cual esta.
+    portadaMain: "Home",
+    componentsMain: "Component catalogue",
+    teamMain: "Team and donations",
+    privacyMain: "Privacy policy",
+    legalMain: "Legal notice and accessibility",
+    // Encabezado oculto que precede a las tarjetas del catalogo: las tarjetas
+    // llevan un h3 y el encabezado anterior era el h1 de la pagina, salto que
+    // axe marca como heading-order.
+    resultsHeading: "Results",
     teamCoreEyebrow: "TEAM CORE",
     teamCoreTitle: "The people behind the library",
     teamCoreLead: "Three programming students and one repository that lit the fuse.",
@@ -291,6 +303,12 @@ const translations = {
     pageTeamCore: "Núcleo del equipo",
     pagePrivacy: "Privacidad",
     pageLegal: "Legal",
+    portadaMain: "Portada",
+    componentsMain: "Catálogo de componentes",
+    teamMain: "Equipo y donaciones",
+    privacyMain: "Política de privacidad",
+    legalMain: "Aviso legal y accesibilidad",
+    resultsHeading: "Resultados",
     teamCoreEyebrow: "NÚCLEO DEL EQUIPO",
     teamCoreTitle: "Quién está detrás de la biblioteca",
     teamCoreLead: "Tres estudiantes de programación y un repositorio que encendió la mecha.",
@@ -980,14 +998,13 @@ function navigateToComponent(component, event) {
 
 function createComponentCard(component, index) {
   const article = createElement("article", "component-card");
-  // La tarjeta entera abre el detalle: solo con click simple (boton izquierdo,
-  // sin modificadores) y si el origen no es ya un enlace o un boton. Asi el
-  // "View component" sigue funcionando con click central / cmd+click para abrir
-  // en pestana nueva, y los futuros botones que se metan dentro no disparan la
-  // navegacion dos veces.
-  article.setAttribute("role", "link");
-  article.tabIndex = 0;
-  article.setAttribute("aria-label", `${t("viewComponent")}: ${getComponentName(component)}`);
+  // El `<article>` se queda como article: sin `role="link"`, que axe rechaza
+  // (`aria-allowed-role`: un article no admite el rol de enlace) y ademas
+  // duplicaba el punto de tabulacion, porque la tarjeta era tabbable Y dentro
+  // tenia su propio `<a>`. El enlace real es el de "Ver componente": su
+  // pseudo-elemento se estira sobre toda la tarjeta (`.card-link::after` en
+  // site.css), asi que sigue siendo clicable entera, con el teclado resuelto
+  // por el navegador y sin manejadores de Enter/Espacio a mano.
   article.append(createPreview(component, "card-preview"));
 
   const previewLabel = createElement("span", "card-preview-label", t("liveDemo"));
@@ -1003,6 +1020,11 @@ function createComponentCard(component, index) {
   const description = createElement("p", "", getComponentDescription(component));
   const link = createElement("a", "card-link", t("viewComponent"));
   link.href = componentDetailUrl(component.id);
+  // El nombre accesible del enlace lleva el nombre del componente. Tiene que
+  // *contener* el texto visible ("Ver componente") y no sustituirlo, que es lo
+  // que pide la regla de "label in name": si el texto que se ve y el que se
+  // anuncia no coinciden, quien usa lector de pantalla oye algo que no ve.
+  link.setAttribute("aria-label", `${t("viewComponent")}: ${getComponentName(component)}`);
   // Sin esto el enlace recarga la pagina y al volver se pierde la pagina del
   // paginador en la que estabas. Con pushState el detalle se abre en el sitio y
   // el estado se conserva. Se deja el href para que el clic con el boton
@@ -1016,16 +1038,6 @@ function createComponentCard(component, index) {
   content.append(top, heading, description, link);
   article.append(content);
 
-  article.addEventListener("click", (event) => {
-    if (event.target.closest("a, button")) return;
-    navigateToComponent(component, event);
-  });
-  article.addEventListener("keydown", (event) => {
-    if (event.target !== article) return;
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    navigateToComponent(component, { button: 0, preventDefault() {} });
-  });
   return article;
 }
 
@@ -1278,11 +1290,22 @@ function renderFeaturedComponents() {
     return;
   }
   const cards = featuredComponents.map((component, index) => createComponentCard(component, index));
-  // Las repetidas se construyen enteras, no con cloneNode: cloneNode no copia
-  // los manejadores del enlace y el clic recargaria la pagina.
-  const clones = featuredComponents.slice(0, featuredClones).map((component, index) => {
+// Las repetidas se construyen enteras, no con cloneNode: cloneNode no copia
+// los manejadores del enlace y el clic recargaria la pagina.
+const clones = featuredComponents.slice(0, featuredClones).map((component, index) => {
     const card = createComponentCard(component, index);
     card.dataset.featuredClone = "true";
+    // Las repetidas son, por definicion, un duplicado de tarjetas que ya estan
+    // mas adelante en el DOM. Para quien va con lector de pantalla son ruido: se
+    // oye el mismo componente dos veces al recorrer la portada, y ademas sus
+    // encabezados rompen la jerarquia (varias h3 seguidas sin h2 que las
+    // enclose). Se esconden de la tecnologia asistiva con `inert`, que en una
+    // sola linea hace las dos cosas que hacen falta: marca el subarbol como no
+    // anunciado (`aria-hidden` implicito) **y** saca sus enlaces del recorrido
+    // del teclado. Con `aria-hidden` a secas, axe marcaria `aria-hidden-focus`,
+    // porque un contenedor oculto que contiene algo enfocable es un fallo.
+    // Se pueden seguir viendo y clicando con el raton.
+    card.inert = true;
     return card;
   });
   elements.featuredGrid.replaceChildren(...cards, ...clones);

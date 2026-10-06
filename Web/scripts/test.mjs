@@ -23,8 +23,25 @@ import { fileURLToPath } from "node:url";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 
+/**
+ * Carpetas que este runner sabe ejecutar.
+ *
+ * Por que es una lista blanca y no el `process.argv` tal cual (S8707): el
+ * nombre de la carpeta se concatena a `scriptDirectory`, asi que sin comprobar
+ * lo que llega, `node Web/scripts/test.mjs ../../otro/cualquiera` haria que se
+ * leyeran ficheros de fuera del repositorio. Con la lista blanca, un valor
+ * inesperado cae en el caso de "sin tests" y no lee nada.
+ */
+const CARPETAS_PERMITIDAS = ["__tests__", "e2e"];
+
 /** Subcarpeta que se ejecuta: `__tests__` por defecto, `e2e` si se pide. */
-const carpeta = process.argv[2] ?? "__tests__";
+const pedida = process.argv[2] ?? "__tests__";
+const carpeta = CARPETAS_PERMITIDAS.includes(pedida) ? pedida : "__tests__";
+
+if (pedida !== carpeta) {
+  console.error(`Carpeta "${pedida}" no permitida. Solo se ejecuta: ${CARPETAS_PERMITIDAS.join(", ")}`);
+  process.exit(1);
+}
 
 const directorio = path.join(scriptDirectory, carpeta);
 

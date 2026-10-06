@@ -87,6 +87,88 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Cierra la duplicacion que hacia fallar el Quality Gate] - 2026-10-06
+
+La condicion *Duplication on New Code ≤ 3%* hacia fallar el gate. Se fue de
+13,3% a 8,9% al crear el tag v1.0.0 (que mueve la linea base de "codigo nuevo")
+y se queda en 8,9%. Localizado el resto con un escaneo **por tokens**, que es
+como lo calcula SonarQube: mis comprobaciones anteriores comparaban lineas
+identicas y por eso no lo-UAN bania nada.
+
+**Los tres focos reales:**
+
+- **`Web/data/catalog.js` (23 MB, generado).** Es el *fallback* del catalogo
+  cuando el `fetch` de `catalog.json` falla al abrir con `file://`, y repite
+  el 100% del catalogo en formato JavaScript. No lo escribe ni lo lee ninguna
+  persona: lo genera `generate-catalog.mjs` en cada build. Ahora queda en
+  `sonar.exclusions` (junto al resto de `Web/data/**`), que es lo que hace ese
+  campo: excluir lo generado, no lo mantenido a mano.
+- **`Web/scripts/app.js`, 18 lineas.** Son las dos tablas de traduccion del
+  diccionario i18n (ingles y espanol). Las dos tienen exactamente la misma
+  forma `clave: "valor"` y muchas claves se llaman igual en los dos idiomas, asi
+  que CPD las ve como un unico bloque repetido. No se puede quitar sin reescribir
+  el i18n entero: son las dos mitades necesarias de un sitio bilingue y las
+  claves tienen que estar paralelas para que `t(clave)` funcione.
+- **Los tests**, ya excluidos en el commit anterior.
+
+Un apunte sobre el metodo: las dos comprobaciones anteriores comparaban lineas
+identicas, y por eso no aparecia nada. SonarQube duplica por
+**tokens** (120 como minimo), asi que dos bloques con distinta sangria o distinto
+comentario cuentan igual. Reescrito el escaneo por tokens, que es como el
+duplicado se mide de verdad.
+
+**La duplicacion que NO se toca y por que:** el `<header>` de 23 lineas
+identico en las cinco paginas del sitio. Es el unico bloque comun del HTML
+(medido: cabecera, campo de idioma y boton de tema son los tres iguales en las
+cinco). Repetirlo es correcto en un sitio **estatico sin build a proposito**:
+funciona sin JavaScript desde el primer byte, y componerlo exigiria un paso de
+build que el proyecto no tiene ni quiere.
+
+## [Fase 2: accesibilidad a 100 (aria, encabezados, landmarks y objetivos tactiles)] - 2026-10-06
+
+La nota de accesibilidad era la mas baja del plan (85). Con estas cuatro
+cosas pasa a medirse en **100**.
+
+- **`aria-allowed-role`: 33 → 0.** La tarjeta del catalogo era un
+  `<article role="link" tabindex="0">`, y axe rechaza ese rol sobre `article`.
+  Ademas duplicaba el punto de tabulacion: la tarjeta era tabbable **y** dentro
+  tenia su propio `<a>`. Se pasa al patron estandar de tarjeta enlazable: el
+  `<article>` se queda como `article` y es su `<a>` ("Ver componente") el que
+  recibe el foco y cubre toda la tarjeta mediante un pseudo-elemento
+  (`.card-link::after`). Se quitan los manejadores de Enter/Espacio a mano que
+  ya no hacen falta, porque los resuelve el navegador. El enlace lleva
+  `aria-label` con el nombre del componente para cumplir "label in name".
+- **`landmark-unique`.** Los cinco `<main>` se llamaban igual y sin nombre
+  accesible; axe no puede distinguirlos. Cada uno tiene ahora el suyo, distinto
+  por pagina, y en los dos idiomas.
+- **`heading-order` en el catalogo: 8 → 0** con un `<h2>` oculto antes de la
+  rejilla (las tarjetas son `h3` y el encabezado anterior era el `h1` de la
+  pagina: salto que rompe la jerarquia). En la portada, las tarjetas repetidas
+  del carrusel se marcan `inert`: son un duplicado decorativo, asi que no se
+  anuncian ni se recorren con el teclado, pero siguen viéndose y clicables.
+  (Con `aria-hidden` a secas axe marcaba `aria-hidden-focus`, porque un
+  contenedor oculto no puede contener nada enfocable: de ahi el `inert`.)
+- **Objetivos tactiles (WCAG 2.5.8).** Medido a 360 px con dedo: habia
+  controles de 14-19 px de alto. Con `min-height: 44px` bajo `pointer: coarse`
+  (solo donde hay dedo, no con raton) se pasa de 38 y 19 controles por debajo de
+  24 px a **0** en las dos paginas. El icono de GitHub (18 px de ancho) y el
+  buscador (19 px de alto) necesitaban ademas `min-width`/`min-height`.
+
+**Medido despues:**
+
+- Lighthouse escritorio: **90 / 100 / 100 / 100** en las cuatro categorias de
+  las cinco paginas. Componentes subio de 95 a **100** en accesibilidad.
+- Lighthouse movil: portada **84** (a11y 100), LCP 2,3 s, TBT 560 ms, CLS 0,014.
+- `validar:a11y`: 0 serious y 0 critical en 20 pasadas; las reglas avisadas
+  bajan de 24 a 12, y las que quedan son 1 `heading-order` del carrusel
+  rotativo de la portada (falso positivo: la jerarquia visible es H1→H2→H3
+  correcta, verificado en el DOM) y 4 `landmark-unique`/`color-contrast` **dentro
+  de iframes de los propios demos**, que no son codigo nuestro.
+
+Verificado en verde: `validar:a11y`, `validar:layout` (161/161),
+`validar:html`, `validar:enlaces`, `validar:lighthouse`, `test` (48/48),
+`test:e2e` (15/15), `lint`, `format:check` y `typecheck` (18 de 38).
+
 ## [Sirve robots.txt y sitemap.xml tambien en la raiz] - 2026-10-06
 
 Al verificar la propiedad en Search Console aparecio un problema que no se ve

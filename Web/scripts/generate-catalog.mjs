@@ -262,32 +262,58 @@ async function getLocalReferences(
     const resolvedPath = path.resolve(pageDirectory, decodeURIComponent(referencePath));
     if (!resolvedPath.startsWith(`${rootDirectory}${path.sep}`)) continue;
 
-    try {
-      // Un demo no necesita enlaces simbolicos, y si los tuviera servirian solo
-      // para leer ficheros de fuera: el codigo se publica en Web/data/sources/,
-      // asi que un enlace simbolico en un PR seria una via de exfiltracion. lstat
-      // no sigue el enlace, asi que basta con descartarlo.
-      if ((await lstat(resolvedPath)).isSymbolicLink()) continue;
-      // La contencion arriba es solo lexical: path.resolve normaliza los "..",
-      // no los enlaces. Asi que se compara contra la raiz ya resuelta: el
-      // repositorio entero puede estar detras de un enlace (en macOS /var apunta
-      // a /private/var) y entonces las dos rutas jamas comparten prefijo.
-      const realPath = await realpath(resolvedPath);
-      if (!realPath.startsWith(`${await realpath(rootDirectory)}${path.sep}`)) continue;
-      if ((await stat(resolvedPath)).isFile()) {
-        const relativePath = path.relative(repositoryDirectory, resolvedPath).split(path.sep).join("/");
-        references.push({
-          name: path.basename(resolvedPath),
-          path: `../${relativePath}${referenceSuffix}`,
-          code: await readFile(resolvedPath, "utf8"),
-        });
-      }
-    } catch {
-      // Ignore optional references that do not exist in the local checkout.
-    }
+    // Todo lo de seguridad de rutas vive en `esFicheroLegible`, asi que esta
+    // funcion se limita a recorrer las etiquetas y a juntar el resultado. Antes
+    // de sacar ese bloque, Sonar marcaba aqui S3776 (complejidad cognitiva 19
+    // contra las 15 permitidas) y el aviso era legitimo: el camino de error
+    // (el `catch`) estaba en medio del bucle y era facil pasarse por alto.
+    const referencia = await leerSiEsFicheroLegible(resolvedPath, rootDirectory, referenceSuffix);
+    if (referencia) references.push(referencia);
   }
 
   return [...new Map(references.map((reference) => [reference.path, reference])).values()];
+}
+
+/**
+ * Dice si una ruta es un fichero normal dentro del repositorio y devuelve su
+ * referencia para el catalogo, o `null` si no lo es.
+ *
+ * Son tres barreras, y las tres hacen falta:
+ *
+ * 1. **No es un enlace simbolico.** `lstat` no sigue el enlace, asi que basta
+ *    para descartarlo. Sin esto, un `href` a un enlace en un PR seria una via
+ *    de exfiltracion: el codigo se publica en `Web/data/sources/`.
+ * 2. **La ruta real cae dentro de la raiz real.** La contencion de arriba es
+ *    solo lexical: `path.resolve` normaliza los `..`, pero no los enlaces. Se
+ *    compara contra la raiz ya resuelta porque el repositorio entero puede
+ *    estar detras de un enlace (en macOS `/var` apunta a `/private/var`) y
+ *    entonces las dos rutas no comparten prefijo nunca.
+ * 3. **Es un fichero**, no un directorio.
+ *
+ * @param {string} resolvedPath Ruta ya absoluta y contenida lexicalmente.
+ * @param {string} rootDirectory Raiz del repositorio.
+ * @param {string} referenceSuffix Sufijo `?query` o `#hash` de la referencia.
+ * @returns {Promise<{name: string, path: string, code: string}|null>}
+ */
+async function leerSiEsFicheroLegible(resolvedPath, rootDirectory, referenceSuffix) {
+  try {
+    if ((await lstat(resolvedPath)).isSymbolicLink()) return null;
+
+    const realPath = await realpath(resolvedPath);
+    if (!realPath.startsWith(`${await realpath(rootDirectory)}${path.sep}`)) return null;
+
+    if (!(await stat(resolvedPath)).isFile()) return null;
+
+    const relativePath = path.relative(repositoryDirectory, resolvedPath).split(path.sep).join("/");
+    return {
+      name: path.basename(resolvedPath),
+      path: `../${relativePath}${referenceSuffix}`,
+      code: await readFile(resolvedPath, "utf8"),
+    };
+  } catch {
+    // Ignora referencias opcionales que no existen en la copia local.
+    return null;
+  }
 }
 
 async function getMissingReferences(html, pageDirectory, rootDirectory) {
