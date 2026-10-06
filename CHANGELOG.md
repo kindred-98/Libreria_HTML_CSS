@@ -149,10 +149,15 @@ comando y su medicion.
 - **Punto de partida medido**: calidad 88, seguridad 92, rendimiento 82,
   accesibilidad 85, producto/mercado 68. Lighthouse movil 72-86, escritorio
   99/100/100.
-- **Dos hallazgos que no estaban documentados**: el Quality Gate de
-  SonarCloud devuelve `NONE` (no hay gate configurado, no esta en A), y el
-  recuento real de incidencias abiertas es **99** (1 bug, 0 vulnerabilidades,
-  98 code smells), no 0.
+- **Dos hallazgos que no estaban documentados**: el Quality Gate ya existe
+  y es `Sonar way` (el built-in, que SonarCloud aplica por defecto), asi que
+  no hay que crear ninguno; el `NONE` que devuelve la API significa "estado
+  no calculado", no "sin gate". Y el recuento real de incidencias abiertas
+  es **99** (1 bug, 0 vulnerabilidades, 98 code smells), no 0.
+- **`Sonar way` tiene dos condiciones que hoy no se pueden cumplir**:
+  cobertura >= 80% (no hay ni un test) y duplicacion <= 3,0% (con 1018
+  demos independientes). Por eso SonarCloud se engancha al CI en modo
+  informativo y solo se marca como obligatorio cuando haya tests.
 - **Ocho fases** ordenadas por retorno por hora y por riesgo, no por
   numero: 1 (gate + 0), 4a (legal), 0 (herramientas y tests), 4b (SEO,
   medicion, release), 2 (accesibilidad), 5 (robustez), 3 (rendimiento),
@@ -164,6 +169,42 @@ comando y su medicion.
 - Incluye tambien un apartado de **que no hace falta hacer** para no
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
+
+## [Fase 0 (1): extrae las funciones puras a `lib/` y anade 48 tests] - 2026-10-06
+
+Empieza la Fase 0 del plan de nivel siguiente. Objetivo: que el codigo se
+autoverifique. Este commit solo pone la base; no cambia el comportamiento de
+ningun validador.
+
+- **`sonar.tests` declarado** en `sonar-project.properties` antes de escribir
+  el primer test. Sin eso Sonar analiza `__tests__` como codigo principal y
+  los asserts cuentan como code smells nuevos.
+- **Dos modulos nuevos en `Web/scripts/lib/`**, sin dependencias de Node, con
+  las funciones puras que estaban enterradas en scripts que hacen I/O:
+  - `sonar-csv.mjs`: `celda`, `csv`, `contar`, `tabla` y `sanearMensaje`.
+  - `autofix-patrones.mjs`: los 24 patrones, `EXCLUIR`, `aplicarPatrones` y
+    `contarPorPatron`. El script baja de 346 a 117 lineas.
+- **48 tests con `node:test`**, sin dependencias nuevas (`npm test`).
+  Cubren el formato del CSV y el saneo del log, y los 24 patrones con casos de
+  conversion **y de no-conversion**: los limites que evitan que el autofix
+  rompa un demo son la parte que importa.
+- **Cierra el segundo punto de inyeccion del S5145.** El saneo solo cubria el
+  `catch` de hotspots; ahora `sanearMensaje` se aplica tambien al cuerpo de
+  la respuesta de error en `pedir()`, que antes concatenaba crudo.
+
+**Dos bugs reales que encontraron los tests:**
+
+- `EXCLUIR` comparaba con `"Web/scripts/lib/"` sobre una ruta con
+  **backslashes de Windows**, asi que `includes()` no casaba nunca y `lib/` si
+  se autoeditaba. Se compara ya sobre la ruta normalizada.
+- `S7765` solo reescribia `> -1`, `>= -1` y `!= -1`, pero su documentacion
+  prometia tambien `>= 0`. Corregido el limite, con tests que protectan los
+  tres casos que NO deben convertirse: `!= 0`, `> 0` y `> -0` (este ultimo
+  es `> 0` porque `-0 === 0` en JavaScript, y convertirlos a `includes`
+  cambiaria el resultado).
+
+Verificado en verde: `npm test` (48/48), `npm run sonar:exportar` (99
+incidencias, mismos ficheros), `npm run validar` y `npm run catalogo`.
 
 ## [Deja el CLS de la pagina de componentes en 0 quitando el salto del pie] - 2026-10-06
 

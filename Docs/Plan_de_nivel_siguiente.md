@@ -31,19 +31,47 @@ Consultado con la API el 2026-10-06 contra la rama principal:
 | · VULNERABILITY | **0** |
 | · CODE_SMELL | **98** |
 | Severidades | 4 CRITICAL · 47 MAJOR · 44 MINOR · 4 INFO |
-| **Quality Gate** | **`NONE` — no está configurado** |
+| **Quality Gate** | **Sonar way** (built-in, aplicado por defecto) |
+| Estado del gate | `NONE` = *no evaluado*, no *sin gate* (ver §1.5) |
 
 Tres conclusiones incómodas:
 
-1. **El gate no existe.** `api/qualitygates/project_status` devuelve `NONE`.
-   Hoy nada bloquea nada: el "todo en A" que crees tener es una expectativa,
-   no una configuración. Es el primer hueco que hay que cerrar.
-2. **No estás en 0.** Estás en 99. Los 5 commits pendientes de la PR actual
-   se llevan ~20 (S7759×8, S7750×4, S7719×3, S5869×3, S6557×2) y el bug
-   S3403 sigue ahí: quedarán **~79**.
+1. **El gate ya existe y es `Sonar way`.** No hay que crear nada. Es el
+   built-in y SonarCloud se lo aplica a todo proyecto que no tenga uno propio:
+   *"Every project not specifically associated to a quality gate will be
+   associated to this one by default."* El `NONE` que devuelve la API
+   significa **"estado no calculado"**, no "no hay gate": ocurre cuando el
+   análisis está pendiente o aún no hay periodo de *new code*.
+   ⚠️ Corrección: una versión anterior de este documento decía que no había
+   gate. Era falso.
+2. **No estás en 0.** Estás en 99. Los 5 commits de la PR ya mergeada se
+   llevan ~20 (S7759×8, S7750×4, S7719×3, S5869×3, S6557×2) y el bug S3403
+   sigue ahí: quedarán **~79**.
 3. **Los 4 CRITICAL son de los tuyos, no de los demos**: `S3504` (`var` en
    vez de `let/const`) ×2 en un `script.js` y `S3735` (operador `void`) ×2
    en `Web/scripts/app.js:445` y `app.js:1046`.
+
+### 1.5 `Sonar way` y sus dos condiciones que hoy no puedes cumplir
+
+`Sonar way` es el built-in y **no se puede editar**. Sus condiciones sobre
+código nuevo:
+
+| Condición | Valor | Tu estado |
+| --- | --- | --- |
+| Reliability rating | A | se trabaja en la Fase 1 |
+| Security rating | A | se trabaja en la Fase 1 |
+| Maintainability rating | A | se trabaja en la Fase 1 |
+| Security hotspots reviewed | 100 % | sin hotspots → OK |
+| **Coverage** | **≥ 80 %** | **0 % — no hay ni un test** |
+| **Duplicated lines** | **≤ 3,0 %** | **probable con 1018 demos independientes** |
+
+Las dos últimas hacen que el gate dé **ERROR** desde hoy. No es un problema
+**siempre que el paso de SonarCloud no sea obligatorio en el CI**. De ahí el
+orden de las fases: los tests van en la Fase 0 y el enganche como *required*
+se hace al final, no al principio.
+
+Si algún día hay que afinarlo, el botón **⋮ → Copy** genera una copia
+editable con las 6 condiciones. No hace falta ahora.
 
 ### 1.2 Rendimiento, medido hoy (Lighthouse, preset móvil con throttling)
 
@@ -110,7 +138,7 @@ rompe, se corrige antes de pasar a la siguiente.
 
 | Área | Hoy | Objetivo | Lo que lo mueve |
 | --- | --- | --- | --- |
-| Calidad de código | 88 | **97** | Fase 0 (lint+tipos+tests) y Fase 1 (Sonar 0 + gate A) |
+| Calidad de código | 88 | **97** | Fase 0 (lint+tipos+tests) y Fase 1 (Sonar a 0 + Sonar en CI) |
 | Seguridad | 92 | **99** | Fase 1 (token a Actions), Fase 4a (legal), Fase 0 (`npm audit` en CI) |
 | Rendimiento | 82 | **96** | Fase 3 (presupuestos en CI) |
 | Accesibilidad | 85 | **98** | Fase 2 (0 axe en 2 viewports) |
@@ -192,25 +220,29 @@ escribir el primer test.
 
 ---
 
-### Fase 1 · SonarCloud a 0 de verdad, con Quality Gate configurado
+### Fase 1 · SonarCloud a 0 de verdad
 
-**Objetivo:** 99 → 0, gate en A, y que sea **imposible que vuelva a subir**.
+**Objetivo:** 99 → 0. El gate (`Sonar way`) ya existe, así que esta fase no
+crea nada: limpia el contador. El enganche al CI se hace aquí pero **en modo
+informativo**, no bloqueante (ver tarea 3).
 
 #### Tareas
 
-1. **Configurar el Quality Gate** (hoy `NONE`). En SonarCloud:
-   *My Organization → Quality Gates → Create* con los 4 criterios de **A**:
-   - *Condition on New Code*: 0 bugs, 0 vulnerabilities, 0 security hotspots,
-     duplicación < 3%, mantenibilidad < 5 min, cobertura de código nuevo ≥ 80%.
-   - *Condition on Overall Code*: 0 bugs, 0 vulnerabilities.
-   - Asignarlo al proyecto `kindred-98_Libreria_HTML_CSS`.
+1. **No tocar el Quality Gate.** `Sonar way` está aplicado por defecto y sus
+   condiciones de ratings (A/A/A) encajan con el objetivo. Lo que no se puede
+   cumplir todavía es **cobertura ≥ 80 %** (hay 0 tests) y **duplicación ≤ 3 %**.
+   Por eso el paso de SonarCloud **no se marca como *required*** hasta que la
+   Fase 0 haya metido tests y el contador esté en 0. No crear un gate
+   nuevo salvo que, más adelante, haga falta afinar alguno de esos dos
+   números (entonces: **⋮ → Copy**).
 2. **Quemar los 99.** Se clasifican en tres cubos:
    - **Auto-arreglables** (los que siguen en `Web/scripts/autofix-sonar-mecanico.mjs`):
      S7759, S7750, S7719, S6557, S5869, S7771, S7762, S7760, S7754, S7751,
      S7747, S7740, S7718 → ejecutar el script con `--rule`, validar, commit.
    - **Arreglos manuales de verdad** (los que no se pueden tocar a ciegas):
      - `S3403` (el único BUG) en `clinic-appointment-desk/script.js:235`
-     - `S3504` `var` → `let/const` (×2, los CRITICAL)
+     - `S3504` `var` → `let/const` (×2, los CRITICAL; más los 6 `var` que
+       añaden las correcciones manuales de scroll del 2026-10-06)
      - `S3735` `void` → `void 0` o eliminación (×2 en `app.js`)
      - `S6551` (×7), `S7785` (×6), `S2486` (×4), `S5843` (×4),
        `S4030` (×3), `S1128`/`S1481`/`S1871`/`S1854` (×2 cada uno)
@@ -220,13 +252,14 @@ escribir el primer test.
      `Web:S6821`/`Web:S1135` (los avisos de *todo* dentro de los demos),
      `S1135` (los `TODO` documentados). Cada uno con comentario en el
      panel, y la lista reflejada en `Docs/AnalisisSonarQube.md`.
-3. **Mover el token de SonarCloud de personal a secreto de GitHub.**
-   Workflow nuevo `sonar.yml` con `SonarSource/sonarcloud-github-action`
-   sobre `main` y sobre cada PR, usando `SONARCLOUD_TOKEN` en
-   *Repository secrets*. **Entonces se revoca el token personal**
-   (`https://sonarcloud.io/account/security` → `export-issues` → Revoke).
-   Con esto desaparece el único riesgo de seguridad abierto que queda.
-4. **Badge de calidad** en `README.md` (Quality Gate + relabilidad +
+3. **SonarCloud en CI, en modo informativo.** Workflow nuevo `sonar.yml` con
+   `SonarSource/sonarcloud-github-action` sobre `main` y sobre cada PR,
+   usando un `SONAR_TOKEN` en *Repository secrets* (nuevo, generado para
+   esto; el personal ya está revocado). El paso **no se añade a los
+   required checks** hasta que la Fase 0 haya subido la cobertura. En la
+   rama `Protege main` solo siguen siendo obligatorios los tres
+   `Validar (Node 20/22/24)`.
+4. **Badge de calidad** en `README.md` (Quality Gate + fiabilidad +
    seguridad + mantenibilidad) y en el pie del sitio, para que el "todo en A"
    sea visible y no solo interno.
 
@@ -235,15 +268,19 @@ escribir el primer test.
 ```bash
 npm run sonar:exportar   # 0 abiertas
 ```
-*Quality Gate: A* en el badge, y el workflow `sonar.yml` en verde en un PR.
+`Sonar way` en **ERROR→OK** en cuanto la cobertura deje de estar a cero (o
+al menos, ratings Reliability/Security/Maintainability en **A**), y el
+workflow `sonar.yml` publicando resultados en cada PR.
 
 #### Impacto en notas
 - Calidad de código: 92 → **96**
-- Seguridad: 93 → **97** (token revocado)
+- Seguridad: 93 → **97** (token de análisis solo en CI)
 
 #### Protección de Sonar
-**Esta fase es la protección.** El paso de SonarCloud en CI con gate A
-convierte cualquier regresión en un PR bloqueado.
+**Marcar el paso como *required* es el acto que convierte la nota en 97, y
+no se hace hasta que cobertura y duplicación puedan pasar.** Con el gate
+activo pero en modo informativo, la red se va cerrando sin bloquear el
+trabajo diario.
 
 ---
 
@@ -557,7 +594,7 @@ menos el último, que es manual.
 | Qué | Cómo se mide | Dónde |
 | --- | --- | --- |
 | Calidad de código | `npm run lint && npm run typecheck && npm test` | CI (Node 20/22/24) |
-| SonarCloud | `npm run sonar:exportar` → 0 · Quality Gate A | `sonar.yml` |
+| SonarCloud | `npm run sonar:exportar` → 0 abiertas | `sonar.yml` (informativo, luego *required*) |
 | Seguridad | `npm audit --audit-level=high` + CodeQL + token revocado | CI + GitHub Security |
 | Layout | `npm run validar:layout` (5 páginas × 23 anchos) | CI |
 | Accesibilidad | `npm run validar:a11y` (2 viewports) | CI |
@@ -574,7 +611,7 @@ menos el último, que es manual.
 
 | Fase | Impacto en notas | Esfuerzo | Riesgo | ¿Bloquea a las demás? |
 | --- | --- | --- | --- | --- |
-| **1 · Sonar 0 + gate A** | Alto | Medio | Bajo | **Sí** (sin gate no hay red) |
+| **1 · Sonar a 0 + Sonar en CI** | Alto | Medio | Bajo | **Sí** (sin el contador a 0 no hay referencia) |
 | **4a · Legal** | **Muy alto** | Bajo | Bajo | No |
 | **4b · Medición + SEO + release** | **Muy alto** | Medio | Bajo | No |
 | **0 · Herramientas y tests** | Alto | Medio-alto | Bajo | **Sí** (habilita el resto) |
@@ -588,8 +625,9 @@ menos el último, que es manual.
 **¿Por qué ese orden y no el del documento?** Porque es el orden de mayor
 retorno por hora invertida y de menor riesgo acumulado:
 
-- La **Fase 1** va primera porque es la única que *protege* todo lo demás:
-  sin gate, cualquier fase siguiente puede romper algo y que nadie lo note.
+- La **Fase 1** va primera porque fija la referencia de calidad: con el
+  contador a 0, cualquier fase siguiente que lo suba se ve al momento en el
+  panel, aunque todavía no bloquee el merge.
 - La **4a** va segunda porque es de las más baratas y de las que más
   mueven el 68 (basta con enlazar desde el pie lo que ya existe).
 - La **0** va después porque necesita un hueco de concentración y porque,
@@ -682,7 +720,7 @@ npm run sonar:exportar     # -> 0 incidencias abiertas
 
 | Fase | Qué consigue | Nota que sube |
 | --- | --- | --- |
-| **1** | Quality Gate A configurado (hoy `NONE`) y 99 → 0; token revocado | Calidad 92, Seguridad 97 |
+| **1** | 99 → 0 en SonarCloud; SonarCloud publica en cada PR (aún sin bloquear) | Calidad 92, Seguridad 97 |
 | **4a** | 5 documentos legales en el sitio y enlazados desde el pie | Producto 82 |
 | **0** | Lint, tipos y tests: el código se autoverifica | Calidad 92 |
 | **4b** | JSON-LD, GA4 con embudo, release v1.0.0, instalable | Producto **100** |

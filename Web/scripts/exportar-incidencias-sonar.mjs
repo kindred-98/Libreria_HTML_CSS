@@ -22,6 +22,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { celda, contar, csv, sanearMensaje, tabla } from "./lib/sonar-csv.mjs";
 
 const BASE_POR_DEFECTO = "https://sonarcloud.io";
 const TAMANO_PAGINA = 500;
@@ -58,8 +59,11 @@ async function pedir(ruta, parametros) {
   }
   const respuesta = await fetch(url, { headers: cabeceras });
   if (!respuesta.ok) {
-    const detalle = await respuesta.text();
-    throw new Error(`${respuesta.status} ${respuesta.statusText} en ${url.pathname}: ${detalle.slice(0, 300)}`);
+    // S5145: el cuerpo de la respuesta lo escribe el servidor y puede traer
+    // saltos de linea o caracteres de control. Se sanea antes de meterlo en el
+    // mensaje del error para no poder inyectar lineas falsas en el log.
+    const detalle = sanearMensaje(await respuesta.text());
+    throw new Error(`${respuesta.status} ${respuesta.statusText} en ${url.pathname}: ${detalle}`);
   }
   return respuesta.json();
 }
@@ -77,32 +81,6 @@ async function paginar(ruta, parametros) {
     process.stdout.write(`  pagina ${pagina} (${elementos.length}/${total})\n`);
   }
   return elementos;
-}
-
-function celda(valor) {
-  const texto = valor === null || valor === undefined ? "" : String(valor);
-  return /["\n\r;]/.test(texto) ? `"${texto.replaceAll('"', '""')}"` : texto;
-}
-
-function csv(cabecerasCsv, filas) {
-  return [cabecerasCsv.join(","), ...filas.map((fila) => fila.map(celda).join(","))].join("\n") + "\n";
-}
-
-function contar(objetos, llave) {
-  const mapa = new Map();
-  for (const objeto of objetos) {
-    const valor = objeto[llave] ?? "(sin dato)";
-    mapa.set(valor, (mapa.get(valor) ?? 0) + 1);
-  }
-  return [...mapa.entries()].sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])));
-}
-
-function tabla(recuentos, limite = 30) {
-  if (recuentos.length === 0) return "_Sin datos._\n";
-  return recuentos
-    .slice(0, limite)
-    .map(([clave, total]) => `| ${clave} | ${total} |`)
-    .join("\n");
 }
 
 console.log(`Proyecto: ${proyecto}`);
@@ -124,12 +102,9 @@ try {
   hotspots = await paginar("/api/hotspots/search", { projectKey: proyecto });
 } catch (error) {
   // S5145: el mensaje de error podria traer newlines o caracteres de
-  // control si viene de un servidor comprometido. Se sanea antes de
-  // escribirlo al log para evitar log injection.
-  const mensajeSeguro = String(error?.message ?? "")
-    .replace(/[\r\n\t\v\f\0]+/g, " ")
-    .slice(0, 200);
-  console.warn(`  no se pudieron leer los hotspots (${mensajeSeguro}). Suele pasar si la cuenta no es de pago.`);
+  // control si viene de un servidor comprometido. `sanearMensaje` los
+  // colapsa a un espacio y trunca, antes de escribirlo en el log.
+  console.warn(`  no se pudieron leer los hotspots (${sanearMensaje(error)}). Suele pasar si la cuenta no es de pago.`);
 }
 console.log(`  ${hotspots.length} hotspots`);
 
