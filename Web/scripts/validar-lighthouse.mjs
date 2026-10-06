@@ -55,11 +55,13 @@ const UMBRALES = {
   seo: 95,
 };
 
-// Las mismas tres paginas que `validar-a11y.mjs`.
+// Las mismas paginas que `validar-a11y.mjs`.
 const PAGINAS = [
   { ruta: "/Web/index.html", nombre: "portada" },
   { ruta: "/Web/components.html", nombre: "componentes" },
   { ruta: "/Web/team-core.html", nombre: "team core" },
+  { ruta: "/Web/privacidad.html", nombre: "privacidad" },
+  { ruta: "/Web/legal.html", nombre: "legal" },
 ];
 
 // Lighthouse no arranca el navegador por si solo cuando se usa como libreria,

@@ -170,6 +170,44 @@ comando y su medicion.
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
 
+## [Fase 4a: privacidad y legal en el sitio, enlazadas desde el pie] - 2026-10-06
+
+Empieza la Fase 4a del plan, que es la que mas mueve la nota de producto (68).
+`PRIVACY.md` llevaba dias escrito en la raiz del repositorio, pero **nadie
+llegaba a el desde la web**: el pie solo tenia un boton de cookies. Para un
+sitio que dice recoger estadisticas con Google Analytics, eso es un problema,
+no un detalle.
+
+- **`Web/privacidad.html`**: la politica completa, bilingue, con indice de
+  secciones y el detalle de las tres claves de `localStorage` en tabla.
+- **`Web/legal.html`**: aviso legal, licencias (sitio, componentes y los
+  efectos de davoker), material de terceros, sin garantia y **declaracion de
+  accesibilidad** con el nivel que el proyecto ha medido de verdad.
+- **Ambas enlazadas desde el pie de las tres paginas**, que es el unico
+  camino que la gente tiene. Anadidas tambien a `sitemap.xml` para que los
+  buscadores las indexen.
+- **`.legal-doc` en `site.css`**: ancho de linea acotado a 68 caracteres,
+  interlineado mas amplio, `scroll-margin-top` en los encabezados (la cabecera
+  del sitio es fija y sin eso el titulo queda escondido al saltar a una
+  seccion) y `overflow-wrap` para que una URL larga no rompa el movil.
+- **Los validadores miden ya las paginas nuevas**: `validar:enlaces` pasa de 5
+  a 7 paginas (92 destinos), `validar:layout` de 115 a **161 medidas** (7
+  paginas x 23 anchos) y `validar:a11y` de 12 a **20 pasadas** (5 paginas x 2
+  idiomas x 2 temas). `validar:lighthouse` tambien las mide:
+  **100/100/100/100 en las dos**.
+- **3 tests e2e nuevos** (15 en total): se llega a cada pagina desde el pie, el
+  indice no tiene anclas rotas, el texto se traduce de verdad y las tres
+  paginas siguen enlazando las dos.
+
+Un apunte sobre el test que fallo al escribirlo: buscaba la palabra "WCAG"
+dentro del `<h2>` de la seccion, cuando el texto esta en el parrafo siguiente.
+El sitio estaba bien desde el principio; la asercion no.
+
+Verificado en verde: `validar`, `validar:html`, `validar:enlaces`,
+`validar:layout` (161/161), `validar:a11y` (0 serious/critical),
+`validar:lighthouse` (5 paginas x 4 categorias), `test` (48/48),
+`test:e2e` (15/15), `lint`, `format:check` y `typecheck` (18 de 38).
+
 ## [Documenta que se deja de Sonar y por que] - 2026-10-06
 
 `Docs/Sonar_decisiones.md`: lo que **no** se toca de SonarQube y el motivo de

@@ -31,7 +31,15 @@ const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "../..");
 
 // Las mismas paginas que mira `html-validate` y que el CI construye.
-const PAGINAS = ["Web/index.html", "Web/components.html", "Web/team-core.html", "404.html", "index.html"];
+const PAGINAS = [
+  "Web/index.html",
+  "Web/components.html",
+  "Web/team-core.html",
+  "Web/privacidad.html",
+  "Web/legal.html",
+  "404.html",
+  "index.html",
+];
 
 const fallos = [];
 const avisos = [];

@@ -2360,3 +2360,159 @@ input:focus-visible {
     animation: none !important;
   }
 }
+/* --- PAGINAS DE TEXTO LARGO (privacidad, legal) -----------------------
+No son demos ni la portada: son documentos para leer. Se diferencian del
+   resto en tres cosas, y las tres importan al leer en un movil:
+
+   1. Ancho de linea acotado (~68 caracteres). Un parrafo a lo ancho de una
+      pantalla de telefono es ilegible: el ojo vuelve al principio de cada
+      linea y pierde el sitio.
+   2. Interlineado amplio. A 1.6 como el resto del sitio, un bloque de texto
+      de 40 lineas se ve como una pared.
+   3. Encabezados con `scroll-margin-top`, porque el encabezado del sitio es
+      fijo: al saltar a una seccion el titulo quedaria debajo.
+
+   Los `li` y las tablas tambien se reparten: en este sitio las tablas del
+   catalogo son anchas, aqui son de tres columnas. */
+.legal-doc {
+  max-width: 68ch;
+  margin-inline: auto;
+  padding: 2.5rem 1.25rem 4rem;
+  line-height: 1.75;
+}
+
+.legal-doc > h1 {
+  margin-top: 0;
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.legal-doc h2 {
+  margin-top: 2.75rem;
+  margin-bottom: .6rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+  font-size: 1.25rem;
+  /* El encabezado del sitio va fijo: sin esto el titulo de la seccion queda
+     escondido debajo al llegar con un ancla. */
+  scroll-margin-top: 5rem;
+}
+
+.legal-doc h3 {
+  margin-top: 1.8rem;
+  margin-bottom: .4rem;
+  font-size: 1.02rem;
+  scroll-margin-top: 5rem;
+}
+
+.legal-doc p,
+.legal-doc li {
+  color: var(--text);
+  /* Sin esto, un identificador largo o una URL larga rompen la maqueta en
+     movil, que es justo donde se lee esto. */
+  overflow-wrap: break-word;
+}
+
+.legal-doc p {
+  margin: 0 0 1rem;
+}
+
+.legal-doc ul,
+.legal-doc ol {
+  margin: 0 0 1rem;
+  padding-left: 1.35rem;
+}
+
+.legal-doc li {
+  margin-bottom: .45rem;
+}
+
+.legal-doc li::marker {
+  color: var(--accent);
+}
+
+.legal-doc strong {
+  color: var(--text);
+}
+
+/* Tabla de las claves de localStorage: en movil no cabe en tres columnas, asi
+   que pasa a apilarse y cada fila rotula su valor con `data-label`. */
+.legal-doc .legal-table {
+  width: 100%;
+  margin: 0 0 1.5rem;
+  border-collapse: collapse;
+  font-size: .92rem;
+}
+
+.legal-doc .legal-table th,
+.legal-doc .legal-table td {
+  padding: .6rem .7rem;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.legal-doc .legal-table th {
+  background: var(--surface-raised);
+  font-weight: 700;
+}
+
+.legal-doc code {
+  padding: .1rem .3rem;
+  border-radius: 4px;
+  background: var(--surface-raised);
+  font-size: .88em;
+  overflow-wrap: anywhere;
+}
+
+.legal-doc blockquote {
+  margin: 1.2rem 0;
+  padding: .2rem 0 .2rem 1rem;
+  border-left: 3px solid var(--accent);
+  color: var(--text);
+}
+
+.legal-doc .legal-updated {
+  margin-bottom: 2rem;
+  color: var(--muted);
+  font-size: .88rem;
+}
+
+/* Indice de secciones: en movil es la unica forma de saltar a la parte que
+   interesa sin recorrer el documento entero. */
+.legal-toc {
+  margin: 0 0 2.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-raised);
+}
+
+.legal-toc p {
+  margin: 0 0 .5rem;
+  font-weight: 700;
+}
+
+.legal-toc ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  columns: 2;
+  column-gap: 1.5rem;
+}
+
+.legal-toc li {
+  break-inside: avoid;
+  margin-bottom: .2rem;
+}
+
+/* Los enlaces internos llevan una flecha para que se distingan de los externos
+   al leer en el movil. */
+.legal-doc a {
+  color: var(--accent);
+}
+
+.legal-doc a[href^="http"]::after {
+  content: " \2197";
+  font-size: .85em;
+}

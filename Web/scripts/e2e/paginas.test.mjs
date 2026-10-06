@@ -240,3 +240,74 @@ test("team core: carga con su h1 y sin errores de consola", async () => {
   assert.deepEqual(errores, []);
   await pagina.close();
 });
+
+// ------------------------------------------------------------------- legales
+
+test("privacidad: se llega desde el pie, se lee y cambia de idioma", async () => {
+  // El pie es el unico sitio desde donde se llega a la politica, asi que es
+  // el camino que hay que comprobar de verdad.
+  const pagina = await abrir("/Web/index.html");
+  await pagina.getByRole("link", { name: "Privacy", exact: true }).click();
+  await pagina.waitForURL("**/privacidad.html");
+  assert.equal(await pagina.locator("h1").textContent(), "Privacy");
+
+  // El indice debe apuntar a secciones que existen de verdad.
+  const secciones = await pagina.evaluate(() =>
+    [...document.querySelectorAll(".legal-toc a")].map((a) => a.getAttribute("href")),
+  );
+  assert.equal(secciones.length >= 6, true);
+  for (const href of secciones) {
+    assert.equal(await pagina.locator(href).count(), 1, `ancla rota: ${href}`);
+  }
+
+  // Y tiene que traducirse, no quedarse en espanol en modo EN.
+  await pagina.locator('.language-button[data-language="en"]').click();
+  await pagina.waitForFunction(() => document.querySelector("h1")?.textContent === "Privacy", undefined, {
+    timeout: 10000,
+  });
+  const vacias = await pagina.evaluate(
+    () => [...document.querySelectorAll("[data-i18n]")].filter((el) => !el.textContent.trim()).length,
+  );
+  assert.equal(vacias, 0);
+  await pagina.close();
+});
+
+test("legal: se llega desde el pie y declara el nivel de accesibilidad", async () => {
+  const pagina = await abrir("/Web/components.html");
+  await pagina.getByRole("link", { name: "Legal", exact: true }).click();
+  await pagina.waitForURL("**/legal.html");
+  // La declaracion de accesibilidad es lo que ancla la nota de a11y del plan.
+  // Se busca en toda la seccion (encabezado + parrafos), no solo en el h2.
+  const seccionA11y = pagina.locator("#accesibilidad");
+  assert.equal(await seccionA11y.count(), 1);
+  const textoA11y = await pagina
+    .locator("#accesibilidad ~ p, #accesibilidad")
+    .first()
+    .evaluate((nodo) => nodo.parentElement?.textContent ?? nodo.textContent);
+  assert.equal(textoA11y.includes("WCAG"), true);
+
+  const secciones = await pagina.evaluate(() =>
+    [...document.querySelectorAll(".legal-toc a")].map((a) => a.getAttribute("href")),
+  );
+  for (const href of secciones) {
+    assert.equal(await pagina.locator(href).count(), 1, `ancla rota: ${href}`);
+  }
+  await pagina.close();
+});
+
+test("las tres paginas del pie enlazan privacidad y legal", async () => {
+  for (const ruta of ["/Web/index.html", "/Web/components.html", "/Web/team-core.html"]) {
+    const pagina = await abrir(ruta);
+    assert.equal(
+      (await pagina.locator('a[href="./privacidad.html"]').count()) === 1,
+      true,
+      `${ruta}: sin enlace a privacidad`,
+    );
+    assert.equal(
+      (await pagina.locator('a[href="./legal.html"]').count()) === 1,
+      true,
+      `${ruta}: sin enlace a legal`,
+    );
+    await pagina.close();
+  }
+});
