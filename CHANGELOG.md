@@ -87,6 +87,31 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Sirve robots.txt y sitemap.xml tambien en la raiz] - 2026-10-06
+
+Al verificar la propiedad en Search Console aparecio un problema que no se ve
+navegando: **Google solo busca `robots.txt` en la raiz del dominio**, y el
+fichero vivia en `/Web/robots.txt`. En la raiz daba 404, asi que el buscador no
+encontraba ni el robots.txt ni la linea `Sitemap:` que lleva dentro, y por lo
+tanto no podia descubrir el sitemap solo. Estar verificado en Search Console no
+bastaba.
+
+Dos redirecciones 302 en `vercel.json`:
+
+| Se pide | Le lleva a |
+| --- | --- |
+| `/robots.txt` | `/Web/robots.txt` |
+| `/sitemap.xml` | `/Web/sitemap.xml` |
+
+**Por que 302 y no 301:** con 301 el navegador y Google cachean la redireccion
+para siempre, y si un dia cambia el destino habria que esperar a que expire esa
+cache. Con 302 se resuelve siempre de nuevo. El coste es una peticion mas por
+visita al `robots.txt`, y no es un archivo que se visited cada vez.
+
+Nota util para quien lo haga desde la interfaz de Search Console: en el campo
+del sitemap hay que escribir la **URL completa**. `sitemap.xml` a secas se
+resuelve contra la raiz del dominio y da 404.
+
 ## [Centra el shell en la animacion de despedida al volver de un showcase] - 2026-10-06
 
 Al salir de un showcase de Davoker (`transicion.html` -> `davoker.html`),
