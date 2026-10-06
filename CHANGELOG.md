@@ -170,6 +170,46 @@ comando y su medicion.
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
 
+## [Arregla los dos fallos que生生 rompieron el CI] - 2026-10-06
+
+El CI fallo en Node 20 y en el Quality Gate. Los dos por motivos distintos, y
+los dos por culpa de la fase 0.
+
+### 1. `npm test` reventaba en Node 20
+
+El script era `node --test "Web/scripts/__tests__/*.test.mjs"`. Los globs
+**internos** de `node --test` existen desde Node 21. En Node 20 —que este repo
+sigue soportando y con el que corre uno de los tres jobs obligatorios— el
+programa recibe la cadena tal cual, la toma por un nombre de fichero y muere con
+`Could not find '.../*.test.mjs'`.
+
+En local no se notaba: aqui se usa Node 24 y el glob se expande. **Un fallo que
+solo se ve en una de las tres versiones del CI.**
+
+Arreglo: `Web/scripts/test.mjs` resuelve la lista de ficheros con `fs.readdirSync`
+y se los pasa a `node --test`, que si funciona igual en cualquier version y en
+cualquier sistema (un directorio como argumento tampoco se comporta igual entre
+Windows y Linux). Comprobado en **Node 20, 22 y 24: 48/48 en las tres**.
+
+### 2. El Quality Gate fallo por 14% de duplicacion en codigo nuevo
+
+La condicion es *Duplication on New Code ≤ 3%*. Los ~1.100 lineas nuevas de la
+fase 0 los tres ficheros de tests repiten el mismo **andamiaje**: los imports de
+`node:test` y `node:assert/strict`, la funcion `abrir()` y todos los
+`test("nombre", () => {...})`. No es duplicacion accidental: es como se escribe
+en `node:test`, y "arreglarlo" obligaria a meter una capa de abstraccion que
+molestaria mas de lo que ayudaria.
+
+Se excluyen `__tests__` y `e2e` de `sonar.cpd.exclusions` (que es distinto de
+`sonar.tests`, que ya los marcaba como tests: esa propiedad saca el resto de
+metricas, pero **no la duplicacion**).
+
+### Bug de paso en `sonar-project.properties`
+
+Tenia **dos lineas `sonar.cpd.exclusions=`**. En un `.properties` la ultima
+asignacion de una clave gana, asi que la primera era configuracion muerta desde
+mucho antes de este plan. Se deja una sola, con las cuatro exclusiones juntas.
+
 ## [Anade la etiqueta de verificacion de Search Console] - 2026-10-06
 
 Puesto en marcha el descubrimiento en buscadores (Fase 4b). Search Console solo
