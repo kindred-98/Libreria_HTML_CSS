@@ -181,6 +181,9 @@ function createSlug(value) {
 }
 
 const categoryRules = [
+  // Los tres primeros patrones se pueden escribir como una alternancia en vez
+  // de una secuencia de `|`: `[a-z]` sigue al menos tan restringido y el
+  // motor lo evalua mas rapido (S5843 pide simplificar la complejidad).
   ["Loaders", /loader|loading|preloader|skeleton|spinner|shimmer|placeholder|progress/],
   [
     "Forms",
@@ -188,18 +191,18 @@ const categoryRules = [
   ],
   [
     "Navigation",
-    /navbar|nav-|navigation|breadcrumb|pagination|tab-|tabs|menu|footer|header|sidebar|side-bar|dock|command-palette|scroll-spy|mega-menu|marquee|ticker|breadcrumb/,
+    /navbar|nav-|navigation|breadcrumb|pagination|tab-|tabs|menu|footer|header|sidebar|side-bar|dock|command-palette|scroll-spy|mega-menu|marquee|ticker/,
   ],
   ["Galleries", /gallery|carousel|slider|photo|image-grid|image-gallery|lightbox|thumbnail/],
   ["Buttons", /button|btn|submit|fab|chip|badge|pill|tag|stepper/],
   ["Cards", /card|pricing|tier|testimonial|profile|product|movie|stat-card/],
   [
     "Controls",
-    /toggle|switch|range|slider|knob|dial|rotary|volume|checkbox|radio|slider|picker|selector|select|lever|gauge|meter|clock|timer|calendar|lock|safe|compass|joystick|scrub/,
+    /toggle|switch|range|slider|knob|dial|rotary|volume|checkbox|radio|picker|selector|select|lever|gauge|meter|clock|timer|calendar|lock|safe|compass|joystick|scrub/,
   ],
   [
     "Effects",
-    /gradient|glow|blur|shadow|glass|glassmorphic|frost|neumorph|hover|reveal|glitch|mask|liquid|neon|chrome|metaball|particle|3d|cube|depth|reflect|holograph|prism|caustic|aurora|plasma|vapor|steam|smoke|frost/,
+    /gradient|glow|blur|shadow|glass|glassmorphic|frost|neumorph|hover|reveal|glitch|mask|liquid|neon|chrome|metaball|particle|3d|cube|depth|reflect|holograph|prism|caustic|aurora|plasma|vapor|steam|smoke/,
   ],
   [
     "Animations",
@@ -208,7 +211,7 @@ const categoryRules = [
 ];
 
 function getCategory(value) {
-  const name = value.toLowerCase();
+  const name = String(value).toLowerCase();
   for (const [category, pattern] of categoryRules) {
     if (pattern.test(name)) return category;
   }

@@ -47,8 +47,13 @@ if (!token || !proyecto) {
 const directorioScript = path.dirname(fileURLToPath(import.meta.url));
 const directorioSalida = path.resolve(directorioScript, "../../tmp/sonar");
 
+// La cabecera de SonarQube Cloud es `Basic base64(token:)`. Se separa el
+// `token:` en una constante propia porque anidar dos plantillas dentro de la
+// misma expresion es lo que marca S4624, y ademas se lee mejor.
+const credenciales = Buffer.from(`${token}:`).toString("base64");
+
 const cabeceras = {
-  Authorization: `Basic ${Buffer.from(`${token}:`).toString("base64")}`,
+  Authorization: `Basic ${credenciales}`,
   Accept: "application/json",
 };
 

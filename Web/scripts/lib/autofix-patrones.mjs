@@ -101,7 +101,10 @@ export const PATRONES = [
     id: "S6582",
     descripcion: "x && x.y -> x?.y (optional chaining, en posicion aislada)",
     regex:
-      /(?<=\s*[(,;?:]|^)\b([A-Za-z_$][\w$]*)\s*&&\s*\1\.([A-Za-z_$][\w$]*(?:\([^\)]*\))?)(?=\s*(?:[,);\]?:&|]|\n|$))/g,
+      // Dentro de una clase de caracteres, `)` y `]` no necesitan barra:
+      // solo `]`, `^` (al inicio) y `\` tienen que escaparse. El motor los
+      // aceptaba escapados, pero es ruido que Sonar marca (S6535).
+      /(?<=\s*[(,;?:]|^)\b([A-Za-z_$][\w$]*)\s*&&\s*\1\.([A-Za-z_$][\w$]*(?:\([^)]*\))?)(?=\s*(?:[,)\]?:&|]|\n|$))/g,
     reemplazo: "$1?.$2",
   },
   {

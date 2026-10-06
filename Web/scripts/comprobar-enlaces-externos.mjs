@@ -97,8 +97,8 @@ for (const url of lista) {
       // 405/403 en HEAD es habitual en sitios que solo responden a GET.
       if (metodo === "HEAD" && [403, 405, 400, 501].includes(respuesta.status)) continue;
       break;
-    } catch (caught) {
-      error = caught;
+    } catch (error_) {
+      error = error_;
       respuesta = null;
     }
   }

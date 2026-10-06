@@ -170,6 +170,41 @@ comando y su medicion.
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
 
+## [Fase 1 (2): 8 issues mas de Sonar en el codigo de `Web/scripts`] - 2026-10-06
+
+Segunda tanda de la Fase 1, ya sobre codigo nuestro (el que corre en el CI y en
+el despliegue de Vercel) en vez de sobre demos.
+
+- **`generate-catalog.mjs` (4)**. Los cuatro avisos iban sobre las mismas tres
+  listas de `categoryRules`: `breadcrumb` estaba dos veces en Navigation,
+  `slider` dos veces en Controls y `frost` dos veces en Effects. Se quitan los
+  repetidos. Ademas `getCategory` ahora hace `String(value)` antes de
+  `toLowerCase()`, que es lo que pedia S3800 (la funcion declaraba devolver
+  `string` pero reventaba si le llegaba un valor no textual).
+- **`validar-csp.mjs` (1)**: `[].concat(directiva)` pasa a `[directiva].flat()`.
+  Comprobado que hay exactamente una entrada con array (`google-analytics.com`
+  con `connect-src` e `img-src`), que es el unico caso donde ambas cosas
+  difieren, y que aplanan igual. El validador sigue dando el mismo resultado.
+- **`lib/autofix-patrones.mjs` (1)**: dentro de la clase de caracteres de la
+  regex S6582, `)` y `]` van sin barra. El motor los aceptaba escapados, pero
+  era ruido que Sonar marcaba (S6535).
+- **`exportar-incidencias-sonar.mjs` (1)**: la cabecera `Basic` usaba dos
+  plantillas anidadas. Se saca el `base64(token:)` a una constante.
+- **`localizar-imagenes.mjs` (1)**: la asignacion de `registro` estaba dentro
+  de la llamada a `set()`; ahora es un `if` con llaves.
+- **`comprobar-enlaces-externos.mjs` (1)**: el `catch` se llamaba `caught`; ahora
+  `error_`.
+
+**Como se ha comprobado que nada cambia:** el `catalog.json` generado antes y
+despues es **byte a byte identico** (`sha256`), que es la forma mas directa de
+descartar que las reglas de categoria hayan cambiado el catalogo. El export de
+Sonar sigue autenticando y trayendo las mismas 99 incidencias, y
+`validar:csp` sigue en verde.
+
+Verificado en verde: `catalogo` (identico), `sonar:exportar`, `validar`,
+`validar:csp`, `validar:encabezados`, `test` (48/48), `test:e2e` (12/12),
+`lint`, `format:check` y `typecheck` (18 de 38).
+
 ## [Fase 1 (1): 21 issues de Sonar en 18 ficheros (17 demos + `app.js`)] - 2026-10-06
 
 Empieza la Fase 1 del plan: bajar el contador de SonarQube Cloud de 99 a 0.

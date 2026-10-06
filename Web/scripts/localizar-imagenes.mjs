@@ -88,7 +88,10 @@ async function leerInventario() {
 
       for (const url of linea.match(URL_IMAGEN) ?? []) {
         let registro = imagenes.get(url);
-        if (!registro) imagenes.set(url, (registro = { url, demos: new Set(), usos: 0 }));
+        if (!registro) {
+          registro = { url, demos: new Set(), usos: 0 };
+          imagenes.set(url, registro);
+        }
         registro.demos.add(demo);
         registro.usos += 1;
       }

@@ -281,7 +281,7 @@ for (const { host, directiva, why } of RELEVANCE) {
   if (!usados.has(host)) continue;
   const d = usados.get(host);
   d.directivas.delete("*");
-  for (const dir of [].concat(directiva)) d.directivas.add(dir);
+  for (const dir of [directiva].flat()) d.directivas.add(dir);
   d.why = why;
 }
 
