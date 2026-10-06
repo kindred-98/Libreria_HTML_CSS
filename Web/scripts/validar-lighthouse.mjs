@@ -74,7 +74,7 @@ function prepararNavegador() {
   } catch {
     throw new Error(
       "No hay navegador: ni el Chromium de Playwright ni el Chrome del sistema. " +
-      "Instala el primero con `npx playwright install --with-deps chromium`.",
+        "Instala el primero con `npx playwright install --with-deps chromium`.",
     );
   }
 }
@@ -91,12 +91,7 @@ const servidor = await arrancarServidor(puerto);
 // Sin esto en un runner sin pantalla el Chrome no arranca. `--no-sandbox` no
 // hace falta en local, pero en el CI de GitHub si y anadirlo ahi no cambia
 // nada en la medicion.
-const CHROME_FLAGS = [
-  "--headless=new",
-  "--no-sandbox",
-  "--disable-gpu",
-  "--disable-dev-shm-usage",
-];
+const CHROME_FLAGS = ["--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"];
 
 // `lighthouse()` solo mide: no arranca el navegador. En la linea de comandos
 // lo hace el binario de Lighthouse, y aqui ese trabajo es de chrome-launcher,
@@ -107,7 +102,9 @@ let chrome = null;
 try {
   chrome = await lanzarChrome({ chrome: binario, chromeFlags: CHROME_FLAGS });
   console.log(`Lighthouse 13 · Chromium en ${binario}`);
-  console.log(`Umbral: rendimiento >= ${UMBRALES.performance}, el resto >= ${UMBRALES.accessibility} (preset desktop)\n`);
+  console.log(
+    `Umbral: rendimiento >= ${UMBRALES.performance}, el resto >= ${UMBRALES.accessibility} (preset desktop)\n`,
+  );
 
   for (const pagina of PAGINAS) {
     const inicio = Date.now();
@@ -147,9 +144,7 @@ try {
 
     const segundos = ((Date.now() - inicio) / 1000).toFixed(1);
     const puntos = UMBRALES_NOMBRES.map((c) => `${c}=${Math.round(lhr.categories[c].score * 100)}`);
-    const bajos = UMBRALES_NOMBRES.filter(
-      (c) => Math.round(lhr.categories[c].score * 100) < UMBRALES[c],
-    );
+    const bajos = UMBRALES_NOMBRES.filter((c) => Math.round(lhr.categories[c].score * 100) < UMBRALES[c]);
 
     if (bajos.length === 0) {
       console.log(`  ok    ${pagina.nombre.padEnd(12)} ${puntos.join("  ")}  (${segundos} s)`);
@@ -173,5 +168,7 @@ if (fallos.length > 0) {
   for (const fallo of fallos) console.error(`  - ${fallo}`);
   process.exitCode = 1;
 } else {
-  console.log(`${PAGINAS.length} paginas por encima del umbral en las ${UMBRALES_NOMBRES.length} categorias.`);
+  console.log(
+    `${PAGINAS.length} paginas por encima del umbral en las ${UMBRALES_NOMBRES.length} categorias.`,
+  );
 }

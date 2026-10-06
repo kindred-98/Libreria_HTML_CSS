@@ -31,8 +31,12 @@ export async function puertoLibre() {
     const sonda = net.createServer();
     sonda.on("error", reject);
     sonda.listen(0, "127.0.0.1", () => {
-      const { port } = sonda.address();
-      sonda.close(() => resolve(port));
+      const direccion = sonda.address();
+      // `address()` devuelve `string | AddressInfo | null`: solo tiene puerto
+      // cuando el servidor esta escuchando enTCP, que es lo que se acaba de
+      // pedir. El caso `null` no puede ocurrir aqui.
+      const puerto = typeof direccion === "object" && direccion !== null ? direccion.port : 0;
+      sonda.close(() => resolve(puerto));
     });
   });
 }
@@ -54,15 +58,20 @@ export function arrancarServidor(puerto) {
       salida += trozo;
       if (salida.includes("Sirviendo el repositorio")) listo();
     });
-    proceso.stderr.on("data", (trozo) => { salida += trozo; });
+    proceso.stderr.on("data", (trozo) => {
+      salida += trozo;
+    });
     proceso.on("error", reject);
     proceso.on("exit", (codigo) => {
       if (!arrancado) {
-        reject(new Error(`serve.mjs no arranco en el puerto ${puerto} (codigo ${codigo}):\n${salida.trim()}`));
+        reject(
+          new Error(`serve.mjs no arranco en el puerto ${puerto} (codigo ${codigo}):\n${salida.trim()}`),
+        );
       }
     });
     setTimeout(() => {
-      if (!arrancado) reject(new Error(`serve.mjs no arranco en 15 s en el puerto ${puerto}:\n${salida.trim()}`));
+      if (!arrancado)
+        reject(new Error(`serve.mjs no arranco en 15 s en el puerto ${puerto}:\n${salida.trim()}`));
     }, 15000).unref();
   });
 }

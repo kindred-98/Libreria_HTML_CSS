@@ -123,9 +123,7 @@ for (const pagina of PAGINAS) {
     }
 
     if (ancla) {
-      const destinoAbsoluto = rutaLimpia.endsWith("/")
-        ? path.join(objetivo, "index.html")
-        : objetivo;
+      const destinoAbsoluto = rutaLimpia.endsWith("/") ? path.join(objetivo, "index.html") : objetivo;
       const idsDestino = await idsDe(destinoAbsoluto);
       if (!idsDestino) {
         avisos.push(`${pagina}: ${atributo}="${destino}" no se puede leer para comprobar la ancla`);
@@ -136,7 +134,9 @@ for (const pagina of PAGINAS) {
   }
 }
 
-console.log(`info  ${PAGINAS.length} paginas del sitio, ${comprobados} destinos locales comprobados, ${externos} externos`);
+console.log(
+  `info  ${PAGINAS.length} paginas del sitio, ${comprobados} destinos locales comprobados, ${externos} externos`,
+);
 
 if (avisos.length) {
   for (const aviso of avisos) console.log(`AVISO: ${aviso}`);

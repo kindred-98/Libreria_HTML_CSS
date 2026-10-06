@@ -30,6 +30,11 @@
 // aplica a texto tal cual, sin parseo de JS, asi que los limites de cada uno
 // son obligatorios: un patron mal escrito romperia codigo que parece encajar
 // pero no.
+/**
+ * @typedef {{id: string, descripcion: string, regex: RegExp, reemplazo: string|Function}} Patron
+ */
+
+/** @type {Patron[]} */
 export const PATRONES = [
   {
     id: "S7773",
@@ -80,10 +85,10 @@ export const PATRONES = [
     descripcion: 'getAttribute("data-foo-bar") -> dataset.fooBar',
     regex: /(\w+)\.getAttribute\(\s*["']([a-z][a-zA-Z0-9-]*)["']\s*\)/g,
     reemplazo: (match, receptor, nombre) => {
-        if (!nombre.startsWith("data-")) return match;
-        const camel = nombre.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-        return `${receptor}.dataset.${camel}`;
-      },
+      if (!nombre.startsWith("data-")) return match;
+      const camel = nombre.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+      return `${receptor}.dataset.${camel}`;
+    },
   },
   {
     // x && x.y -> x?.y. Tres condiciones para que la conversion sea
@@ -95,7 +100,8 @@ export const PATRONES = [
     // reescribe a `e.target === x?.y` y cambia semantica.
     id: "S6582",
     descripcion: "x && x.y -> x?.y (optional chaining, en posicion aislada)",
-    regex: /(?<=\s*[(,;?:]|^)\b([A-Za-z_$][\w$]*)\s*&&\s*\1\.([A-Za-z_$][\w$]*(?:\([^\)]*\))?)(?=\s*(?:[,);\]?:&|]|\n|$))/g,
+    regex:
+      /(?<=\s*[(,;?:]|^)\b([A-Za-z_$][\w$]*)\s*&&\s*\1\.([A-Za-z_$][\w$]*(?:\([^\)]*\))?)(?=\s*(?:[,);\]?:&|]|\n|$))/g,
     reemplazo: "$1?.$2",
   },
   {
@@ -275,14 +281,16 @@ export const EXCLUIR = [
  * Aplica los patrones en cascada sobre un texto.
  *
  * @param {string} texto Texto de partida.
- * @param {{id: string, regex: RegExp, reemplazo: string|Function}[]} [patrones]
+ * @param {Patron[]} [patrones]
  *   Lista de patrones (por defecto todos), en el orden en que se aplican.
  * @returns {string} El texto con todos los patrones aplicados.
  */
 export function aplicarPatrones(texto, patrones = PATRONES) {
   let salida = texto;
   for (const patron of patrones) {
-    salida = salida.replace(patron.regex, patron.reemplazo);
+    // El tipado de `replace` no acepta la union `string | Function` en una
+    // sola llamada, pero los dos son reemplazos validos de `String.replace`.
+    salida = salida.replace(patron.regex, /** @type {any} */ (patron.reemplazo));
   }
   return salida;
 }
@@ -294,10 +302,11 @@ export function aplicarPatrones(texto, patrones = PATRONES) {
  * no, un patron que genera la entrada de otro se contaria dos veces.
  *
  * @param {string} texto Texto a analizar.
- * @param {{id: string, regex: RegExp}[]} [patrones] Lista de patrones.
+ * @param {Patron[]} [patrones] Lista de patrones.
  * @returns {Record<string, number>} Objeto id -> numero de coincidencias.
  */
 export function contarPorPatron(texto, patrones = PATRONES) {
+  /** @type {Record<string, number>} */
   const totales = {};
   for (const patron of patrones) {
     const matches = texto.match(patron.regex);

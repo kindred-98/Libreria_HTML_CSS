@@ -22,7 +22,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { celda, contar, csv, sanearMensaje, tabla } from "./lib/sonar-csv.mjs";
+import { contar, csv, sanearMensaje, tabla } from "./lib/sonar-csv.mjs";
 
 const BASE_POR_DEFECTO = "https://sonarcloud.io";
 const TAMANO_PAGINA = 500;
@@ -104,7 +104,9 @@ try {
   // S5145: el mensaje de error podria traer newlines o caracteres de
   // control si viene de un servidor comprometido. `sanearMensaje` los
   // colapsa a un espacio y trunca, antes de escribirlo en el log.
-  console.warn(`  no se pudieron leer los hotspots (${sanearMensaje(error)}). Suele pasar si la cuenta no es de pago.`);
+  console.warn(
+    `  no se pudieron leer los hotspots (${sanearMensaje(error)}). Suele pasar si la cuenta no es de pago.`,
+  );
 }
 console.log(`  ${hotspots.length} hotspots`);
 
@@ -163,23 +165,38 @@ const resumen = [
   "",
   "| Archivo | Total |",
   "| --- | --- |",
-  tabla(contar(incidencias.map((issue) => ({ archivo: issue.component?.replace(`${proyecto}:`, "") })), "archivo"), 40),
+  tabla(
+    contar(
+      incidencias.map((issue) => ({ archivo: issue.component?.replace(`${proyecto}:`, "") })),
+      "archivo",
+    ),
+    40,
+  ),
   "",
 ].join("\n");
 
-await writeFile(path.join(directorioSalida, "incidencias.csv"), csv(
-  ["clave", "severidad", "tipo", "regla", "estado", "archivo", "linea", "esfuerzo", "mensaje"],
-  lineasIncidencias,
-), "utf8");
+await writeFile(
+  path.join(directorioSalida, "incidencias.csv"),
+  csv(
+    ["clave", "severidad", "tipo", "regla", "estado", "archivo", "linea", "esfuerzo", "mensaje"],
+    lineasIncidencias,
+  ),
+  "utf8",
+);
 
-await writeFile(path.join(directorioSalida, "incidencias.json"), JSON.stringify(incidencias, null, 2), "utf8");
+await writeFile(
+  path.join(directorioSalida, "incidencias.json"),
+  JSON.stringify(incidencias, null, 2),
+  "utf8",
+);
 await writeFile(path.join(directorioSalida, "resumen.md"), resumen, "utf8");
 
 if (hotspots.length > 0) {
-  await writeFile(path.join(directorioSalida, "hotspots.csv"), csv(
-    ["probabilidad", "categoria", "regla", "estado", "archivo", "linea", "mensaje"],
-    lineasHotspots,
-  ), "utf8");
+  await writeFile(
+    path.join(directorioSalida, "hotspots.csv"),
+    csv(["probabilidad", "categoria", "regla", "estado", "archivo", "linea", "mensaje"], lineasHotspots),
+    "utf8",
+  );
 }
 
 console.log("");

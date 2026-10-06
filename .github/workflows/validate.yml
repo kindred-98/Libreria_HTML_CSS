@@ -67,6 +67,27 @@ jobs:
       - name: Comprobar vulnerabilidades de dependencias
         run: npm audit --audit-level=high
 
+      # Fase 0. Estas cuatro comprobaciones cubren el codigo de Node del
+      # repositorio (`Web/scripts/`), que es el que se ejecuta en el CI y en
+      # el despliegue de Vercel. Los 1018 demos de los autores NO se lintean
+      # ni se formatean a proposito: son componentes independientes para copiar
+      # y pegar tal cual, ya los analiza SonarQube, y reformatearlos generaria
+      # un diff imposible de revisar. Ver `eslint.config.mjs` y
+      # `.prettierignore`.
+      - name: Comprobar el formato (prettier)
+        run: npm run format:check
+
+      - name: Comprobar el lint (eslint)
+        run: npm run lint
+
+      # Presupuesto de tipado: `lib/` y `__tests__/` tienen que estar limpios
+      # y el total no puede crecer. Ver `Web/scripts/validar-tipos.mjs`.
+      - name: Comprobar los tipos (tsc --checkJs con presupuesto)
+        run: npm run typecheck
+
+      - name: Ejecutar los tests unitarios (node:test)
+        run: npm test
+
       # El catalogo no se versiona, asi que este clon parte de cero: se genera
       # aqui igual que lo hara Vercel.
       - name: Generar el catalogo (mismo comando que el build de Vercel)

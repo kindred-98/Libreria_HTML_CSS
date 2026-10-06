@@ -139,9 +139,7 @@ async function planificar(indexAbsoluto) {
     return a.localeCompare(b);
   });
 
-  const estilosEnLinea = [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map(
-    (m) => m[1]
-  );
+  const estilosEnLinea = [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]);
 
   return { carpeta, html, ficherosCSS, estilosEnLinea };
 }
@@ -212,7 +210,11 @@ async function clasificar(indexAbsoluto) {
     escribir: async () => {
       const actual = await readFile(indexAbsoluto, "utf8");
       const indice = actual.lastIndexOf("</style>");
-      await writeFile(indexAbsoluto, actual.slice(0, indice) + BLOQUE.trimStart() + "\n" + actual.slice(indice), "utf8");
+      await writeFile(
+        indexAbsoluto,
+        actual.slice(0, indice) + BLOQUE.trimStart() + "\n" + actual.slice(indice),
+        "utf8",
+      );
     },
     destino: aPosix(path.relative(repositoryDirectory, indexAbsoluto)) + " (<style>)",
   };
@@ -255,12 +257,14 @@ console.log(`  categoria ${CATEGORIA_EXCLUIDA} (excluida):     ${loaders.length}
 
 if (elegibles.length) {
   console.log(`\nElegibles por categoria:`);
-  for (const [categoria, total] of porCategoria(elegibles)) console.log(`  ${String(total).padStart(5)}  ${categoria}`);
+  for (const [categoria, total] of porCategoria(elegibles))
+    console.log(`  ${String(total).padStart(5)}  ${categoria}`);
 }
 
 if (soloJs.length) {
   console.log(`\nSolo JavaScript (trabajo futuro, no se modifica):`);
-  for (const [categoria, total] of porCategoria(soloJs)) console.log(`  ${String(total).padStart(5)}  ${categoria}`);
+  for (const [categoria, total] of porCategoria(soloJs))
+    console.log(`  ${String(total).padStart(5)}  ${categoria}`);
   console.log(`  ${String(soloJs.length).padStart(5)}  total`);
 }
 

@@ -170,6 +170,40 @@ comando y su medicion.
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
 
+## [Fase 0 (2): ESLint, Prettier acotado, typecheck con presupuesto y CI] - 2026-10-06
+
+Segunda parte de la Fase 0. Cuatro comprobaciones nuevas en el CI que
+cubrren el codigo de Node del repositorio.
+
+- **`npm run lint`** con `eslint.config.mjs` (flat config). Cubre solo
+  `Web/scripts/`: son los scripts que corren en el CI y en el despliegue. Los
+  1018 demos de los autores **no** se lintean a proposito (ya los analiza
+  SonarQube y la regla 6 de CONTRIBUTING exige que sean copiables tal cual).
+  Reglas: `eqeqeq`, `no-var`, `prefer-const`, `no-implicit-globals` y
+  `no-unused-vars` con `ignoreRestSiblings` (el repo usa `const { fuera, ...dentro }`
+  para descartar campos a proposito).
+- **`npm run format` / `format:check`** con Prettier, tambien acotado a
+  `Web/scripts/**/*.mjs`. Formatear los demos reescribiria cientos de miles de
+  lineas sin cambiar comportamiento y romperia las metricas de SonarQube.
+  El formateo se aplico en un commit aparte, como pedia el plan.
+- **`npm run typecheck`**: `tsc --checkJs` sobre los scripts de Node, con
+  presupuesto en `Web/scripts/validar-tipos.mjs`. Hoy hay 37 errores de
+  tipado en codigo heredado; la puerta exige que `lib/` y `__tests__/` esten
+  **siempre a cero** y que el total no crezca. Asi la deuda solo puede bajar y
+  no bloquea el trabajo diario. Cuando llegue a 0, el script sobra.
+- **CI**: cuatro pasos nuevos (`format:check`, `lint`, `typecheck`, `test`)
+  antes de generar el catalogo, en los tres jobs de Node.
+
+**Limpieza que encontro el lint** (6 simbolos muertos): imports sin usar
+(`stat`, `createWriteStream`, `celda`), la funcion `extensionDe` de
+`localizar-imagenes.mjs`, la constante `INFORMAN` de `validar-a11y.mjs`, un
+`catch (error)` que no usaba el error, y un `let` que podia ser `const`.
+
+Verificado en verde: `format:check`, `lint`, `typecheck`, `test` (48/48),
+`validar`, `catalogo`, `validar:encabezados`, `validar:html`,
+`validar:enlaces`, `validar:layout`, `validar:demos` (1018/1018) y
+`duplicados`.
+
 ## [Fase 0 (1): extrae las funciones puras a `lib/` y anade 48 tests] - 2026-10-06
 
 Empieza la Fase 0 del plan de nivel siguiente. Objetivo: que el codigo se

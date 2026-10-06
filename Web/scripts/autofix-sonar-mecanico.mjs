@@ -39,7 +39,7 @@
  * Verificacion: despues de aplicarlo, `npm run validar:demos` tiene que
  * seguir en 1018/1018 demos, 0 fallos.
  */
-import { readdir, readFile, writeFile, stat } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { EXCLUIR, PATRONES, aplicarPatrones, contarPorPatron } from "./lib/autofix-patrones.mjs";
@@ -113,7 +113,8 @@ for (const patron of activos) {
 }
 console.log(`\n${tocados.length} ficheros tocados`);
 if (tocados.length > 0 && tocados.length < 20) {
-  for (const t of tocados) console.log(`  ${t.diff >= 0 ? "-" : "+"}${Math.abs(t.diff).toString().padStart(5)}  ${t.ruta}`);
+  for (const t of tocados)
+    console.log(`  ${t.diff >= 0 ? "-" : "+"}${Math.abs(t.diff).toString().padStart(5)}  ${t.ruta}`);
 } else if (tocados.length >= 20) {
   console.log("  (mas de 20; ver el git diff)");
 }

@@ -46,8 +46,8 @@ const PAGINAS = [
 // pasa ahi. Los de en medio son donde ha habido fallos reales, y 320 es el
 // movil mas estrecho que se sigue viendo.
 const ANCHOS = [
-  320, 360, 375, 390, 414, 480, 540, 600, 620, 621, 640, 660, 680, 700, 720, 768,
-  820, 900, 1024, 1200, 1280, 1440, 1920,
+  320, 360, 375, 390, 414, 480, 540, 600, 620, 621, 640, 660, 680, 700, 720, 768, 820, 900, 1024, 1200, 1280,
+  1440, 1920,
 ];
 
 // Desbordamientos que se aceptan a proposito, con el motivo. Si algo se
@@ -98,15 +98,20 @@ function arrancarServidor(puerto) {
       salida += trozo;
       if (salida.includes("Sirviendo el repositorio")) listo();
     });
-    proceso.stderr.on("data", (trozo) => { salida += trozo; });
+    proceso.stderr.on("data", (trozo) => {
+      salida += trozo;
+    });
     proceso.on("error", reject);
     proceso.on("exit", (codigo) => {
       if (!arrancado) {
-        reject(new Error(`serve.mjs no arranco en el puerto ${puerto} (codigo ${codigo}):\n${salida.trim()}`));
+        reject(
+          new Error(`serve.mjs no arranco en el puerto ${puerto} (codigo ${codigo}):\n${salida.trim()}`),
+        );
       }
     });
     setTimeout(() => {
-      if (!arrancado) reject(new Error(`serve.mjs no arranco en 15 s en el puerto ${puerto}:\n${salida.trim()}`));
+      if (!arrancado)
+        reject(new Error(`serve.mjs no arranco en 15 s en el puerto ${puerto}:\n${salida.trim()}`));
     }, 15000).unref();
   });
 }
@@ -151,7 +156,11 @@ try {
           // el documento (el marquee, por ejemplo, mide 4935 px y no se ve nada
           // de eso). Solo se listan los que no tienen quien los recorte.
           const recortado = (elemento) => {
-            for (let padre = elemento.parentElement; padre && padre !== document.body; padre = padre.parentElement) {
+            for (
+              let padre = elemento.parentElement;
+              padre && padre !== document.body;
+              padre = padre.parentElement
+            ) {
               const comoSeMuestra = getComputedStyle(padre);
               if (comoSeMuestra.overflowX !== "visible" || comoSeMuestra.overflowY !== "visible") return true;
             }
@@ -165,7 +174,7 @@ try {
             if (recortado(elemento)) continue;
             fuera.push(
               `${elemento.tagName.toLowerCase()}${elemento.className ? "." + String(elemento.className).trim().split(/\s+/).join(".") : ""}` +
-              ` (se sale ${Math.round(caja.right - limite)}px)`,
+                ` (se sale ${Math.round(caja.right - limite)}px)`,
             );
           }
           return fuera.slice(0, 3).join(", ");
@@ -177,7 +186,9 @@ try {
       // llego a pintarse, el script diria que todo esta bien.
       const vacia = await pestana.evaluate(() => document.body.getBoundingClientRect().height < 50);
       if (vacia) {
-        fallos.push(`${pagina.nombre} (${pagina.ruta}) a ${ancho}px: la pagina no ha pintado, la medicion no vale`);
+        fallos.push(
+          `${pagina.nombre} (${pagina.ruta}) a ${ancho}px: la pagina no ha pintado, la medicion no vale`,
+        );
         continue;
       }
 
@@ -191,8 +202,8 @@ try {
         }
         fallos.push(
           `${pagina.nombre} (${pagina.ruta}) a ${ancho}px: se sale ${medida.exceso}px ` +
-          `(ventana ${medida.clientWidth}px, contenido ${medida.scrollWidth}px). ` +
-          (medida.culpable ? `Culpables: ${medida.culpable}.` : ""),
+            `(ventana ${medida.clientWidth}px, contenido ${medida.scrollWidth}px). ` +
+            (medida.culpable ? `Culpables: ${medida.culpable}.` : ""),
         );
       }
     }
@@ -207,7 +218,9 @@ try {
   servidor.kill();
 }
 
-console.log(`info  ${PAGINAS.length} paginas x ${ANCHOS.length} anchos = ${PAGINAS.length * ANCHOS.length} medidas, tolerancia ${TOLERANCIA}px`);
+console.log(
+  `info  ${PAGINAS.length} paginas x ${ANCHOS.length} anchos = ${PAGINAS.length * ANCHOS.length} medidas, tolerancia ${TOLERANCIA}px`,
+);
 
 for (const nota of notas) console.log(`info  ${nota}`);
 

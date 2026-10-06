@@ -108,10 +108,7 @@ test("S6557: no toca una busqueda en cualquier posicion", () => {
 });
 
 test("S6653: hasOwnProperty.call pasa a Object.hasOwn", () => {
-  assert.equal(
-    uno("S6653", "Object.prototype.hasOwnProperty.call(o, k)"),
-    "Object.hasOwn(o, k)",
-  );
+  assert.equal(uno("S6653", "Object.prototype.hasOwnProperty.call(o, k)"), "Object.hasOwn(o, k)");
 });
 
 test("S7762: removeChild pasa a remove", () => {
@@ -175,10 +172,7 @@ test("S7781: no toca un replace cuya primera argumento es una regex", () => {
 });
 
 test("S1874-mql: addListener pasa a addEventListener", () => {
-  assert.equal(
-    uno("S1874-mql", "mq.addListener(cb)"),
-    "mq.addEventListener('change', cb)",
-  );
+  assert.equal(uno("S1874-mql", "mq.addListener(cb)"), "mq.addEventListener('change', cb)");
 });
 
 test("S6582: x && x.y pasa a x?.y cuando la posicion es aislada", () => {
@@ -209,7 +203,10 @@ test("S7766 y S7766b: el ternario del menor y del mayor", () => {
 test("aplicarPatrones: la cascada respeta el orden del array", () => {
   // S6353 ([0-9] -> \d) tiene que correr antes que S6397 ([\d] -> \d): si
   // corriera al reves, S6397 veria primero la clase ya convertida.
-  const solo6353 = aplicarPatrones("/[0-9]/g", PATRONES.filter((p) => p.id === "S6353"));
+  const solo6353 = aplicarPatrones(
+    "/[0-9]/g",
+    PATRONES.filter((p) => p.id === "S6353"),
+  );
   assert.equal(solo6353, "/\\d/g");
   const todos = aplicarPatrones("/[0-9]/g", PATRONES);
   assert.equal(todos, "/\\d/g");

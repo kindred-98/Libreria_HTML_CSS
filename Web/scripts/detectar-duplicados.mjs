@@ -173,7 +173,7 @@ for (const par of pares) {
 
 console.log(`\nMas parecidos por debajo del umbral (informativo, no se cuentan):`);
 const masParecidos = [...pares, ...cercanos].sort((x, y) => y.similitud - x.similitud).slice(0, 12);
-  if (!masParecidos.length) console.log(`  (ningun par llega ni a 0,70)`);
+if (!masParecidos.length) console.log(`  (ningun par llega ni a 0,70)`);
 for (const par of masParecidos) {
   console.log(`  ${par.similitud.toFixed(3)}  ${par.a} ~ ${par.b}`);
 }

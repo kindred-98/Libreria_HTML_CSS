@@ -63,7 +63,13 @@ test("celda: entrecomilla y duplica comillas cuando hace falta", () => {
 });
 
 test("csv: monta cabecera, filas y salto de linea final", () => {
-  const salida = csv(["clave", "regla"], [["A", "S1"], ["B", "S2"]]);
+  const salida = csv(
+    ["clave", "regla"],
+    [
+      ["A", "S1"],
+      ["B", "S2"],
+    ],
+  );
   assert.equal(salida, "clave,regla\nA,S1\nB,S2\n");
 });
 
@@ -72,11 +78,12 @@ test("csv: una cabecera sin filas produce solo la cabecera", () => {
 });
 
 test("contar: agrupa por una propiedad y ordena de mas a menos", () => {
-  const recuento = contar(
-    [{ regla: "S1" }, { regla: "S2" }, { regla: "S1" }, { regla: "S3" }],
-    "regla",
-  );
-  assert.deepEqual(recuento, [["S1", 2], ["S2", 1], ["S3", 1]]);
+  const recuento = contar([{ regla: "S1" }, { regla: "S2" }, { regla: "S1" }, { regla: "S3" }], "regla");
+  assert.deepEqual(recuento, [
+    ["S1", 2],
+    ["S2", 1],
+    ["S3", 1],
+  ]);
 });
 
 test("contar: los valores ausentes se agrupan bajo (sin dato)", () => {
@@ -88,8 +95,24 @@ test("contar: una lista vacia devuelve una lista vacia", () => {
 });
 
 test("tabla: escribe una fila por par y respeta el limite", () => {
-  assert.equal(tabla([["A", 2], ["B", 1]]), "| A | 2 |\n| B | 1 |");
-  assert.equal(tabla([["A", 2], ["B", 1], ["C", 1]], 2), "| A | 2 |\n| B | 1 |");
+  assert.equal(
+    tabla([
+      ["A", 2],
+      ["B", 1],
+    ]),
+    "| A | 2 |\n| B | 1 |",
+  );
+  assert.equal(
+    tabla(
+      [
+        ["A", 2],
+        ["B", 1],
+        ["C", 1],
+      ],
+      2,
+    ),
+    "| A | 2 |\n| B | 1 |",
+  );
 });
 
 test("tabla: sin datos escribe un marcador, no una tabla vacia", () => {

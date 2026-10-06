@@ -116,7 +116,8 @@ console.log(`\n${comprobadas} comprobadas, ${rotas.length} sin respuesta util`);
 
 if (rotas.length) {
   console.error(`\nEnlaces externos rotos:\n`);
-  for (const rota of rotas) console.error(`  x [${rota.estado}] ${rota.url}\n      usado en: ${rota.fuentes}`);
+  for (const rota of rotas)
+    console.error(`  x [${rota.estado}] ${rota.url}\n      usado en: ${rota.fuentes}`);
   process.exit(1);
 }
 
