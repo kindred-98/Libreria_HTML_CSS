@@ -87,6 +87,51 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 2: accesibilidad a 100 (aria, encabezados, landmarks y objetivos tactiles)] - 2026-10-06
+
+La nota de accesibilidad era la mas baja del plan (85). Con estas cuatro
+cosas pasa a medirse en **100**.
+
+- **`aria-allowed-role`: 33 → 0.** La tarjeta del catalogo era un
+  `<article role="link" tabindex="0">`, y axe rechaza ese rol sobre `article`.
+  Ademas duplicaba el punto de tabulacion: la tarjeta era tabbable **y** dentro
+  tenia su propio `<a>`. Se pasa al patron estandar de tarjeta enlazable: el
+  `<article>` se queda como `article` y es su `<a>` ("Ver componente") el que
+  recibe el foco y cubre toda la tarjeta mediante un pseudo-elemento
+  (`.card-link::after`). Se quitan los manejadores de Enter/Espacio a mano que
+  ya no hacen falta, porque los resuelve el navegador. El enlace lleva
+  `aria-label` con el nombre del componente para cumplir "label in name".
+- **`landmark-unique`.** Los cinco `<main>` se llamaban igual y sin nombre
+  accesible; axe no puede distinguirlos. Cada uno tiene ahora el suyo, distinto
+  por pagina, y en los dos idiomas.
+- **`heading-order` en el catalogo: 8 → 0** con un `<h2>` oculto antes de la
+  rejilla (las tarjetas son `h3` y el encabezado anterior era el `h1` de la
+  pagina: salto que rompe la jerarquia). En la portada, las tarjetas repetidas
+  del carrusel se marcan `inert`: son un duplicado decorativo, asi que no se
+  anuncian ni se recorren con el teclado, pero siguen viéndose y clicables.
+  (Con `aria-hidden` a secas axe marcaba `aria-hidden-focus`, porque un
+  contenedor oculto no puede contener nada enfocable: de ahi el `inert`.)
+- **Objetivos tactiles (WCAG 2.5.8).** Medido a 360 px con dedo: habia
+  controles de 14-19 px de alto. Con `min-height: 44px` bajo `pointer: coarse`
+  (solo donde hay dedo, no con raton) se pasa de 38 y 19 controles por debajo de
+  24 px a **0** en las dos paginas. El icono de GitHub (18 px de ancho) y el
+  buscador (19 px de alto) necesitaban ademas `min-width`/`min-height`.
+
+**Medido despues:**
+
+- Lighthouse escritorio: **90 / 100 / 100 / 100** en las cuatro categorias de
+  las cinco paginas. Componentes subio de 95 a **100** en accesibilidad.
+- Lighthouse movil: portada **84** (a11y 100), LCP 2,3 s, TBT 560 ms, CLS 0,014.
+- `validar:a11y`: 0 serious y 0 critical en 20 pasadas; las reglas avisadas
+  bajan de 24 a 12, y las que quedan son 1 `heading-order` del carrusel
+  rotativo de la portada (falso positivo: la jerarquia visible es H1→H2→H3
+  correcta, verificado en el DOM) y 4 `landmark-unique`/`color-contrast` **dentro
+  de iframes de los propios demos**, que no son codigo nuestro.
+
+Verificado en verde: `validar:a11y`, `validar:layout` (161/161),
+`validar:html`, `validar:enlaces`, `validar:lighthouse`, `test` (48/48),
+`test:e2e` (15/15), `lint`, `format:check` y `typecheck` (18 de 38).
+
 ## [Sirve robots.txt y sitemap.xml tambien en la raiz] - 2026-10-06
 
 Al verificar la propiedad en Search Console aparecio un problema que no se ve

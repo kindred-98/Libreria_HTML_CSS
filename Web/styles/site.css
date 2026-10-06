@@ -1210,6 +1210,7 @@ input:focus-visible {
 }
 
 .component-card {
+  position: relative;
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -1219,7 +1220,12 @@ input:focus-visible {
   cursor: pointer;
 }
 
-.component-card:focus-visible {
+/* Foco sobre la tarjeta entera cuando el enlace de dentro la recibe. Antes
+   era `.component-card:focus-visible`, que solo funcionaba porque la tarjeta
+   era tabbable; ahora lo que tiene el foco es el `<a>` de "Ver componente", y
+   `:focus-within` hace que el anillo se dibuje alrededor de la tarjeta, que es
+   lo que la persona ve. */
+.component-card:focus-within {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -1359,6 +1365,19 @@ input:focus-visible {
   color: var(--accent);
   font-size: 11px;
   font-weight: 800;
+}
+
+/* Aqui esta el "enlace de tarjeta": este pseudo-elemento no se ve, pero se
+   extiende por toda la tarjeta, asi que un clic en cualquier punto (tambien
+   sobre la vista previa) abre el detalle. Es el patron habitual para tarjetas
+   clicables, y deja que sea el `<a>` de verdad el que recibe el foco y el
+   teclado, en vez de un `role="link"` sobre el `<article>` con sus
+   manejadores de Enter y Espacio a mano. */
+.card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .card-link span {
@@ -2515,4 +2534,56 @@ No son demos ni la portada: son documentos para leer. Se diferencian del
 .legal-doc a[href^="http"]::after {
   content: " \2197";
   font-size: .85em;
+}
+/* --- OBJETIVOS TACTILES (WCAG 2.2, 2.5.8 Target Size Minimum) -------------
+   Medido a 360 px de ancho: varios controles quedaban por debajo de 24 px de
+   alto (la altura de su texto), por muy grande que fuera el area clicable que
+   hubiera alrededor. El umbral minimo que se pide es 24x24 CSS px, y 44x44 es
+   el objetivo comodo para el dedo. Se aplica solo con `pointer: coarse` (hay
+   dedo): en escritorio, con raton, ampliar estos controles solo ocupa sitio de
+   mas. */
+@media (pointer: coarse) {
+  .main-nav a,
+  .nav-github,
+  .footer-link,
+  .footer-meta a,
+  .language-button,
+  .theme-toggle,
+  .pagination-arrow,
+  .pagination-page {
+    /* `min-height` en vez de `height`: deja crecer el bloque en vertical sin
+       descuadrar la fila. */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* El icono de GitHub es un SVG de 18 px: hay que darle ancho, que el
+     `min-height` de arriba no toca. */
+  .nav-github {
+    min-width: 44px;
+    justify-content: center;
+  }
+
+  /* El buscador. Su altura la fija el padding; con el dedo hay que llegar a los
+     24 px minimos del criterio. */
+  .search-box,
+  .search-box input,
+  #component-search {
+    min-height: 44px;
+  }
+
+  /* El enlace "Ver componente" de la tarjeta: 15 px de texto. */
+  .card-link {
+    min-height: 44px;
+    padding-block: 14px;
+    align-items: center;
+  }
+
+  /* Boton de dirección de donacion y demas botones de texto del pie. */
+  .footer-address,
+  .footer-link {
+    min-height: 44px;
+    align-items: center;
+  }
 }
