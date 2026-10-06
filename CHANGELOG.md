@@ -170,6 +170,41 @@ comando y su medicion.
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
 
+## [Fase 4b: SEO (JSON-LD y hreflang), instalable (PWA) y medicion de producto] - 2026-10-06
+
+Tercera parte de la Fase 4b. Con esto el sitio ya se **encuentra** (datos
+estructurados), se **instala** (manifest e iconos reales) y se **mide** (seis
+eventos de GA4 que cubren el embudo).
+
+- **JSON-LD en las paginas que lo merecen**: `WebSite` + `SearchAction` +
+  `SoftwareApplication` en la portada, y `CollectionPage` en el catalogo. El
+  `SearchAction` describe el buscador, que es lo que hace este sitio distinto
+  de una lista de enlaces: con el, un buscador puede ofrecer buscar
+  directamente desde la barra. Los tres bloques validados como JSON.
+- **`hreflang` (es, en y x-default) en las cinco paginas**: la traduccion es de
+  cliente (misma URL, distinto texto), asi que las dos variantes apuntan a la
+  misma direccion. Sin esto un buscador puede tratar los dos idiomas como
+  duplicados.
+- **Instalable como aplicacion**: `Web/manifest.webmanifest` + iconos PNG
+  **reales** generados del propio favicon por `Web/scripts/generar-iconos.mjs`
+  con el Chromium de Playwright que ya era dependencia (sin `sharp` ni ningun
+  paquete de imagen). Hay `192`, `512`, un `maskable` con margen (para que al
+  recortarlo en circulo no corte el dibujo) y el `apple-touch-icon`, que antes
+  era el SVG y Safari lo ignoraba. Atajos a Componentes y Privacidad.
+- **Seis eventos de GA4, el embudo completo**: `busqueda_iniciada` (al primer
+  caracter; solo se manda la **longitud**, nunca lo que se escribe, que es lo
+  que la persona teclea), `filtro_categoria`, `filtro_autor` (que ademas mide
+  cuanto pesa abrir el portal de Davoker, que son 218 KB), `ver_componente`,
+  `descarga_zip` (la accion de valor del sitio) y `cambio_idioma`. Antes solo
+  habia dos, y ninguno era una accion de valor.
+
+El `manifest` se sirve desde el propio dominio, asi que no hace falta tocar el
+CSP del despliegue: `validar:csp` sigue en verde.
+
+Verificado en verde: `validar:html`, `validar:csp`, `test` (48/48),
+`test:e2e` (15/15) y `validar:lighthouse` (**5 paginas, 99-100 en las cuatro
+categorias**).
+
 ## [Fase 4a: privacidad y legal en el sitio, enlazadas desde el pie] - 2026-10-06
 
 Empieza la Fase 4a del plan, que es la que mas mueve la nota de producto (68).

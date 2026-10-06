@@ -850,11 +850,15 @@ function renderFilters() {
         state.author = null;
         syncSearchAvailability();
       }
-      state.currentPage = 1;
-      renderFilters();
-      renderAuthorFilters();
-      renderComponents();
-    });
+state.currentPage = 1;
+    renderFilters();
+    renderAuthorFilters();
+    renderComponents();
+    // Que se filtra y por que: con esto se sabe que categorias miran la gente
+    // y cuales se quedan vacias. El nombre de la categoria va tal cual (no es
+    // dato personal, es un filtro de la propia interfaz).
+    trackAnalyticsEvent("filtro_categoria", { categoria: category });
+  });
     elements.filters.append(button);
   }
 }
@@ -880,6 +884,10 @@ function renderAuthorFilters() {
       renderFilters();
       renderAuthorFilters();
       renderComponents();
+      // Entrar al apartado de davoker carga su portal entero (218 KB): es el
+      // paso mas caro del sitio, asi que se mide aparte para saber si vale la
+      // pena mantenerlo cargado de golpe.
+      trackAnalyticsEvent("filtro_autor", { autor: state.author ?? "ninguno" });
     });
     elements.authorFilters.append(button);
   }
@@ -1482,6 +1490,13 @@ function createDetailHeading(component) {
       try {
         await downloadComponentZip(component);
         showToast(t("zipDownloaded"));
+        // Evento del embudo: sin esto no se sabe si la biblioteca se usa o solo
+        // se mira. Es la accion de valor del sitio (descargar un componente).
+        trackAnalyticsEvent("descarga_zip", {
+          id: component.id,
+          categoria: component.category,
+          autor: component.author,
+        });
       } catch (error) {
         showToast(t("zipFailed", { message: error.message }));
       } finally {
@@ -1933,6 +1948,11 @@ function initializeSearch() {
     state.query = elements.search.value;
     state.currentPage = 1;
     renderComponents();
+    // El primer paso del embudo: se busca algo. Se manda **la longitud** de la
+    // busqueda y no el texto: el texto es lo que la persona escribe y puede ser
+    // cualquier cosa, mandarlo seria espiar sin aviso ni una palabra util.
+    // Con la longitud se sabe si la gente busca ("a") o solo teclea.
+    if (state.query.length === 1) trackAnalyticsEvent("busqueda_iniciada");
   });
   document.addEventListener("keydown", (event) => {
     const activeTag = document.activeElement?.tagName;
