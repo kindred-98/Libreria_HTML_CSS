@@ -949,11 +949,14 @@
         // ha terminado la despedida. Sin esto, abrir transicion.html en una
         // pestaña no hace nada (no hay shell al que avisarle).
         //
-        // El destino es el origen de esta pagina y no "*": el iframe del portal
-        // es de este mismo sitio (ver el sandbox de components.html, que incluye
-        // allow-same-origin), asi que ese es el origen real del padre. Con "*"
-        // el mensaje tambien lo recibiria cualquier otro sitio queongerre este
-        // HTML en un iframe propio.
+        // El destino es el origen de esta pagina y no "*": con el sandbox del
+        // portal (sin allow-same-origin) el documento tiene origen opaco, pero
+        // `location.origin` devuelve el de la URL de este documento, que es el
+        // mismo que el del padre, asi que el mensaje solo llega a un padre
+        // servido desde aqui. Con "*" la recibiria cualquier otro sitio que
+        // embeba este HTML en un iframe propio. Ojo: el que recibe lo sabe
+        // comprobar por la ventana (`event.source`), porque `event.origin`
+        // llega como "null" y no sirve para autenticar a nadie.
         try {
             if (window.parent !== window) {
                 window.parent.postMessage({ type: "davoker-transicion" }, window.location.origin);

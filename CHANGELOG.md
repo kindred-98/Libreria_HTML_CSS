@@ -87,6 +87,59 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Centra el shell en la animacion de despedida al volver de un showcase] - 2026-10-06
+
+Al salir de un showcase de Davoker (`transicion.html` -> `davoker.html`),
+`Web/components.html` dejaba de centrar el iframe: la animacion de despedida se
+veia con el shell a otra altura y, cuando el scroll llegaba, llegaba tarde.
+
+- **Por que se rompio**: `3333f03` anadio el aviso por `postMessage` y el
+  centrado en el shell, y `fdd9b59` endurecio el receptor con
+  `evento.origin !== window.location.origin`, que sobre el papel es lo
+  correcto. El iframe del portal lleva `sandbox` **sin** `allow-same-origin`
+  (lo quito `090ca05` al cerrar el punto 2 de
+  [`Docs/Hallazgos_agente_paralelo_2026-10-05.md`](./Docs/Hallazgos_agente_paralelo_2026-10-05.md)),
+  asi que su origen es opaco y `event.origin` llega **siempre como `"null"`**:
+  el chequeo descartaba todos los mensajes y el centrado no se ejecutaba nunca.
+  Solo funciono mientras `28de356` tuvo `allow-same-origin` puesto, que era
+  justo la vulnerabilidad que despues se retiro. Medido en Chromium, no
+  deducido: el receptor recibe el mensaje con `origin: "null"` y
+  `sourceIsFrame: true`, y no hacia nada.
+- **Arreglo en el receptor** (`installDavokerTransitionBridge`): admite
+  `evento.origin === "null"` ademas del origen propio y comprueba ademas que
+  `evento.source` sea la `contentWindow` del propio `#davoker-frame`. Esa
+  identidad si la puede verificar el navegador (el `WindowProxy` no cambia
+  aunque el iframe navegue), y es lo unico que distingue este aviso de otro
+  que pudiera mandar otra pagina. El emisor sigue publicando con
+  `window.location.origin`, que **dentro** del iframe si devuelve la URL real.
+- **El segundo movimiento**: al aterrizar en `davoker.html`, `centrar()` hacia
+  `scrollIntoView` sobre la `<section>` y Chrome repite ese ajuste en los
+  documentos ancestros: el padre volvia a moverse **~50 px hacia arriba** a los
+  1,9 s, justamente al terminar la animacion, y se quedaba ahi. Ese
+  `scrollIntoView` se sustituye por un `window.scrollTo` que solo toca el
+  scroll del iframe, con el `nearest` calculado a mano (se sale por arriba,
+  por abajo, o ya esta entera en el viewport y no se mueve nada) y respetando
+  el `scroll-margin-top: 1.5rem` de `.tarjeta`. `window.scrollTo` de un frame
+  hijo no se propaga al padre, cosa que `scrollIntoView` si hace.
+- **Medido de punta a punta** (Chromium con Playwright, click de verdad en
+  «Todos los efectos», muestreando el scroll del padre cada 150 ms): el aviso
+  llega a los **38 ms** y el padre pasa de y=209 a **y=457, que es el scroll
+  que centra el iframe** (720 px de alto en un viewport de 800), a los **334
+  ms**, con `transicion.html` aun en pantalla (desaparece sobre el segundo
+  1). Despues se queda clavado en 457 durante los 6,6 s siguientes. Dentro del
+  iframe la seccion `#glitch` queda visible (top 24 px, que es el
+  `scroll-margin` de `.tarjeta`) con su carpeta abierta.
+- Sin este arreglo, el receptor recibia el mensaje y no hacia nada: 0 px de
+  movimiento en 6 s. Con solo el arreglo del receptor (sin tocar `centrar()`),
+  llegaba a 457 y a los 1,9 s se iba a 408.
+- Las huellas `?v=` de `app.js` se re-sellan con `npm run sellar`
+  (`0810e243` en `components.html`, `index.html` y `team-core.html`): sin eso,
+  el `Cache-Control: immutable` de un ano serviria el `app.js` antiguo a
+  todo el que ya tenga la pagina cacheada.
+- Verificado en verde: `validar` (1018/1018), `validar:layout` (5 paginas x 23
+  anchos), `validar:html`, `validar:demos` (1018/1018, 0 fallos) y la
+  medicion de arriba, hecha con el cambio ya puesto.
+
 ## [Documenta el plan para llevar el proyecto del 80 al 97] - 2026-10-06
 
 `Docs/Plan_de_nivel_siguiente.md` recoge el camino desde el 80 actual hasta

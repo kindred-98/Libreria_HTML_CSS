@@ -12,6 +12,10 @@ estar ya corregidos: son hallazgos sobre ficheros que no estaban en `main`. Si
 alguien los arregla, este documento se queda obsoleto y conviene borrarlo o
 marcarlo como resuelto.
 
+**Estado a 2026-10-06**: los puntos 1, 2 y 3 estan resueltos (cada uno lleva su
+nota debajo). El punto 4 se arreglo en `090ca05` y **se volvio a romper** en
+`d2f87b7`: sigue abierto.
+
 ## Los cuatro hallazgos
 
 ### 1. `.github/workflows/validate.yml` dejo de ser YAML valido (grave)
@@ -44,6 +48,9 @@ que dependen de esa validacion.
 
 Arreglo: devolver `cache: npm` a los 10 espacios, dentro de `with:`.
 
+**Resuelto en `090ca05`**: `cache: npm` vuelve a 10 espacios (linea 56 del
+workflow) y el parser lo acepta.
+
 ### 2. `Web/components.html`: `allow-same-origin` en el sandbox del portal Davoker
 
 Se anadio `allow-same-origin` al `sandbox` del iframe de `davoker.html`:
@@ -65,6 +72,11 @@ sandbox:
 Arreglo: quitar `allow-same-origin`. Si hacia falta para el `postMessage`, el
 cambio va en el otro sentido (abajo).
 
+**Resuelto en `090ca05`**: el `sandbox` de `Web/components.html:95` quedo en
+`allow-scripts allow-forms allow-popups allow-downloads`. No volver a
+anadirlo: es lo que hace opaco el origen del iframe y lo que exige el arreglo
+del punto 3.
+
 ### 3. El endurecimiento de `postMessage` quedo a medias
 
 `DavokerDiseñador/transicion.html` paso de publicar con `"*"` a publicar con
@@ -83,6 +95,27 @@ Arreglo: quitar `allow-same-origin` y anadir la comprobacion en el receptor.
 if (evento.origin !== window.location.origin) return;
 ```
 
+**Resuelto en 2026-10-06, pero no como proponia el hallazgo.** Esa comprobacion
+**ya estaba** (`fdd9b59`) y es exactamente lo que dejo el centrado del shell
+muerto: con el `sandbox` sin `allow-same-origin` el origen del iframe es opaco y
+`event.origin` llega **siempre como `"null"`**, asi que la linea devolvia siempre
+y `transicion.html` nunca llegaba a centrar el iframe. Solo encajaba mientras
+`28de356` tenia `allow-same-origin` puesto, que era el propio punto 2.
+
+Lo que se hizo en `installDavokerTransitionBridge` (`Web/scripts/app.js`):
+
+```js
+if (evento.origin !== "null" && evento.origin !== window.location.origin) return;
+if (evento.source !== elements.davokerFrame.contentWindow) return;
+```
+
+La autentica garantia es `evento.source`: el navegador comprueba que el mensaje
+salga de la `contentWindow` del `#davoker-frame`, identidad que se mantiene
+aunque el iframe navegue. El `origin` `"null"` se acepta porque es lo que
+produce el sandbox, y `window.location.origin` (no `"null"`) sigue aceptandose
+por si algun dia se quita el sandbox. Detalle en el CHANGELOG, entrada
+«Centra el shell en la animacion de despedida al volver de un showcase».
+
 ### 4. `creaciones-primium/botones/wireframe-hud-lock-button/styles.css`: se perdio `top:50%`
 
 ```diff
@@ -99,6 +132,10 @@ queda desplazada. Es el error clasico de "SonarCloud lo marca como redundante":
 lo parece por el `transform`, pero no lo es.
 
 Arreglo: devolver `top:50%;`.
+
+**Sigue abierto.** `090ca05` lo devolvio y `d2f87b7` lo volvio a quitar: en el
+`.tag` de `styles.css:498` hay `position:absolute` y `left:50%` sin `top`, asi
+que la etiqueta sigue descentrada.
 
 ## Lo que si estaba bien
 

@@ -1841,13 +1841,21 @@ function installDavokerTransitionBridge() {
   window.addEventListener("message", (evento) => {
     // Lo primero es de quien viene el mensaje. Sin esto, cualquier pagina
     // abierta en otra pestana (o cualquier sitio que embeba este) podria
-    // mandar un "davoker-transicion" y mover el scroll del portal. El origen
-    // se comprueba contra el de esta misma pagina porque el iframe del portal
-    // es de este sitio.
-    if (evento.origin !== window.location.origin) return;
+    // mandar un "davoker-transicion" y mover el scroll del portal.
+    //
+    // El filtro de origen no puede ir solo: el iframe del portal lleva
+    // `sandbox` sin `allow-same-origin`, asi que su documento tiene origen
+    // opaco y `evento.origin` es siempre "null", nunca el de esta pagina.
+    // Por eso se admite tambien "null" —que es lo que trae cualquier
+    // documento con origen opaco, el del portal entre ellos— y el que
+    // autentica de verdad es la ventana: `contentWindow` es el WindowProxy
+    // del iframe, que no cambia al navegar (davoker.html -> transicion.html
+    // -> davoker.html), y solo esa ventana puede mandar este mensaje.
+    if (evento.origin !== "null" && evento.origin !== window.location.origin) return;
     if (!evento.data || typeof evento.data !== "object") return;
     if (evento.data.type !== "davoker-transicion") return;
     if (!elements.davokerFrame) return;
+    if (evento.source !== elements.davokerFrame.contentWindow) return;
     const marco = elements.davokerFrame.getBoundingClientRect();
     const objetivo = marco.top + window.scrollY - (window.innerHeight - marco.height) / 2;
     // `auto` y no `smooth`: si no, el scroll todavia recorreria el camino
