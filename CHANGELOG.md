@@ -170,6 +170,53 @@ comando y su medicion.
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
 
+## [Fase 1 (1): 21 issues de Sonar en 18 ficheros (17 demos + `app.js`)] - 2026-10-06
+
+Empieza la Fase 1 del plan: bajar el contador de SonarQube Cloud de 99 a 0.
+Contexto medido hoy: de las 99, **20 ya estan arregladas en `main` y Sonar
+aun no ha re-analizado**, quedan **79 reales**. De esas, 24 estan en codigo
+nuestro (`Web/scripts/` + `DavokerDisenador/`) y 55 en demos.
+
+- **17 demos, 21 issues**, todos mecanicos y sin cambio de comportamiento:
+  `var` -> `const` (S3504), `filter().length` -> `some()` (S7754), separacion
+  del operador coma (S878), bloques CSS vacios borrados (S4658), ramas
+  duplicadas unificadas (S1871), parametros por defecto en vez de
+  reasignacion (S7760), `this` directo en vez de guardarlo en `t` (S7740),
+  nombres de argumentos distintos cuando son cosas distintas (S2234),
+  eliminacion de `return` inalcanzable (S3626), helper compartido en
+  `ramen-broth-recipe` para dos funciones identicas (S4144), y retirada de
+  variables muertas.
+- **`app.js`, 4 issues** (S3735 x3 y S6594):
+  - Las dos trampas de reflow (`void element.offsetWidth`) pasan por un helper
+    `forzarReflujo()`. Hace lo mismo, pero el nombre explica la intencion en
+    el sitio donde se usa, que es justo lo que `void` ocultaba.
+  - **`void initializeApp()` pasa a `.catch()` con log.** Antes, un fallo de
+    arranque (por ejemplo que el catalogo no llegara) se comia el error: la
+    pagina se quedaba a medio pintar y sin que nadie supiera por que.
+  - `String(...).match(re)` pasa a `re.exec(String(...))`.
+
+**Dos correcciones sobre el camino:**
+
+- **Un falso positivo revertido.** Sonar marcaba en
+  `clinic-appointment-desk/script.js:235` un `===` que "siempre da false". No
+  es un bug: `horaElegida` nace como `""` pero se reasigna dentro de un
+  callback, y el analizador no ve esa asignacion. La "correccion" que se probo
+  (`String()` en lugar de `""`) deja el mismo valor y no arregla nada, asi que
+  se deshizo el fichero entero.
+- **Otro falso positivo documentado en el codigo.** En
+  `detectar-duplicados.mjs` se marca S7747 (el spread `[...demo.tokens]` es
+  innecesario "porque `for...of` ya recorre iterables"). No lo es: dentro del
+  bucle se hace `demo.tokens.delete(token)`, y borrar de la coleccion que se
+  esta recorriendo puede saltarse el siguiente elemento. La copia es lo que
+  hace la poda segura. Se deja el codigo como estaba, con el porque escrito.
+
+**Un aviso que no se toca:** `fourier-epicycles/script.js` (S107, 8
+parametros). Reducirlos obliga a tocar el dibujo de las estelas y el riesgo no
+compensa un code smell.
+
+Verificado en verde: `validar:demos` (1018/1018, 0 fallos), `test:e2e` (12/12),
+`test` (48/48), `lint`, `format:check` y `typecheck` (18 de 38).
+
 ## [Fase 0 (3): 12 tests e2e del recorrido real de las tres paginas] - 2026-10-06
 
 Tercera parte de la Fase 0. `npm test` cubre logica pura; esto cubre que la

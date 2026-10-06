@@ -222,7 +222,6 @@
     elSpine.setAttribute('d', spineD);
     elSpineHalo.setAttribute('d', spineD);
 
-    const mid = Math.round(SEG / 2);
     buildRibs(RIB_MINOR, ribBuf);
     elRibsMinor.setAttribute('d', ribBuf[0] + ribBuf[1]);
     buildRibs(RIB_MAJOR, ribBuf);

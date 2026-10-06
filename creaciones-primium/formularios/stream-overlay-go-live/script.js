@@ -160,9 +160,6 @@ function pintar(f) {
 
   if (f.id === "etiquetas") {
     el("etiquetas").setAttribute("aria-describedby", described.join(" "));
-  } else if (f.id === "ganancia" || f.id === "volumenAvisos") {
-    el(f.id).setAttribute("aria-invalid", mensaje ? "true" : "false");
-    el(f.id).setAttribute("aria-describedby", described.join(" "));
   } else if (f.id === "avisos") {
     el("avisos").setAttribute("aria-describedby", "avisos-ayuda");
   } else {

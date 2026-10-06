@@ -439,10 +439,19 @@ function applyTypewriterMetrics() {
 
 // Reinicia la animacion: quitar y volver a poner la propiedad obliga al motor a
 // recalcularla, porque si solo se cambia el texto se veria el cambio en seco.
+// `forzarReflujo` lee una propiedad de geometria sin usarla. El navegador
+// tiene que recalcular el layout al leerla, y eso es justo lo que dispara el
+// reinicio de la animacion. Con `void` delante era lo mismo, pero `void`
+// marca un uso inutilizado y Sonar lo senala (S3735); un helper con nombre
+// documenta la intencion en el sitio donde se usa.
+function forzarReflujo(elemento) {
+  return elemento.offsetWidth;
+}
+
 function restartTypewriter() {
   for (const element of document.querySelectorAll("[data-typewriter]")) {
     element.style.animation = "none";
-    void element.offsetWidth;
+    forzarReflujo(element);
     element.style.removeProperty("animation");
   }
 }
@@ -1043,7 +1052,7 @@ function positionFeatured(index, animate) {
   const step = card.getBoundingClientRect().width + gap;
   track.style.transition = animate ? `transform ${featuredTransitionMs}ms ease` : "none";
   track.style.transform = `translateX(${-index * step}px)`;
-  if (!animate) void track.offsetHeight;
+  if (!animate) forzarReflujo(track);
 }
 
 function stopFeaturedCarousel() {
@@ -1252,7 +1261,9 @@ async function downloadComponentZip(component) {
   const licenseFile = files.find((file) => file.name === component.licenseFile
     || file.name.endsWith(`/${component.licenseFile}`));
   if (licenseFile) {
-    const copyright = new TextDecoder().decode(licenseFile.bytes).match(/^\s*(copyright[^\r\n]*)$/im);
+    const copyright = /^\s*(copyright[^\r\n]*)$/im.exec(
+      new TextDecoder().decode(licenseFile.bytes),
+    );
     if (copyright) attribution.push(copyright[1].trim());
   }
   files.push({
@@ -1866,5 +1877,11 @@ function installDavokerTransitionBridge() {
 
 window.addEventListener("DOMContentLoaded", () => {
   installDavokerTransitionBridge();
-  void initializeApp();
+  // Antes era `void initializeApp()`, que ademas de marcarse como uso
+  // inutilizado (S3735) se comia el error si el arranque fallaba (por ejemplo
+  // si el catalogo no llegara): la pagina se quedaba a medio pintar y sin que
+  // nadie supiera por que. Aqui el fallo se ve en consola.
+  initializeApp().catch((error) => {
+    console.error("No se pudo iniciar la aplicacion:", error);
+  });
 }, { once: true });

@@ -21,11 +21,6 @@
   var PAGE = 40;
   var HALF_RAIL = 11;
 
-  var still = false;
-  try {
-    still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch {}
-
   var value = 512;
   var span = 240;
   var dragging = false;

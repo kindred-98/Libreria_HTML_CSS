@@ -119,6 +119,10 @@ for (const demo of demos) {
 }
 const limite = Math.floor(demos.length / 2);
 for (const demo of demos) {
+  // El spread NO es redundante aunque `for...of` pueda recorrer un Set: dentro
+  // del bucle se hace `demo.tokens.delete(token)`, y borrar de la coleccion que
+  // se esta recorriendo puede saltarse el siguiente elemento. La copia es lo
+  // que hace la poda segura. Es un falso positivo de S7747.
   for (const token of [...demo.tokens]) {
     if ((frecuencia.get(token) ?? 0) > limite) demo.tokens.delete(token);
   }

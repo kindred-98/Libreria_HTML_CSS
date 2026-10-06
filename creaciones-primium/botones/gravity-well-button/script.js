@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  var btn = document.getElementById("well");
+  const btn = document.getElementById("well");
   if (!btn) return;
 
   function down(e) {

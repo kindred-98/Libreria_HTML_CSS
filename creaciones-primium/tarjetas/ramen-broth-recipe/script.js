@@ -20,13 +20,7 @@ function amountFor(node, serves) {
   return roundTo((base * serves) / BASE, step);
 }
 
-function tweenAmount(node, to) {
-  const from = Number(node.textContent) || 0;
-  if (reduce) {
-    node.textContent = String(to);
-    return;
-  }
-  const duration = 380;
+function tweenTo(node, from, to, duration) {
   const start = performance.now();
 
   function step() {
@@ -43,27 +37,22 @@ function tweenAmount(node, to) {
   step();
 }
 
+function tweenAmount(node, to) {
+  const from = Number(node.textContent) || 0;
+  if (reduce) {
+    node.textContent = String(to);
+    return;
+  }
+  tweenTo(node, from, to, 380);
+}
+
 function tweenText(node, to) {
   if (reduce) {
     node.textContent = String(to);
     return;
   }
   const from = Number(node.textContent) || 0;
-  const duration = 340;
-  const start = performance.now();
-
-  function step() {
-    const t = Math.min(1, (performance.now() - start) / duration);
-    const eased = 1 - Math.pow(1 - t, 3);
-    node.textContent = String(Math.round(from + (to - from) * eased));
-    if (t < 1) {
-      setTimeout(step, 22);
-    } else {
-      node.textContent = String(to);
-    }
-  }
-
-  step();
+  tweenTo(node, from, to, 340);
 }
 
 function apply(next) {

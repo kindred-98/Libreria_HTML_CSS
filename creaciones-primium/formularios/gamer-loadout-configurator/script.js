@@ -46,7 +46,7 @@ let sincronizando = false;
 
 function el(id) { return document.getElementById(id); }
 
-function celdaId(f, c) { return "celda-" + c + f; }
+function celdaId(columna, fila) { return "celda-" + columna + fila; }
 
 function numero(v) {
   const n = Number(v);
@@ -167,8 +167,8 @@ function construir() {
   conectar();
 }
 
-function marcarFalloEnCelda(f, c, estado) {
-  const inp = el(celdaId(c, f));
+function marcarFalloEnCelda(fila, columna, estado) {
+  const inp = el(celdaId(columna, fila));
   if (!inp) return;
   const td = inp.parentElement;
   if (td) td.classList.toggle("malo", estado === "malo");
@@ -206,8 +206,8 @@ function falloDeFila(i) {
   return { errores, columna, texto: errores.length === 0 ? "" : errores[0].texto, r };
 }
 
-function celdaError(f, c) {
-  return el(celdaId(c, f) + "-error");
+function celdaError(fila, columna) {
+  return el(celdaId(columna, fila) + "-error");
 }
 
 function pintarFila(i) {

@@ -223,8 +223,7 @@
       m.y+=(Math.sin(t*1.15+m.p)*7-2.5)*dt;
       if(m.x>W+10) m.x=-10;
       else if(m.x<-10) m.x=W+10;
-      if(m.y<H*.44) m.y=H*.44;
-      else if(m.y>H-2) m.y=H*.44;
+      if(m.y<H*.44||m.y>H-2) m.y=H*.44;
       var s=m.s*4.4;
       g.globalAlpha=m.a*(.5+.5*Math.abs(w));
       g.drawImage(mote,m.x-s*.5,m.y-s*.5,s,s);
