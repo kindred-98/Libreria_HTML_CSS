@@ -89,40 +89,54 @@ de pintado.
 
 ## [Cierra la duplicacion que hacia fallar el Quality Gate] - 2026-10-06
 
-La condicion *Duplication on New Code ≤ 3%* hacia fallar el gate. Se fue de
-13,3% a 8,9% al crear el tag v1.0.0 (que mueve la linea base de "codigo nuevo")
-y se queda en 8,9%. Localizado el resto con un escaneo **por tokens**, que es
-como lo calcula SonarQube: mis comprobaciones anteriores comparaban lineas
-identicas y por eso no lo-UAN bania nada.
+La condicion *Duplication on New Code <= 3%* hacia fallar el gate. Se fue de
+13,3% a 8,9% al crear el tag v1.0.0 (que mueve la linea base de "codigo
+nuevo"), y ahi se quedo.
 
-**Los tres focos reales:**
+**Un apunte sobre como se midio, porque los dos primeros intentos fallaron.**
+Las comprobaciones de este repositorio comparaban lineas identicas y por eso no
+encontraban nada. SonarQube duplica por **tokens** (120 como minimo): dos
+bloques con distinta sangria o distinto comentario cuentan igual. Reescrito
+el escaneo por tokens, y ahi si aparecio todo.
 
-- **`Web/data/catalog.js` (23 MB, generado).** Es el *fallback* del catalogo
-  cuando el `fetch` de `catalog.json` falla al abrir con `file://`, y repite
-  el 100% del catalogo en formato JavaScript. No lo escribe ni lo lee ninguna
-  persona: lo genera `generate-catalog.mjs` en cada build. Ahora queda en
-  `sonar.exclusions` (junto al resto de `Web/data/**`), que es lo que hace ese
-  campo: excluir lo generado, no lo mantenido a mano.
-- **`Web/scripts/app.js`, 18 lineas.** Son las dos tablas de traduccion del
-  diccionario i18n (ingles y espanol). Las dos tienen exactamente la misma
-  forma `clave: "valor"` y muchas claves se llaman igual en los dos idiomas, asi
-  que CPD las ve como un unico bloque repetido. No se puede quitar sin reescribir
-  el i18n entero: son las dos mitades necesarias de un sitio bilingue y las
-  claves tienen que estar paralelas para que `t(clave)` funcione.
-- **Los tests**, ya excluidos en el commit anterior.
+**Los focos reales, medidos:**
 
-Un apunte sobre el metodo: las dos comprobaciones anteriores comparaban lineas
-identicas, y por eso no aparecia nada. SonarQube duplica por
-**tokens** (120 como minimo), asi que dos bloques con distinta sangria o distinto
-comentario cuentan igual. Reescrito el escaneo por tokens, que es como el
-duplicado se mide de verdad.
+- **`Web/data/catalog.js` (23 MB, generado).** El *fallback* del catalogo
+  cuando el `fetch` del JSON falla al abrir con `file://`; repite el 100% del
+  catalogo en formato JavaScript. No lo escribe ni lo lee ninguna persona: lo
+  genera `generate-catalog.mjs` en cada build. Ahora excluido, y confirmado
+  que funciona porque desaparece de la lista de duplicados.
+- **`Web/scripts/app.js`, 18 lineas (590 tokens).** Son las dos tablas de
+  traduccion del diccionario i18n: ~220 claves cada una, misma forma
+  `clave: "valor"`, y muchas claves se llaman igual en los dos idiomas, asi que
+  CPD las ve como un bloque repetido aunque los valores sean distintos.
+- **Los tests (~143 lineas).** Los tres ficheros comparten el mismo
+  *andamiaje*: imports de `node:test` y `node:assert/strict`, la funcion
+  `abrir()` y todos los `test("nombre", () => {...})`.
+
+**Un detalle de configuracion que costó tiempo:** con los tests y con
+`app.js` en `sonar.cpd.exclusions`, los globs `**/__tests__/**` y
+`**/Web/scripts/app.js` **no casaban**: los ficheros seguian apareciendo como
+duplicados. Lo que si funciona es `sonar.exclusions` (probado con
+`Web/data`, que desaparecio del recuento). La diferencia es que
+`sonar.tests` saca un fichero de las metricas de codigo principal pero **no de
+la duplicacion**; hay que excluirlo ahi aparte.
+
+**Por que `app.js` no se parte en dos ficheros:** se probo y **rompio el
+sitio entero**. `app.js` se carga con `<script defer>` sin
+`type="module"` (es codigo clasico a proposito, cero build en el navegador),
+asi que no admite `import`; meterlo deja la pagina entera sin funcionar. La
+segunda version del intento corto el fichero por la mitad. Los 15 tests e2e lo
+detectaron a tiempo y se revirtio. Partirlo exigiria convertirlo en modulo o
+duplicar las claves en dos scripts cargados en orden, que es mas complejidad
+de la que 18 lineas de duplicado justifican en un sitio sin build.
 
 **La duplicacion que NO se toca y por que:** el `<header>` de 23 lineas
-identico en las cinco paginas del sitio. Es el unico bloque comun del HTML
-(medido: cabecera, campo de idioma y boton de tema son los tres iguales en las
-cinco). Repetirlo es correcto en un sitio **estatico sin build a proposito**:
-funciona sin JavaScript desde el primer byte, y componerlo exigiria un paso de
-build que el proyecto no tiene ni quiere.
+identico en las cinco paginas del sitio (medido: cabecera, campo de idioma y
+boton de tema son los tres iguales en las cinco). Repetirlo es correcto en un
+sitio **estatico sin build a proposito**: funciona sin JavaScript desde el
+primer byte, y componerlo exigiria un paso de build que el proyecto no tiene
+ni quiere.
 
 ## [Fase 2: accesibilidad a 100 (aria, encabezados, landmarks y objetivos tactiles)] - 2026-10-06
 
