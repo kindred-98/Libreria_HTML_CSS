@@ -170,6 +170,36 @@ comando y su medicion.
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
 
+## [Documenta que se deja de Sonar y por que] - 2026-10-06
+
+`Docs/Sonar_decisiones.md`: lo que **no** se toca de SonarQube y el motivo de
+cada caso. Un aviso sin tocar, sin explicacion escrita, no es un "won't fix":
+es deuda oculta que vuelve en seis meses sin que nadie sepa por que sigue ahi.
+
+- **Punto de partida medido**: 99 incidencias, de las que 20 ya estaban
+  arregladas en codigo y Sonar aun no habia re-analizado. Honesto: 79. Quedan
+  **46** sin tocar.
+- **Falsos positivos documentados con su prueba**: el `===` "siempre falso" de
+  `clinic-appointment-desk` (falso positivo por reasignacion dentro de un
+  callback; la correccion probada no arreglaba nada y se revirtio), el
+  `[...set]` de `detectar-duplicados` (borrar de un Set mientras se recorre se
+  salta elementos) y el S1940 de invertir operandos (rompio 5 demos porque
+  `a > b` y `b < a` no son equivalentes con coercion de strings).
+- **No arreglados a proposito, con el riesgo escrito**: `tracePath` de
+  `fourier-epicycles` (8 parametros; reducirlos puede romper el dibujo de las
+  estelas), las regex del propio auto-fix (son la herramienta que arregla el
+  resto; tocarlas propaga errores a 1.018 demos), los `catch` vacios y los
+  `fill()` de `Path2D` (que no son `console.log`, que es lo que la regla supone).
+- **Pendiente real, separado de lo anterior**: la tabla final marca los 7
+  grupos que si son trabajo pendiente, y distingue los que merece la pena
+  arreglar por valor propio (`S6793` y `S6821` son **accesibilidad**, que es
+  otra nota del plan) de los que solo son contador.
+
+La regla que se ha seguido queda escrita en el documento: **arreglar un aviso
+no es el objetivo; que el sitio siga funcionando si.** Cuando arreglar rompe
+algo, no arregla nada, o el riesgo supera el beneficio, el aviso se documenta y
+se marca en la web, y el codigo no se toca.
+
 ## [Fase 1 (2): 8 issues mas de Sonar en el codigo de `Web/scripts`] - 2026-10-06
 
 Segunda tanda de la Fase 1, ya sobre codigo nuestro (el que corre en el CI y en
