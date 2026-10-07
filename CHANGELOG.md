@@ -87,6 +87,51 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 3: la portada movil baja de 77 a 84 de rendimiento] - 2026-10-06
+
+Empieza la Fase 3 (rendimiento en movil). El diagnostico se hizo con un
+**perfil de CPU real** (CDP `Profiler`) y no con las auditorias agregadas de
+Lighthouse, porque las agregadas dicen *cuanto* se gasta pero no *en que*.
+
+**Lo que habia** (CPU real de la portada en un movil simulado):
+
+| Funcion | CPU | x4 (Lighthouse) |
+| --- | --- | --- |
+| `renderFeaturedComponents` | 129 ms | ~500 ms |
+| `applyTypewriterMetrics` | 75 ms | ~300 ms |
+| todo lo demas | < 20 ms cada | - |
+
+**1. El carrusel de destacados (129 ms).** Construye **33 tarjetas** (29
+destacados + 4 repetidas) cada una con su iframe, en el arranque. Se aplaza a
+un momento en el que el navegador esta ocioso, con `requestIdleCallback` y un
+techo de 1200 ms (`timeout`) para que no dependa de que llegue a estar libre.
+No afecta al LCP porque el carrusel esta **debajo** del hero, que es lo que se
+pinta primero.
+
+El cambio de idioma **no** se aplaza: para entonces la pagina ya esta repintada
+y quien cambia el idioma esta mirando justo esa seccion.
+
+**2. La maquina de escribir (75 ms).** `applyTypewriterMetrics` leia
+`scrollWidth` (que fuerza un recalculo de layout) **despues** de escribir tres
+propiedades de estilo, por cada elemento: layout thrashing. Ahora escribe todas
+las propiedades de todos los elementos y despues las lee todas, que es una
+sola pasada.
+
+**Medido (preset movil, 412x915):**
+
+| | Antes | Ahora |
+| --- | --- | --- |
+| portada, TBT | 970 ms | **510 ms** |
+| portada, rendimiento | 77 | **84** |
+| escritorio, las 5 paginas | 99-100 | **99-100** (no baja) |
+
+Comprobado que la portada sigue bien tras el aplazamiento: las 33 tarjetas
+aparecen, la seccion se ve, la maquina de escribir mide bien (`--type-width`
+y `--type-chars` rellenos) y no hay ni un error de consola.
+
+Verificado en verde: `test` (48/48), `test:e2e` (15/15) y
+`validar:lighthouse` (5 paginas, 99-100 en las cuatro categorias).
+
 ## [Reescribe el README: dependencias, comandos, badges y documentacion enlazada] - 2026-10-06
 
 El README era un documento largo sin indice y sin decir **lo que un visitante,

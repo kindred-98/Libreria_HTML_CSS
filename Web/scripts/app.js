@@ -27,6 +27,26 @@ let featuredTimer = null;
 // colapsar el resto en puntos suspensivos.
 const pageWindow = 1;
 
+// Ejecuta una tarea cuando el navegador tenga un rato libre, sin bloquear lo
+// que ya se esta viendo.
+//
+// `requestIdleCallback` es lo que hay para esto, pero no existe en todos los
+// navegadores (y en pruebas automatizadas puede no disparar nunca), asi que el
+// `timeout` es el garantia: la tarea se ejecuta **a los 1200 ms como tarde**,
+// ocupe o no el hilo principal. Ese techo importa: sin el, en un movil lento
+// el carrusel podria no aparecer nunca.
+//
+// @param {() => void} tarea Lo que se quiere aplazar.
+// @param {number} [esperaMs] Tope de espera en milisegundos.
+// @returns {void}
+function aplazar(tarea, esperaMs = 1200) {
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(tarea, { timeout: esperaMs });
+  } else {
+    window.setTimeout(tarea, 200);
+  }
+}
+
 // Google Analytics 4. El ID de medicion va aqui y en ningun otro sitio, y solo
 // se manda algo si tiene el formato G-XXXXXXXXXX: con cualquier otro valor el
 // codigo descarta el envio y no se pide nada a Google. El ID real esta en
@@ -604,11 +624,21 @@ function applyTypewriterMetrics() {
   100% { width: 0; }
 }`;
 
+  // Primero **todas** las escrituras y despues **todas** las lecturas. Leer
+  // `scrollWidth` obliga al navegador a recalcular el layout de golpe, asi que
+  // si se lee justo despues de escribir tres propiedades de estilo (que es lo
+  // que hacia antes) se fuerza un recalculo por cada elemento y la pagina
+  // entera se recalcula varias veces seguidas. Medido: eran 75 ms de CPU solo
+  // aqui. Separar las fases lo deja en una sola pasada.
+  const pendientes = [];
   for (const element of elements) {
     const chars = [...element.textContent.trim()].length;
     if (!chars) continue;
     element.style.setProperty("--type-chars", String(chars));
     element.style.setProperty("--type-cycle", `${typewriterCycleMs}ms`);
+    pendientes.push(element);
+  }
+  for (const element of pendientes) {
     // +3px: el caret va como borde y el box-sizing es border-box.
     element.style.setProperty("--type-width", `${element.scrollWidth + 3}px`);
   }
@@ -2032,7 +2062,22 @@ async function initializeApp() {
     if (statComponents) statComponents.textContent = String(state.components.length);
     if (statCategories) statCategories.textContent = String(getCategories().length);
     renderMarquee();
-    renderFeaturedComponents();
+    // El carrusel de destacados construye 33 tarjetas (29 + 4 repetidas), cada
+    // una con su iframe. Medido en CPU movil: son 129 ms, y con la lentitud
+    // simulada de Lighthouse x4 son ~500 ms de hilo principal bloqueado, que es
+    // justo el TBT de la portada.
+    //
+    // No hace falta para el primer pintado: el carrusel esta **debajo** del
+    // hero, que es lo que se ve primero. Se aplaza a un momento en el que el
+    // navegador esta ocioso, con `requestIdleCallback` y un tope de tiempo
+    // (`timeout`) para no depender de que llegue a estar libre: si esta
+    // ocupado, se dibuja a los 1200 ms y no antes. El LCP no se ve afectado
+    // porque el elemento que lo produce (el hero) ya esta pintado cuando esto
+    // corre.
+    //
+    // El cambio de idioma **no** se aplaza: para entonces la pagina ya esta
+    // repintada y quien cambia el idioma esta mirando justo esa seccion.
+    aplazar(() => renderFeaturedComponents());
     renderFilters();
     renderAuthorFilters();
     renderRoute();
