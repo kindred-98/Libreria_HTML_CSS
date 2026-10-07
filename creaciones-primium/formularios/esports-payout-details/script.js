@@ -225,8 +225,7 @@ function problemas() {
     }
   }
   if (t === "equipo" && it !== "" && rs !== "") {
-    const palabras = rs.toUpperCase().split(/\s+/).filter(p => p.length > 2 && p !== "LTD" && p !== "LIMITED" && p !== "GMBH" && p !== "SL" && p !== "SAS" && p !== "BV");
-    const primera = palabras[0];
+    const primera = rs.toUpperCase().split(/\s+/).find(p => p.length > 2 && p !== "LTD" && p !== "LIMITED" && p !== "GMBH" && p !== "SL" && p !== "SAS" && p !== "BV");
     if (primera !== undefined && planilla.includes(primera.replace(/[^A-Z0-9]/g, ""))) {
       salida.push("Account holder: the registered name on the bank account does not contain " + primera + ", which is the company name. A company account has to be in the company name or the payment is returned.");
     }

@@ -67,7 +67,7 @@
   });
 
   function step() {
-    var now = (new Date()).getTime();
+    var now = Date.now();
     if (!t0) t0 = now;
     var ms = now - t0;
     var cyc = held ? holdU : (ms % CYCLE) / CYCLE;
@@ -105,7 +105,7 @@
   function grab(fr) {
     if (held) return;
     held = true;
-    holdU = ((new Date()).getTime() - t0) % CYCLE / CYCLE;
+    holdU = (Date.now() - t0) % CYCLE / CYCLE;
     document.documentElement.classList.add("is-held");
     choose(fr);
     cap.textContent = base + "frame " + fr.getAttribute("aria-label").slice(6) + " held";

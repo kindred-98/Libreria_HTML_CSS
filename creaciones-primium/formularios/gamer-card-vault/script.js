@@ -139,7 +139,7 @@ function enmascarar(valor) {
   if (d.length < 4) return "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022";
   const grupos = marcaDe(valor) === "amex" ? [4, 6, 5] : [4, 4, 4, 4];
   const pedazo = d.slice(-grupos[grupos.length - 1]);
-  const relleno = grupos.slice(0, grupos.length - 1).map(() => "\u2022\u2022\u2022\u2022").join(" ");
+  const relleno = grupos.slice(0, -1).map(() => "\u2022\u2022\u2022\u2022").join(" ");
   return relleno + " " + pedazo;
 }
 

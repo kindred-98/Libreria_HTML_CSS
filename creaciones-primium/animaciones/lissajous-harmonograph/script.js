@@ -43,7 +43,7 @@ const EXT=PRESETS.map(function(p){
   const q=[0,0];
   for(let i=0;i<=1800;i++){
     penPoint(p,i/1800*DRAW_T,q);
-    const d=Math.sqrt(q[0]*q[0]+q[1]*q[1]);
+    const d=Math.hypot(q[0],q[1]);
     if(d>m) m=d;
   }
   return m;

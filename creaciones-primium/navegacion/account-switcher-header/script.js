@@ -155,7 +155,7 @@
   });
 
   function placeInk() {
-    var active = navLinks.filter(function (a) { return a.getAttribute('aria-current'); })[0];
+    var active = navLinks.find(function (a) { return a.getAttribute('aria-current'); });
     if (!active) { navInk.style.opacity = '0'; return; }
     navInk.style.opacity = '1';
     navInk.style.width = active.offsetWidth + 'px';

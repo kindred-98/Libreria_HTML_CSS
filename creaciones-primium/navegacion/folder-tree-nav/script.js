@@ -52,6 +52,9 @@
       });
       window.sessionStorage.setItem(KEY, JSON.stringify(open));
     } catch (err) {
+      // Se ignora a proposito: dentro del sandbox del catalogo `sessionStorage`
+      // puede lanzar (origen opaco o modo privado) y perder el estado guardado
+      // no rompe el arbol, solo se reabre desde cero.
       return;
     }
   }
@@ -70,6 +73,8 @@
         else setBranch(li, false, false);
       });
     } catch (err) {
+      // Se ignora a proposito: el `sessionStorage` puede lanzar al leerlo
+      // (origen opaco) y sin estado guardado el arbol se muestra entero.
       return;
     }
   }

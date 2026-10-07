@@ -63,6 +63,9 @@
         setOpen(node, list.includes(id));
       });
     } catch (e) {
+      // Se ignora a proposito: si lo guardado no es JSON valido se aplica el
+      // estado por defecto (solo el primer nivel abierto) en vez de dejar el
+      // arbol a medias.
       nodes.forEach(function (node) { setOpen(node, node.parentElement === tree); });
     }
   } else {

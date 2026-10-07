@@ -429,7 +429,7 @@ function filaRevision(id, clave, valor) {
 
 function montarRevision(p) {
   const fichas = nodo("div", "fichas");
-  PASOS.slice(0, PASOS.length - 1).forEach((q, i) => {
+  PASOS.slice(0, -1).forEach((q, i) => {
     fichas.appendChild(filaRevision(i, q.etiqueta, textoDe(q.id)));
   });
   pasoEl.appendChild(fichas);

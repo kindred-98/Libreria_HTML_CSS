@@ -87,6 +87,41 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 1: 35 avisos de Sonar mas, en 25 demos] - 2026-10-06
+
+Tercer bloque del descenso de las 101 incidencias: las que estaban **en los
+demos** de los autores, no en el codigo del sitio.
+
+Los cambios son mecanicos y de equivalencia exacta:
+
+- `new Date().getTime()` -> `Date.now()` (6 demos), `filter(p)[0]` ->
+  `find(p)` (4), `new Date(x.getTime())` -> `new Date(x)` (2),
+  `indexOf(...) !== 0` -> `!startsWith(...)` (1), `parseFloat` ->
+  `Number.parseFloat` (1), `removeChild` -> `.remove()` (1),
+  `Math.sqrt(a*a+b*b)` -> `Math.hypot(a,b)` (1), `slice(0, len-1)` ->
+  `slice(0, -1)` (2).
+- **Rol ARIA invalido (S6821)**: `role="none"` es una *>alias* obsoleto de
+  `role="presentation"`; se cambia en los tres sitios de
+  `grid-burst-dropdown`. Ni el CSS ni el JS seleccionaban por ese rol.
+- **`aria-activedescendant=""` vacio (S6793)**: el atributo apuntaba a la
+  cadena vacia, que no es un id. El JS ya lo pone y lo quita segun haya opcion
+  activa, asi que la sobra en el HTML.
+- **Dos colecciones construidas y nunca leidas (S4030)**: borradas.
+- **Tres `catch` vacios (S2486)**: no se borran (silencian el fallo a
+  proposito), se anade un comentario que explica por que se ignoran.
+
+**Verificado que el cambio de las regex es una equivalencia exacta:** la clase
+de caracteres `[A-Za-zÀ-ÿ '\-.\x27.]` de `hotel-night-booking` tenía el
+apostrofo y el punto duplicados; la nueva `[A-Za-zÀ-ÿ '.-]` acepta
+**exactamente lo mismo**, comprobado carácter a carácter en los 8.448 code
+points del rango Unicode: **0 diferencias**.
+
+Verificado en verde: `node --check` en los 23 ficheros JS, `validar:demos`
+(**1018/1018, 0 fallos**), `validar`, `validar:a11y`, `validar:enlaces` y
+`validar:encabezados`.
+
+---
+
 ## [Fase 1: 12 avisos mas de Sonar (S9382, S5843, S8786 y uno de verdad)] - 2026-10-06
 
 Segundo bloque del descenso de las 101 incidencias.

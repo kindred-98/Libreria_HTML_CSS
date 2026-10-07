@@ -401,7 +401,7 @@ function montarIva(p) {
   entrada.setAttribute("aria-describedby", "ivaNumero-ayuda");
   entrada.addEventListener("input", () => {
     let v = entrada.value.toUpperCase().replace(/[^0-9A-Z]/g, "");
-    if (st.pais && v.indexOf(st.pais) !== 0) v = st.pais + v;
+    if (st.pais && !v.startsWith(st.pais)) v = st.pais + v;
     if (st.pais && v.length > st.pais.length + 13) v = v.slice(0, st.pais.length + 13);
     if (!st.pais && v.length > 15) v = v.slice(0, 15);
     st.iva = entrada.value = v;
