@@ -87,6 +87,33 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Reescribe el README: dependencias, comandos, badges y documentacion enlazada] - 2026-10-06
+
+El README era un documento largo sin indice y sin decir **lo que un visitante,
+o quien llega nuevo, necesita saber**: como se ejecuta, que paquetes hacen
+falta y donde esta cada cosa.
+
+- **Dependencias, que no estaban.** Se dice de forma explicita que **en
+  produccion no hay ninguna** (HTML, CSS y JavaScript a pelo, sin
+  `node_modules` ni bundler) y se listan las **nueve de desarrollo**, cada una
+  con para que sirve. Se aclara que Node 20 o superior es el requisito y que
+  `playwright install chromium` solo hace falta para medir.
+- **Los 26 comandos de `package.json`**, agrupados en generar/servir,
+  comprobar y SonarQube. Antes solo se mencionaban cuatro en prosa.
+- **Badges**: CI, CodeQL, Quality Gate de SonarCloud, licencia y version de
+  Node, mas enlaces directos a la biblioteca, la privacidad y el aviso legal.
+- **Tabla de las comprobaciones del CI** con que mide cada una, en vez de una
+  lista numerada que se habia quedado corta: eran 7, ahora el workflow tiene
+  19 pasos.
+- **Indice de documentacion** con los once documentos y que contiene cada uno.
+  Los cuatro que se crearon en esta sesion (plan, cierre, decisiones de
+  SonarQube y Search Console) estaban sueltos y no se находиaban desde aqui.
+- Estructura actualizada con las paginas nuevas, `lib/`, `e2e/`,
+  `__tests__/` y los ficheros de configuracion que se anadieron.
+
+Se comprueba que los **22 enlaces locales** del README apuntan a ficheros que
+existen.
+
 ## [Cierra las fases 0, 1, 2, 4a y 4b, y documenta lo que queda] - 2026-10-06
 
 Cierre de la sesion. `Docs/Sesion_2026-10-05_06.md` recoge, fase por fase, que se
