@@ -85,7 +85,7 @@ historial.
 
 ## Punto C · Presupuesto de CLS (< 0,05)
 
-**Estado: pendiente.**
+**Estado: hecho, de otra manera (ver mas abajo).**
 
 ### Qué es
 
@@ -110,10 +110,27 @@ lugar de un dato de un informe.
 2. Un paso en el CI, en el job de Node 24 (donde ya está Chromium).
 3. Documentar el valor actual en el CHANGELOG como línea base.
 
+### Cómo acabó siendo
+
+**No tiene script propio, y eso fue una decisión, no un atajo.** Se
+intentó (`validar-cls.mjs`) medirlo con `PerformanceObserver` de
+`layout-shift` desde Playwright, y **no funciona**: comprobado con una página
+de prueba que se desplaza a propósito, el observer no entrega ni un solo
+evento. Lighthouse lo saca del *trace* del navegador, no de esa API.
+
+Así que el presupuesto vive **dentro de `validar-lighthouse-movil.mjs`**, que
+ya medía el CLS en cada pasada. Ventajas: no hay un segundo aparato de
+medición que pueda divergir del informe, y es el mismo número que ve la gente
+cuando ejecuta Lighthouse.
+
+El presupuesto **se comprobó que detecta**: con un salto forzado de 400 px, el
+CLS sube a **0,45** y lo caza; sin él, da 0,010-0,014. Un presupuesto que
+siempre pasa no sirve para nada.
+
 ### Hecho cuando
 
-`npm run validar:cls` existe, las 5 páginas dan 0,006-0,016, y el CI falla si
-alguna se pasa de 0,05.
+`npm run validar:lighthouse:movil` falla si alguna de las 5 páginas pasa de
+0,05 de CLS, y hoy ninguna lo hace.
 
 ### Ojo con un detalle técnico
 
@@ -127,7 +144,7 @@ para nada.
 
 ## Punto D · Presupuesto del tamaño del catálogo
 
-**Estado: pendiente.**
+**Estado: hecho.**
 
 ### Qué es
 
@@ -166,7 +183,7 @@ tarde.
 
 ## Punto E · Uptime diario
 
-**Estado: pendiente.**
+**Estado: hecho.**
 
 ### Qué es
 
@@ -218,6 +235,6 @@ mano con `workflow_dispatch`.
 | --- | --- | --- | --- |
 | A | Presupuesto móvil 80 → 85 | **hecho** | 10 min |
 | B | Que el presupuesto móvil bloquee | **hecho** | 5 min |
-| C | Presupuesto de CLS < 0,05 | pendiente | 20 min |
-| D | Presupuesto del catálogo comprimido < 150 KB | pendiente | 20 min |
-| E | Uptime diario | pendiente | 30 min |
+| C | Presupuesto de CLS < 0,05 | **hecho** (dentro del de móvil) | — |
+| D | Presupuesto del catálogo comprimido < 180 KB | **hecho** | 20 min |
+| E | Uptime diario | **hecho** | 30 min |

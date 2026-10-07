@@ -102,6 +102,19 @@ jobs:
       - name: Comprobar el CSP del despliegue
         run: node Web/scripts/validar-csp.mjs
 
+      # Presupuesto de peso del catalogo (Fase 5). El catalogo es el segundo
+      # recurso mas pesado de la pagina: 707 KB en disco, 163 KB comprimidos.
+      # No es hoy un cuello de botella (la pagina de componentes puntua 97),
+      # pero 1018 componentes x 0,16 KBcompressed cada uno significan +16 KB
+      # por cada 100 demos nuevos, y eso se notaria tarde. El presupuesto avisa
+      # antes. Va en los tres jobs de Node porque no necesita navegador: es
+      # una cuenta de bytes y tarda menos de un segundo.
+      #
+      # Detalle y criterio de subida en Docs/Fase5_presupuestos.md.
+      - name: Comprobar el peso del catalogo (presupuesto)
+        run: npm run validar:peso
+
+
       # Estructura de encabezados de los demos: si de h1 se salta a h3, un lector
       # de pantalla anuncia un h2 que no existe y el indice deja de reflejar lo
       # que se ve. Es estatico y tarda menos de un segundo, asi que corre en las

@@ -87,6 +87,50 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 5 (D y E): presupuesto del catalogo y comprobacion diaria de uptime] - 2026-10-06
+
+Cierra la fase. Los dos ultimos puntos, que no dependen del codigo que se
+tocaba antes.
+
+### D · Peso del catalogo
+
+`npm run validar:peso` mide `catalog.json` **comprimido con gzip**, que es lo
+que viaja: 707 KB en disco se quedan en **163,5 KB** (23% de compresion), o
+136 KB si el servidor sirve con brotli.
+
+El presupuesto esta en **180 KB**, y no en 150 como estaba apuntado en el
+plan, porque medido **el valor real es 163,5**: un umbral de 150 habria fallado
+desde el primer dia. Con 180 hay un 10% de margen, que da para unos **102
+componentes mas** antes de que salte.
+
+Medido, **no es hoy un cuello de botella** (la pagina de componentes puntua 97
+con 163 KB). El riesgo es de crecimiento: 1018 componentes a 0,16 KB
+comprimidos cada uno son +16 KB por cada 100 demos nuevos, y eso se notaria
+tarde. El presupuesto avisa antes.
+
+Va en los tres jobs de Node porque **no necesita navegador**: es una cuenta de
+bytes y tarda menos de un segundo.
+
+### E · Uptime diario
+
+`.github/workflows/uptime.yml`, una vez al dia a las **06:17 UTC**. A esa hora
+y no a las 00:00 porque los cron que caen en punto se saturan: GitHub los
+ejecuta todos a la vez.
+
+Comprueba que las cinco paginas responden **200** en menos de 15 s. Y solo eso:
+el contenido lo miden los validadores de cada push; aqui lo que importa es que
+haya alguien escuchando. Con `permissions: {}` (`contents: read`), porque un
+workflow que solo hace GET no necesita token de escritura.
+
+Es el unico punto de toda la fase que **no depende del codigo**: mide
+disponibilidad. Todo lo demas (rendimiento, accesibilidad, duplicacion) solo se
+ejecuta cuando alguien commitea, asi que si Vercel se caia y nadie commiteaba
+nada, no habria ninguna señal.
+
+Comprobado contra la web real: las cinco paginas responden 200.
+
+---
+
 ## [Fase 5 (C): presupuesto de CLS, y se arregla la duplicacion que lo causaba] - 2026-10-06
 
 Dos cosas en una, porque estan enlazadas.
