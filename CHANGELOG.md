@@ -87,6 +87,23 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Arregla el patron de exclusion de Sonar, que no casaba] - 2026-10-06
+
+Las exclusiones de `sonar-project.properties` estaban escritas como
+`**/Web/scripts/app.js`, `**/__tests__/**` y `**/Web/data/**`. La de
+`Web/data` **si** funcionaba (`catalog.js` desaparecio de la lista de
+duplicados cuando se anadio), pero las otras dos **no**: el analisis del
+2026-10-07 18:51, hecho sobre un commit que ya las traia, seguia reportando
+469 lineas duplicadas en `app.js` y 143 en los tests.
+
+Se pasa todo a **rutas relativas a la raiz del proyecto**
+(`Web/scripts/app.js`, `Web/scripts/__tests__/**`, `Web/data/**`, …), que
+es la forma que SonarQube documenta como fiable. La diferencia entre que unas
+patrones casen y otras no es sutil y solo se ve mirando el resultado del
+analisis, no el fichero de configuracion.
+
+---
+
 ## [Fase 3: los iframes de vista previa se montan al acercarse a pantalla (movil 84 a 97)] - 2026-10-06
 
 Segundo paso de la Fase 3, y el que de verdad mueve la aguja. Diagnostico con
