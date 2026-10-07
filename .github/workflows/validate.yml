@@ -207,6 +207,16 @@ jobs:
         if: matrix.node-version == 24
         run: npm run validar:lighthouse:movil
 
+      # El presupuesto de movil (arriba) mide tambien el CLS, porque Lighthouse
+      # ya lo calcula en la misma pasada y es el mismo numero que aparece en los
+      # informes. Se intento medirlo aparte con `PerformanceObserver` de
+      # `layout-shift` desde Playwright y **no funciona**: verificado con una
+      # pagina de prueba que se desplaza a proposito, el observer no entrega ni un
+      # evento. Lighthouse lo saca del trace del navegador, no de esa API.
+      #
+      # Como el CLS va aqui, el presupuesto es el mismo numero que ve la gente en
+      # el informe de Lighthouse, no una cifra paralela que podria divergir.
+
       # Que la web funcione de verdad, no solo que su HTML sea valido. Abre
       # las tres paginas en Chromium y comprueba el recorrido real: el
       # catalogo rellena la rejilla, el buscador filtra, el estado vacio

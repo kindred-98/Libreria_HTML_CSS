@@ -37,12 +37,8 @@
  * El resto de jobs lo instalan con `npm ci` (un aviso de motor, no un fallo)
  * y no lo ejecutan.
  */
-import { existsSync } from "node:fs";
 import process from "node:process";
-import { chromium } from "playwright";
-import { launch as lanzarChrome, getChromePath } from "chrome-launcher";
-import lighthouse from "lighthouse";
-import { puertoLibre, arrancarServidor } from "./lib/servidor.mjs";
+import { PAGINAS, medirConLighthouse } from "./lib/lighthouse.mjs";
 
 // Los umbrales los fija el plan de fases (7.6) y no se tocan sin decidirlo.
 // Rendimiento va mas bajo que el resto porque se mide con la simulacion de
@@ -55,113 +51,52 @@ const UMBRALES = {
   seo: 95,
 };
 
-// Las mismas paginas que `validar-a11y.mjs`.
-const PAGINAS = [
-  { ruta: "/Web/index.html", nombre: "portada" },
-  { ruta: "/Web/components.html", nombre: "componentes" },
-  { ruta: "/Web/team-core.html", nombre: "team core" },
-  { ruta: "/Web/privacidad.html", nombre: "privacidad" },
-  { ruta: "/Web/legal.html", nombre: "legal" },
-];
-
-// Lighthouse no arranca el navegador por si solo cuando se usa como libreria,
-// asi que el binario se prepara aqui y despues chrome-launcher lo abre. Se
-// apunta primero al de Playwright, que es el mismo que usan layout y a11y y
-// que el CI instala igual, y si no esta, al Chrome del sistema.
-function prepararNavegador() {
-  const dePlaywright = chromium.executablePath();
-  if (dePlaywright && existsSync(dePlaywright)) return dePlaywright;
-  try {
-    return getChromePath();
-  } catch {
-    throw new Error(
-      "No hay navegador: ni el Chromium de Playwright ni el Chrome del sistema. " +
-        "Instala el primero con `npx playwright install --with-deps chromium`.",
-    );
-  }
-}
-
 const UMBRALES_NOMBRES = Object.keys(UMBRALES);
+
+const filas = await medirConLighthouse({
+  paginas: PAGINAS,
+  categorias: UMBRALES_NOMBRES,
+  settings: {
+    // El preset desktop de Lighthouse, escrito a mano porque el programa no
+    // expone `--preset` cuando se usa como libreria: mismo tamano de pantalla y
+    // misma CPU sin throttling que la medicion oficial.
+    formFactor: "desktop",
+    screenEmulation: {
+      mobile: false,
+      width: 1350,
+      height: 940,
+      deviceScaleFactor: 1,
+      disabled: false,
+    },
+    throttling: {
+      rttMs: 40,
+      throughputKbps: 10240,
+      cpuSlowdownMultiplier: 1,
+      requestLatencyMs: 0,
+      downloadThroughputKbps: 0,
+      uploadThroughputKbps: 0,
+    },
+    // Una unica pasada por pagina. Repetir para promediar duplicaria el
+    // tiempo de CI sin mover los puntos: la varianza en un sitio estatico
+    // local esta dentro del margen de un punto.
+    maxWaitForLoad: 45000,
+  },
+});
 
 const fallos = [];
 
-const binario = prepararNavegador();
-const puerto = await puertoLibre();
-const ORIGEN = `http://127.0.0.1:${puerto}`;
-const servidor = await arrancarServidor(puerto);
+console.log(
+  `Umbral: rendimiento >= ${UMBRALES.performance}, el resto >= ${UMBRALES.accessibility} (preset desktop)\n`,
+);
 
-// Sin esto en un runner sin pantalla el Chrome no arranca. `--no-sandbox` no
-// hace falta en local, pero en el CI de GitHub si y anadirlo ahi no cambia
-// nada en la medicion.
-const CHROME_FLAGS = ["--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"];
-
-// `lighthouse()` solo mide: no arranca el navegador. En la linea de comandos
-// lo hace el binario de Lighthouse, y aqui ese trabajo es de chrome-launcher,
-// que es la misma libreria que usa. El puerto que abre es el que se le pasa
-// despues; sin el, Lighthouse se conecta a 9222 y no hay nadie.
-let chrome = null;
-
-try {
-  chrome = await lanzarChrome({ chrome: binario, chromeFlags: CHROME_FLAGS });
-  console.log(`Lighthouse 13 · Chromium en ${binario}`);
-  console.log(
-    `Umbral: rendimiento >= ${UMBRALES.performance}, el resto >= ${UMBRALES.accessibility} (preset desktop)\n`,
-  );
-
-  for (const pagina of PAGINAS) {
-    const inicio = Date.now();
-    const { lhr } = await lighthouse(
-      `${ORIGEN}${pagina.ruta}`,
-      { logLevel: "error", output: "json", port: chrome.port },
-      {
-        extends: "lighthouse:default",
-        settings: {
-          onlyCategories: UMBRALES_NOMBRES,
-          // El preset desktop de Lighthouse, escrito a mano porque el programa
-          // no expone `--preset` cuando se usa como libreria: mismo tamano de
-          // pantalla y misma CPU sin throttling que la medicion oficial.
-          formFactor: "desktop",
-          screenEmulation: {
-            mobile: false,
-            width: 1350,
-            height: 940,
-            deviceScaleFactor: 1,
-            disabled: false,
-          },
-          throttling: {
-            rttMs: 40,
-            throughputKbps: 10240,
-            cpuSlowdownMultiplier: 1,
-            requestLatencyMs: 0,
-            downloadThroughputKbps: 0,
-            uploadThroughputKbps: 0,
-          },
-          // Una unica pasada por pagina. Repetir para promediar duplicaria el
-          // tiempo de CI sin mover los puntos: la varianza en un sitio
-          // estatico local esta dentro del margen de un punto.
-          maxWaitForLoad: 45000,
-        },
-      },
-    );
-
-    const segundos = ((Date.now() - inicio) / 1000).toFixed(1);
-    const puntos = UMBRALES_NOMBRES.map((c) => `${c}=${Math.round(lhr.categories[c].score * 100)}`);
-    const bajos = UMBRALES_NOMBRES.filter((c) => Math.round(lhr.categories[c].score * 100) < UMBRALES[c]);
-
-    if (bajos.length === 0) {
-      console.log(`  ok    ${pagina.nombre.padEnd(12)} ${puntos.join("  ")}  (${segundos} s)`);
-    } else {
-      console.log(`  FALLO ${pagina.nombre.padEnd(12)} ${puntos.join("  ")}  (${segundos} s)`);
-      for (const categoria of bajos) {
-        fallos.push(
-          `${pagina.nombre}: ${categoria} ${Math.round(lhr.categories[categoria].score * 100)} < ${UMBRALES[categoria]}`,
-        );
-      }
-    }
+for (const fila of filas) {
+  const puntos = UMBRALES_NOMBRES.map((c) => `${c}=${fila.puntuaciones[c]}`);
+  const bajos = UMBRALES_NOMBRES.filter((c) => fila.puntuaciones[c] < UMBRALES[c]);
+  const marca = bajos.length === 0 ? "ok   " : "FALLO";
+  console.log(`  ${marca} ${fila.nombre.padEnd(12)} ${puntos.join("  ")}  (${fila.segundos.toFixed(1)} s)`);
+  for (const categoria of bajos) {
+    fallos.push(`${fila.nombre}: ${categoria} ${fila.puntuaciones[categoria]} < ${UMBRALES[categoria]}`);
   }
-} finally {
-  if (chrome) await chrome.kill();
-  servidor.kill();
 }
 
 console.log("");
@@ -170,7 +105,5 @@ if (fallos.length > 0) {
   for (const fallo of fallos) console.error(`  - ${fallo}`);
   process.exitCode = 1;
 } else {
-  console.log(
-    `${PAGINAS.length} paginas por encima del umbral en las ${UMBRALES_NOMBRES.length} categorias.`,
-  );
+  console.log(`${filas.length} paginas por encima del umbral en las ${UMBRALES_NOMBRES.length} categorias.`);
 }

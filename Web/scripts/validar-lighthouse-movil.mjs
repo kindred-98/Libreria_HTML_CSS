@@ -1,172 +1,124 @@
 /**
- * Presupuesto de rendimiento en movil (Fase 3, paso 1).
+ * Presupuesto de rendimiento en movil.
  *
  * Por que existe: `validar-lighthouse.mjs` mide las cinco paginas con el
  * preset **desktop**, que va sobrado (99-100). El preset **movil** es el que
  * simula de verdad lo que sufre alguien con un telefono: CPU ralentizada x4 y
- * red estrangulada. Ahi las cifras bajan a 84-99 y son las que deciden si la
- * web se siente rapida o no. Sin medirlas, una regresion en movil se cuela
- * sin que nadie se entere.
+ * red estrangulada. Sin medirlo ahi, una regresion en movil se cuela sin que
+ * nadie se entere.
  *
- * Que hace: mide las cinco paginas con el preset movil y falla si alguna baja
- * del umbral.
+ * Que mide, en una sola pasada: **rendimiento** (con presupuesto) y **CLS**
+ * (con presupuesto). El CLS se mide aqui y no en un script aparte porque
+ * Lighthouse **ya lo calcula** en cada medicion y es el mismo numero que
+ * aparece en los informes: medirlo por otra via daria una cifra distinta y,
+ * con suerte, comparable.
+ *
+ * ## Por que el CLS no tiene su propio script
+ *
+ * Se intento (Fase 5, punto C) medirlo con `PerformanceObserver` de
+ * `layout-shift` desde Playwright. **No funciona**: verificado con una pagina
+ * de prueba que se desplaza a proposito, el observer no entrega ni un
+ * evento. Lighthouse lo saca del *trace* del navegador, no de esa API, y por
+ * eso reutilizar su medicion es lo correcto y no un atajo.
+ *
+ * ## Por que el umbral de rendimiento es 85
+ *
+ * Se puso en 80 cuando el peor valor medido era 84 (un umbral por encima del
+ * valor actual falla desde el primer dia). La Fase 3 subio la portada de 84 a
+ * 97, asi que 80 dejaba 13 puntos de margen inutil. Con 85 quedan **ocho
+ * puntos** sobre el peor valor: una regresion normal lo dispara y la
+ * variacion de la medicion no. El plan de subida esta en
+ * `Docs/Presupuestos_rendimiento.md` §6.
+ *
+ * ## Por que el de CLS es 0,05
+ *
+ * Google considera "bueno" por debajo de 0,1. Aqui se esta en 0,006-0,016,
+ * asi que 0,05 es margen de sobra para el ruido y salta ante una regresion
+ * real. Ya se rompio una vez sin que nadie se enterara: el pie saltaba de
+ * `y=481` a `y=4081` al rellenarse la rejilla (0,29).
  *
  *   node Web/scripts/validar-lighthouse-movil.mjs
  *   npm run validar:lighthouse:movil
  *
- * ## Por que el umbral es 85
- *
- * ### Lo que habia cuando se puso en 80
- *
- * Medido con DOS pasadas por pagina (la variacion de Lighthouse en movil es de
- * +-3 a 5 puntos entre ejecuciones):
- *
- * | Pagina   | Pasadas     | Peor caso |
- * | -------- | ----------- | --------- |
- * | portada  | 87 / 84     | **84**    |
- * | componentes | 96 / 96 | 96        |
- * | team core | 97 / 97    | 97        |
- * | privacidad | 99 / 99   | 99        |
- * | legal    | 99 / 99     | 99        |
- *
- * El numero que mandaba era el **84 de la portada**, y fluctuaba: un
- * presupuesto en 85 fallaba en la mitad de las ejecuciones. Por eso se puso
- * en **80**, cuatro puntos por debajo.
- *
- * ### Por que ahora es 85
- *
- * La Fase 3 arreglo la causa (las 33 vistas previas se montaban de golpe) y
- * subio la portada a **97**, con un peor caso de 93 entre dos pasadas:
- *
- * | Pagina      | Antes | Ahora      |
- * | ----------- | ----- | ---------- |
- * | portada     | 84-87 | **97**     |
- * | componentes | 96    | **93-97**  |
- * | team core   | 97    | 97         |
- * | privacidad | 99    | 99         |
- * | legal       | 99    | 99-100     |
- *
- * Con un margen de **ocho puntos** sobre el peor valor, un presupuesto en
- * 85 ya protege de verdad: una regresion normal (3-5 puntos) lo dispara, y
- * la variacion de la medicion no lo hace. En 80, en cambio, habia 13 puntos de
- * margen y no protegia nada.
- *
- * El plan de subida (85 -> 88 -> 90 -> 92) y el criterio para cuando tocar
- * cada escalon estan en `Docs/Presupuestos_rendimiento.md` §6.
- *
- * ## Por que NO es obligatorio en el CI todavia
-
- * Salida 1 si alguna pagina baja del umbral. Las otras categorias (a11y,
- * buenas practicas y SEO) las mide `validar-lighthouse.mjs`.
+ * Sale 1 si alguna pagina se queda sin puntuacion o con CLS alto.
  */
-import { existsSync } from "node:fs";
 import process from "node:process";
-import { chromium } from "playwright";
-import { launch as lanzarChrome, getChromePath } from "chrome-launcher";
-import lighthouse from "lighthouse";
-import { puertoLibre, arrancarServidor } from "./lib/servidor.mjs";
 
-/**
- * Umbral minimo de rendimiento en movil. Va **por debajo** del peor valor
- * medido (84), nunca por encima: un presupuesto que ya no se cumple no es
- * una red, es un ruido.
- */
-const UMBRAL = 85;
+import { PAGINAS, medirConLighthouse } from "./lib/lighthouse.mjs";
 
-const PAGINAS = [
-  { ruta: "/Web/index.html", nombre: "portada" },
-  { ruta: "/Web/components.html", nombre: "componentes" },
-  { ruta: "/Web/team-core.html", nombre: "team core" },
-  { ruta: "/Web/privacidad.html", nombre: "privacidad" },
-  { ruta: "/Web/legal.html", nombre: "legal" },
-];
+/** Puntuacion minima de rendimiento en movil. */
+const UMBRAL_RENDIMIENTO = 85;
 
-/** El Chromium de Playwright, que el CI ya instala; si no, el del sistema. */
-function prepararNavegador() {
-  const dePlaywright = chromium.executablePath();
-  if (dePlaywright && existsSync(dePlaywright)) return dePlaywright;
-  try {
-    return getChromePath();
-  } catch {
-    throw new Error(
-      "No hay navegador: ni el Chromium de Playwright ni el Chrome del sistema. " +
-        "Instala el primero con `npx playwright install chromium`.",
-    );
-  }
-}
+/** CLS maximo por pagina. */
+const UMBRAL_CLS = 0.05;
 
-const CHROME_FLAGS = ["--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"];
+/** Cuanto espera Lighthouse a que la pagina termine de cargar. */
+const ESPERA_CARGA_MS = 45000;
 
-const binario = prepararNavegador();
-const puerto = await puertoLibre();
-const origen = `http://127.0.0.1:${puerto}`;
-const servidor = await arrancarServidor(puerto);
+const filas = await medirConLighthouse({
+  paginas: PAGINAS,
+  settings: {
+    // El preset movil de Lighthouse trae su propio estrangulamiento (red
+    // lenta y CPU x4). Se deja el que trae, que es lo que define la cifra
+    // oficial de Lighthouse.
+    formFactor: "mobile",
+    screenEmulation: {
+      mobile: true,
+      width: 412,
+      height: 915,
+      deviceScaleFactor: 2,
+      disabled: false,
+    },
+    maxWaitForLoad: ESPERA_CARGA_MS,
+  },
+});
 
-let chrome = null;
 const fallos = [];
 
-try {
-  chrome = await lanzarChrome({ chrome: binario, chromeFlags: CHROME_FLAGS });
-  console.log(`Lighthouse 13, preset MOVIL · Chromium en ${binario}`);
-  console.log(`Presupuesto: rendimiento >= ${UMBRAL} en las ${PAGINAS.length} paginas\n`);
+console.log(`Presupuesto: rendimiento >= ${UMBRAL_RENDIMIENTO} y CLS <= ${UMBRAL_CLS}`);
+console.log(`(preset movil, 412x915, CPU x4 y red estrangulada)\n`);
 
-  for (const pagina of PAGINAS) {
-    const inicio = Date.now();
-    const { lhr } = await lighthouse(
-      `${origen}${pagina.ruta}`,
-      { logLevel: "error", output: "json", port: chrome.port },
-      {
-        extends: "lighthouse:default",
-        settings: {
-          formFactor: "mobile",
-          screenEmulation: {
-            mobile: true,
-            width: 412,
-            height: 915,
-            deviceScaleFactor: 2,
-            disabled: false,
-          },
-          // El preset movil de Lighthouse trae su propio estrangulamiento
-          // (red lenta y CPU x4). Es lo que hace falta medir aqui.
-          maxWaitForLoad: 45000,
-        },
-      },
-    );
+for (const fila of filas) {
+  const puntuacion = fila.puntuaciones.performance ?? 0;
+  const cls =
+    typeof fila.auditorias["cumulative-layout-shift"]?.numericValue === "number"
+      ? fila.auditorias["cumulative-layout-shift"].numericValue
+      : null;
 
-    const segundos = ((Date.now() - inicio) / 1000).toFixed(1);
-    const audits = lhr.audits;
-    const valor = (id) => (audits[id] ? audits[id].displayValue : "-");
-    const puntuacion = Math.round(lhr.categories.performance.score * 100);
-
-    const linea =
-      `  ${puntuacion >= UMBRAL ? "ok   " : "FALLO"} ` +
-      `${pagina.nombre.padEnd(12)} ` +
-      `rendimiento=${String(puntuacion).padStart(3)}  ` +
-      `LCP ${valor("largest-contentful-paint")}  ` +
-      `TBT ${valor("total-blocking-time")}  ` +
-      `CLS ${valor("cumulative-layout-shift")}  ` +
-      `(${segundos} s)`;
-
-    if (puntuacion >= UMBRAL) {
-      console.log(linea);
-    } else {
-      console.log(linea);
-      fallos.push(`${pagina.nombre}: ${puntuacion} < ${UMBRAL}`);
-    }
+  const problemas = [];
+  if (puntuacion < UMBRAL_RENDIMIENTO) {
+    problemas.push(`rendimiento ${puntuacion} < ${UMBRAL_RENDIMIENTO}`);
   }
-} finally {
-  if (chrome) await chrome.kill();
-  servidor.kill();
+  // CLS > 0,05 es lo que hay que cazar. Por debajo de 0,001 la cifra sale
+  // redondeada a "0" en el informe y comparar texto daria falsos positivos.
+  if (cls !== null && cls > UMBRAL_CLS) {
+    problemas.push(`CLS ${cls.toFixed(3)} > ${UMBRAL_CLS}`);
+  }
+
+  const marca = problemas.length === 0 ? "ok   " : "FALLO";
+  console.log(
+    `  ${marca} ${fila.nombre.padEnd(12)} ` +
+      `rendimiento=${String(puntuacion).padStart(3)}  ` +
+      `LCP ${fila.lcp}  TBT ${fila.tbt}  CLS ${fila.cls}  ` +
+      `(${fila.segundos.toFixed(1)} s)`,
+  );
+
+  for (const problema of problemas) fallos.push(`${fila.nombre}: ${problema}`);
 }
 
 console.log("");
 if (fallos.length > 0) {
-  console.error(`${fallos.length} pagina(s) por debajo del presupuesto de ${UMBRAL}:`);
+  console.error(`${fallos.length} pagina(s) fuera de presupuesto:`);
   for (const fallo of fallos) console.error(`  - ${fallo}`);
+  console.error("");
+  console.error("Si es el CLS, mira en Lighthouse la auditoria 'layout-shift-elements':");
+  console.error("casi siempre es contenido que entra tarde (una fuente, una imagen sin");
+  console.error("alto, o los datos del catalogo). Si es el rendimiento, mira 'bootup-time'");
+  console.error("y 'mainthread-work-breakdown' para saber que funcion lo causa.");
   process.exitCode = 1;
 } else {
   console.log(
-    `Las ${PAGINAS.length} paginas por encima de ${UMBRAL}. El presupuesto se sube cuando ` +
-      "el margenSea holgado (ver Docs/Presupuestos_rendimiento.md).",
+    `Las ${filas.length} paginas dentro de presupuesto. El umbral se sube cuando el ` +
+      "margen sea holgado (ver Docs/Presupuestos_rendimiento.md).",
   );
 }

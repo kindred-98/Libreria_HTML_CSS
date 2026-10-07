@@ -87,6 +87,51 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 5 (C): presupuesto de CLS, y se arregla la duplicacion que lo causaba] - 2026-10-06
+
+Dos cosas en una, porque estan enlazadas.
+
+### El presupuesto de CLS
+
+Se mete en `validar-lighthouse-movil.mjs`, que **ya midia el CLS** en cada
+pasada: Lighthouse lo calcula siempre y sale en el informe. Presupuesto
+**0,05** (Google considera "bueno" por debajo de 0,1; aqui se esta en
+0,006-0,016).
+
+**No lleva su propio script, y fue a proposito.** Se intento medirlo aparte con
+`PerformanceObserver` de `layout-shift` desde Playwright, y **no funciona**:
+comprobado con una pagina de prueba que se desplaza a proposito, el observer no
+entrega ni un solo evento. Lighthouse lo saca del *trace* del navegador, no de
+esa API. Reutilizar su medicion es lo correcto: es el mismo numero que ve la
+gente en el informe, no una cifra paralela que podria divergir.
+
+El presupuesto **se comprobo que detecta**: con un salto forzado de 400 px en la
+portada, el CLS sube a **0,45** y lo caza; sin el, da 0,010-0,014.
+
+### La duplicacion
+
+SonarCloud senalaba `validar-lighthouse-movil.mjs` con **13,4% de duplicacion
+en codigo nuevo**. Era real: los dos scripts de Lighthouse tienen **28 lineas
+identicas** (buscar el Chromium, lanzarlo, recorrer las paginas, apagar el
+servidor al final) y solo se diferencian en el `settings` que se le pasan.
+
+Se extrae todo lo comun a `Web/scripts/lib/lighthouse.mjs`, que expone
+`PAGINAS`, `prepararNavegador()` y `medirConLighthouse()`. Cada script
+conserva su politica (que umbrales son validos y como imprime) y comparte solo
+el mecanismo.
+
+De paso aparece un bug latente que el typecheck destapa: los dos scripts pasaban
+`chrome:` a `chrome-launcher`, que lo acepta pero no es el nombre tipado (es
+`chromePath`). Funcionaba, pero ahora esta bien escrito.
+
+**El typecheck baja de 19 a 17** y `lib/` queda a cero.
+
+Verificado en verde: `validar:lighthouse` (escritorio 100 en las cinco),
+`validar:lighthouse:movil` (movil 97-99, CLS 0-0,013), `test` (48/48),
+`test:e2e` (15/15), `lint`, `format:check` y `typecheck`.
+
+---
+
 ## [Fase 5 (A y B): el presupuesto de movil pasa a 85 y bloquea el merge] - 2026-10-06
 
 Convierte la medida de rendimiento en movil en una puerta, no en un informe.
