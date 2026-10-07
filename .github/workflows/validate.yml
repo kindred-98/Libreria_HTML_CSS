@@ -184,23 +184,27 @@ jobs:
         run: npm run validar:demos
 
 
-      # Presupuesto de rendimiento en MOVIL (Fase 3). `validar:lighthouse`
+# Presupuesto de rendimiento en MOVIL (Fases 3 y 5). `validar:lighthouse`
       # mide con el preset desktop, que va sobrado (99-100) y no ve lo que
       # sufre alguien con un telefono. Este mide el preset movil: CPU x4 y red
-      # estrangulada, donde las cifras bajan a 84-99.
+      # estrangulada.
       #
-      # Va con `continue-on-error` **a proposito**: el umbral (80) esta cuatro
-      # puntos por debajo del peor valor medido (84) porque la variacion de
-      # Lighthouse en movil es de +-3 a 5 puntos. Un presupuesto que falla de
-      # vez en cuando enseña a ignorar el CI, y eso es peor que no medir.
-      # Cuando haya dos o tres semanas seguidas en verde, se quita el
-      # `continue-on-error` y pasa a obligar.
+      # **Bloquea el merge.** Cuando se puso en 80 llevaba
+      # `continue-on-error` a proposito: un umbral fluctuante que falla de vez
+      # en cuando enseña a ignorar el CI, y eso es peor que no medir. La Fase
+      # 3 subio la portada de 84 a 97, asi que ahora el presupuesto esta en 85
+      # con **ocho puntos de margen** sobre el peor valor visto: una regresion
+      # normal lo dispara y la variacion de la medicion no.
       #
-      # El detalle del presupuesto y el plan de subida estan en
-      # Docs/Presupuestos_rendimiento.md.
-      - name: Presupuesto de rendimiento en movil (informativo)
+      # Si alguna vez se pone rojo por un +-3 y no hay regresion real, el
+      # arreglo es subir el umbral **a conciencia**, editando antes el valor de
+      # la vista previa para que el cambio quede en el historial. No se baja el
+      # presupuesto en silencio.
+      #
+      # El detalle de las mediciones y el plan de subida estan en
+      # Docs/Presupuestos_rendimiento.md y en Docs/Fase5_presupuestos.md.
+      - name: Presupuesto de rendimiento en movil
         if: matrix.node-version == 24
-        continue-on-error: true
         run: npm run validar:lighthouse:movil
 
       # Que la web funcione de verdad, no solo que su HTML sea valido. Abre

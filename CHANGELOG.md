@@ -87,6 +87,41 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 5 (A y B): el presupuesto de movil pasa a 85 y bloquea el merge] - 2026-10-06
+
+Convierte la medida de rendimiento en movil en una puerta, no en un informe.
+
+- **Umbral de 80 a 85.** Estaba en 80 porque el peor valor medido era 84 y un
+  umbral por encima del valor actual falla desde el primer dia. La Fase 3 lo
+  arreglo y subio la portada a **97**, asi que 80 dejaba 13 puntos de margen y
+  no protegia nada. Ahora son **85 con ocho puntos de margen**: una regresion
+  normal (3-5) lo dispara y la variacion de la medicion no.
+- **Quita `continue-on-error`**: el paso **bloquea el merge**. Cuando se puso en
+  80 llevaba esa marca a proposito, porque un umbral fluctuante que falla de
+  vez en cuando enseña a ignorar el CI y eso es peor que no medir. Con el
+  margen actual ya no aplica.
+
+Medido con el propio script, que es el que corre en el CI:
+
+| Pagina | Rendimiento | TBT | CLS |
+| --- | --- | --- | --- |
+| portada | 97 | 20 ms | 0,016 |
+| componentes | 97 | 20 ms | 0,012 |
+| team core | 97 | 0 ms | 0,013 |
+| privacidad | 99 | 10 ms | 0 |
+| legal | 100 | 0 ms | 0,012 |
+
+**Si alguna vez se pone rojo por un +-3 y no hay regresion real**, el arreglo
+es subir el umbral a conciencia, editando antes el valor de la vista previa
+para que el cambio quede en el historial. No se baja el presupuesto en
+silencio.
+
+El resto de la fase (presupuesto de CLS, presupuesto del tamano del catalogo y
+uptime diario) queda documentado en `Docs/Fase5_presupuestos.md`, con el
+criterio de terminado de cada punto.
+
+---
+
 ## [Arregla el patron de exclusion de Sonar, que no casaba] - 2026-10-06
 
 Las exclusiones de `sonar-project.properties` estaban escritas como

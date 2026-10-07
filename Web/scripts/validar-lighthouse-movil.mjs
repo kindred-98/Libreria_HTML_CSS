@@ -14,10 +14,12 @@
  *   node Web/scripts/validar-lighthouse-movil.mjs
  *   npm run validar:lighthouse:movil
  *
- * ## Por que el umbral es 80 y no 85 (leido antes de tocar nada)
+ * ## Por que el umbral es 85
  *
- * Lo que hay hoy, medido con DOS pasadas por pagina (la variacion de
- * Lighthouse en movil es de +-3 a 5 puntos entre ejecuciones):
+ * ### Lo que habia cuando se puso en 80
+ *
+ * Medido con DOS pasadas por pagina (la variacion de Lighthouse en movil es de
+ * +-3 a 5 puntos entre ejecuciones):
  *
  * | Pagina   | Pasadas     | Peor caso |
  * | -------- | ----------- | --------- |
@@ -27,19 +29,33 @@
  * | privacidad | 99 / 99   | 99        |
  * | legal    | 99 / 99     | 99        |
  *
- * El numero que manda es el **84 de la portada**, y es fluctuante. Un
- * presupuesto puesto en 85 fallaria en la mitad de las ejecuciones. Por eso
- * va en **80**: cuatro puntos por debajo del peor valor visto, con margen
- * para la variacion, y todavia dos veces mas debajo del peor valor, asi que
- * solo salta si alguien mete una regresion de verdad.
+ * El numero que mandaba era el **84 de la portada**, y fluctuaba: un
+ * presupuesto en 85 fallaba en la mitad de las ejecuciones. Por eso se puso
+ * en **80**, cuatro puntos por debajo.
+ *
+ * ### Por que ahora es 85
+ *
+ * La Fase 3 arreglo la causa (las 33 vistas previas se montaban de golpe) y
+ * subio la portada a **97**, con un peor caso de 93 entre dos pasadas:
+ *
+ * | Pagina      | Antes | Ahora      |
+ * | ----------- | ----- | ---------- |
+ * | portada     | 84-87 | **97**     |
+ * | componentes | 96    | **93-97**  |
+ * | team core   | 97    | 97         |
+ * | privacidad | 99    | 99         |
+ * | legal       | 99    | 99-100     |
+ *
+ * Con un margen de **ocho puntos** sobre el peor valor, un presupuesto en
+ * 85 ya protege de verdad: una regresion normal (3-5 puntos) lo dispara, y
+ * la variacion de la medicion no lo hace. En 80, en cambio, habia 13 puntos de
+ * margen y no protegia nada.
+ *
+ * El plan de subida (85 -> 88 -> 90 -> 92) y el criterio para cuando tocar
+ * cada escalon estan en `Docs/Presupuestos_rendimiento.md` §6.
  *
  * ## Por que NO es obligatorio en el CI todavia
- *
- * En el workflow va con `continue-on-error`. Motivo: un umbral fluctuante
- * que falla de vez en cuando enseña a ignorar el CI, y eso es peor que no
- * medir. Se vuelve obligatorio cuando haya dos o tres semanas seguidas en
- * verde; mientras, avisa. Ver `Docs/Presupuestos_rendimiento.md`.
- *
+
  * Salida 1 si alguna pagina baja del umbral. Las otras categorias (a11y,
  * buenas practicas y SEO) las mide `validar-lighthouse.mjs`.
  */
@@ -55,7 +71,7 @@ import { puertoLibre, arrancarServidor } from "./lib/servidor.mjs";
  * medido (84), nunca por encima: un presupuesto que ya no se cumple no es
  * una red, es un ruido.
  */
-const UMBRAL = 80;
+const UMBRAL = 85;
 
 const PAGINAS = [
   { ruta: "/Web/index.html", nombre: "portada" },
