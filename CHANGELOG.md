@@ -87,6 +87,33 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Cierra las fases 0, 1, 2, 4a y 4b, y documenta lo que queda] - 2026-10-06
+
+Cierre de la sesion. `Docs/Sesion_2026-10-05_06.md` recoge, fase por fase, que se
+hizo, con que numero medido detras, que se decidio **no** hacer y por que.
+
+- **Fase 0** — 48 tests unitarios y 15 e2e con `node:test` (cero dependencias
+  de produccion), ESLint y Prettier acotados a `Web/scripts/`, typecheck con
+  presupuesto (18 errores heredados, `lib/` y tests a cero) y cinco pasos nuevos
+  en el CI.
+- **Fase 1** — SonarQube de 99 a **97 abiertas**, con 29 incidencias reales
+  arregladas. Se cierra un **path traversal** en el runner de test (leia
+  ficheros fuera del repositorio) y se baja la complejidad cognitiva del
+  generador de catalogo, verificado con un `catalog.json` byte-identico.
+- **Fase 2** — Accesibilidad de 85 a **100**: el patron de tarjeta enlazable
+  quita los 33 `aria-allowed-role` y los dos tabuladores por tarjeta, cada
+  `<main>` tiene nombre propio, y los objetivos tactiles pasan de 38 controles
+  por debajo de 24 px a **0** a 360 px con dedo.
+- **Fase 4a** — `Web/privacidad.html` y `Web/legal.html` enlazadas desde el pie,
+  con declaracion de accesibilidad basada en lo que el proyecto ha medido.
+- **Fase 4b** — JSON-LD, `hreflang`, manifest con iconos reales y seis eventos
+  de GA4 que cubren el embudo.
+
+**Lo que queda, y sigue documentado como pendiente:** Fase 3 (rendimiento en
+movil, con los dos cuellos de botella medidos en `app.js` y `catalog.json`),
+Fase 5 (presupuestos que fallen en CI) y las **97 incidencias** de SonarQube
+que siguen abiertas, de las que 29 ya estaban en el punto de partida.
+
 ## [Cierra la duplicacion que hacia fallar el Quality Gate] - 2026-10-06
 
 La condicion *Duplication on New Code <= 3%* hacia fallar el gate. Se fue de
@@ -291,7 +318,7 @@ comando y su medicion.
   dispersarse: no migrar a framework, no lintear los 1018 demos, no meter
   service worker en la primera entrega.
 
-## [Arregla los dos fallos que生生 rompieron el CI] - 2026-10-06
+## [Arregla los dos fallos que rompieron el CI] - 2026-10-06
 
 El CI fallo en Node 20 y en el Quality Gate. Los dos por motivos distintos, y
 los dos por culpa de la fase 0.
