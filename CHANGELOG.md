@@ -87,6 +87,51 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 3: los iframes de vista previa se montan al acercarse a pantalla (movil 84 a 97)] - 2026-10-06
+
+Segundo paso de la Fase 3, y el que de verdad mueve la aguja. Diagnostico con
+un perfil de CPU (CDP) y despues con Lighthouse hasta dar con el TBT de la
+portada en movil (410 ms, el 100% del coste, como se comprobo quitando la
+seccion de destacados: el TBT cae a 0 ms).
+
+**La causa, medida linea a linea (215 de 215 muestras en una sola linea):** el
+carrusel inserta las **33 tarjetas de golpe**, cada una con su iframe, en
+`elements.featuredGrid.replaceChildren(...)`. Crear los nodos no cuesta nada
+(micro-benchmark: 33 iframes + 33 articulos = **3 ms**); lo caro es el layout
+y el pintado que dispara la insercion en bloque: **137 ms de CPU** en un solo
+trabajo, que es una tarea larga y bloquea el hilo principal.
+
+**El arreglo:** el iframe de cada vista previa **se crea e inserta cuando su
+tarjeta se acerca a la pantalla**, no al construir las 33. Como
+`.card-preview` tiene `height: 205px` fijo y el iframe es `height: 100%`, la
+caja reserva el sitio desde el primer pintado, asi que **no hay salto**: el CLS
+se queda en 0. En la practica se montan solo las 2-4 tarjetas visibles y el
+resto se llena al hacer scroll.
+
+- Se cambio la observacion de `IntersectionObserver` para que observe la
+  **caja** (`.live-preview`), no el padre del iframe (el `<article>`): con el
+  iframe pendiente, observar su padre montaba la vista previa en la tarjeta y
+  rompia la caja de altura fija.
+- Los escuchas del iframe se arman **antes** de asignar el `src`, para que un
+  `load` que llegue antes no deje la vista previa colgada en "cargando".
+
+**Medido (preset movil, 412x915):**
+
+| | Antes | Ahora |
+| --- | --- | --- |
+| portada, TBT | 410-510 ms | **10-70 ms** |
+| portada, rendimiento | 84-87 | **97** |
+| escritorio, las 5 paginas | 99-100 | **100** |
+| a11y y CLS | 100 / ~0 | **100 / 0** |
+
+Comprobado que la web sigue bien: las vistas previas visibles se montan en su
+caja y llegan a estado "ready", al hacer scroll se van montando las siguientes,
+no hay ni un iframe fuera de su caja, y no hay errores de consola.
+
+Verificado en verde: `test` (48/48), `test:e2e` (15/15), `lint`,
+`format:check`, `typecheck` (19 de 38) y `validar:lighthouse`
+(escritorio 100 en las cinco).
+
 ## [Fase 3, paso 1: presupuesto de rendimiento en movil] - 2026-10-06
 
 Anade un paso de CI que mide las cinco paginas con el **preset movil** de

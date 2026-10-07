@@ -970,47 +970,90 @@ function armPreviewListeners(frame, preview) {
 }
 
 function mountQueuedPreview(container) {
-  previewObserver?.unobserve(container);
-  const frame = container.querySelector("iframe[data-preview-src]");
-  if (!frame) return;
-  const src = frame.dataset.previewSrc;
-  delete frame.dataset.previewSrc;
-  armPreviewListeners(frame, container);
-  frame.src = src;
+  // Lo observado es la caja `.live-preview`. Si por lo que sea llegara la
+  // tarjeta entera (que es su padre), se baja a la caja: montar el iframe en
+  // el `<article>` lo pondria fuera de la caja de altura fija y romperia el
+  // diseño de la tarjeta.
+  const preview = container?.classList?.contains("live-preview")
+    ? container
+    : container?.querySelector?.(".live-preview");
+  if (!preview) return;
+  previewObserver?.unobserve(preview);
+  if (preview.dataset.previewMounted === "true") return;
+  montarPreview(preview);
 }
 
 function refreshQueuedPreviews() {
   if (!previewObserver) return;
   previewObserver.disconnect();
+  // Ahora lo pendiente es la **caja** (`.live-preview`), no el iframe: el
+  // iframe no existe todavia, se crea al montar. Antes se observaba
+  // `frame.parentElement` porque el iframe ya estaba dentro de la caja; con el
+  // iframe pendiente, observar su padre observaba el `<article>` entero y el
+  // montaje se hacia en la tarjeta en vez de en la caja.
   const pending = document.querySelectorAll(
-    ".live-preview[data-preview-state='loading'] iframe[data-preview-src]",
+    ".live-preview[data-preview-state='loading']:not([data-preview-mounted])",
   );
-  for (const frame of pending) previewObserver.observe(frame.parentElement);
+  for (const preview of pending) previewObserver.observe(preview);
 }
 
+// Prepara una vista previa: el contenedor (con su alto fijo de 205 px en CSS)
+// y, **dentro, el iframe**. El iframe se crea ahora, pero no se inserta hasta
+// que la tarjeta se acerca a la pantalla.
+//
+// Por que no se inserta de inmediato: insertar 33 `<iframe>` de golpe (el
+// carrusel de la portada) dispara un layout y un pintado completos que
+// bloquean el hilo principal. Medido: son 137 ms de CPU, que es practicamente
+// todo el TBT de la portada en movil. Crear los nodos no cuesta nada (3 ms);
+// lo caro es meterlos en el DOM de una vez.
+//
+// Y no produce ningun salto: `.card-preview` tiene `height: 205px` fijo y el
+// iframe es `height: 100%`, asi que la caja reserva el sitio desde el primer
+// pintado y el CLS se queda en 0.
+//
+// Sin `IntersectionObserver` (navegadores antiguos) se inserta de inmediato,
+// que es el comportamiento de siempre.
 function createPreview(component, className) {
   const preview = createElement("div", className);
   preview.classList.add("live-preview");
   preview.dataset.previewState = "loading";
+  const previewUrl = new URL(component.preview, document.baseURI);
+  previewUrl.searchParams.set("previewRevision", previewRevision);
+  preview.dataset.previewUrl = previewUrl.href;
+  preview.dataset.previewName = getComponentName(component);
+
+  if (previewObserver) {
+    previewObserver.observe(preview);
+  } else {
+    // Sin `IntersectionObserver` no hay forma de saber cuando hay que montar
+    // nada, asi que se monta ya: es exactamente el comportamiento de antes.
+    montarPreview(preview);
+  }
+  return preview;
+}
+
+// Crea e inserta el iframe de una vista previa. Se llama al llegar la tarjeta
+// a la zona de observacion.
+function montarPreview(preview) {
+  if (preview.dataset.previewMounted === "true") return;
+  preview.dataset.previewMounted = "true";
   const frame = document.createElement("iframe");
-  frame.title = t("livePreviewTitle", { name: getComponentName(component) });
-  // Sin `loading = "lazy"`: la carga perezosa ya la hace el `previewObserver`
-  // con el patron `data-preview-src`, y poner las dos a la vez solo anade una
-  // segunda condicion de red sin ganar nada.
+  frame.title = t("livePreviewTitle", { name: preview.dataset.previewName ?? "" });
+  // Sin `loading = "lazy"`: la carga perezosa la decide el `previewObserver`,
+  // que ya sabe cuando toca, y poner las dos cosas anade una segunda
+  // condicion de red sin ganar nada.
   frame.referrerPolicy = "no-referrer";
   frame.setAttribute("scrolling", "no");
   frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups");
   preview.append(frame);
-  const previewUrl = new URL(component.preview, document.baseURI);
-  previewUrl.searchParams.set("previewRevision", previewRevision);
-  if (previewObserver) {
-    frame.dataset.previewSrc = previewUrl.href;
-    previewObserver.observe(preview);
-  } else {
-    armPreviewListeners(frame, preview);
-    frame.src = previewUrl.href;
-  }
-  return preview;
+  const url = preview.dataset.previewUrl;
+  if (!url) return;
+  // Los escuchas se arman **antes** de asignar el `src`: si la respuesta
+  // llegara antes que el `load`, el estado se quedaria en "loading" para
+  // siempre. El temporizador de seguridad sigue poniendo "ready" pase lo que
+  // pase, para que la vista previa no se quede con el texto de "cargando".
+armPreviewListeners(frame, preview);
+  frame.src = url;
 }
 
 function componentDetailUrl(componentId) {
