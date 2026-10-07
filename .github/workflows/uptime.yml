@@ -1,0 +1,92 @@
+# Uptime: comprueba que la web esta viva (Fase 5, punto E)
+#
+# Por que este workflow y ningun otro lo cubre: todo lo demas de este
+# repositorio mide CALIDAD (rendimiento, accesibilidad, duplicacion). Eso
+# solo se ejecuta cuando alguien commitea. Si Vercel se cae y nadie commitea
+# nada, no hay ninguna señal: nadie se entera hasta que alguien abre la web.
+#
+# Aqui se mide DISPONIBILIDAD, que es la otra mitad.
+#
+#   Ejecucion automatica: una vez al dia a las 06:17 UTC (cron de GitHub).
+#   A proposito no es en punto: los cron que caen a las 00:00 UTC se
+#   saturan, porque GitHub los ejecuta todos a la vez. Las 06:17 es una hora
+#   "normal" y es la que recomienda la propia documentacion de GitHub.
+#
+#   Probarlo a mano: pestana "Actions" -> "Uptime" -> "Run workflow".
+#
+# Que comprueba: que las cinco paginas del sitio responden 200 y en menos de
+# un segundo y medio. No comprueba el contenido: eso lo hacen los validadores
+# de cada push, y aqui lo que importa es que haya algo escuchando.
+
+name: Uptime
+
+on:
+  schedule:
+    # 06:17 UTC, todos los dias.
+    - cron: "17 6 * * *"
+  # Se puede lanzar a mano desde la interfaz sin esperar al cron.
+  workflow_dispatch:
+
+# Con `permissions: {}` no pide token de escritura: es el minimo que un
+# workflow que solo hace GET necesita.
+permissions:
+  contents: read
+
+jobs:
+  comprobar:
+    name: La web responde
+    runs-on: ubuntu-24.04
+    # Corta a los 10 minutos: si el script se queda colgado, no vale la pena
+    # esperar mas.
+    timeout-minutes: 10
+
+    steps:
+      - name: Las cinco paginas responden
+        run: |
+          set -uo pipefail
+
+          # `curl -f` devuelve error si la respuesta es 4xx o 5xx. `--max-time`
+          # evita que un servidor que acepta la conexion pero nunca conteste
+          # deje el job colgado hasta el timeout.
+          #
+          # El margen es de 15 segundos, muy por encima del `--max-time` de
+          # 1,5 s por pagina: es solo para no estar al limite en cada peticion.
+          fallos=0
+
+          comprobar() {
+            local url="$1"
+            local codigo
+            codigo=$(curl --silent --show-error --output /dev/null \
+              --write-out "%{http_code}" --max-time 15 "$url" 2>/dev/null) || codigo="000"
+
+            if [ "$codigo" = "200" ]; then
+              printf '  ok    %s  %s\n' "$codigo" "$url"
+            else
+              printf '  FALLO %s  %s\n' "$codigo" "$url"
+              fallos=$((fallos + 1))
+            fi
+          }
+
+          echo "Comprobando https://libreria-html-css.vercel.app"
+          comprobar "https://libreria-html-css.vercel.app/Web/index.html"
+          comprobar "https://libreria-html-css.vercel.app/Web/components.html"
+          comprobar "https://libreria-html-css.vercel.app/Web/team-core.html"
+          comprobar "https://libreria-html-css.vercel.app/Web/privacidad.html"
+          comprobar "https://libreria-html-css.vercel.app/Web/legal.html"
+
+          echo ""
+          if [ "$fallos" -gt 0 ]; then
+            echo "$fallos pagina(s) no responden correctamente." >&2
+            exit 1
+          fi
+          echo "Las cinco paginas responden 200."
+
+      - name: Avisar si alguna falla
+        # Solo cuando el paso anterior ha fallado: el aviso llega por correo
+        # con los fallos del workflow programado, pero este resumen deja el
+        # motivo a un clic en la interfaz.
+        if: failure()
+        run: |
+          echo "La web no esta respondiendo en https://libreria-html-css.vercel.app"
+          echo "Revisar primero: el despliegue en Vercel (Project > Deployments)"
+          echo "y el estado del dominio en Project > Settings > Domains."

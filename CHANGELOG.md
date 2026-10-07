@@ -87,6 +87,227 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 5 (D y E): presupuesto del catalogo y comprobacion diaria de uptime] - 2026-10-06
+
+Cierra la fase. Los dos ultimos puntos, que no dependen del codigo que se
+tocaba antes.
+
+### D · Peso del catalogo
+
+`npm run validar:peso` mide `catalog.json` **comprimido con gzip**, que es lo
+que viaja: 707 KB en disco se quedan en **163,5 KB** (23% de compresion), o
+136 KB si el servidor sirve con brotli.
+
+El presupuesto esta en **180 KB**, y no en 150 como estaba apuntado en el
+plan, porque medido **el valor real es 163,5**: un umbral de 150 habria fallado
+desde el primer dia. Con 180 hay un 10% de margen, que da para unos **102
+componentes mas** antes de que salte.
+
+Medido, **no es hoy un cuello de botella** (la pagina de componentes puntua 97
+con 163 KB). El riesgo es de crecimiento: 1018 componentes a 0,16 KB
+comprimidos cada uno son +16 KB por cada 100 demos nuevos, y eso se notaria
+tarde. El presupuesto avisa antes.
+
+Va en los tres jobs de Node porque **no necesita navegador**: es una cuenta de
+bytes y tarda menos de un segundo.
+
+### E · Uptime diario
+
+`.github/workflows/uptime.yml`, una vez al dia a las **06:17 UTC**. A esa hora
+y no a las 00:00 porque los cron que caen en punto se saturan: GitHub los
+ejecuta todos a la vez.
+
+Comprueba que las cinco paginas responden **200** en menos de 15 s. Y solo eso:
+el contenido lo miden los validadores de cada push; aqui lo que importa es que
+haya alguien escuchando. Con `permissions: {}` (`contents: read`), porque un
+workflow que solo hace GET no necesita token de escritura.
+
+Es el unico punto de toda la fase que **no depende del codigo**: mide
+disponibilidad. Todo lo demas (rendimiento, accesibilidad, duplicacion) solo se
+ejecuta cuando alguien commitea, asi que si Vercel se caia y nadie commiteaba
+nada, no habria ninguna señal.
+
+Comprobado contra la web real: las cinco paginas responden 200.
+
+---
+
+## [Fase 5 (C): presupuesto de CLS, y se arregla la duplicacion que lo causaba] - 2026-10-06
+
+Dos cosas en una, porque estan enlazadas.
+
+### El presupuesto de CLS
+
+Se mete en `validar-lighthouse-movil.mjs`, que **ya midia el CLS** en cada
+pasada: Lighthouse lo calcula siempre y sale en el informe. Presupuesto
+**0,05** (Google considera "bueno" por debajo de 0,1; aqui se esta en
+0,006-0,016).
+
+**No lleva su propio script, y fue a proposito.** Se intento medirlo aparte con
+`PerformanceObserver` de `layout-shift` desde Playwright, y **no funciona**:
+comprobado con una pagina de prueba que se desplaza a proposito, el observer no
+entrega ni un solo evento. Lighthouse lo saca del *trace* del navegador, no de
+esa API. Reutilizar su medicion es lo correcto: es el mismo numero que ve la
+gente en el informe, no una cifra paralela que podria divergir.
+
+El presupuesto **se comprobo que detecta**: con un salto forzado de 400 px en la
+portada, el CLS sube a **0,45** y lo caza; sin el, da 0,010-0,014.
+
+### La duplicacion
+
+SonarCloud senalaba `validar-lighthouse-movil.mjs` con **13,4% de duplicacion
+en codigo nuevo**. Era real: los dos scripts de Lighthouse tienen **28 lineas
+identicas** (buscar el Chromium, lanzarlo, recorrer las paginas, apagar el
+servidor al final) y solo se diferencian en el `settings` que se le pasan.
+
+Se extrae todo lo comun a `Web/scripts/lib/lighthouse.mjs`, que expone
+`PAGINAS`, `prepararNavegador()` y `medirConLighthouse()`. Cada script
+conserva su politica (que umbrales son validos y como imprime) y comparte solo
+el mecanismo.
+
+De paso aparece un bug latente que el typecheck destapa: los dos scripts pasaban
+`chrome:` a `chrome-launcher`, que lo acepta pero no es el nombre tipado (es
+`chromePath`). Funcionaba, pero ahora esta bien escrito.
+
+**El typecheck baja de 19 a 17** y `lib/` queda a cero.
+
+Verificado en verde: `validar:lighthouse` (escritorio 100 en las cinco),
+`validar:lighthouse:movil` (movil 97-99, CLS 0-0,013), `test` (48/48),
+`test:e2e` (15/15), `lint`, `format:check` y `typecheck`.
+
+---
+
+## [Fase 5 (A y B): el presupuesto de movil pasa a 85 y bloquea el merge] - 2026-10-06
+
+Convierte la medida de rendimiento en movil en una puerta, no en un informe.
+
+- **Umbral de 80 a 85.** Estaba en 80 porque el peor valor medido era 84 y un
+  umbral por encima del valor actual falla desde el primer dia. La Fase 3 lo
+  arreglo y subio la portada a **97**, asi que 80 dejaba 13 puntos de margen y
+  no protegia nada. Ahora son **85 con ocho puntos de margen**: una regresion
+  normal (3-5) lo dispara y la variacion de la medicion no.
+- **Quita `continue-on-error`**: el paso **bloquea el merge**. Cuando se puso en
+  80 llevaba esa marca a proposito, porque un umbral fluctuante que falla de
+  vez en cuando enseña a ignorar el CI y eso es peor que no medir. Con el
+  margen actual ya no aplica.
+
+Medido con el propio script, que es el que corre en el CI:
+
+| Pagina | Rendimiento | TBT | CLS |
+| --- | --- | --- | --- |
+| portada | 97 | 20 ms | 0,016 |
+| componentes | 97 | 20 ms | 0,012 |
+| team core | 97 | 0 ms | 0,013 |
+| privacidad | 99 | 10 ms | 0 |
+| legal | 100 | 0 ms | 0,012 |
+
+**Si alguna vez se pone rojo por un +-3 y no hay regresion real**, el arreglo
+es subir el umbral a conciencia, editando antes el valor de la vista previa
+para que el cambio quede en el historial. No se baja el presupuesto en
+silencio.
+
+El resto de la fase (presupuesto de CLS, presupuesto del tamano del catalogo y
+uptime diario) queda documentado en `Docs/Fase5_presupuestos.md`, con el
+criterio de terminado de cada punto.
+
+---
+
+## [Arregla el patron de exclusion de Sonar, que no casaba] - 2026-10-06
+
+Las exclusiones de `sonar-project.properties` estaban escritas como
+`**/Web/scripts/app.js`, `**/__tests__/**` y `**/Web/data/**`. La de
+`Web/data` **si** funcionaba (`catalog.js` desaparecio de la lista de
+duplicados cuando se anadio), pero las otras dos **no**: el analisis del
+2026-10-07 18:51, hecho sobre un commit que ya las traia, seguia reportando
+469 lineas duplicadas en `app.js` y 143 en los tests.
+
+Se pasa todo a **rutas relativas a la raiz del proyecto**
+(`Web/scripts/app.js`, `Web/scripts/__tests__/**`, `Web/data/**`, …), que
+es la forma que SonarQube documenta como fiable. La diferencia entre que unas
+patrones casen y otras no es sutil y solo se ve mirando el resultado del
+analisis, no el fichero de configuracion.
+
+---
+
+## [Fase 3: los iframes de vista previa se montan al acercarse a pantalla (movil 84 a 97)] - 2026-10-06
+
+Segundo paso de la Fase 3, y el que de verdad mueve la aguja. Diagnostico con
+un perfil de CPU (CDP) y despues con Lighthouse hasta dar con el TBT de la
+portada en movil (410 ms, el 100% del coste, como se comprobo quitando la
+seccion de destacados: el TBT cae a 0 ms).
+
+**La causa, medida linea a linea (215 de 215 muestras en una sola linea):** el
+carrusel inserta las **33 tarjetas de golpe**, cada una con su iframe, en
+`elements.featuredGrid.replaceChildren(...)`. Crear los nodos no cuesta nada
+(micro-benchmark: 33 iframes + 33 articulos = **3 ms**); lo caro es el layout
+y el pintado que dispara la insercion en bloque: **137 ms de CPU** en un solo
+trabajo, que es una tarea larga y bloquea el hilo principal.
+
+**El arreglo:** el iframe de cada vista previa **se crea e inserta cuando su
+tarjeta se acerca a la pantalla**, no al construir las 33. Como
+`.card-preview` tiene `height: 205px` fijo y el iframe es `height: 100%`, la
+caja reserva el sitio desde el primer pintado, asi que **no hay salto**: el CLS
+se queda en 0. En la practica se montan solo las 2-4 tarjetas visibles y el
+resto se llena al hacer scroll.
+
+- Se cambio la observacion de `IntersectionObserver` para que observe la
+  **caja** (`.live-preview`), no el padre del iframe (el `<article>`): con el
+  iframe pendiente, observar su padre montaba la vista previa en la tarjeta y
+  rompia la caja de altura fija.
+- Los escuchas del iframe se arman **antes** de asignar el `src`, para que un
+  `load` que llegue antes no deje la vista previa colgada en "cargando".
+
+**Medido (preset movil, 412x915):**
+
+| | Antes | Ahora |
+| --- | --- | --- |
+| portada, TBT | 410-510 ms | **10-70 ms** |
+| portada, rendimiento | 84-87 | **97** |
+| escritorio, las 5 paginas | 99-100 | **100** |
+| a11y y CLS | 100 / ~0 | **100 / 0** |
+
+Comprobado que la web sigue bien: las vistas previas visibles se montan en su
+caja y llegan a estado "ready", al hacer scroll se van montando las siguientes,
+no hay ni un iframe fuera de su caja, y no hay errores de consola.
+
+Verificado en verde: `test` (48/48), `test:e2e` (15/15), `lint`,
+`format:check`, `typecheck` (19 de 38) y `validar:lighthouse`
+(escritorio 100 en las cinco).
+
+## [Fase 3, paso 1: presupuesto de rendimiento en movil] - 2026-10-06
+
+Anade un paso de CI que mide las cinco paginas con el **preset movil** de
+Lighthouse, que es el que simula de verdad lo que sufre un telefono (CPU x4 y
+red estrangulada). `validar:lighthouse` ya existia pero media con el preset
+**desktop**, que va sobrado (99-100) y no ve nada de lo que pasa en movil: una
+regresion en movil se colaba sin que nadie se enterara.
+
+- **`npm run validar:lighthouse:movil`** mide las cinco paginas y falla si
+  alguna baja de **80**. El umbral va **por debajo** del peor valor medido
+  (portada 84), nunca por encima: un presupuesto que ya no se cumple es ruido.
+- **Medido con dos pasadas por pagina** (la variacion del preset movil es de
+  +-3 a 5 puntos): portada 87/84, componentes 96/96, team core 97/97,
+  privacidad 99/99, legal 99/99. El numero que manda es el **84 de la portada**.
+- En el CI va con `continue-on-error`: informa y avisa, pero **no bloquea**.
+  Motivo: un umbral fluctuante que falla de vez en cuando enseña a ignorar el
+  CI. Cuando haya dos o tres semanas seguidas en verde, se quita el
+  `continue-on-error` y pasa a obligar.
+
+**Lo que se midio y resulto que NO era el problema:** `catalog.json` tiene
+707 KB en disco pero transfiere **155 KB** en 73 ms, y la pagina de componentes
+ya puntua 96. Partirlo habria significado tocar el generador y el validador
+para ganar unos 30 ms en una pagina que no lo necesita: riesgo sin beneficio.
+
+**Lo que se deja sin tocar, con el motivo:** la maquina de escribir mide el
+ancho con `scrollWidth` sobre un elemento **que se esta animando** (da 214 px
+cuando el texto real mide del orden de 490). Se podria arreglar con `n ch`
+en CSS, porque la fuente es monoespaciada, pero cambia el ancho de la
+animacion: es un cambio visual que no se puede comprobar automaticamente, y
+ganar 70 ms no compensa arriesgar la portada.
+
+Todo el detalle, el plan de subida del umbral a 85, 88, 90 y 92, y el criterio
+objetivo para saber cuando toca subirlo, estan en
+`Docs/Presupuestos_rendimiento.md`.
+
 ## [Fase 3: la portada movil baja de 77 a 84 de rendimiento] - 2026-10-06
 
 Empieza la Fase 3 (rendimiento en movil). El diagnostico se hizo con un

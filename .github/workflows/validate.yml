@@ -102,6 +102,19 @@ jobs:
       - name: Comprobar el CSP del despliegue
         run: node Web/scripts/validar-csp.mjs
 
+      # Presupuesto de peso del catalogo (Fase 5). El catalogo es el segundo
+      # recurso mas pesado de la pagina: 707 KB en disco, 163 KB comprimidos.
+      # No es hoy un cuello de botella (la pagina de componentes puntua 97),
+      # pero 1018 componentes x 0,16 KBcompressed cada uno significan +16 KB
+      # por cada 100 demos nuevos, y eso se notaria tarde. El presupuesto avisa
+      # antes. Va en los tres jobs de Node porque no necesita navegador: es
+      # una cuenta de bytes y tarda menos de un segundo.
+      #
+      # Detalle y criterio de subida en Docs/Fase5_presupuestos.md.
+      - name: Comprobar el peso del catalogo (presupuesto)
+        run: npm run validar:peso
+
+
       # Estructura de encabezados de los demos: si de h1 se salta a h3, un lector
       # de pantalla anuncia un h2 que no existe y el indice deja de reflejar lo
       # que se ve. Es estatico y tarda menos de un segundo, asi que corre en las
@@ -182,6 +195,40 @@ jobs:
       - name: Abrir los demos (test de humo)
         if: matrix.node-version == 24
         run: npm run validar:demos
+
+
+# Presupuesto de rendimiento en MOVIL (Fases 3 y 5). `validar:lighthouse`
+      # mide con el preset desktop, que va sobrado (99-100) y no ve lo que
+      # sufre alguien con un telefono. Este mide el preset movil: CPU x4 y red
+      # estrangulada.
+      #
+      # **Bloquea el merge.** Cuando se puso en 80 llevaba
+      # `continue-on-error` a proposito: un umbral fluctuante que falla de vez
+      # en cuando enseña a ignorar el CI, y eso es peor que no medir. La Fase
+      # 3 subio la portada de 84 a 97, asi que ahora el presupuesto esta en 85
+      # con **ocho puntos de margen** sobre el peor valor visto: una regresion
+      # normal lo dispara y la variacion de la medicion no.
+      #
+      # Si alguna vez se pone rojo por un +-3 y no hay regresion real, el
+      # arreglo es subir el umbral **a conciencia**, editando antes el valor de
+      # la vista previa para que el cambio quede en el historial. No se baja el
+      # presupuesto en silencio.
+      #
+      # El detalle de las mediciones y el plan de subida estan en
+      # Docs/Presupuestos_rendimiento.md y en Docs/Fase5_presupuestos.md.
+      - name: Presupuesto de rendimiento en movil
+        if: matrix.node-version == 24
+        run: npm run validar:lighthouse:movil
+
+      # El presupuesto de movil (arriba) mide tambien el CLS, porque Lighthouse
+      # ya lo calcula en la misma pasada y es el mismo numero que aparece en los
+      # informes. Se intento medirlo aparte con `PerformanceObserver` de
+      # `layout-shift` desde Playwright y **no funciona**: verificado con una
+      # pagina de prueba que se desplaza a proposito, el observer no entrega ni un
+      # evento. Lighthouse lo saca del trace del navegador, no de esa API.
+      #
+      # Como el CLS va aqui, el presupuesto es el mismo numero que ve la gente en
+      # el informe de Lighthouse, no una cifra paralela que podria divergir.
 
       # Que la web funcione de verdad, no solo que su HTML sea valido. Abre
       # las tres paginas en Chromium y comprueba el recorrido real: el
