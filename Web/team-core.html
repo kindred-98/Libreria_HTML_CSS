@@ -180,7 +180,13 @@
                 <!-- [html-validate-disable-next no-deprecated-attr] -->
                 <!-- scrolling="no" es lo unico que evita la barra interna dentro
                      de la vista previa; la spec lo marca deprecado pero no
-                     existe sustituto en CSS. -->
+                     existe sustituto en CSS.
+                     Medido en Chromium: quitarlo cambia el dibujo (la captura
+                     pasa de 15.180 a 11.629 bytes, se ve otro contenido), y
+                     con `sandbox` sin `allow-same-origin` no hay forma de
+                     tocar el documento de dentro para ocultarla con CSS. Es
+                     decir: el atributo aqui no es un descuido, es lo unico
+                     que funciona. -->
                 <iframe
                   class="warp-card-frame"
                   src="../CreacionesNuevas/warp-speed-star-hyperdrive/index.html"
@@ -190,6 +196,12 @@
                   scrolling="no"
                   sandbox="allow-scripts allow-forms allow-popups"
                 ></iframe>
+                <!-- NOSONAR (S1827) en el `scrolling="no"` de arriba: la spec
+                     lo marca deprecado y no hay sustituto, porque con `sandbox`
+                     sin `allow-same-origin` no se puede tocar el documento de
+                     dentro desde CSS. Medido en Chromium: quitar el atributo
+                     cambia el dibujo (de 15.180 a 11.629 bytes de captura), es
+                     decir, se ve otra cosa. No es un descuido. -->
                 <p class="warp-card-caption">Warp Speed Star Hyperdrive</p>
               </div>
             </div>

@@ -87,6 +87,25 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 1: ultimos avisos propios, con un falso positivo medido] - 2026-10-06
+
+- **S7781**: `ruta.replace(/\\/g, "/")` -> `replaceAll`, que es lo que pedia
+  el aviso. Comprobado que el autofix sigue recorriendo el repo sin tocar nada.
+- **S1827** (`scrolling="no"` en team-core): Sonar marca el atributo como
+  obsoleto y pide quitarlo. **Se comprobo que quitarlo rompe la vista previa**:
+  la captura del iframe pasa de 15.180 a 11.629 bytes, es decir, se ve otro
+  contenido. No hay sustituto en CSS porque el iframe va con `sandbox` sin
+  `allow-same-origin`, y sin acceso al documento de dentro no se puede ocultar
+  la barra. Va con `NOSONAR` y la medicion al lado.
+
+### Lo que queda pendiente de marcar en la web de Sonar
+
+La API de SonarCloud **no permite cambiar el estado de un issue**: eso hay que
+hacerlo en la interfaz. Los falsos positivos estan listados en
+`Docs/Sonar_decisiones.md` para marcarlos de una vez con su motivo.
+
+---
+
 ## [Fase 1: 35 avisos de Sonar mas, en 25 demos] - 2026-10-06
 
 Tercer bloque del descenso de las 101 incidencias: las que estaban **en los
