@@ -87,6 +87,41 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 3, paso 1: presupuesto de rendimiento en movil] - 2026-10-06
+
+Anade un paso de CI que mide las cinco paginas con el **preset movil** de
+Lighthouse, que es el que simula de verdad lo que sufre un telefono (CPU x4 y
+red estrangulada). `validar:lighthouse` ya existia pero media con el preset
+**desktop**, que va sobrado (99-100) y no ve nada de lo que pasa en movil: una
+regresion en movil se colaba sin que nadie se enterara.
+
+- **`npm run validar:lighthouse:movil`** mide las cinco paginas y falla si
+  alguna baja de **80**. El umbral va **por debajo** del peor valor medido
+  (portada 84), nunca por encima: un presupuesto que ya no se cumple es ruido.
+- **Medido con dos pasadas por pagina** (la variacion del preset movil es de
+  +-3 a 5 puntos): portada 87/84, componentes 96/96, team core 97/97,
+  privacidad 99/99, legal 99/99. El numero que manda es el **84 de la portada**.
+- En el CI va con `continue-on-error`: informa y avisa, pero **no bloquea**.
+  Motivo: un umbral fluctuante que falla de vez en cuando enseña a ignorar el
+  CI. Cuando haya dos o tres semanas seguidas en verde, se quita el
+  `continue-on-error` y pasa a obligar.
+
+**Lo que se midio y resulto que NO era el problema:** `catalog.json` tiene
+707 KB en disco pero transfiere **155 KB** en 73 ms, y la pagina de componentes
+ya puntua 96. Partirlo habria significado tocar el generador y el validador
+para ganar unos 30 ms en una pagina que no lo necesita: riesgo sin beneficio.
+
+**Lo que se deja sin tocar, con el motivo:** la maquina de escribir mide el
+ancho con `scrollWidth` sobre un elemento **que se esta animando** (da 214 px
+cuando el texto real mide del orden de 490). Se podria arreglar con `n ch`
+en CSS, porque la fuente es monoespaciada, pero cambia el ancho de la
+animacion: es un cambio visual que no se puede comprobar automaticamente, y
+ganar 70 ms no compensa arriesgar la portada.
+
+Todo el detalle, el plan de subida del umbral a 85, 88, 90 y 92, y el criterio
+objetivo para saber cuando toca subirlo, estan en
+`Docs/Presupuestos_rendimiento.md`.
+
 ## [Fase 3: la portada movil baja de 77 a 84 de rendimiento] - 2026-10-06
 
 Empieza la Fase 3 (rendimiento en movil). El diagnostico se hizo con un

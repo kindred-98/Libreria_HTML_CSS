@@ -183,6 +183,26 @@ jobs:
         if: matrix.node-version == 24
         run: npm run validar:demos
 
+
+      # Presupuesto de rendimiento en MOVIL (Fase 3). `validar:lighthouse`
+      # mide con el preset desktop, que va sobrado (99-100) y no ve lo que
+      # sufre alguien con un telefono. Este mide el preset movil: CPU x4 y red
+      # estrangulada, donde las cifras bajan a 84-99.
+      #
+      # Va con `continue-on-error` **a proposito**: el umbral (80) esta cuatro
+      # puntos por debajo del peor valor medido (84) porque la variacion de
+      # Lighthouse en movil es de +-3 a 5 puntos. Un presupuesto que falla de
+      # vez en cuando enseña a ignorar el CI, y eso es peor que no medir.
+      # Cuando haya dos o tres semanas seguidas en verde, se quita el
+      # `continue-on-error` y pasa a obligar.
+      #
+      # El detalle del presupuesto y el plan de subida estan en
+      # Docs/Presupuestos_rendimiento.md.
+      - name: Presupuesto de rendimiento en movil (informativo)
+        if: matrix.node-version == 24
+        continue-on-error: true
+        run: npm run validar:lighthouse:movil
+
       # Que la web funcione de verdad, no solo que su HTML sea valido. Abre
       # las tres paginas en Chromium y comprueba el recorrido real: el
       # catalogo rellena la rejilla, el buscador filtra, el estado vacio
