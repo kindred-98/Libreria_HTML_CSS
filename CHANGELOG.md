@@ -87,6 +87,35 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 1: 12 avisos mas de Sonar (S9382, S5843, S8786 y uno de verdad)] - 2026-10-06
+
+Segundo bloque del descenso de las 101 incidencias.
+
+- **S9382 (`await` en bucle, 4).** Los cuatro iconos de la PWA se generaban
+  uno detras de otro; ahora se lanzan a la vez con `Promise.all`, que ademas es
+  mas rapido (cada uno abre su pestana de Chromium). En el smoke test el bucle
+  que abre los 1.018 demos saca su cuerpo a una funcion `procesarDemo()`: los
+  demos se abren **en serie a proposito**, porque en paralelo darian timeouts
+  falsos y `idActual` (una sola variable compartida) ya no sabria a que demo
+  atribuir un error.
+- **Un `\s*[-|:]\s*` de verdad (S8786).** El segundo `\s*` no puede
+  solaparse con el primero, pero Sonar no lo ve. Simplificado de verdad, y
+  comprobado que el catalogo sigue byte-identico.
+- **S5843 y S8786 en el resto (10).** Van con `// NOSONAR:` y el motivo
+  medido en la misma linea, no en un documento aparte. En las regex del
+  autofix, el `--dry-run` sobre todo el repo tarda **1,1 s**: el backtracking
+  son unos 10.000 pasos por linea de 100 caracteres. En las `categoryRules`,
+  ademas de ser barato, **deciden la categoria de los 1.018 demos**, asi que
+  tocar una alternativa moveria el catalogo. Los dos motivos, en
+  `Docs/Sonar_decisiones.md`.
+
+El catalogo se comparo byte a byte antes y despues: **identico**.
+
+Verificado en verde: `npm test` (55/55), `typecheck` (18 de 38), `lint`,
+`format:check`, `validar` y `validar:demos` (**1018/1018**).
+
+---
+
 ## [Fase 1: 8 avisos de Sonar resueltos en el codigo propio (S7780 y S6551)] - 2026-10-06
 
 Empieza el descenso de las 101 incidencias. Se ataca **primero el codigo

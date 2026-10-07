@@ -269,8 +269,13 @@ try {
         anotarFallo(idActual, "http400", `${respuesta.request().method()} ${url} -> ${respuesta.status()}`);
       });
 
-      while (cola.length) {
-        const demo = cola.shift();
+      // El trabajo de **un** demo vive en su propia funcion, y el bucle solo la
+      // llama. No es un truco para que el analizador no vea el `await`: los
+      // demos se abren **de uno en uno a proposito**. En paralelo (que es lo que
+      // S9382 sugiere) se romperian dos cosas: los 1018 demos cargando a la vez
+      // darian timeouts falsos por falta de recursos, y `idActual`, que es una
+      // sola variable compartida, ya no sabria a que demo atribuir un error.
+      const procesarDemo = async (demo) => {
         // El demo vive en la raiz (`/CreacionesNuevas/...`), no bajo /Web/: la
         // ruta del catalogo ya es absoluta desde la raiz.
         const destino = `${ORIGEN}${demo.url}`;
@@ -297,6 +302,10 @@ try {
         } finally {
           idActual = null;
         }
+      };
+
+      while (cola.length) {
+        await procesarDemo(cola.shift());
       }
       await pestana.close();
     }),

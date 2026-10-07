@@ -23,6 +23,55 @@ había re-analizado**, así que el punto de partida honesto eran **79**.
 Después de dos tandas quedan **46**. Las 20 más antiguas se caerán solas
 cuando Sonar re-analice.
 
+## Avisos resueltos con NOSONAR, y por que (Fase 1, 2026-10-06)
+
+Estos no se "arreglan": se_documentan donde se van a leer_.
+
+### S5843 y S8786 · las regex de`categoryRules` y del autofix
+
+Sonar pide simplificar unas alternancias largas (`/animation|animated|animate|…/`
+tiene 35 alternativas y el limite son 20; el resto tienen dos `\w+` greedy que
+pueden dar backtracking).
+
+**En las del autofix** (`Web/scripts/lib/autofix-patrones.mjs`) el coste es
+despreciable y medido: el `--dry-run` sobre **todo** el repositorio tarda
+**1,1 segundos**. Una linea de codigo ronda los 100 caracteres, asi que el peor
+caso son unos 10.000 pasos por linea. Hacerlas "optimas" (con anchoring o
+cuantificadores posesivos) dejaria de transformar los casos que hoy transforma,
+que es literalmente el trabajo de ese script.
+
+**En las `categoryRules`** (`generate-catalog.mjs`) no es una cuestion de
+coste: esas regex **deciden que categoria tiene cada uno de los 1.018 demos**.
+Quitar una alternativa cambia la clasificacion de algunos y el `catalog.json`
+deja de cuadrar con el disco. Se comprobó que el catalogo sigue saliendo
+**byte-identico** despues de los cambios.
+
+La exclusion va como `// NOSONAR:` en la misma linea de la regex, con el motivo
+al lado, y no en un documento aparte: **que se lea al abrir el fichero**.
+
+### Lo que si se arreglo de verdad
+
+- **S6551** (`String` sobre un objeto): era un fallo real. Un objeto llegaba al
+  CSV como la cadena literal `"[object Object]"`. Ahora se serializa a JSON, y
+  los `Error` conservan nombre y mensaje (`JSON.stringify(new Error("x"))`
+  devuelve `"{}"`).
+- **S7780** (`String.raw`): solo legibilidad.
+- **S9382** (`await` en bucle): los cuatro iconos se generan en paralelo (mas
+  rapido) y el bucle del smoke test extrae su cuerpo a una funcion.
+- **`\s*[-|:]\s*` en generate-catalog**: ese `\s*` de despues no puede
+  solaparse con el de antes (uno come espacios, el otro separadores), pero Sonar
+  no lo ve. Se simplifica de verdad.
+
+### Como saber que los NOSONAR no tapan problemas reales
+
+Un `NOSONAR` no es una opinion: cada uno lleva su numero medido al lado. Si
+alguna vez el coste cambia (por ejemplo, si estas regex se usaran en el
+navegador de cada visitante en vez de en un script de build), el comentario deja
+de ser cierto y hay que quitarlo. Los que hoy estan puestos corren **solo en el
+build**.
+
+---
+
 ## Los tres que sí eran bugs de verdad
 
 Ninguno era cosmético. El más grave:

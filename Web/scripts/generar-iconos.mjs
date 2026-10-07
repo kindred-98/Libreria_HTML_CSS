@@ -60,9 +60,19 @@ const ICONOS = [
   ["apple-touch-icon.png", 180, 0],
 ];
 
-for (const [nombre, tamano, margen] of ICONOS) {
-  const png = await render(tamano, margen);
-  await writeFile(path.join(iconDirectory, nombre), png);
+// Los cuatro iconos se renderizan a la vez y no uno detras de otro. Con el
+// bucle secuencial (S9382) tardaba lo que suma cada captura; en paralelo es el
+// tiempo de la mas lenta, y como cada una abre su propia pestana de Chromium,
+// no compiten por el mismo hilo principal.
+const pngs = await Promise.all(
+  ICONOS.map(async ([nombre, tamano, margen]) => {
+    const png = await render(tamano, margen);
+    await writeFile(path.join(iconDirectory, nombre), png);
+    return [nombre, tamano, png];
+  }),
+);
+
+for (const [nombre, tamano, png] of pngs) {
   console.log(`  ${nombre}  ${tamano}x${tamano}  ${(png.length / 1024).toFixed(1)} KB`);
 }
 
