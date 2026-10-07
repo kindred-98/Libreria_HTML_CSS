@@ -87,6 +87,48 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 1: 8 avisos de Sonar resueltos en el codigo propio (S7780 y S6551)] - 2026-10-06
+
+Empieza el descenso de las 101 incidencias. Se ataca **primero el codigo
+nuestro** (`Web/scripts/`), que son 32 de las 101; las otras 69 estan en los
+demos de los autores.
+
+### S7780 · `String.raw` donde toca (5 avisos)
+
+Las cadenas con escapes dobles (`"\\d"`) son menos legibles que
+`String.raw`\`\\d\``, que escribe lo mismo sin doblar la barra. Se cambia en las
+descripciones y en los reemplazos de los patrones del autofix.
+
+**Comprobado que no cambia lo que el autofix escribe:** seis casos
+(`/[0-9]/g`, `/[^0-9]/g`, `/[\\d]/g`, `/[\\w]{6}/g`...) dan el mismo
+resultado, y la cascada completa sobre una linea de ejemplo sigue
+convirtiendo igual. Un cambio asi parece inocuo y no lo es: si se equivoca,
+cambia lo que se escribe en el codigo de 1018 demos.
+
+### S6551 · `[object Object]` en el CSV (3 avisos)
+
+Este **si era un fallo real**, no un code smell. `celda()` hacia
+`String(valor)`, asi que si un valor llegaba como objeto, al CSV iba la cadena
+literal `"[object Object]"`: informacion perdida en silencio. Lo mismo en
+`contar()` (al ordenar) y en `tabla()` (al imprimir).
+
+Ahora hay un `aTexto()` que decide segun el tipo: los primitivos igual, los
+objetos y arrays con `JSON.stringify`, los `Error` como
+`"Nombre: mensaje"` (porque `JSON.stringify(new Error("x"))` devuelve
+`"{}"`, que pierde el mensaje), los simbolos con `toString()`, las funciones
+con su nombre, y los objetos con ciclo —que `JSON.stringify` no puede
+serializar— con un `"[Object no serializable]"` que al menos explica lo que
+paso.
+
+**Anadidos 7 tests** para todo eso (`npm test`: de 48 a **55**). Dos de ellos
+fallaron al escribirlos y las dos veces **el error estaba en la expectativa
+del test, no en el codigo**: el CSV duplica las comillas del JSON (correcto,
+es lo que exige el formato) y dos objetos con la misma forma son claves
+distintas en un `Map` porque se comparan por referencia. El test ahora dice
+eso mismo, para que no vuelva a confundirse.
+
+---
+
 ## [Fase 5 (D y E): presupuesto del catalogo y comprobacion diaria de uptime] - 2026-10-06
 
 Cierra la fase. Los dos ultimos puntos, que no dependen del codigo que se

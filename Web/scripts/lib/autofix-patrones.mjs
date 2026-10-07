@@ -76,9 +76,9 @@ export const PATRONES = [
   },
   {
     id: "S6353",
-    descripcion: "/[0-9]/ -> /\\d/",
+    descripcion: String.raw`/[0-9]/ -> /\d/`,
     regex: /\[0-9\]/g,
-    reemplazo: "\\d",
+    reemplazo: String.raw`\d`,
   },
   {
     id: "S7761",
@@ -214,9 +214,9 @@ export const PATRONES = [
     // S6353 de arriba: `[0-9]` -> `\d`), porque la regex usa `\[^0-9\]`
     // con el `^` literal.
     id: "S6353b",
-    descripcion: "[^0-9] -> \\D",
+    descripcion: String.raw`[^0-9] -> \D`,
     regex: /\[\^0-9\]/g,
-    reemplazo: "\\D",
+    reemplazo: String.raw`\D`,
   },
   {
     // arr.filter(p)[0] -> arr.find(p). Equivalente en el caso comun:
@@ -247,7 +247,7 @@ export const PATRONES = [
     // se quedan como estan. Tambien acepta un cuantificador opcional:
     // [\d]{6} -> \d{6}.
     id: "S6397",
-    descripcion: "[\\d] -> \\d  (clase con un solo escape abreviado)",
+    descripcion: String.raw`[\d] -> \d  (clase con un solo escape abreviado)`,
     regex: /\[(\\[dswDSW])(?:\{[^}]*\})?\]/g,
     reemplazo: "$1",
   },
