@@ -39,11 +39,15 @@ const libraryRoots = [
     description: "CSS text effect with its own showcase page and a downloadable pack.",
     descriptionEs: "Efecto de texto CSS con su propia página de showcase y su pack descargable.",
     // Los titulos son "Efecto GLITCH - Showcase": la tarjeta se queda con GLITCH.
-    titleCleanup: (title) =>
-      title
-        .replace(/^Efecto\s+/i, "")
-        .replace(/ *[-|:] *Showcase$/i, "")
-        .trim(),
+    titleCleanup: (title) => {
+      const cleaned = title.replace(/^Efecto\s+/i, "").trim();
+      const suffix = "Showcase";
+      if (!cleaned.toLowerCase().endsWith(suffix.toLowerCase())) return cleaned;
+      const beforeSuffix = cleaned.slice(0, -suffix.length).trimEnd();
+      const separator = beforeSuffix.at(-1);
+      if (separator !== "-" && separator !== "|" && separator !== ":") return cleaned;
+      return beforeSuffix.slice(0, -1).trimEnd();
+    },
   },
   {
     name: "CreacionesNuevas",
@@ -191,6 +195,7 @@ function createSlug(value) {
 //
 // Ademas el coste de la alternancia es despreciable: se mide sobre el nombre de
 // una carpeta (unas decenas de caracteres), no sobre el codigo entero.
+/** @type {Array<[string, RegExp]>} */
 const categoryRules = [
   // Los tres primeros patrones se pueden escribir como una alternancia en vez
   // de una secuencia de `|`: `[a-z]` sigue al menos tan restringido y el

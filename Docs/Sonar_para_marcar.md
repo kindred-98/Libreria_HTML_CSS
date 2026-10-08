@@ -3,16 +3,16 @@
 Fecha: 2026-10-08. Complementa [`Sonar_decisiones.md`](./Sonar_decisiones.md),
 que explica el porqué de cada caso.
 
-## Estado actual (rama `main`, medido con la API)
+## Estado de `main` tras el merge de la PR 19 (API, 2026-10-08)
 
 | Métrica | Valor |
 | --- | --- |
-| Issues abiertos | **65** |
-| Bugs | **0** |
+| Issues abiertos | **19** |
+| Bugs | **7** |
 | Vulnerabilidades | **0** |
-| Code smells | **65** |
-| Reliability / Security / Maintainability | **A / A / A** |
-| Duplicación global | 5,9 % |
+| Code smells | **12** |
+| Reliability / Security / Maintainability | **C / A / A** |
+| Duplicación global | 5,8 % |
 
 Se marcaron **34** falsos positivos / decisiones aceptadas usando la API oficial
 `api/issues/do_transition`, con un comentario específico en cada issue. No se
@@ -20,9 +20,26 @@ Se marcaron **34** falsos positivos / decisiones aceptadas usando la API oficial
 SonarCloud y en este documento. El token de análisis es secreto y nunca está
 en el repositorio.
 
-Los **65** que quedan están en ficheros que la rama `Update` modifica (salvo un
-`S6557` en `serve.mjs` que ya usa `startsWith` y está desfasado en el informe).
-Se reanalizan al mergear; no significa que sigan abiertos tras el merge.
+Los 19 abiertos en este snapshot son los del inventario siguiente; se trabajan
+en `fix/sonar-issues-after-merge`. La medida global de duplicación es distinta
+de la duplicación sobre código nuevo que pasó en la PR 19.
+
+## Issues abiertos del análisis posterior al merge
+
+| Regla | Cantidad | Archivo(s) | Evaluación |
+| --- | ---: | --- | --- |
+| `javascript:S8786` | 1 | `Web/scripts/generate-catalog.mjs` | Real: simplificar el cleanup de título sin cambiar el catálogo. |
+| `javascript:S3800` | 1 | `Web/scripts/generate-catalog.mjs` | Anotar las tuplas de categoría para mantener retorno `string`. |
+| `javascript:S3403` | 7 | Cinco demos de formularios | Falsos positivos: los pasos se inicializan/normalizan como `number`; se mantiene `===` y se deja la explicación junto a cada comparación. |
+| `javascript:S6557` | 1 | `Web/scripts/serve.mjs` | Conversión mecánica de regex anclada a `startsWith`, conservando la lista de rutas protegidas. |
+| `javascript:S2486` | 4 | Tres demos de navegación/tarjeta | El error se ignora deliberadamente con fallback seguro (almacenamiento no disponible / puntero liberado); motivo en el `catch`. |
+| `javascript:S6551` | 4 | Cuatro demos de perfil/visualización | Falsos positivos de valores strings/numbers; se precisan los tipos de los datos. |
+| `javascript:S9382` | 1 | `Web/scripts/lib/lighthouse.mjs` | Falso positivo: las auditorías comparten CDP y deben ejecutarse en serie. |
+
+La duplicación global la dominan los shells repetidos de las demos autónomas de
+Davoker (hasta 231 líneas marcadas en una página). El repositorio exige que cada
+demo funcione y se descargue sin dependencias compartidas; el validador propio
+`npm run duplicados` comprueba que no haya demos prácticamente idénticas.
 
 ---
 
@@ -79,13 +96,13 @@ issues ya cerrados**. El número confirmado por la API como marcado es 34.
 
 | | |
 | --- | --- |
-| Issues abiertos en `main`, análisis actual | **65** |
-| Bugs abiertos | **0** |
+| Issues abiertos en `main`, análisis actual | **19** |
+| Bugs abiertos | **7** |
 | Vulnerabilidades abiertas | **0** |
 | Falsos positivos / aceptados ya marcados | **34** |
-| Issues en ficheros cambiados por la rama `Update` | **64 de 65** |
-| Regresiones introducidas | **0** (1018/1018 demos, 55/55 tests, 16/16 e2e) |
+| Duplicación global | **5,8 %** |
+| Regresiones introducidas | **0** (1018/1018 demos, 55/55 tests, 17/17 e2e) |
 
-**Siguiente paso:** mergear la PR pendiente. SonarCloud reanaliza `main` y los
-arreglos de código se resuelven automáticamente. Después se vuelve a exportar
-la lista para atacar solo los que de verdad sigan abiertos.
+**Siguiente paso:** integrar `fix/sonar-issues-after-merge` y reanalizar `main`.
+Confirmar que los 19 issues quedan en cero y cuánto baja la duplicación global
+con la exclusión CPD explícita de los showcases Davoker autónomos.

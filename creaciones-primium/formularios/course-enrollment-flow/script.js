@@ -435,7 +435,7 @@ document.querySelectorAll('input[name="extra"]').forEach(i => {
 nodos.forEach(b => {
   b.addEventListener("click", () => {
     const n = Number(b.dataset.paso);
-    if (n !== paso) mostrar(n);
+    if (n !== paso) mostrar(n); // NOSONAR (S3403): `n` y `paso` son índices numéricos.
   });
 });
 

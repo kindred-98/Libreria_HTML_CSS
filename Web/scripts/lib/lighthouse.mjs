@@ -97,19 +97,19 @@ export async function medirConLighthouse({ paginas, categorias, settings }) {
 
     for (const pagina of paginas) {
       const inicio = Date.now();
-      // NOSONAR (S9382): las mediciones se hacen en serie adrede. Todas usan
-      // el mismo Chromium/puerto CDP y Lighthouse cambia la emulacion de CPU,
+      // Las mediciones se hacen en serie adrede. Todas usan el mismo
+      // Chromium/puerto CDP y Lighthouse cambia la emulacion de CPU,
       // red y viewport en cada pasada. `Promise.all` haria competir las cinco
       // auditorias y contaminaria las puntuaciones; el orden actual es parte
       // de que sean reproducibles.
-      const { lhr } = await lighthouse(
-        `${origen}${pagina.ruta}`,
-        { logLevel: "error", output: "json", port: chrome.port },
-        {
-          extends: "lighthouse:default",
-          settings: { ...settings, ...(categorias ? { onlyCategories: categorias } : {}) },
-        },
-      );
+      const url = `${origen}${pagina.ruta}`;
+      /** @type {{ logLevel: "error", output: "json", port: number }} */
+      const opciones = { logLevel: "error", output: "json", port: chrome.port };
+      const configuracion = {
+        extends: "lighthouse:default",
+        settings: { ...settings, ...(categorias ? { onlyCategories: categorias } : {}) },
+      };
+      const { lhr } = await lighthouse(url, opciones, configuracion); // NOSONAR (S9382): shared CDP.
 
       /** @type {Record<string, number>} */
       const puntuaciones = {};

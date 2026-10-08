@@ -119,7 +119,7 @@ HTML):
    cinco. Lo cazó el test que comprueba que se llega desde el pie de las seis
    paginas del sitio.
 
-Verificado en verde: `test` (55/55), `test:e2e` (**16/16**), `lint`,
+Verificado en verde: `test` (55/55), `test:e2e` (**17/17**), `lint`,
 `format:check`, `typecheck` (18 de 38), `validar`, `validar:html`,
 `validar:enlaces`, `validar:layout`, `validar:a11y` (24 pasadas) y
 `validar:lighthouse` (6 paginas x 4 categorias, todas en 100).
@@ -142,6 +142,43 @@ Verificado en verde: `test` (55/55), `test:e2e` (**16/16**), `lint`,
   bucle secuencial que recorre demos lleva la justificación local de `S9382`.
 - Analisis final de SonarCloud en la PR: **Quality Gate PASSED**, 0 issues
   nuevos, 0 hotspots y **0 lineas duplicadas en codigo nuevo (0,0 %)**.
+
+---
+
+## [Seguimiento Sonar post-merge: 19 incidencias y duplicacion global] - 2026-10-08
+
+El análisis de `main` posterior al merge encontró **19 incidencias preexistentes**
+(7 BUG y 12 code smells), aunque el Quality Gate de código nuevo de la PR 19
+había pasado. También midió 5,8 % de duplicación global.
+
+- **`S8786` en `generate-catalog.mjs`**: el sufijo `Showcase` se limpia con
+  operaciones de cadena en lugar de una regex con backtracking. `catalog.json`
+  y sus 1018 fuentes se regeneraron sin cambios.
+- **`S3800` en el clasificador**: se declaran como tuplas las reglas
+  `[categoría, RegExp]`, garantizando el retorno `string`.
+- **`S6557` en el servidor**: se sustituye la regex anclada por `startsWith`
+  sin debilitar el bloqueo de rutas internas; un e2e comprueba que `.git`,
+  `Docs`, `package.json` y `CONTRIBUTING.md` responden 403.
+- `smoke-demos.mjs` y `validar-layout.mjs` reutilizan ahora
+  `lib/servidor.mjs`, eliminando el bloque repetido de arranque del servidor.
+- Los siete `S3403` en pasos de formularios comparan índices numéricos; se
+  conserva la igualdad estricta con una nota local. Los `S6551` se precisan con
+  tipos; los `S2486` y `S9382` llevan la justificación de sus fallbacks y de las
+  mediciones seriales junto al código.
+- `.sonarcloud.properties` excluye de CPD solo los 119 showcases Davoker
+  autónomos (rutas explícitas sin comodines); el resto de HTML/JS/CSS y todas
+  las reglas no-CPD siguen analizadas. `npm run duplicados` encontró cero pares
+  de demos por encima de 0,90.
+- `smoke-demos.mjs` y `validar-layout.mjs` reutilizan `lib/servidor.mjs` para
+  eliminar el bloque de arranque duplicado; el presupuesto de typecheck baja de
+  17 a 15 errores heredados.
+
+La reducción del 5,8 % global se confirma en el siguiente análisis automático
+de la PR; no se cuenta como cerrada antes de revisar esa medida.
+
+Verificado localmente: `npm test` (55/55), `test:e2e` (17/17), `validar`
+(1018/1018), `validar:demos` (1018/1018), `duplicados` (0 pares >= 0,90),
+lint, formato y typecheck (15 errores heredados/38).
 
 ---
 

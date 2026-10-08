@@ -38,12 +38,11 @@
  *
  * En el CI hace falta el navegador: `npx playwright install --with-deps chromium`.
  */
-import { spawn } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { arrancarServidor, puertoLibre } from "./lib/servidor.mjs";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "..", "..");
@@ -57,57 +56,6 @@ const CONCURRENCIA = 6;
 const ESPERA_TRAS_LOAD = 1000;
 const TIMEOUT_PAGINA = 30000;
 const guardarLineaBase = process.argv.includes("--linea-base");
-
-// Puerto libre, en vez de uno fijo: en local casi siempre hay ya un servidor
-// de desarrollo levantado, y si este tropezara con el suyo la comprobacion
-// fallaria por un motivo que no tiene que ver con los demos.
-async function puertoLibre() {
-  const fijado = Number(process.env.PORT ?? 0);
-  if (fijado) return fijado;
-  return new Promise((resolve, reject) => {
-    const sonda = net.createServer();
-    sonda.on("error", reject);
-    sonda.listen(0, "127.0.0.1", () => {
-      const { port } = sonda.address();
-      sonda.close(() => resolve(port));
-    });
-  });
-}
-
-function arrancarServidor(puerto) {
-  return new Promise((resolve, reject) => {
-    const proceso = spawn(process.execPath, [path.join(scriptDirectory, "serve.mjs")], {
-      env: { ...process.env, PORT: String(puerto) },
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    let salida = "";
-    let arrancado = false;
-    const listo = () => {
-      if (arrancado) return;
-      arrancado = true;
-      resolve(proceso);
-    };
-    proceso.stdout.on("data", (trozo) => {
-      salida += trozo;
-      if (salida.includes("Sirviendo el repositorio")) listo();
-    });
-    proceso.stderr.on("data", (trozo) => {
-      salida += trozo;
-    });
-    proceso.on("error", reject);
-    proceso.on("exit", (codigo) => {
-      if (!arrancado) {
-        reject(
-          new Error(`serve.mjs no arranco en el puerto ${puerto} (codigo ${codigo}):\n${salida.trim()}`),
-        );
-      }
-    });
-    setTimeout(() => {
-      if (!arrancado)
-        reject(new Error(`serve.mjs no arranco en 15 s en el puerto ${puerto}:\n${salida.trim()}`));
-    }, 15000).unref();
-  });
-}
 
 function esperar(milisegundos) {
   return new Promise((resolve) => setTimeout(resolve, milisegundos));

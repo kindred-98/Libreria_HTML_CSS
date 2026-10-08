@@ -194,7 +194,7 @@ form.addEventListener("submit", e => {
 
   resumenError.hidden = true;
 
-  if (paso === 1) {
+  if (paso === 1) { // NOSONAR (S3403): el estado `paso` solo recibe índices numéricos.
     const correo = el("correo").value.trim();
     burbuja("Quiero restablecer la contraseña de " + tapar(correo) + ".", true);
     const uno = burbuja("Hecho. Te acabo de enviar el enlace de recuperación.");

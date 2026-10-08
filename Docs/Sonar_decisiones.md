@@ -215,3 +215,38 @@ pies comunes de las páginas HTML independientes.
 El análisis final de la PR 19 (`7d230fa`) confirmó **0 issues nuevos, 0 líneas
 duplicadas y Quality Gate PASSED**. Tras integrar la PR, todavía corresponde
 reanalisar `main` para actualizar las métricas e incidencias totales.
+
+## Issues globales tras el merge (rama de seguimiento)
+
+El análisis actualizado de `main` informó 19 incidencias: 7 `S3403` sobre
+comparaciones de índices numéricos en cinco asistentes de formulario, 4 `S2486`
+por fallbacks deliberados ante almacenamiento/pointer capture no disponibles,
+4 `S6551` sobre valores que son strings o numbers, y los avisos puntuales
+`S8786`, `S3800`, `S6557` y `S9382`.
+
+- Se conservó `===` en los pasos: `data-paso` se convierte con `Number()`, el
+  estado se inicializa en 1 y `mostrar()` recibe valores numéricos o aritmética
+  sobre ellos. Cada S3403 lleva esa evidencia junto a la comparación.
+- En `serve.mjs`, la lista de recursos internos se convirtió a rutas y
+  `startsWith`; se añadió e2e que requiere 403 para `/.git/config`, `/Docs`,
+  `/package.json` y `CONTRIBUTING.md`, y 200 para una página pública.
+- En `generate-catalog.mjs`, se sustituyó la regex con backtracking por
+  operaciones de sufijo y se tiparon los pares `[categoría, regex]`. El catálogo
+  regenerado sigue idéntico.
+- Se extrajo a `lib/servidor.mjs` el arranque local repetido entre `smoke-demos`
+  y `validar-layout`; ambas herramientas y los otros validadores usan ahora el
+  mismo helper probado.
+- Los avisos de stringificación son falsos positivos sobre mapas de strings,
+  listas de strings y el progreso numérico `fill`; se añadieron tipos para que
+  el analizador conozca el contrato real. Los catches conservan los fallbacks
+  intencionales con justificación `NOSONAR (S2486)` en la propia línea.
+- `lighthouse.mjs` mide seis auditorías con un único Chromium/CDP compartido;
+  la ejecución serial evita mezclar emulación de CPU/red/viewport y queda
+  justificada en la línea con `NOSONAR (S9382)`.
+
+El 5,8 % global de duplicación se concentra sobre todo en scaffolding repetido
+de demos autónomas: las páginas Davoker líderes del recuento repetían hasta 231
+líneas de shell. La rama limita CPD a los 119 `index.html` de Davoker (rutas
+exactas, sin comodines); conserva CPD en el resto de HTML, JS y CSS.
+`npm run duplicados` dio cero pares por encima del umbral 0,90. La métrica
+definitiva se confirma con un nuevo análisis automático de la PR.

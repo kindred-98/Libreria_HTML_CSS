@@ -61,6 +61,18 @@ after(async () => {
   servidor?.kill();
 });
 
+test("el servidor no publica archivos internos del repositorio", async () => {
+  const publico = await fetch(`${ORIGEN}/Web/index.html`);
+  assert.equal(publico.status, 200);
+  await publico.arrayBuffer();
+
+  for (const ruta of ["/.git/config", "/Docs/Sonar_decisiones.md", "/CONTRIBUTING.md", "/package.json"]) {
+    const respuesta = await fetch(`${ORIGEN}${ruta}`);
+    await respuesta.arrayBuffer();
+    assert.equal(respuesta.status, 403, `${ruta}: debe permanecer bloqueada`);
+  }
+});
+
 // ------------------------------------------------------------------- portada
 
 test("portada: carga, tiene h1 y el catalogo alimenta los destacados", async () => {

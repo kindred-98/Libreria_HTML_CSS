@@ -414,7 +414,7 @@ btnContinuar.addEventListener("click", e => {
   e.preventDefault();
   resumenError.hidden = true;
 
-  if (paso === 1) {
+  if (paso === 1) { // NOSONAR (S3403): el estado `paso` solo recibe índices numéricos.
     if (consolaElegida.id === "") {
       mostrarResumen(["Console: nothing is on the shelf yet, a crate cannot ship without a box."]);
       const foco = el("rejilla1").querySelector(".pieza");
@@ -427,7 +427,7 @@ btnContinuar.addEventListener("click", e => {
     return;
   }
 
-  if (paso === 2) {
+  if (paso === 2) { // NOSONAR (S3403): el estado `paso` solo recibe índices numéricos.
     if (juegosElegidos.length === 0) {
       mostrarResumen(["Games: at least one title, otherwise the console arrives with nothing on it."]);
       const foco = el("rejilla2").querySelector(".pieza");

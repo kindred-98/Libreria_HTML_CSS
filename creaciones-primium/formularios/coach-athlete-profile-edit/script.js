@@ -108,6 +108,7 @@ const TOTAL_CAMPOS = CAMPOS.length + 1;
 
 function el(id) { return document.getElementById(id); }
 
+/** @returns {string[]} */
 function elegidas() {
   return Array.from(especialidades.querySelectorAll("input:checked")).map(i => i.value);
 }

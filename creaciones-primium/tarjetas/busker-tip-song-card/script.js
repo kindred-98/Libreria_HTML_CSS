@@ -38,6 +38,7 @@ let listeners = 184;
 let lyricIndex = 0;
 let reactTotal = 0;
 let chips = [];
+/** @type {number} */
 let fill = 0.62;
 let seconds = 107;
 

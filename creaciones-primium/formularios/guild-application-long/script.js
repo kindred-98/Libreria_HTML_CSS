@@ -4,7 +4,9 @@ const $ = (sel, raiz) => (raiz || document).querySelector(sel);
 const $$ = (sel, raiz) => Array.prototype.slice.call((raiz || document).querySelectorAll(sel));
 
 const CLASSES = { guardia: 'Guardian', asalto: 'Assault', apoyo: 'Support', sigilo: 'Sigil', artillero: 'Artillery' };
+/** @type {Record<string, string>} */
 const REGIONES = { na: 'North America', eu: 'Europe', oce: 'Oceania', sa: 'South America' };
+/** @type {Record<string, string>} */
 const IDIOMAS = { en: 'English', es: 'Spanish', fr: 'French', de: 'German', pt: 'Portuguese' };
 
 const ROLES = [

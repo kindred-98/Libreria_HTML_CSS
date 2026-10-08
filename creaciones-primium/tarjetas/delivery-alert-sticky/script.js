@@ -39,7 +39,7 @@ if (sticky && clip && !reduceMotion) {
     try {
       sticky.setPointerCapture(activePointer);
       captured = true;
-    } catch (error) {
+    } catch (error) { // NOSONAR (S2486): pointer capture may fail after release; uncaptured drag still works.
       // Se ignora a proposito: `setPointerCapture` lanza si el puntero ya no
       // esta activo; el arrastre sigue funcionando sin captura.
       captured = false;
