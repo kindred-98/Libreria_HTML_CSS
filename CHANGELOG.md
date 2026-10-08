@@ -126,6 +126,22 @@ Verificado en verde: `test` (55/55), `test:e2e` (**16/16**), `lint`,
 
 ---
 
+## [Quality Gate: corrige la duplicacion nueva de SonarCloud] - 2026-10-08
+
+- El primer analisis de la PR fallo por **18,2 % de lineas duplicadas en codigo
+  nuevo** (100 lineas; maximo 3 %). Fiabilidad, seguridad, mantenibilidad y
+  hotspots ya estaban aprobados.
+- Se identifico que Automatic Analysis ignora `sonar-project.properties`.
+  La excepcion de CPD para el shell repetido de las seis paginas estaticas se
+  declara ahora en `.sonarcloud.properties`, con rutas exactas; no excluye esos
+  ficheros de las otras reglas.
+- Las 35 claves EN/ES de la guia pasan a un mapa unico de pares, eliminando el
+  bloque de traducciones estructuralmente duplicado en `app.js`.
+- El Quality Gate se considera cerrado solo cuando SonarCloud confirme el
+  analisis nuevo.
+
+---
+
 ## [Fase 1: ultimos avisos propios, con un falso positivo medido] - 2026-10-06
 
 - **S7781**: `ruta.replace(/\\/g, "/")` -> `replaceAll`, que es lo que pedia
@@ -139,9 +155,11 @@ Verificado en verde: `test` (55/55), `test:e2e` (**16/16**), `lint`,
 
 ### Lo que queda pendiente de marcar en la web de Sonar
 
-La API de SonarCloud **no permite cambiar el estado de un issue**: eso hay que
-hacerlo en la interfaz. Los falsos positivos estan listados en
-`Docs/Sonar_decisiones.md` para marcarlos de una vez con su motivo.
+En esta primera pasada se pensó que los falsos positivos había que marcarlos
+desde la interfaz. En la sesión del 2026-10-08 se comprobó que, con permisos de
+escritura, la API `api/issues/do_transition` sí permite hacerlo y guardar el
+motivo en cada issue. El inventario y las decisiones están en
+`Docs/Sonar_para_marcar.md` y `Docs/Sonar_decisiones.md`.
 
 ---
 

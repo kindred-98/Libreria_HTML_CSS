@@ -364,5 +364,11 @@ test("como usar: se llega desde el pie de las seis paginas y esta en ambos idiom
     () => [...document.querySelectorAll("[data-i18n]")].filter((el) => !el.textContent.trim()).length,
   );
   assert.equal(vacias, 0);
+  const clavesSinTraducir = await pagina.evaluate(() =>
+    [...document.querySelectorAll("[data-i18n]")]
+      .filter((el) => el.textContent.trim() === el.dataset.i18n)
+      .map((el) => el.dataset.i18n),
+  );
+  assert.deepEqual(clavesSinTraducir, [], "la guía debe traducir todas sus claves i18n");
   await pagina.close();
 });

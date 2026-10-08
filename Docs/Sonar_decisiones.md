@@ -187,3 +187,25 @@ Los que **sí conviene arreglar** por valor propio, no por el contador, son
 Este fichero, junto con el `sonar-project.properties` y el script de
 auto-fix, es lo que hace que el contador de Sonar sea una medida y no un
 objetivo a costa del proyecto.
+
+## Duplicación en Automatic Analysis (PR 19)
+
+El primer análisis de la PR midió 18,2 % de duplicación en código nuevo: 71
+líneas venían de las traducciones EN/ES de la guía y 25 de los encabezados y
+pies comunes de las páginas HTML independientes.
+
+- Las traducciones nuevas ahora están en un único mapa `clave: [EN, ES]` y se
+  proyectan a los diccionarios existentes. Así cada texto se mantiene y la
+  estructura no se duplica.
+- Las seis páginas HTML se excluyen **solo de CPD**, mediante rutas explícitas
+  en `.sonarcloud.properties`. Son entradas estáticas autónomas y repiten su
+  shell accesible para funcionar sin un paso de plantilla/build. Siguen bajo
+  todas las reglas de bugs, seguridad y mantenibilidad.
+- La causa de que la exclusión anterior no funcionara es que el proyecto usa
+  SonarCloud Automatic Analysis, que ignora `sonar-project.properties`. Para
+  esta modalidad SonarCloud lee `.sonarcloud.properties`; la configuración CPD
+  enumera rutas exactas, sin comodines.
+
+El arreglo queda pendiente de confirmar con el análisis nuevo; solo se
+considera cerrado cuando la métrica de duplicación de código nuevo y el Quality
+Gate pasen.
