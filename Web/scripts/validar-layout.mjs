@@ -38,6 +38,7 @@ const PAGINAS = [
   { ruta: "/Web/index.html", nombre: "portada" },
   { ruta: "/Web/components.html", nombre: "componentes" },
   { ruta: "/Web/team-core.html", nombre: "team core" },
+  { ruta: "/Web/como-usar.html", nombre: "como usar" },
   { ruta: "/Web/privacidad.html", nombre: "privacidad" },
   { ruta: "/Web/legal.html", nombre: "legal" },
   { ruta: "/404.html", nombre: "404" },

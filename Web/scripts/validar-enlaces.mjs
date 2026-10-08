@@ -35,6 +35,7 @@ const PAGINAS = [
   "Web/index.html",
   "Web/components.html",
   "Web/team-core.html",
+  "Web/como-usar.html",
   "Web/privacidad.html",
   "Web/legal.html",
   "404.html",

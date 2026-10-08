@@ -87,6 +87,45 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 4b: pagina "como usar un componente" para visitantes] - 2026-10-08
+
+La ultima casilla de producto que faltaba: una guia **para quien llega de visita**,
+no para quien va a contribuir.
+
+- **`Web/como-usar.html`**: seis pasos (elegir, verlo funcionando, copiar el
+  codigo, bajar el ZIP, licencia, que hacer si algo falla), con indice de
+  secciones, bilingue (**35 claves en los dos idiomas**) y enlazada **desde el
+  pie de las seis paginas** del sitio.
+- **Entra en todos los validadores**: enlaces, layout (23 anchos), accesibilidad
+  (6 paginas x 2 idiomas x 2 temas = 24 pasadas) y Lighthouse. Resultado:
+  **100/100/100/100** en las seis paginas, incluida la nueva.
+- **`assets/icons/sprite.svg`**: el icono de GitHub pasa de estar repetido
+  (5 lineas de SVG en cada pagina) a un simbolo referenciado con
+  `<use href="./assets/icons/sprite.svg#github">`. Menos peso y un solo sitio
+  donde cambiarlo. **Comprobado que se dibuja** (18x18).
+- **`assets/icons/apple-touch-icon.png`** pasa a ser el icono real de la
+  aplicacion, no el SVG, que Safari ignoraba.
+- Entra en el `sitemap.xml` con prioridad 0,8.
+
+**Dos fallos propios que aparecieron al hacerlo** (los cuenta el e2e, no el
+HTML):
+
+1. Las claves i18n en espanol se insertaron en la seccion de ingles: las dos
+   secciones empiezan igual (`pageTeamCore:`), asi que un reemplazo por la primera
+   coincidencia las metia en el idioma equivocado. Se noto porque la pagina
+   arrancaba en español (`lang="es"`) con el texto **en ingles**, y pulsar el
+   boton de español no hacia nada: `t()` caia al diccionario de ingles.
+2. El enlace al pie solo se habia puesto en la pagina nueva, no en las otras
+   cinco. Lo cazó el test que comprueba que se llega desde el pie de las seis
+   paginas del sitio.
+
+Verificado en verde: `test` (55/55), `test:e2e` (**16/16**), `lint`,
+`format:check`, `typecheck` (18 de 38), `validar`, `validar:html`,
+`validar:enlaces`, `validar:layout`, `validar:a11y` (24 pasadas) y
+`validar:lighthouse` (6 paginas x 4 categorias, todas en 100).
+
+---
+
 ## [Fase 1: ultimos avisos propios, con un falso positivo medido] - 2026-10-06
 
 - **S7781**: `ruta.replace(/\\/g, "/")` -> `replaceAll`, que es lo que pedia

@@ -211,7 +211,7 @@ test("el boton de idioma cambia el texto y marca aria-pressed", async () => {
   await pagina.close();
 });
 
-test("las 132 claves i18n estan en los dos idiomas (el HTML no se rompe al cambiar)", async () => {
+test("cambiar el idioma no deja etiquetas i18n vacias", async () => {
   // No comprobamos los textos literales (son muy fragiles): comprobamos que
   // cambiar a EN y volver a ES no deja ninguna etiqueta data-i18n vacia, que
   // es el sintoma de una clave que existe en un idioma y no en el otro.
@@ -310,4 +310,59 @@ test("las tres paginas del pie enlazan privacidad y legal", async () => {
     );
     await pagina.close();
   }
+});
+
+// -------------------------------------------------- pagina "como usar"
+
+test("como usar: se llega desde el pie de las seis paginas y esta en ambos idiomas", async () => {
+  for (const ruta of [
+    "/Web/index.html",
+    "/Web/components.html",
+    "/Web/team-core.html",
+    "/Web/como-usar.html",
+    "/Web/privacidad.html",
+    "/Web/legal.html",
+  ]) {
+    const pagina = await abrir(ruta);
+    assert.equal(
+      await pagina.locator('a[href="./como-usar.html"]').count(),
+      1,
+      `${ruta}: sin enlace a "como usar"`,
+    );
+    await pagina.close();
+  }
+
+  const pagina = await abrir("/Web/como-usar.html");
+  // El contexto es compartido entre tests: si uno anterior dejo el idioma en
+  // ingles, esta pagina arranca ya en ingles. Se pone a espanol de forma
+  // explicita antes de mirar el texto inicial.
+  await pagina.locator('.language-button[data-language="es"]').click();
+  await pagina.waitForFunction(
+    () => document.querySelector("h1")?.textContent === "Cómo usar un componente",
+    undefined,
+    { timeout: 10000 },
+  );
+  assert.equal(await pagina.locator("h1").textContent(), "Cómo usar un componente");
+
+  // El indice no puede apuntar a anclas que no existen.
+  const secciones = await pagina.evaluate(() =>
+    [...document.querySelectorAll(".legal-toc a")].map((a) => a.getAttribute("href")),
+  );
+  assert.equal(secciones.length >= 5, true);
+  for (const href of secciones) {
+    assert.equal(await pagina.locator(href).count(), 1, `ancla rota: ${href}`);
+  }
+
+  // Y tiene que traducirse de verdad, no quedarse en español en modo EN.
+  await pagina.locator('.language-button[data-language="en"]').click();
+  await pagina.waitForFunction(
+    () => document.querySelector("h1")?.textContent === "How to use a component",
+    undefined,
+    { timeout: 10000 },
+  );
+  const vacias = await pagina.evaluate(
+    () => [...document.querySelectorAll("[data-i18n]")].filter((el) => !el.textContent.trim()).length,
+  );
+  assert.equal(vacias, 0);
+  await pagina.close();
 });
