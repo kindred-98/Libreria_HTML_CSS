@@ -16,6 +16,8 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { leerDireccion } from "./lib/donacion.mjs";
+
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "../..");
 const catalogFile = path.join(repositoryDirectory, "Web", "data", "catalog.json");
@@ -199,8 +201,19 @@ for (const htmlFile of htmlFiles) {
 //    cartera y los donativos se pierden; y si se cuela una direccion de tercero,
 //    acaban en un desconocido. Se comprueba en CI porque lo comun es el cambio
 //    accidental, no el malicioso, y un error asi no se nota al mirar la pagina.
-//    La constante se copio de Web/index.html, no se tecleo de memoria.
-const donationAddress = "0xa8f0230135b4f6a959358be3e8e8531f3551fa81";
+//    La direccion no se teclea aqui: sale de Web/data/donacion.json, la fuente
+//    unica, para que no haya dos constantes que puedan divergir. El barrido de
+//    todo el repositorio vive en Web/scripts/validar-donacion.mjs, que corre en
+//    el mismo paso de CI; aqui se comprueba la presencia en las cuatro copias
+//    que el sitio carga de verdad.
+let donationAddress = "";
+try {
+  donationAddress = leerDireccion(
+    await readFile(path.join(repositoryDirectory, "Web", "data", "donacion.json"), "utf8"),
+  );
+} catch (error) {
+  fail("donacion", `Web/data/donacion.json: ${error instanceof Error ? error.message : String(error)}`);
+}
 const donationFiles = [
   path.join(repositoryDirectory, "Web", "index.html"),
   path.join(repositoryDirectory, "Web", "components.html"),
@@ -215,6 +228,9 @@ for (const donationFile of donationFiles) {
   }
   const texto = await readFile(donationFile, "utf8");
   const found = [...texto.matchAll(/0x[a-fA-F0-9]{40}/g)].map((match) => match[0]);
+  // Con la fuente ilegible el fallo ya esta anotado: comparar contra "" marcaria
+  // la buena como ajena en todos los ficheros y taparia el problema de raiz.
+  if (!donationAddress) continue;
   // Las tres paginas tienen que llevarla; app.js solo se lee, no se exige.
   if (donationFile.toLowerCase().endsWith(".html") && !found.includes(donationAddress)) {
     fail("donacion", `${relative} no contiene la direccion de donacion ${donationAddress}`);

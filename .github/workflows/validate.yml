@@ -102,6 +102,13 @@ jobs:
       - name: Comprobar el CSP del despliegue
         run: node Web/scripts/validar-csp.mjs
 
+      # La direccion de donacion (P0-1): fuente unica en Web/data/donacion.json,
+      # presencia en las tres paginas del sitio y ninguna direccion 0x+40 ajena
+      # en ningun HTML, JS o MD del repositorio. Es el dato mas valioso del pie:
+      # una letra cambiada desvia los donativos y no se nota al mirar la pagina.
+      - name: Comprobar la direccion de donacion
+        run: npm run validar:donacion
+
       # Presupuesto de peso del catalogo (Fase 5). El catalogo es el segundo
       # recurso mas pesado de la pagina: 707 KB en disco, 163 KB comprimidos.
       # No es hoy un cuello de botella (la pagina de componentes puntua 97),
