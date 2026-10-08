@@ -21,6 +21,8 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { comprobarFichero } from "./lib/extensiones.mjs";
+
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const webDirectory = path.resolve(scriptDirectory, "..");
 const repositoryDirectory = path.resolve(webDirectory, "..");
@@ -183,6 +185,17 @@ for (const componente of catalog) {
     const rutaRelativa = archivo.path.replace(/^\.\.\//, "");
     const rutaFisica = path.join(repositoryDirectory, rutaRelativa);
     const bytes = await readFile(rutaFisica);
+    // Lista blanca (P0-3): lo que se empaqueta pasa por la misma regla que
+    // el catalogo. Un ZIP con un `.exe` dentro seria peor que uno con un
+    // `.svg` con script, porque viaja con sello de "descarga oficial".
+    const fallosExtension = comprobarFichero(
+      rutaRelativa,
+      rutaFisica.toLowerCase().endsWith(".svg") ? bytes.toString("utf8") : undefined,
+    );
+    if (fallosExtension.length > 0) {
+      console.error(`extensiones: ${rutaRelativa}: ${fallosExtension.join("; ")}`);
+      process.exit(1);
+    }
     if (!copyright && esLicenciaDe(archivo.archivePath, sourceData.licenseFile)) {
       copyright = lineaCopyright(bytes.toString("utf8"));
     }

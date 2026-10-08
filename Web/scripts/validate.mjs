@@ -18,6 +18,7 @@ import { fileURLToPath } from "node:url";
 
 import { leerDireccion } from "./lib/donacion.mjs";
 import { lineasInnerHtmlConConcatenacion } from "./lib/inyeccion.mjs";
+import { comprobarExtensiones } from "./validar-extensiones.mjs";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "../..");
@@ -350,6 +351,19 @@ for (const javascriptFile of javascriptDemoFiles) {
     );
   }
 }
+
+// 11. Lista blanca de extensiones en las carpetas de los demos (P0-3). El
+//     catalogo y los ZIP se construyen con lo que haya en esas carpetas, y
+//     nada impide hoy que se cuele un `.exe`, un `.php` o un `.svg` con
+//     script: aqui se rechaza antes de que llegue a publicarse. Las raices
+//     salen del catalogo (mismas libraryRoots que generate-catalog) y la
+//     regla concreta vive en lib/extensiones.mjs, compartida con el generador
+//     y con build-zips.
+const raicesDemo = [...new Set(catalog.map((componente) => componente.root))]
+  .filter(Boolean)
+  .map((nombre) => path.join(repositoryDirectory, nombre));
+const controlExtensiones = await comprobarExtensiones(repositoryDirectory, raicesDemo);
+for (const fallo of controlExtensiones.fallos) fail("extensiones", fallo);
 
 for (const note of notes) console.log(`info  ${note}`);
 

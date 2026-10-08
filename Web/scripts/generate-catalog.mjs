@@ -2,6 +2,7 @@ import { lstat, readdir, readFile, mkdir, realpath, stat, writeFile } from "node
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { toIndexEntry, writeSources } from "./catalog-format.mjs";
+import { comprobarExtensiones } from "./validar-extensiones.mjs";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "../..");
@@ -514,6 +515,21 @@ try {
   namesEs = JSON.parse(await readFile(namesEsFile, "utf8"));
 } catch (error) {
   if (error.code !== "ENOENT") throw error;
+}
+
+// Lista blanca de extensiones antes de generar nada (P0-3): un `.exe`,
+// `.php` o `.svg` con script que se cuele en una carpeta de demos no llega
+// ni a catalogarse, y el build corta con codigo != 0. Se comprueba sobre las
+// raices completas (no solo las carpetas con index.html) para que una carpeta
+// nueva sin pagina tambien quede cubierta. Misma funcion que usa validate.mjs.
+const controlExtensiones = await comprobarExtensiones(
+  repositoryDirectory,
+  libraryRoots.map((root) => root.directory),
+);
+if (controlExtensiones.fallos.length > 0) {
+  console.error(`extensiones: ${controlExtensiones.fallos.length} fichero(s) fuera de la lista blanca:`);
+  for (const fallo of controlExtensiones.fallos) console.error(`  - ${fallo}`);
+  process.exit(1);
 }
 
 const pages = (
