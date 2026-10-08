@@ -87,6 +87,191 @@ de pintado.
   tres versiones de Node, `validar:enlaces`, `duplicados` (sigue en 0) y
   `validar:lighthouse` (99/86/100).
 
+## [Fase 4b: pagina "como usar un componente" para visitantes] - 2026-10-08
+
+La ultima casilla de producto que faltaba: una guia **para quien llega de visita**,
+no para quien va a contribuir.
+
+- **`Web/como-usar.html`**: seis pasos (elegir, verlo funcionando, copiar el
+  codigo, bajar el ZIP, licencia, que hacer si algo falla), con indice de
+  secciones, bilingue (**35 claves en los dos idiomas**) y enlazada **desde el
+  pie de las seis paginas** del sitio.
+- **Entra en todos los validadores**: enlaces, layout (23 anchos), accesibilidad
+  (6 paginas x 2 idiomas x 2 temas = 24 pasadas) y Lighthouse. Resultado:
+  **100/100/100/100** en las seis paginas, incluida la nueva.
+- **`assets/icons/sprite.svg`**: el icono de GitHub pasa de estar repetido
+  (5 lineas de SVG en cada pagina) a un simbolo referenciado con
+  `<use href="./assets/icons/sprite.svg#github">`. Menos peso y un solo sitio
+  donde cambiarlo. **Comprobado que se dibuja** (18x18).
+- **`assets/icons/apple-touch-icon.png`** pasa a ser el icono real de la
+  aplicacion, no el SVG, que Safari ignoraba.
+- Entra en el `sitemap.xml` con prioridad 0,8.
+
+**Dos fallos propios que aparecieron al hacerlo** (los cuenta el e2e, no el
+HTML):
+
+1. Las claves i18n en espanol se insertaron en la seccion de ingles: las dos
+   secciones empiezan igual (`pageTeamCore:`), asi que un reemplazo por la primera
+   coincidencia las metia en el idioma equivocado. Se noto porque la pagina
+   arrancaba en español (`lang="es"`) con el texto **en ingles**, y pulsar el
+   boton de español no hacia nada: `t()` caia al diccionario de ingles.
+2. El enlace al pie solo se habia puesto en la pagina nueva, no en las otras
+   cinco. Lo cazó el test que comprueba que se llega desde el pie de las seis
+   paginas del sitio.
+
+Verificado en verde: `test` (55/55), `test:e2e` (**16/16**), `lint`,
+`format:check`, `typecheck` (18 de 38), `validar`, `validar:html`,
+`validar:enlaces`, `validar:layout`, `validar:a11y` (24 pasadas) y
+`validar:lighthouse` (6 paginas x 4 categorias, todas en 100).
+
+---
+
+## [Quality Gate: corrige la duplicacion nueva de SonarCloud] - 2026-10-08
+
+- El primer analisis de la PR fallo por **18,2 % de lineas duplicadas en codigo
+  nuevo** (100 lineas; maximo 3 %). Fiabilidad, seguridad, mantenibilidad y
+  hotspots ya estaban aprobados.
+- Se identifico que Automatic Analysis ignora `sonar-project.properties`.
+  Las excepciones puntuales de CPD para el shell HTML estatico y los mapas i18n
+  se declaran ahora en `.sonarcloud.properties`, con rutas exactas; no excluyen
+  esos ficheros de las otras reglas.
+- Las 35 claves EN/ES de la guia pasan a un mapa unico de pares, eliminando el
+  bloque de traducciones estructuralmente duplicado en `app.js`.
+- Se corrigen los tres hallazgos menores del primer reanálisis: `S7781` pasa a
+  `replaceAll` con cadena literal, el falso `TODO` en prosa se reescribe y el
+  bucle secuencial que recorre demos lleva la justificación local de `S9382`.
+- Analisis final de SonarCloud en la PR: **Quality Gate PASSED**, 0 issues
+  nuevos, 0 hotspots y **0 lineas duplicadas en codigo nuevo (0,0 %)**.
+
+---
+
+## [Fase 1: ultimos avisos propios, con un falso positivo medido] - 2026-10-06
+
+- **S7781**: `ruta.replace(/\\/g, "/")` -> `replaceAll`, que es lo que pedia
+  el aviso. Comprobado que el autofix sigue recorriendo el repo sin tocar nada.
+- **S1827** (`scrolling="no"` en team-core): Sonar marca el atributo como
+  obsoleto y pide quitarlo. **Se comprobo que quitarlo rompe la vista previa**:
+  la captura del iframe pasa de 15.180 a 11.629 bytes, es decir, se ve otro
+  contenido. No hay sustituto en CSS porque el iframe va con `sandbox` sin
+  `allow-same-origin`, y sin acceso al documento de dentro no se puede ocultar
+  la barra. Va con `NOSONAR` y la medicion al lado.
+
+### Lo que queda pendiente de marcar en la web de Sonar
+
+En esta primera pasada se pensó que los falsos positivos había que marcarlos
+desde la interfaz. En la sesión del 2026-10-08 se comprobó que, con permisos de
+escritura, la API `api/issues/do_transition` sí permite hacerlo y guardar el
+motivo en cada issue. El inventario y las decisiones están en
+`Docs/Sonar_para_marcar.md` y `Docs/Sonar_decisiones.md`.
+
+---
+
+## [Fase 1: 35 avisos de Sonar mas, en 25 demos] - 2026-10-06
+
+Tercer bloque del descenso de las 101 incidencias: las que estaban **en los
+demos** de los autores, no en el codigo del sitio.
+
+Los cambios son mecanicos y de equivalencia exacta:
+
+- `new Date().getTime()` -> `Date.now()` (6 demos), `filter(p)[0]` ->
+  `find(p)` (4), `new Date(x.getTime())` -> `new Date(x)` (2),
+  `indexOf(...) !== 0` -> `!startsWith(...)` (1), `parseFloat` ->
+  `Number.parseFloat` (1), `removeChild` -> `.remove()` (1),
+  `Math.sqrt(a*a+b*b)` -> `Math.hypot(a,b)` (1), `slice(0, len-1)` ->
+  `slice(0, -1)` (2).
+- **Rol ARIA invalido (S6821)**: `role="none"` es una *>alias* obsoleto de
+  `role="presentation"`; se cambia en los tres sitios de
+  `grid-burst-dropdown`. Ni el CSS ni el JS seleccionaban por ese rol.
+- **`aria-activedescendant=""` vacio (S6793)**: el atributo apuntaba a la
+  cadena vacia, que no es un id. El JS ya lo pone y lo quita segun haya opcion
+  activa, asi que la sobra en el HTML.
+- **Dos colecciones construidas y nunca leidas (S4030)**: borradas.
+- **Tres `catch` vacios (S2486)**: no se borran (silencian el fallo a
+  proposito), se anade un comentario que explica por que se ignoran.
+
+**Verificado que el cambio de las regex es una equivalencia exacta:** la clase
+de caracteres `[A-Za-zÀ-ÿ '\-.\x27.]` de `hotel-night-booking` tenía el
+apostrofo y el punto duplicados; la nueva `[A-Za-zÀ-ÿ '.-]` acepta
+**exactamente lo mismo**, comprobado carácter a carácter en los 8.448 code
+points del rango Unicode: **0 diferencias**.
+
+Verificado en verde: `node --check` en los 23 ficheros JS, `validar:demos`
+(**1018/1018, 0 fallos**), `validar`, `validar:a11y`, `validar:enlaces` y
+`validar:encabezados`.
+
+---
+
+## [Fase 1: 12 avisos mas de Sonar (S9382, S5843, S8786 y uno de verdad)] - 2026-10-06
+
+Segundo bloque del descenso de las 101 incidencias.
+
+- **S9382 (`await` en bucle, 4).** Los cuatro iconos de la PWA se generaban
+  uno detras de otro; ahora se lanzan a la vez con `Promise.all`, que ademas es
+  mas rapido (cada uno abre su pestana de Chromium). En el smoke test el bucle
+  que abre los 1.018 demos saca su cuerpo a una funcion `procesarDemo()`: los
+  demos se abren **en serie a proposito**, porque en paralelo darian timeouts
+  falsos y `idActual` (una sola variable compartida) ya no sabria a que demo
+  atribuir un error.
+- **Un `\s*[-|:]\s*` de verdad (S8786).** El segundo `\s*` no puede
+  solaparse con el primero, pero Sonar no lo ve. Simplificado de verdad, y
+  comprobado que el catalogo sigue byte-identico.
+- **S5843 y S8786 en el resto (10).** Van con `// NOSONAR:` y el motivo
+  medido en la misma linea, no en un documento aparte. En las regex del
+  autofix, el `--dry-run` sobre todo el repo tarda **1,1 s**: el backtracking
+  son unos 10.000 pasos por linea de 100 caracteres. En las `categoryRules`,
+  ademas de ser barato, **deciden la categoria de los 1.018 demos**, asi que
+  tocar una alternativa moveria el catalogo. Los dos motivos, en
+  `Docs/Sonar_decisiones.md`.
+
+El catalogo se comparo byte a byte antes y despues: **identico**.
+
+Verificado en verde: `npm test` (55/55), `typecheck` (18 de 38), `lint`,
+`format:check`, `validar` y `validar:demos` (**1018/1018**).
+
+---
+
+## [Fase 1: 8 avisos de Sonar resueltos en el codigo propio (S7780 y S6551)] - 2026-10-06
+
+Empieza el descenso de las 101 incidencias. Se ataca **primero el codigo
+nuestro** (`Web/scripts/`), que son 32 de las 101; las otras 69 estan en los
+demos de los autores.
+
+### S7780 · `String.raw` donde toca (5 avisos)
+
+Las cadenas con escapes dobles (`"\\d"`) son menos legibles que
+`String.raw`\`\\d\``, que escribe lo mismo sin doblar la barra. Se cambia en las
+descripciones y en los reemplazos de los patrones del autofix.
+
+**Comprobado que no cambia lo que el autofix escribe:** seis casos
+(`/[0-9]/g`, `/[^0-9]/g`, `/[\\d]/g`, `/[\\w]{6}/g`...) dan el mismo
+resultado, y la cascada completa sobre una linea de ejemplo sigue
+convirtiendo igual. Un cambio asi parece inocuo y no lo es: si se equivoca,
+cambia lo que se escribe en el codigo de 1018 demos.
+
+### S6551 · `[object Object]` en el CSV (3 avisos)
+
+Este **si era un fallo real**, no un code smell. `celda()` hacia
+`String(valor)`, asi que si un valor llegaba como objeto, al CSV iba la cadena
+literal `"[object Object]"`: informacion perdida en silencio. Lo mismo en
+`contar()` (al ordenar) y en `tabla()` (al imprimir).
+
+Ahora hay un `aTexto()` que decide segun el tipo: los primitivos igual, los
+objetos y arrays con `JSON.stringify`, los `Error` como
+`"Nombre: mensaje"` (porque `JSON.stringify(new Error("x"))` devuelve
+`"{}"`, que pierde el mensaje), los simbolos con `toString()`, las funciones
+con su nombre, y los objetos con ciclo —que `JSON.stringify` no puede
+serializar— con un `"[Object no serializable]"` que al menos explica lo que
+paso.
+
+**Anadidos 7 tests** para todo eso (`npm test`: de 48 a **55**). Dos de ellos
+fallaron al escribirlos y las dos veces **el error estaba en la expectativa
+del test, no en el codigo**: el CSV duplica las comillas del JSON (correcto,
+es lo que exige el formato) y dos objetos con la misma forma son claves
+distintas en un `Map` porque se comparan por referencia. El test ahora dice
+eso mismo, para que no vuelva a confundirse.
+
+---
+
 ## [Fase 5 (D y E): presupuesto del catalogo y comprobacion diaria de uptime] - 2026-10-06
 
 Cierra la fase. Los dos ultimos puntos, que no dependen del codigo que se

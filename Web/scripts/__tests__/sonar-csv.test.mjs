@@ -118,3 +118,55 @@ test("tabla: escribe una fila por par y respeta el limite", () => {
 test("tabla: sin datos escribe un marcador, no una tabla vacia", () => {
   assert.equal(tabla([]), "_Sin datos._\n");
 });
+
+// ------------------------------------------------------------------ aTexto
+
+test("celda: un objeto se serializa como JSON, no como [object Object]", () => {
+  // Este era el aviso S6551. Con `String(valor)` un objeto llegaba al CSV como
+  // la cadena literal "[object Object]", que es informacion perdida.
+  assert.equal(celda({ a: 1 }), '"{""a"":1}"');
+  assert.equal(celda([1, 2]), "[1,2]");
+});
+
+test("celda: los tipos primitivos siguen igual", () => {
+  assert.equal(celda("hola"), "hola");
+  assert.equal(celda(42), "42");
+  assert.equal(celda(true), "true");
+});
+
+test("celda: un objeto con ciclo no revienta y lo dice", () => {
+  const ciclo = {};
+  ciclo.self = ciclo;
+  assert.equal(celda(ciclo), "[Object no serializable]");
+});
+
+test("celda: un Error conserva su nombre y su mensaje", () => {
+  // `JSON.stringify(new Error("x"))` devuelve "{}", que pierde todo.
+  class MiError extends Error {}
+  assert.equal(celda(new MiError("fallo")), "Error: fallo");
+  assert.equal(celda(new TypeError("mal")), "TypeError: mal");
+});
+
+test("contar con clave objeto: cada objeto es un grupo propio", () => {
+  // Dos objetos con la misma forma pero distintos no son la misma clave en un
+  // `Map` (se comparan por referencia), asi que son tres grupos, no dos.
+  // Lo que se comprueba aqui es que no revientan al ordenar ni al imprimir.
+  const recuento = contar([{ k: { n: 2 } }, { k: { n: 1 } }, { k: { n: 2 } }], "k");
+  assert.equal(recuento.length, 3);
+  // Y que el total de la tabla cuadra con los elementos contados.
+  const total = recuento.reduce((suma, [, n]) => suma + n, 0);
+  assert.equal(total, 3);
+  assert.equal(tabla(recuento, 10).split("\n").filter(Boolean).length, 3);
+});
+
+test("contar con clave primitiva: ordena de mas a menos frecuente", () => {
+  const recuento = contar([{ k: "b" }, { k: "a" }, { k: "b" }], "k");
+  assert.deepEqual(recuento, [
+    ["b", 2],
+    ["a", 1],
+  ]);
+});
+
+test("tabla: una clave objeto se imprime como JSON", () => {
+  assert.equal(tabla([[{ n: 1 }, 3]]), '| {"n":1} | 3 |');
+});

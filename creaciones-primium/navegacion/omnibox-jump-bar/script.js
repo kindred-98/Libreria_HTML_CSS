@@ -84,7 +84,7 @@
     }
     html += '<section class="grp"><h2 class="grp__t">Áreas de la intranet <b>' + GROUPS.length + '</b></h2><ul class="res">';
     GROUPS.forEach(function (g) {
-      var first = INDEX.filter(function (it) { return it.g === g; })[0];
+      var first = INDEX.find(function (it) { return it.g === g; });
       html += '<li><a href="' + first.href + '"><span class="res__t"><b>' + esc(g) + '</b><span class="res__path">' + esc(first.p) + '</span></span>'
         + '<span class="res__s">' + esc(first.s) + '</span></a></li>';
     });

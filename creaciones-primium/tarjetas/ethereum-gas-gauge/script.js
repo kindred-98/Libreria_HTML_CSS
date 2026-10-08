@@ -105,9 +105,9 @@ orderBtn.addEventListener("click", function () {
   ticket.classList.toggle("is-filled", filled);
   orderBtn.setAttribute("aria-pressed", filled ? "true" : "false");
   orderText.textContent = filled ? "Order filled" : "Confirm order";
-  const side = sideBtns.filter(function (btn) {
+  const side = sideBtns.find(function (btn) {
     return btn.classList.contains("is-on");
-  })[0].dataset.side;
+  }).dataset.side;
   orderStatus.textContent = filled
     ? "Filled 0.42 ETH " + side + " @ 18.4 gwei · hash 0x91c4"
     : "Pending · nonce 0x4F1 · fee cap 21 gwei";

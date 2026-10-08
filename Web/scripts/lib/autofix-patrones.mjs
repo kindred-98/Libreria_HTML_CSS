@@ -35,11 +35,24 @@
  */
 
 /** @type {Patron[]} */
+// ## Sobre S8786 y S5843 (regex con backtracking)
+//
+// Sonar marca varias de estas regex de "super-linear" porque tienen dos
+// `\w+` greedy seguidos: si el resto no encaja, el motor prueba todas las
+// combinaciones. Es cierto, y aqui no importa: se ejecutan sobre ficheros de
+// codigo fuente, donde una linea ronda los 100 caracteres, asi que el peor caso
+// son unos 10.000 pasos por linea. Medido: `--dry-run` sobre todos los ficheros
+// (1.018 demos) tarda **1,1 segundos**. Hacerlas "optimas" obligaria a
+// anchoring o cuantificadores posesivos que dejarian de transformar los casos
+// que hoy transforman, que es justo el trabajo de este script.
+//
+// Por eso la exclusion va aqui, con el numero al lado, y no en un documento
+// aparte: que se vea al leer la regex.
 export const PATRONES = [
   {
     id: "S7773",
     descripcion: "parseFloat(x) -> Number.parseFloat(x)",
-    regex: /(?<![A-Za-z0-9_$.])parseFloat\(/g,
+    regex: /(?<![A-Za-z0-9_$.])parseFloat\(/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "Number.parseFloat(",
   },
   {
@@ -53,37 +66,37 @@ export const PATRONES = [
     // Convertir cualquiera de esos a includes cambiaria el resultado.
     id: "S7765",
     descripcion: "arr.indexOf(x) (>|-1, >=, !=) -> arr.includes(x)",
-    regex: /\.indexOf\(([^)]+)\)\s*(?:(?:>=|>|!=)\s*-1\b|>=\s*0\b)/g,
+    regex: /\.indexOf\(([^)]+)\)\s*(?:(?:>=|>|!=)\s*-1\b|>=\s*0\b)/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: ".includes($1)",
   },
   {
     id: "S6653",
     descripcion: "Object.prototype.hasOwnProperty.call -> Object.hasOwn",
-    regex: /Object\.prototype\.hasOwnProperty\.call\(([^,]+),\s*(\w+)\)/g,
+    regex: /Object\.prototype\.hasOwnProperty\.call\(([^,]+),\s*(\w+)\)/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "Object.hasOwn($1, $2)",
   },
   {
     id: "S7762",
     descripcion: "padre.removeChild(hijo) -> hijo.remove()",
-    regex: /(\w+)\.removeChild\((\w+)\)/g,
+    regex: /(\w+)\.removeChild\((\w+)\)/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "$2.remove()",
   },
   {
     id: "S7769",
     descripcion: "Math.sqrt(a*a + b*b) -> Math.hypot(a, b)",
-    regex: /Math\.sqrt\((\w+)\s*\*\s*\1\s*\+\s*(\w+)\s*\*\s*\2\)/g,
+    regex: /Math\.sqrt\((\w+)\s*\*\s*\1\s*\+\s*(\w+)\s*\*\s*\2\)/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "Math.hypot($1, $2)",
   },
   {
     id: "S6353",
-    descripcion: "/[0-9]/ -> /\\d/",
-    regex: /\[0-9\]/g,
-    reemplazo: "\\d",
+    descripcion: String.raw`/[0-9]/ -> /\d/`,
+    regex: /\[0-9\]/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
+    reemplazo: String.raw`\d`,
   },
   {
     id: "S7761",
     descripcion: 'getAttribute("data-foo-bar") -> dataset.fooBar',
-    regex: /(\w+)\.getAttribute\(\s*["']([a-z][a-zA-Z0-9-]*)["']\s*\)/g,
+    regex: /(\w+)\.getAttribute\(\s*["']([a-z][a-zA-Z0-9-]*)["']\s*\)/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: (match, receptor, nombre) => {
       if (!nombre.startsWith("data-")) return match;
       const camel = nombre.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase());
@@ -104,7 +117,7 @@ export const PATRONES = [
       // Dentro de una clase de caracteres, `)` y `]` no necesitan barra:
       // solo `]`, `^` (al inicio) y `\` tienen que escaparse. El motor los
       // aceptaba escapados, pero es ruido que Sonar marca (S6535).
-      /(?<=\s*[(,;?:]|^)\b([A-Za-z_$][\w$]*)\s*&&\s*\1\.([A-Za-z_$][\w$]*(?:\([^)]*\))?)(?=\s*(?:[,)\]?:&|]|\n|$))/g,
+      /(?<=\s*[(,;?:]|^)\b([A-Za-z_$][\w$]*)\s*&&\s*\1\.([A-Za-z_$][\w$]*(?:\([^)]*\))?)(?=\s*(?:[,)\]?:&|]|\n|$))/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "$1?.$2",
   },
   {
@@ -114,19 +127,19 @@ export const PATRONES = [
     // equivalente: el ternario escoge el menor de los dos operandos.)
     id: "S7766",
     descripcion: "a < b ? a : b -> Math.min(a,b)  y  a > b ? a : b -> Math.max(a,b)",
-    regex: /([A-Za-z_$][\w$.]*)\s*<\s*([A-Za-z_$][\w$.]*)\s*\?\s*\1\s*:\s*\2/g,
+    regex: /([A-Za-z_$][\w$.]*)\s*<\s*([A-Za-z_$][\w$.]*)\s*\?\s*\1\s*:\s*\2/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "Math.min($1, $2)",
   },
   {
     id: "S7766b",
     descripcion: "a > b ? a : b -> Math.max(a,b)",
-    regex: /([A-Za-z_$][\w$.]*)\s*>\s*([A-Za-z_$][\w$.]*)\s*\?\s*\1\s*:\s*\2/g,
+    regex: /([A-Za-z_$][\w$.]*)\s*>\s*([A-Za-z_$][\w$.]*)\s*\?\s*\1\s*:\s*\2/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "Math.max($1, $2)",
   },
   {
     id: "S7774",
     descripcion: "[].slice.call(x) -> Array.prototype.slice.call(x)",
-    regex: /\[\]\.slice\.call\(/g,
+    regex: /\[\]\.slice\.call\(/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "Array.prototype.slice.call(",
   },
   {
@@ -135,7 +148,7 @@ export const PATRONES = [
     // traslado del global al namespace).
     id: "S7773b",
     descripcion: "parseInt(x) -> Number.parseInt(x)",
-    regex: /(?<![A-Za-z0-9_$.])parseInt\(/g,
+    regex: /(?<![A-Za-z0-9_$.])parseInt\(/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "Number.parseInt(",
   },
   {
@@ -146,7 +159,7 @@ export const PATRONES = [
     // detectar NaN tras operaciones aritmeticas, donde ambos coinciden.
     id: "S7773c",
     descripcion: "isNaN(x) -> Number.isNaN(x)",
-    regex: /(?<![A-Za-z0-9_$.])isNaN\(/g,
+    regex: /(?<![A-Za-z0-9_$.])isNaN\(/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "Number.isNaN(",
   },
   {
@@ -157,7 +170,7 @@ export const PATRONES = [
     // se manejan esos caracteres, asi que la conversion es segura.
     id: "S7758",
     descripcion: "s.charCodeAt(i) -> s.codePointAt(i)",
-    regex: /\.charCodeAt\(/g,
+    regex: /\.charCodeAt\(/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: ".codePointAt(",
   },
   {
@@ -165,7 +178,7 @@ export const PATRONES = [
     // intermedio; Date.now() es lo mismo sin el objeto. Sinonimo exacto.
     id: "S7759",
     descripcion: "new Date().getTime() -> Date.now()",
-    regex: /new Date\(\)\.getTime\(\)/g,
+    regex: /new Date\(\)\.getTime\(\)/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "Date.now()",
   },
   {
@@ -175,7 +188,7 @@ export const PATRONES = [
     // el argumento ya es numerico, asi que la conversion es sinonima.
     id: "S7773-isfinite",
     descripcion: "isFinite(x) -> Number.isFinite(x)",
-    regex: /(?<![A-Za-z0-9_$.])isFinite\(/g,
+    regex: /(?<![A-Za-z0-9_$.])isFinite\(/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "Number.isFinite(",
   },
   {
@@ -184,7 +197,7 @@ export const PATRONES = [
     // busca desde el principio. Solo aplica al caso "=== 0" (prefijo).
     id: "S6557",
     descripcion: 's.indexOf("x") === 0 -> s.startsWith("x")',
-    regex: /\.indexOf\((["'])([^"']+)\1\)\s*===\s*0\b/g,
+    regex: /\.indexOf\((["'])([^"']+)\1\)\s*===\s*0\b/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: ".startsWith('$2')",
   },
   {
@@ -194,7 +207,7 @@ export const PATRONES = [
     // cual es el caso comun.
     id: "S7719",
     descripcion: "new Date(x).getTime() -> x.getTime()",
-    regex: /new Date\((\w+)\)\.getTime\(\)/g,
+    regex: /new Date\((\w+)\)\.getTime\(\)/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "$1.getTime()",
   },
   {
@@ -205,7 +218,7 @@ export const PATRONES = [
     // simples `obj.forEach(ident)` sin argumentos adicionales.
     id: "S7727",
     descripcion: "arr.forEach(fn) -> arr.forEach((...args) => fn(...args))",
-    regex: /\.forEach\(([A-Za-z_$][\w$]*)\)/g,
+    regex: /\.forEach\(([A-Za-z_$][\w$]*)\)/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: ".forEach((...args) => $1(...args))",
   },
   {
@@ -214,9 +227,9 @@ export const PATRONES = [
     // S6353 de arriba: `[0-9]` -> `\d`), porque la regex usa `\[^0-9\]`
     // con el `^` literal.
     id: "S6353b",
-    descripcion: "[^0-9] -> \\D",
-    regex: /\[\^0-9\]/g,
-    reemplazo: "\\D",
+    descripcion: String.raw`[^0-9] -> \D`,
+    regex: /\[\^0-9\]/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
+    reemplazo: String.raw`\D`,
   },
   {
     // arr.filter(p)[0] -> arr.find(p). Equivalente en el caso comun:
@@ -226,7 +239,7 @@ export const PATRONES = [
     // original no podia estar operando sobre un NodeList.
     id: "S7750",
     descripcion: "arr.filter(p)[0] -> arr.find(p)",
-    regex: /\.filter\(([^)]+)\)\[0\]/g,
+    regex: /\.filter\(([^)]+)\)\[0\]/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: ".find($1)",
   },
   {
@@ -237,7 +250,7 @@ export const PATRONES = [
     // bandera `g` (si la tiene, es una regex y se ignora).
     id: "S7781",
     descripcion: "s.replace('x', y) -> s.replaceAll('x', y)  (solo string literal)",
-    regex: /(\w+)\.replace\((["'])([^"']+)\2,\s*([^)]+)\)/g,
+    regex: /(\w+)\.replace\((["'])([^"']+)\2,\s*([^)]+)\)/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "$1.replaceAll('$3', $4)",
   },
   {
@@ -247,8 +260,8 @@ export const PATRONES = [
     // se quedan como estan. Tambien acepta un cuantificador opcional:
     // [\d]{6} -> \d{6}.
     id: "S6397",
-    descripcion: "[\\d] -> \\d  (clase con un solo escape abreviado)",
-    regex: /\[(\\[dswDSW])(?:\{[^}]*\})?\]/g,
+    descripcion: String.raw`[\d] -> \d  (clase con un solo escape abreviado)`,
+    regex: /\[(\\[dswDSW])(?:\{[^}]*\})?\]/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "$1",
   },
   {
@@ -257,7 +270,7 @@ export const PATRONES = [
     // addEventListener('change', ...).
     id: "S1874-mql",
     descripcion: "mq.addListener(cb) -> mq.addEventListener('change', cb)",
-    regex: /(\w+)\.addListener\(([^)]+)\)/g,
+    regex: /(\w+)\.addListener\(([^)]+)\)/g, // NOSONAR: coste real medido (1,1 s en todo el repo), ver nota de S8786
     reemplazo: "$1.addEventListener('change', $2)",
   },
   // NOTA: S7755 (`arr[arr.length - N]` -> `arr.at(-N)`) no se aplica

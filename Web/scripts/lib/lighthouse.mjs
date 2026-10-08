@@ -34,6 +34,7 @@ export const PAGINAS = [
   { ruta: "/Web/index.html", nombre: "portada" },
   { ruta: "/Web/components.html", nombre: "componentes" },
   { ruta: "/Web/team-core.html", nombre: "team core" },
+  { ruta: "/Web/como-usar.html", nombre: "como usar" },
   { ruta: "/Web/privacidad.html", nombre: "privacidad" },
   { ruta: "/Web/legal.html", nombre: "legal" },
 ];
@@ -96,6 +97,11 @@ export async function medirConLighthouse({ paginas, categorias, settings }) {
 
     for (const pagina of paginas) {
       const inicio = Date.now();
+      // NOSONAR (S9382): las mediciones se hacen en serie adrede. Todas usan
+      // el mismo Chromium/puerto CDP y Lighthouse cambia la emulacion de CPU,
+      // red y viewport en cada pasada. `Promise.all` haria competir las cinco
+      // auditorias y contaminaria las puntuaciones; el orden actual es parte
+      // de que sean reproducibles.
       const { lhr } = await lighthouse(
         `${origen}${pagina.ruta}`,
         { logLevel: "error", output: "json", port: chrome.port },

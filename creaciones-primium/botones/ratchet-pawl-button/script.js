@@ -7,12 +7,10 @@
   var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var TEETH=20;
   var STEP=360/TEETH;
-  var teeth=[];
   for(var i=0;i<TEETH;i++){
     var b=document.createElement("b");
     b.style.transform="rotate("+(i*STEP).toFixed(3)+"deg)";
     wheel.appendChild(b);
-    teeth.push(b);
   }
   var step=137,phase=0,dur=1.15,heat=0,push=0,last=0,lastCount=-1,burst=0,cool=1;
 

@@ -14,7 +14,6 @@
   var idx=[3,7,11];
   var ang=[0,0,0];
   var vel=[0,0,0];
-  var hit=[-9999,-9999,-9999];
   var rate=[340,470,690];
   var acc=[40,205,430];
   var dir=[1,-1,1];
@@ -31,7 +30,6 @@
 
   function step1(i){
     idx[i]=(idx[i]+1)%N;
-    hit[i]=performance.now();
     knobs[i].classList.add("is-hit");
     setTimeout(function(){knobs[i].classList.remove("is-hit")},150);
   }
@@ -55,7 +53,6 @@
       if(acc[i]>=rate[i]){
         acc[i]-=rate[i];
         idx[i]=(idx[i]+dir[i]+N)%N;
-        hit[i]=t;
         knobs[i].classList.add("is-hit");
         setTimeout(function(el){return function(){el.classList.remove("is-hit")};}(knobs[i]),150);
       }

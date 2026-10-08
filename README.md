@@ -11,7 +11,9 @@ Copia, pega y adapta.
 [![Licencia](https://img.shields.io/badge/licencia-MIT-d4f779?style=flat-square&labelColor=1b231c)](./LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-5FA04E?style=flat-square&labelColor=1b231c)](./package.json)
 
-[**Ver la biblioteca**](https://libreria-html-css.vercel.app/) · [Privacidad](./Web/privacidad.html) · [Aviso legal](./Web/legal.html)
+[**Ver la biblioteca**](https://libreria-html-css.vercel.app/) · [Cómo usar un componente](./Web/como-usar.html) · [Privacidad](./Web/privacidad.html) · [Aviso legal](./Web/legal.html)
+
+> 🎉 **Versión estable 1.0.0 publicada.** [Ver notas de la release](https://github.com/kindred-98/Libreria_HTML_CSS/releases/tag/v1.0.0).
 
 </div>
 
@@ -25,11 +27,11 @@ código fuente en ZIP**. Cada demo es un componente autónomo pensado para
 copiarse tal cual: no hay framework, ni paso de compilación, ni
 dependencias que instalar para usarlo.
 
-| Colección | Qué contiene | ZIP |
-| --- | --- | --- |
-| [`CreacionesNuevas/`](./CreacionesNuevas/) | **248** creaciones originales del autor, cada una con su `LICENSE` MIT propio | Sí |
-| [`creaciones-primium/`](./creaciones-primium/) | **651** creaciones en curso por categorías (de **kindred-98** y **fatmaerm**) | Sí |
-| [`DavokerDiseñador/`](./DavokerDiseñador/) | **119** efectos de texto de **davoker**, cada uno con su showcase y su `.zip` | Sí |
+| Colección                                      | Qué contiene                                                                  | ZIP |
+| ---------------------------------------------- | ----------------------------------------------------------------------------- | --- |
+| [`CreacionesNuevas/`](./CreacionesNuevas/)     | **248** creaciones originales del autor, cada una con su `LICENSE` MIT propio | Sí  |
+| [`creaciones-primium/`](./creaciones-primium/) | **651** creaciones en curso por categorías (de **kindred-98** y **fatmaerm**) | Sí  |
+| [`DavokerDiseñador/`](./DavokerDiseñador/)     | **119** efectos de texto de **davoker**, cada uno con su showcase y su `.zip` | Sí  |
 
 **Los 1 018 son descargables.**
 
@@ -44,8 +46,8 @@ dependencias que instalar para usarlo.
 - **Búsqueda** por nombre, categoría, descripción y etiquetas, sin distinguir
   mayúsculas.
 - **Filtros** por categoría (inferidas del nombre del demo) y por autor. Cada
-  botón lleva su propia animación: davoker *Liquid Fill*, kindred-98
-  *Datamosh*, fatmaerm *Neutron Star*.
+  botón lleva su propia animación: davoker _Liquid Fill_, kindred-98
+  _Datamosh_, fatmaerm _Neutron Star_.
 - **Vistas previas reales**: cada tarjeta carga el `index.html` original en un
   `iframe`. No son capturas.
 - **Código fuente a la vista**: el detalle trae el HTML, el CSS y el JavaScript
@@ -76,17 +78,17 @@ páginas de texto, y su `Lighthouse` de escritorio está en **99-100**.
 
 Se usan **solo** para generar el catálogo, validar y medir. No se despliegan.
 
-| Paquete | Para qué |
-| --- | --- |
-| [`playwright`](https://playwright.dev) | Abrir Chromium en los validadores de layout, accesibilidad, Lighthouse y los tests e2e |
-| [`@axe-core/playwright`](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/%40axe-core/playwright) | Motor de accesibilidad |
-| [`lighthouse`](https://developer.chrome.com/docs/lighthouse/overview) | Medición de rendimiento y SEO |
-| [`html-validate`](https://html-validate.org) | Validar el HTML de las páginas del sitio |
-| [`chrome-launcher`](https://github.com/GoogleChrome/chrome-launcher) | Arrancar el Chromium que usa Lighthouse |
-| [`eslint`](https://eslint.org) | Lint del código de Node |
-| [`prettier`](https://prettier.io) | Formato del código de Node |
-| [`typescript`](https://www.typescriptlang.org) | Solo para `tsc --checkJs`: tipos sobre JavaScript |
-| `@types/node` | Tipos de Node para el anterior |
+| Paquete                                                                                                          | Para qué                                                                               |
+| ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| [`playwright`](https://playwright.dev)                                                                           | Abrir Chromium en los validadores de layout, accesibilidad, Lighthouse y los tests e2e |
+| [`@axe-core/playwright`](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/%40axe-core/playwright) | Motor de accesibilidad                                                                 |
+| [`lighthouse`](https://developer.chrome.com/docs/lighthouse/overview)                                            | Medición de rendimiento y SEO                                                          |
+| [`html-validate`](https://html-validate.org)                                                                     | Validar el HTML de las páginas del sitio                                               |
+| [`chrome-launcher`](https://github.com/GoogleChrome/chrome-launcher)                                             | Arrancar el Chromium que usa Lighthouse                                                |
+| [`eslint`](https://eslint.org)                                                                                   | Lint del código de Node                                                                |
+| [`prettier`](https://prettier.io)                                                                                | Formato del código de Node                                                             |
+| [`typescript`](https://www.typescriptlang.org)                                                                   | Solo para `tsc --checkJs`: tipos sobre JavaScript                                      |
+| `@types/node`                                                                                                    | Tipos de Node para el anterior                                                         |
 
 **Instalar:**
 
@@ -113,6 +115,10 @@ Abre <http://localhost:8000/>. La raíz redirige a `/Web/`.
 
 ### Usar un componente
 
+La guía paso a paso está en **[`como-usar.html`](./Web/como-usar.html)**: elegir, ver el código, copiarlo y bajar el ZIP, con la licencia y qué hacer si algo falla.
+
+En corto:
+
 1. Busca en la biblioteca o ve a [`components.html`](./Web/components.html).
 2. Abre el detalle: verás la demo en vivo y su código fuente.
 3. Copia el HTML, el CSS o el JavaScript, o descarga el **ZIP** con todo.
@@ -132,8 +138,8 @@ npm run sellar            # sella el ?v= de los assets (lo hace el despliegue)
 npm run zips              # reconstruye los ZIP de Davoker
 
 # Comprobar
-npm test                  # 48 tests unitarios
-npm run test:e2e          # 15 tests de extremo a extremo
+npm test                  # 55 tests unitarios
+npm run test:e2e          # 16 tests de extremo a extremo
 npm run lint              # ESLint sobre Web/scripts/
 npm run lint:fix          # lo anterior, corregiendo
 npm run format:check      # Prettier
@@ -144,12 +150,12 @@ npm run typecheck         # tsc --checkJs, con presupuesto
 npm run validar           # catálogo coherente con el disco + CSP
 npm run validar:csp       # la CSP cubre los hosts externos de los demos
 npm run validar:layout    # que ninguna página se salga de lado (23 anchos)
-npm run validar:a11y      # axe-core en 5 páginas, 2 idiomas y 2 temas
+npm run validar:a11y      # axe-core en 6 páginas, 2 idiomas y 2 temas
 npm run validar:encabezados # que los demos no salten de nivel de encabezado
 npm run validar:html      # HTML válido de las páginas del sitio
 npm run validar:enlaces   # enlaces y anclas internas
 npm run validar:demos     # abre los 1 018 demos y los mide
-npm run validar:lighthouse # rendimiento y SEO de las 5 páginas
+npm run validar:lighthouse # rendimiento y SEO de las 6 páginas
 npm run duplicados        # detecta demos demasiado parecidos
 npm run enlaces:externos  # comprueba que los enlaces externos siguen vivos
 
@@ -170,6 +176,7 @@ npm run sonar:exportar    # descarga las incidencias a tmp/sonar/
 |   |-- index.html              # Portada
 |   |-- components.html         # Listado y detalle de componentes
 |   |-- team-core.html          # Equipo y donación
+|   |-- como-usar.html          # Cómo usar un componente (guía para visitantes)
 |   |-- privacidad.html         # Política de privacidad
 |   |-- legal.html              # Aviso legal y declaración de accesibilidad
 |   |-- manifest.webmanifest    # Para instalarla como aplicación
@@ -250,15 +257,15 @@ Roda sobre la matriz de Node `[20, 22, 24]` en `ubuntu-24.04`, con
 `fail-fast: false`, y las acciones **fijadas por SHA** (un tag se puede mover
 por quien tenga escritura).
 
-| Comprobación | Qué mide |
-| --- | --- |
-| `npm audit --audit-level=high` | Vulnerabilidades de dependencias |
-| `format:check`, `lint`, `typecheck`, `test` | Estilo, errores, tipos y 48 tests |
-| `validar` | Que el catálogo cuadre con el disco, y la CSP |
-| `validar:layout` | 5 páginas × 23 anchos, con navegador real |
-| `validar:a11y` | axe-core: 5 páginas × 2 idiomas × 2 temas |
-| `validar:lighthouse` | Rendimiento y SEO de las 5 páginas |
-| `validar:demos` | Abre los **1 018 demos** con el sandbox de producción |
+| Comprobación                                | Qué mide                                              |
+| ------------------------------------------- | ----------------------------------------------------- |
+| `npm audit --audit-level=high`              | Vulnerabilidades de dependencias                      |
+| `format:check`, `lint`, `typecheck`, `test` | Estilo, errores, tipos y 55 tests                     |
+| `validar`                                   | Que el catálogo cuadre con el disco, y la CSP         |
+| `validar:layout`                            | 8 páginas × 23 anchos, con navegador real             |
+| `validar:a11y`                              | axe-core: 6 páginas × 2 idiomas × 2 temas             |
+| `validar:lighthouse`                        | Rendimiento y SEO de las 6 páginas                    |
+| `validar:demos`                             | Abre los **1 018 demos** con el sandbox de producción |
 
 `validate.mjs` comprueba, entre otras cosas, que **ningún demo del disco falte
 en el catálogo**: un demo nuevo sin indexar no aparecería en la web sin ningún
@@ -321,19 +328,22 @@ también de `git`, del catálogo y del despliegue. Volver a publicarlos exige su
 
 ## Documentación
 
-| Documento | Qué contiene |
-| --- | --- |
-| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Cómo añadir un componente y abrir un PR |
-| [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) | Convivencia y canal de denuncias |
-| [`SECURITY.md`](./SECURITY.md) | Cómo reportar un fallo de seguridad (**no por issue**) |
-| [`PRIVACY.md`](./PRIVACY.md) | Fuente de la política de privacidad del sitio |
-| [`CHANGELOG.md`](./CHANGELOG.md) | Qué cambió en cada commit |
-| [`Docs/Plan_de_nivel_siguiente.md`](./Docs/Plan_de_nivel_siguiente.md) | Plan por fases para llevar el proyecto al 97 |
-| [`Docs/Sesion_2026-10-05_06.md`](./Docs/Sesion_2026-10-05_06.md) | Cierre de las fases 0, 1, 2, 4a y 4b, con lo que queda |
-| [`Docs/Sonar_decisiones.md`](./Docs/Sonar_decisiones.md) | Qué se **no** corrigió de SonarQube, y por qué |
-| [`Docs/Search_Console.md`](./Docs/Search_Console.md) | Estado del descubrimiento en buscadores |
-| [`Docs/AnalisisSonarQube.md`](./Docs/AnalisisSonarQube.md) | Análisis del quality gate y limpieza de SonarQube |
-| [`Docs/THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md) | Procedencia y licencias de cada componente |
+| Documento                                                              | Qué contiene                                                  |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------- |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md)                                 | Cómo añadir un componente y abrir un PR                       |
+| [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md)                           | Convivencia y canal de denuncias                              |
+| [`SECURITY.md`](./SECURITY.md)                                         | Cómo reportar un fallo de seguridad (**no por issue**)        |
+| [`Web/como-usar.html`](./Web/como-usar.html)                           | Guía para visitantes: elegir, copiar el código y bajar el ZIP |
+| [`PRIVACY.md`](./PRIVACY.md)                                           | Fuente de la política de privacidad del sitio                 |
+| [`CHANGELOG.md`](./CHANGELOG.md)                                       | Qué cambió en cada commit                                     |
+| [`Docs/Plan_de_nivel_siguiente.md`](./Docs/Plan_de_nivel_siguiente.md) | Plan por fases para llevar el proyecto al 97                  |
+| [`Docs/Sesion_2026-10-05_06.md`](./Docs/Sesion_2026-10-05_06.md)       | Cierre de las fases 0, 1, 2, 4a y 4b, con lo que queda        |
+| [`Docs/Sesion_2026-10-08.md`](./Docs/Sesion_2026-10-08.md)             | Estado de SonarCloud, guía pública y validaciones actuales    |
+| [`Docs/Sonar_decisiones.md`](./Docs/Sonar_decisiones.md)               | Qué se **no** corrigió de SonarQube, y por qué                |
+| [`Docs/Sonar_para_marcar.md`](./Docs/Sonar_para_marcar.md)             | Decisiones SonarCloud aplicadas y issues pendientes           |
+| [`Docs/Search_Console.md`](./Docs/Search_Console.md)                   | Estado del descubrimiento en buscadores                       |
+| [`Docs/AnalisisSonarQube.md`](./Docs/AnalisisSonarQube.md)             | Análisis del quality gate y limpieza de SonarQube             |
+| [`Docs/THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md)         | Procedencia y licencias de cada componente                    |
 
 En el sitio: [Privacidad](https://libreria-html-css.vercel.app/Web/privacidad.html)
 · [Aviso legal y accesibilidad](https://libreria-html-css.vercel.app/Web/legal.html)

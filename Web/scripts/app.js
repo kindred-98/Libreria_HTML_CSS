@@ -83,7 +83,7 @@ const translations = {
     pageTeamCore: "Team Core",
     pagePrivacy: "Privacy",
     pageLegal: "Legal",
-    // Nombre accesible de cada <main>. Sin esto las cinco paginas tienen un
+    // Nombre accesible de cada <main>. Sin esto las paginas tienen un
     // landmark igual (`main`) y axe lo marca (landmark-unique): quien recorre
     // la pagina con un lector de pantalla no puede saber en cual esta.
     portadaMain: "Home",
@@ -534,6 +534,90 @@ const translations = {
     legalContactText: "Cuestiones legales o de licencia: CONTRIBUTING.md o una incidencia en GitHub. Avisos de seguridad por la vía privada que describe SECURITY.md.",
   },
 };
+
+// Las claves de esta página guardan las dos traducciones juntas. Así el par
+// EN/ES no se convierte en dos bloques idénticos para CPD ni puede desalinearse.
+const howToTranslations = {
+  pageHowTo: ["How to", "Cómo usar"],
+  howToLink: ["How to", "Cómo usar"],
+  howToMain: ["How to use a component", "Cómo usar un componente"],
+  howToTitle: ["How to use a component", "Cómo usar un componente"],
+  howToUpdated: ["No dependencies, no build step, no accounts.", "Sin dependencias, sin compilación, sin cuentas."],
+  howToIntro: [
+    "Every component in this library is a standalone file with its HTML, CSS and JavaScript. Copy it into your project and it works. There is nothing to install, no account to create and nothing to compile.",
+    "Cada componente de esta biblioteca es un fichero independiente con su HTML, su CSS y su JavaScript. Se copia en tu proyecto y funciona. No hay que instalar nada, ni registrarte, ni pasar nada por un compilador.",
+  ],
+  howToTocLabel: ["Index", "Índice"],
+  howToTocTitle: ["On this page", "En esta página"],
+  howToTocChoose: ["Choose one", "Elegir uno"],
+  howToTocSee: ["See it working", "Verlo funcionando"],
+  howToTocCopy: ["Copy the code", "Copiar el código"],
+  howToTocZip: ["Download the ZIP", "Descargar el ZIP"],
+  howToTocLicense: ["License", "Licencia"],
+  howToTocIssues: ["If something breaks", "Si algo falla"],
+  howToChooseTitle: ["Choose one", "Elegir uno"],
+  howToChooseText: [
+    "Go to Components and search by name, category or description. You can also filter by author. There are 1018 components.",
+    "Ve a Componentes y busca por nombre, categoría o descripción. También puedes filtrar por autor. Hay 1018 componentes.",
+  ],
+  howToChooseLink: ["Components", "Componentes"],
+  howToSeeTitle: ["See it working", "Verlo funcionando"],
+  howToSeeText: [
+    "When you open a component you see it live in its own box. The preview is the real component loaded in an iframe, not a screenshot: what you see is what is there.",
+    "Al abrir un componente, lo ves en vivo en su propia caja. La vista previa es el componente real cargado en un iframe, no una captura ni una maqueta: lo que ves es lo que hay.",
+  ],
+  howToCopyTitle: ["Copy the code", "Copiar el código"],
+  howToCopyText: [
+    "Under the preview you find the source code in separate blocks: HTML, CSS and JavaScript, each with its own copy button. Copy the block you need and paste it into your file.",
+    "Bajo la vista previa tienes el código fuente, en bloques separados: HTML, CSS y JavaScript, cada uno con su botón de copia. Copia el bloque que necesites y pégalo en tu fichero.",
+  ],
+  howToCopyNote: [
+    "Every component is standalone on purpose: it depends on nothing external, so you can take a single block without dragging the rest along.",
+    "Cada componente es autónomo a propósito: no depende de nada externo, así que puedes llevarte un solo bloque sin arrastrar el resto.",
+  ],
+  howToZipTitle: ["Download the ZIP", "Descargar el ZIP"],
+  howToZipText: [
+    "If you would rather have the whole component in a folder, use the ZIP button. Inside you get:",
+    "Si prefieres tener el componente entero en una carpeta, usa el botón ZIP. Dentro viene:",
+  ],
+  howToZipFiles: ["The component code.", "El código del componente."],
+  howToZipLicense: ["Its LICENSE, with the authorship.", "Su LICENSE, con la autoría."],
+  howToZipAttribution: [
+    "An ATTRIBUTION.txt with the source and the terms of use.",
+    "Un ATTRIBUTION.txt con la fuente y las condiciones de uso.",
+  ],
+  howToZipNote: [
+    "The ZIP button only enables once the provenance and license of the material have been checked. If you see it greyed out, it is not verified yet and cannot be distributed.",
+    "El botón ZIP se habilita solo cuando se ha comprobado la procedencia del material y su licencia. Si ves el botón en gris, es que todavía no está verificado y no se puede distribuir.",
+  ],
+  howToLicenseTitle: ["License", "Licencia"],
+  howToLicenseText: [
+    "Everything you download is MIT: you may use it, modify it and use it commercially, without asking permission. No attribution is needed beyond what the ZIP already carries.",
+    "Todo lo que descargas es MIT: puedes usarlo, modificarlo y usarlo con fines comerciales, sin pedir permiso. No hace falta atribuir más allá de lo que ya lleva el propio ZIP.",
+  ],
+  howToIssuesTitle: ["If something breaks", "Si algo falla"],
+  howToIssuesText: [
+    "A component is a demonstration of a technique, not audited production code. If something does not work in your project, check first:",
+    "Un componente es una demostración de una técnica, no código de producción auditado. Si algo no funciona en tu proyecto, mira primero:",
+  ],
+  howToIssuesCase: [
+    "Are you opening the file over file://? Use a local server (npm run servidor from the repository root).",
+    "¿Estás abriendo el fichero por file://? Usa un servidor local (npm run servidor en la raíz del repositorio).",
+  ],
+  howToIssuesFont: [
+    "Is the font it uses still available? Components using the repository fonts work offline.",
+    "¿La fuente que usa sigue disponible? Los componentes que usan tipografías del repositorio funcionan sin conexión.",
+  ],
+  howToIssuesReport: [
+    "Still broken? Report it on GitHub with the component name.",
+    "¿Sigue fallando? Cuéntalo en GitHub con el nombre del componente.",
+  ],
+};
+
+for (const [key, [english, spanish]] of Object.entries(howToTranslations)) {
+  translations.en[key] = english;
+  translations.es[key] = spanish;
+}
 
 const state = {
   components: [],
@@ -1524,7 +1608,12 @@ async function downloadComponentZip(component) {
   const licenseFile = files.find((file) => file.name === component.licenseFile
     || file.name.endsWith(`/${component.licenseFile}`));
   if (licenseFile) {
-    const copyright = /^\s*(copyright[^\r\n]*)$/im.exec(
+    // `[ \t]*` y no `\s*`: con la bandera `m`, `\s` puede atravesar saltos
+    // de linea antes de encontrar `copyright`, lo que provoca backtracking
+    // superlineal sobre el texto entero de la licencia (S8786). Solo queremos
+    // el espacio horizontal al principio de la linea; los saltos entre lineas
+    // los recorre `m` por si mismos.
+    const copyright = /^[ \t]*(copyright[^\r\n]*)$/im.exec(
       new TextDecoder().decode(licenseFile.bytes),
     );
     if (copyright) attribution.push(copyright[1].trim());

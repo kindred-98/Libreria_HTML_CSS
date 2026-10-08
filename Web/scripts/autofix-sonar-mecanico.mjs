@@ -62,7 +62,7 @@ async function* caminar(dir) {
     // La comparacion va sobre la ruta con barras: en Windows `path.join`
     // devuelve backslashes y un `includes("Web/scripts/lib/")` no casaria
     // nunca, con lo que este propio modulo se autoeditaba.
-    const normalizada = ruta.replace(/\\/g, "/");
+    const normalizada = ruta.replaceAll("\\", "/");
     if (EXCLUIR.some((segmento) => normalizada.includes(segmento))) continue;
     if (entrada.isDirectory()) {
       yield* caminar(ruta);

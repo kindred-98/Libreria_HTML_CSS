@@ -442,7 +442,7 @@ function terminar() {
   const ahora = new Date();
   const meses = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-  const renovo = new Date(ahora.getTime());
+  const renovo = new Date(ahora);
   if (st.anual) renovo.setFullYear(renovo.getFullYear() + 1);
   else renovo.setMonth(renovo.getMonth() + 1);
 

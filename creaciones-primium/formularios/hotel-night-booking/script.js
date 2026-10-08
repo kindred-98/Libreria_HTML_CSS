@@ -193,7 +193,7 @@ function cambiarMes(delta) {
 
 function hayNochesBloqueadas() {
   if (llegada === null || salida === null) return false;
-  for (let d = new Date(llegada.getTime()); d.getTime() < salida.getTime(); d.setDate(d.getDate() + 1)) {
+  for (let d = new Date(llegada); d.getTime() < salida.getTime(); d.setDate(d.getDate() + 1)) {
     if (lleno(d) || pasado(d)) return true;
   }
   return false;
@@ -269,7 +269,7 @@ function textoNochesLibres() {
   if (llegada === null || salida === null) return "";
   const totalNoches = Math.round((salida.getTime() - llegada.getTime()) / 86400000);
   let libres = 0;
-  for (let d = new Date(llegada.getTime()); d.getTime() < salida.getTime(); d.setDate(d.getDate() + 1)) {
+  for (let d = new Date(llegada); d.getTime() < salida.getTime(); d.setDate(d.getDate() + 1)) {
     if (!lleno(d)) libres += 1;
   }
   const ultima = new Date(salida.getTime() - 86400000);
@@ -298,7 +298,7 @@ function problemas() {
     }
     if (f.id === "habitacion" && habitacionActual() === null) { salida.push(f.etiqueta + ": " + f.error); return; }
     if (f.id === "tarifa" && tarifaActual() === null) { salida.push(f.etiqueta + ": " + f.error); return; }
-    if (f.id === "huesped" && !/^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ '\-.'.]{2,39}$/.test(v)) { salida.push(f.etiqueta + ": " + f.error); return; }
+    if (f.id === "huesped" && !/^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ '.-]{2,39}$/.test(v)) { salida.push(f.etiqueta + ": " + f.error); return; }
     if (f.id === "correo" && !/^[^\s@,;]+@[^\s@,;]+\.[A-Za-z]{2,}$/.test(v)) { salida.push(f.etiqueta + ": " + f.error); }
   });
 
@@ -321,7 +321,7 @@ function pintarCampo(f) {
   if (f.id === "notas") malo = v.length > 220;
   else if (f.id === "habitacion") malo = v !== "" && habitacionActual() === null;
   else if (f.id === "tarifa") malo = v !== "" && tarifaActual() === null;
-  else if (f.id === "huesped") malo = v !== "" && !/^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ '\-.'.]{2,39}$/.test(v);
+  else if (f.id === "huesped") malo = v !== "" && !/^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ '.-]{2,39}$/.test(v);
   else if (f.id === "correo") malo = v !== "" && !/^[^\s@,;]+@[^\s@,;]+\.[A-Za-z]{2,}$/.test(v);
   else if (v === "") malo = true;
   const desc = [ayuda.id];
@@ -398,7 +398,7 @@ form.addEventListener("submit", e => {
     }
     if (habitacion.value === "") { habitacion.focus(); return; }
     if (tarifa.value === "") { tarifa.focus(); return; }
-    if (huesped.value.trim() === "" || !/^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ '\-.'.]{2,39}$/.test(huesped.value.trim())) { huesped.focus(); return; }
+    if (huesped.value.trim() === "" || !/^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ '.-]{2,39}$/.test(huesped.value.trim())) { huesped.focus(); return; }
     correo.focus();
     return;
   }

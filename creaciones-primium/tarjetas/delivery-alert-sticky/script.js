@@ -40,6 +40,8 @@ if (sticky && clip && !reduceMotion) {
       sticky.setPointerCapture(activePointer);
       captured = true;
     } catch (error) {
+      // Se ignora a proposito: `setPointerCapture` lanza si el puntero ya no
+      // esta activo; el arrastre sigue funcionando sin captura.
       captured = false;
     }
   });

@@ -35,7 +35,7 @@
   }
 
   function step() {
-    var now = (new Date()).getTime();
+    var now = Date.now();
     if (!t0) { t0 = now; last = now; }
     var dt = Math.min(0.034, (now - last) / 1000);
     last = now;

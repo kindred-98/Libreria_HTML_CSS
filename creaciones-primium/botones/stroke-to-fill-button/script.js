@@ -49,7 +49,7 @@
   }
 
   function step() {
-    var now = (new Date()).getTime();
+    var now = Date.now();
     if (!t0) t0 = now;
     var ms = now - t0;
 

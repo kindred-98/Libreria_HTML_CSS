@@ -152,7 +152,7 @@ async function peticion(url, metodo) {
 
 async function medir(url) {
   const respuesta = await peticion(url, "HEAD");
-  if (!respuesta || !respuesta.ok)
+  if (!respuesta?.ok)
     return { bytes: null, motivo: respuesta ? `HTTP ${respuesta.status}` : "sin respuesta" };
   const largo = Number(respuesta.headers.get("content-length"));
   if (!Number.isFinite(largo)) return { bytes: null, motivo: "sin Content-Length" };
@@ -182,9 +182,7 @@ for (const registro of imagenes.values()) {
   }
 }
 
-const lineas = [];
 const empujar = (texto = "") => {
-  lineas.push(texto);
   console.log(texto);
 };
 

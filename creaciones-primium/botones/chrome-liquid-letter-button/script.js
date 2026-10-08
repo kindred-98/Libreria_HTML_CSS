@@ -37,7 +37,7 @@
     }
     if (pool.length > 90) {
       for (var k = 0; k < pool.length - 60; k++) {
-        if (pool[k].parentNode) pool[k].parentNode.removeChild(pool[k]);
+        if (pool[k].parentNode) pool[k].remove();
         pool.splice(k, 1);
         k--;
       }
