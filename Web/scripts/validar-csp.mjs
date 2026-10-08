@@ -379,6 +379,34 @@ if (!bloquesSandbox.length) {
   }
 }
 
+// --- CSP de las paginas del sitio (/Web/) -----------------------------------
+// La global se queda con 'unsafe-inline' en script-src porque las demos lo
+// necesitan, pero /Web/ se sirve con su propio bloque, que va despues y por
+// tanto pisa a la global (asi lo resuelve Vercel y asi lo aplica el servidor
+// local). Ese bloque no puede traer 'unsafe-inline' en script-src: en /Web/
+// no hay ni un script inline ni un manejador de eventos, y permitirlo dejaria
+// la politica abierta sin que nadie lo notara. Tampoco sandbox, que aislaria
+// la propia web en un origen opaco.
+const cspWeb = valorCsp(bloquesCsp.find((block) => block.source === "/Web/(.*)") ?? {});
+
+if (!cspWeb) {
+  failures.push(
+    'no hay ningun bloque CSP para "/Web/(.*)": las paginas del sitio se quedan con la politica global',
+  );
+} else {
+  const directivasWeb = new Map();
+  for (const parte of cspWeb.split(";")) {
+    const tokens = parte.trim().split(/\s+/).filter(Boolean);
+    if (tokens.length) directivasWeb.set(tokens[0], tokens.slice(1));
+  }
+  if ((directivasWeb.get("script-src") ?? []).includes("'unsafe-inline'")) {
+    failures.push('el CSP de "/Web/(.*)": script-src no puede llevar unsafe-inline');
+  }
+  if (llevaSandbox(cspWeb)) {
+    failures.push('el CSP de "/Web/(.*)": la web del sitio no puede llevar sandbox');
+  }
+}
+
 console.log(`ficheros html/js/css escaneados: ${escaneados}`);
 console.log(`hosts externos en los demos: ${usados.size}`);
 console.log(`directivas del CSP: ${[...directivas.keys()].join(", ")}`);
