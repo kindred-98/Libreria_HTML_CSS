@@ -57,6 +57,7 @@ const ZONAS = {
   }
 };
 
+/** @type {Record<"guion" | "videos" | "marca", object[]>} */
 const archivos = { guion: [], videos: [], marca: [] };
 let contador = 0;
 
@@ -710,7 +711,7 @@ el("otra").addEventListener("click", function () {
       if (item.temporizador) window.clearInterval(item.temporizador);
       if (item.url) URL.revokeObjectURL(item.url);
     });
-    archivos[clave] = [];
+    archivos[clave].length = 0;
     el(cfg.lista).innerHTML = "";
     el(cfg.error).hidden = true;
     el(cfg.error).textContent = "";

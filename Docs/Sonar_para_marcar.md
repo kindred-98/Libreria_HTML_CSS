@@ -3,16 +3,16 @@
 Fecha: 2026-10-08. Complementa [`Sonar_decisiones.md`](./Sonar_decisiones.md),
 que explica el porqué de cada caso.
 
-## Estado de `main` tras el merge de la PR 19 (API, 2026-10-08)
+## Estado de `main` tras el análisis posterior a PR 20 (API, 2026-10-08)
 
 | Métrica | Valor |
 | --- | --- |
-| Issues abiertos | **19** |
-| Bugs | **7** |
+| Issues abiertos | **4** |
+| Bugs | **0** |
 | Vulnerabilidades | **0** |
-| Code smells | **12** |
-| Reliability / Security / Maintainability | **C / A / A** |
-| Duplicación global | 5,8 % |
+| Code smells | **4** |
+| Reliability / Security / Maintainability | **A / A / A** |
+| Duplicación global | 1,5 % |
 
 Se marcaron **34** falsos positivos / decisiones aceptadas usando la API oficial
 `api/issues/do_transition`, con un comentario específico en cada issue. No se
@@ -20,21 +20,16 @@ Se marcaron **34** falsos positivos / decisiones aceptadas usando la API oficial
 SonarCloud y en este documento. El token de análisis es secreto y nunca está
 en el repositorio.
 
-Los 19 abiertos en este snapshot son los del inventario siguiente; se trabajan
-en `fix/sonar-issues-after-merge`. La medida global de duplicación es distinta
-de la duplicación sobre código nuevo que pasó en la PR 19.
+Los cuatro abiertos en este snapshot son los del inventario siguiente; se
+trabajan en `fix/sonar-issues-after-merge`. La medida global es distinta de la
+duplicación sobre código nuevo que pasó en la PR 19.
 
 ## Issues abiertos del análisis posterior al merge
 
 | Regla | Cantidad | Archivo(s) | Evaluación |
 | --- | ---: | --- | --- |
-| `javascript:S8786` | 1 | `Web/scripts/generate-catalog.mjs` | Real: simplificar el cleanup de título sin cambiar el catálogo. |
-| `javascript:S3800` | 1 | `Web/scripts/generate-catalog.mjs` | Anotar las tuplas de categoría para mantener retorno `string`. |
-| `javascript:S3403` | 7 | Cinco demos de formularios | Falsos positivos: los pasos se inicializan/normalizan como `number`; se mantiene `===` y se deja la explicación junto a cada comparación. |
-| `javascript:S6557` | 1 | `Web/scripts/serve.mjs` | Conversión mecánica de regex anclada a `startsWith`, conservando la lista de rutas protegidas. |
-| `javascript:S2486` | 4 | Tres demos de navegación/tarjeta | El error se ignora deliberadamente con fallback seguro (almacenamiento no disponible / puntero liberado); motivo en el `catch`. |
-| `javascript:S6551` | 4 | Cuatro demos de perfil/visualización | Falsos positivos de valores strings/numbers; se precisan los tipos de los datos. |
-| `javascript:S9382` | 1 | `Web/scripts/lib/lighthouse.mjs` | Falso positivo: las auditorías comparten CDP y deben ejecutarse en serie. |
+| `javascript:S3579` | 1 | `video-brief-uploader/script.js` | El objeto `archivos` conserva sus claves; se vacían los arrays por zona en lugar de reasignar una propiedad dinámica. |
+| `javascript:S6551` | 3 | `busker-tip-song-card`, `guild-application-long`, `github-contribution-matrix-heat` | Se comprueban los tipos de `fill`, los mapas de regiones/idiomas y los niveles antes de convertirlos a texto. |
 
 La duplicación global la dominan los shells repetidos de las demos autónomas de
 Davoker (hasta 231 líneas marcadas en una página). El repositorio exige que cada
@@ -96,13 +91,13 @@ issues ya cerrados**. El número confirmado por la API como marcado es 34.
 
 | | |
 | --- | --- |
-| Issues abiertos en `main`, análisis actual | **19** |
-| Bugs abiertos | **7** |
+| Issues abiertos en `main`, análisis actual | **4** |
+| Bugs abiertos | **0** |
 | Vulnerabilidades abiertas | **0** |
 | Falsos positivos / aceptados ya marcados | **34** |
-| Duplicación global | **5,8 %** |
+| Duplicación global | **1,5 %** |
 | Regresiones introducidas | **0** (1018/1018 demos, 55/55 tests, 17/17 e2e) |
 
-**Siguiente paso:** integrar `fix/sonar-issues-after-merge` y reanalizar `main`.
-Confirmar que los 19 issues quedan en cero y cuánto baja la duplicación global
-con la exclusión CPD explícita de los showcases Davoker autónomos.
+**Siguiente paso:** abrir una PR desde `fix/sonar-issues-after-merge` y reanalizar.
+Confirmar que los cuatro issues quedan en cero y revisar la duplicación global
+tras excluir del CPD los 119 showcases autónomos de Davoker.

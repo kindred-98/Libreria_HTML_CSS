@@ -75,8 +75,9 @@ function paintTip(next, burstIt) {
 
 function riseJar(to) {
   const clamped = Math.min(0.95, to);
-  jarFill.style.setProperty("--from", String(fill));
-  jarFill.style.setProperty("--fill", String(clamped));
+  const previousFill = typeof fill === "number" && Number.isFinite(fill) ? fill : 0;
+  jarFill.style.setProperty("--from", previousFill.toString());
+  jarFill.style.setProperty("--fill", clamped.toString());
   fill = clamped;
   jarFill.classList.remove("is-rise");
   jarFill.getBoundingClientRect();

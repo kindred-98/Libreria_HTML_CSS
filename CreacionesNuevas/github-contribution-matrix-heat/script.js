@@ -3,6 +3,8 @@ const grid = document.getElementById("cGrid");
 const levels = ["", "l1", "l2", "l3", "l4"];
 for (let i = 0; i < 70; i++) {
   const b = document.createElement("div");
-  b.className = "c-box " + levels[Math.floor(Math.random() * levels.length)];
+  const level = levels[Math.floor(Math.random() * levels.length)];
+  b.className = "c-box";
+  if (typeof level === "string" && level !== "") b.classList.add(level);
   grid.appendChild(b);
 }

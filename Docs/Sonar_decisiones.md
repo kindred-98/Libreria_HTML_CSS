@@ -216,37 +216,21 @@ El análisis final de la PR 19 (`7d230fa`) confirmó **0 issues nuevos, 0 línea
 duplicadas y Quality Gate PASSED**. Tras integrar la PR, todavía corresponde
 reanalisar `main` para actualizar las métricas e incidencias totales.
 
-## Issues globales tras el merge (rama de seguimiento)
+## Últimos cuatro issues globales (rama `fix/sonar-last-4-issues`)
 
-El análisis actualizado de `main` informó 19 incidencias: 7 `S3403` sobre
-comparaciones de índices numéricos en cinco asistentes de formulario, 4 `S2486`
-por fallbacks deliberados ante almacenamiento/pointer capture no disponibles,
-4 `S6551` sobre valores que son strings o numbers, y los avisos puntuales
-`S8786`, `S3800`, `S6557` y `S9382`.
+El análisis actual de `main` informa cuatro code smells: `S3579` en el estado
+de archivos de `video-brief-uploader`, y tres `S6551` en valores de perfil,
+idiomas y niveles que son strings/numbers.
 
-- Se conservó `===` en los pasos: `data-paso` se convierte con `Number()`, el
-  estado se inicializa en 1 y `mostrar()` recibe valores numéricos o aritmética
-  sobre ellos. Cada S3403 lleva esa evidencia junto a la comparación.
-- En `serve.mjs`, la lista de recursos internos se convirtió a rutas y
-  `startsWith`; se añadió e2e que requiere 403 para `/.git/config`, `/Docs`,
-  `/package.json` y `CONTRIBUTING.md`, y 200 para una página pública.
-- En `generate-catalog.mjs`, se sustituyó la regex con backtracking por
-  operaciones de sufijo y se tiparon los pares `[categoría, regex]`. El catálogo
-  regenerado sigue idéntico.
-- Se extrajo a `lib/servidor.mjs` el arranque local repetido entre `smoke-demos`
-  y `validar-layout`; ambas herramientas y los otros validadores usan ahora el
-  mismo helper probado.
-- Los avisos de stringificación son falsos positivos sobre mapas de strings,
-  listas de strings y el progreso numérico `fill`; se añadieron tipos para que
-  el analizador conozca el contrato real. Los catches conservan los fallbacks
-  intencionales con justificación `NOSONAR (S2486)` en la propia línea.
-- `lighthouse.mjs` mide seis auditorías con un único Chromium/CDP compartido;
-  la ejecución serial evita mezclar emulación de CPU/red/viewport y queda
-  justificada en la línea con `NOSONAR (S9382)`.
+- En `video-brief-uploader`, el reset vacía el array existente con
+  `archivos[clave].length = 0`, en lugar de reasignar una propiedad dinámica.
+- En `github-contribution-matrix-heat`, solo se añade como clase un nivel que
+  sea string no vacío. En `guild-application-long`, los nombres de región e
+  idioma llevan guardas de tipo antes de concatenarse.
+- En `busker-tip-song-card`, `fill` se comprueba como número finito antes de
+  convertirlo en valor CSS.
 
-El 5,8 % global de duplicación se concentra sobre todo en scaffolding repetido
-de demos autónomas: las páginas Davoker líderes del recuento repetían hasta 231
-líneas de shell. La rama limita CPD a los 119 `index.html` de Davoker (rutas
-exactas, sin comodines); conserva CPD en el resto de HTML, JS y CSS.
-`npm run duplicados` dio cero pares por encima del umbral 0,90. La métrica
-definitiva se confirma con un nuevo análisis automático de la PR.
+La última medición global quedó en **1,5 %**. Se excluyen de CPD solo los 119
+`index.html` de Davoker que repetían scaffolding autónomo; el resto de HTML, JS
+y CSS conserva CPD. `npm run duplicados` dio cero pares por encima de 0,90. El
+análisis final de la nueva PR confirmará que estos cuatro issues desaparecen.
