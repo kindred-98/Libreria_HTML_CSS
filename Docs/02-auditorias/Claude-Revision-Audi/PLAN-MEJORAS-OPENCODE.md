@@ -311,7 +311,7 @@ Sobre las 3 páginas del sitio, con umbrales mínimos: accesibilidad, buenas pr�
 | 6. Accesibilidad | OpenCode | ✅ | pendiente |
 | 7. Contenido y calidad | OpenCode | ✅ | pendiente |
 
-Todo lo aplicado está en `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/`
+Todo lo aplicado está en `Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/`
 (`Fase0.md` a `Fase7.md`). La fase 5 se canceló: 87,26 MB por encima del
 umbral de 40 MB. Todas las fases están en la rama `Update`; la PR es el único
 paso que queda.

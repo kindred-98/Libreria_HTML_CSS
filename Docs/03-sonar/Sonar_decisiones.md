@@ -1,7 +1,7 @@
 # Lo que no se toca de SonarQube, y por qué
 
 Fecha: 2026-10-06. Complementa [`AnalisisSonarQube.md`](./AnalisisSonarQube.md),
-que cuenta la limpieza de 2026-10-05, y [`Plan_de_nivel_siguiente.md`](./Plan_de_nivel_siguiente.md) §1.
+que cuenta la limpieza de 2026-10-05, y [`Plan_de_nivel_siguiente.md`](../01-planes/Plan_de_nivel_siguiente.md) §1.
 
 Este documento existe para una cosa: que **un aviso sin tocar no parezca un
 olvido**. Cada "no lo toqué" tiene su motivo escrito, y casi todos los motivos

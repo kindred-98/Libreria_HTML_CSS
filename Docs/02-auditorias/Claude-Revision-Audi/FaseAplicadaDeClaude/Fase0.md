@@ -110,10 +110,10 @@ personales que la auditoría enumeraba estaban citados en cuatro informes:
 
 | Fichero | Ocurrencias |
 |---|---|
-| `Docs/Auditoria-2026-09-30.md` | borradas |
-| `Docs/Auditoria.md` | borradas |
-| `Docs/Plan_de_fases.md` | borradas |
-| `Docs/Fases-de-Auditoria-Aplicadas/Fase1-Aplicada.md` | borradas |
+| `Docs/02-auditorias/Auditoria-2026-09-30.md` | borradas |
+| `Docs/02-auditorias/Auditoria.md` | borradas |
+| `Docs/01-planes/Plan_de_fases.md` | borradas |
+| `Docs/02-auditorias/Fases-de-Auditoria-Aplicadas/Fase1-Aplicada.md` | borradas |
 
 Commit **`024cb58`**. `SECURITY.md:22` **no se tocó**: le corresponde a la fase 1.5.
 

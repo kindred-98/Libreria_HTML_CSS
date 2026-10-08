@@ -1,6 +1,6 @@
 # Fase 6 aplicada — decisiones (C-4, §9, §8) y cierre
 
-**Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/Auditoria.md`](../Auditoria.md)
+**Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/02-auditorias/Auditoria.md`](../Auditoria.md)
 (fecha 2026-10-02, commit revisado `39f4e8d`) · **Base:** `1a2e106` + fases 1–5 ·
 **Commit que la aplica:** `1379921`
 
@@ -147,7 +147,7 @@ abierto.** La única fila sin cerrar del todo es la de §2.2 en
 [`Fase4-Aplicada.md`](./Fase4-Aplicada.md), a la espera del navegador que reportó el
 fallo, pero su causa era la de §2.1 y ya no depende del navegador.
 
-[`CHANGELOG.md`](../../CHANGELOG.md) lleva una entrada de cierre con las seis
+[`CHANGELOG.md`](../../../CHANGELOG.md) lleva una entrada de cierre con las seis
 fases; si prefieres una entrada por fase, se parte en seis (el contenido ya está
 escrito en estos ficheros).
 

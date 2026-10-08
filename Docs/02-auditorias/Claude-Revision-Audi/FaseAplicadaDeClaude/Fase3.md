@@ -225,7 +225,7 @@ No se toca ningún demo: arreglar estos tres es la **Fase 4**.
 
 ## 5. Siguiente: Fase 4
 
-`Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 4 — **arreglar lo
+`Docs/02-auditorias/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 4 — **arreglar lo
 que detectó el humo**. Entrada: `Web/data/smoke-baseline.json`.
 
 Hay que arreglar tres demos, no cien:

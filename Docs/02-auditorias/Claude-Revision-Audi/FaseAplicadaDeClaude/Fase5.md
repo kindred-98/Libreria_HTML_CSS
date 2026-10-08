@@ -151,7 +151,7 @@ y la primera pregunta sigue siendo la de los MB.
 
 ## 7. Siguiente: Fase 6
 
-`Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 6 — **accesibilidad**.
+`Docs/02-auditorias/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 6 — **accesibilidad**.
 
 1. **6.1** `@axe-core/playwright` como `devDependency` (versión exacta) y
    `Web/scripts/validar-a11y.mjs` con `npm run validar:a11y`: analiza

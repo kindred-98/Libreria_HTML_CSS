@@ -188,7 +188,7 @@ La decisión de integrar o no es siempre de quien mantiene el repositorio. No ha
 - [`Web/README.md`](./Web/README.md) — cómo funciona la aplicación por dentro
 - [`CHANGELOG.md`](./CHANGELOG.md) — registro de cambios
 - [`Docs/THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md) — procedencia y licencias de los componentes
-- [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/) — qué se aplicó de cada fase de la auditoría vigente
+- [`Docs/02-auditorias/Fases-de-Auditoria-Aplicadas/`](./Docs/02-auditorias/Fases-de-Auditoria-Aplicadas/) — qué se aplicó de cada fase de la auditoría vigente
 - [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) — convivencia y canal de denuncias
 - [`PRIVACY.md`](./PRIVACY.md) — qué datos recoge la web y cuáles no
 - [`SECURITY.md`](./SECURITY.md) — cómo avisar de un fallo de seguridad

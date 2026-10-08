@@ -1,6 +1,6 @@
 # Fase 3 aplicada — ZIPs
 
-**Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/Auditoria.md`](../Auditoria.md)
+**Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/02-auditorias/Auditoria.md`](../Auditoria.md)
 (fecha 2026-10-02, commit revisado `39f4e8d`) · **Base:** `1a2e106` + fases 1 y 2 ·
 **Commit que la aplica:** `1379921`
 

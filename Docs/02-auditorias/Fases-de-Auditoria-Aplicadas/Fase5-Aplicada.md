@@ -1,6 +1,6 @@
 # Fase 5 aplicada — documentación e higiene (§4 y §8)
 
-**Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/Auditoria.md`](../Auditoria.md)
+**Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/02-auditorias/Auditoria.md`](../Auditoria.md)
 (fecha 2026-10-02, commit revisado `39f4e8d`) · **Base:** `1a2e106` + fases 1–4 ·
 **Commit que la aplica:** `1379921`
 
@@ -17,7 +17,7 @@ estándar).
 | `README.md:142` | el build es solo `generate-catalog.mjs` | los **3 comandos** de `vercel.json:4` (catálogo + sellado + ZIP) y qué se pierde si se deja el campo vacío |
 | `README.md:148` | «solo quedan tres hosts externos» | **nueve**, enumerados con sus directivas y sus usos (los que imprime `validar-csp.mjs`) |
 | `README.md:11` y `:132` | los 116 de Gevendra «quedan en el disco local» | la carpeta **no está ni en git ni en el disco de un clon nuevo** |
-| `CONTRIBUTING.md:165` | `Docs/` tiene «solo THIRD_PARTY_NOTICES.md» | el aviso + documentos de trabajo, y se enlaza `Docs/Fases-de-Auditoria-Aplicadas/` |
+| `CONTRIBUTING.md:165` | `Docs/` tiene «solo THIRD_PARTY_NOTICES.md» | el aviso + documentos de trabajo, y se enlaza `Docs/02-auditorias/Fases-de-Auditoria-Aplicadas/` |
 | `SECURITY.md:36-44` | el alcance son 4 scripts y no cita a Davoker | los **10 ficheros de `Web/scripts/`**, los **119 demos de `DavokerDiseñador/`** y el build (catálogo, sellado y ZIP) |
 | `SECURITY.md:55` | `sandbox="allow-scripts allow-forms allow-popups"` | añade **`allow-downloads`** y explica que es lo que hace funcionar la descarga dentro del iframe |
 | `Web/README.md:88` | GitHub Pages publicaría «los 396 que muestra Vercel» | los **1 018**; el constructor que filtraba por licencias ya no existe |

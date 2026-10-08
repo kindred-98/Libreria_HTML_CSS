@@ -1,6 +1,6 @@
 # Fase 2 aplicada — seguridad
 
-**Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/Auditoria.md`](../Auditoria.md)
+**Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/02-auditorias/Auditoria.md`](../Auditoria.md)
 (fecha 2026-10-02, commit revisado `39f4e8d`) · **Base:** `1a2e106` (fase 1) ·
 **Commit que la aplica:** `1379921`
 

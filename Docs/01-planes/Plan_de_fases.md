@@ -1,6 +1,6 @@
 # Plan de fases para aplicar la auditoría
 
-Fecha: 2026-10-01. Complementa [`Auditoria.md`](./Auditoria.md), que es donde
+Fecha: 2026-10-01. Complementa [`Auditoria.md`](../02-auditorias/Auditoria.md), que es donde
 está el detalle medido de cada hallazgo. Aquí solo está el **orden de ataque**,
 con lo que bloquea y lo que no.
 

@@ -28,7 +28,7 @@
  * 97, asi que 80 dejaba 13 puntos de margen inutil. Con 85 quedan **ocho
  * puntos** sobre el peor valor: una regresion normal lo dispara y la
  * variacion de la medicion no. El plan de subida esta en
- * `Docs/Presupuestos_rendimiento.md` §6.
+ * `Docs/05-rendimiento/Presupuestos_rendimiento.md` §6.
  *
  * ## Por que el de CLS es 0,05
  *
@@ -119,6 +119,6 @@ if (fallos.length > 0) {
 } else {
   console.log(
     `Las ${filas.length} paginas dentro de presupuesto. El umbral se sube cuando el ` +
-      "margen sea holgado (ver Docs/Presupuestos_rendimiento.md).",
+      "margen sea holgado (ver Docs/05-rendimiento/Presupuestos_rendimiento.md).",
   );
 }

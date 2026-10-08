@@ -336,13 +336,13 @@ también de `git`, del catálogo y del despliegue. Volver a publicarlos exige su
 | [`Web/como-usar.html`](./Web/como-usar.html)                           | Guía para visitantes: elegir, copiar el código y bajar el ZIP |
 | [`PRIVACY.md`](./PRIVACY.md)                                           | Fuente de la política de privacidad del sitio                 |
 | [`CHANGELOG.md`](./CHANGELOG.md)                                       | Qué cambió en cada commit                                     |
-| [`Docs/Plan_de_nivel_siguiente.md`](./Docs/Plan_de_nivel_siguiente.md) | Plan por fases para llevar el proyecto al 97                  |
-| [`Docs/Sesion_2026-10-05_06.md`](./Docs/Sesion_2026-10-05_06.md)       | Cierre de las fases 0, 1, 2, 4a y 4b, con lo que queda        |
-| [`Docs/Sesion_2026-10-08.md`](./Docs/Sesion_2026-10-08.md)             | Estado de SonarCloud, guía pública y validaciones actuales    |
-| [`Docs/Sonar_decisiones.md`](./Docs/Sonar_decisiones.md)               | Qué se **no** corrigió de SonarQube, y por qué                |
-| [`Docs/Sonar_para_marcar.md`](./Docs/Sonar_para_marcar.md)             | Decisiones SonarCloud aplicadas y issues pendientes           |
-| [`Docs/Search_Console.md`](./Docs/Search_Console.md)                   | Estado del descubrimiento en buscadores                       |
-| [`Docs/AnalisisSonarQube.md`](./Docs/AnalisisSonarQube.md)             | Análisis del quality gate y limpieza de SonarQube             |
+| [`Docs/01-planes/Plan_de_nivel_siguiente.md`](./Docs/01-planes/Plan_de_nivel_siguiente.md) | Plan por fases para llevar el proyecto al 97                  |
+| [`Docs/04-sesiones/Sesion_2026-10-05_06.md`](./Docs/04-sesiones/Sesion_2026-10-05_06.md)       | Cierre de las fases 0, 1, 2, 4a y 4b, con lo que queda        |
+| [`Docs/04-sesiones/Sesion_2026-10-08.md`](./Docs/04-sesiones/Sesion_2026-10-08.md)             | Estado de SonarCloud, guía pública y validaciones actuales    |
+| [`Docs/03-sonar/Sonar_decisiones.md`](./Docs/03-sonar/Sonar_decisiones.md)               | Qué se **no** corrigió de SonarQube, y por qué                |
+| [`Docs/03-sonar/Sonar_para_marcar.md`](./Docs/03-sonar/Sonar_para_marcar.md)             | Decisiones SonarCloud aplicadas y issues pendientes           |
+| [`Docs/06-seo/Search_Console.md`](./Docs/06-seo/Search_Console.md)                   | Estado del descubrimiento en buscadores                       |
+| [`Docs/03-sonar/AnalisisSonarQube.md`](./Docs/03-sonar/AnalisisSonarQube.md)             | Análisis del quality gate y limpieza de SonarQube             |
 | [`Docs/THIRD_PARTY_NOTICES.md`](./Docs/THIRD_PARTY_NOTICES.md)         | Procedencia y licencias de cada componente                    |
 
 En el sitio: [Privacidad](https://libreria-html-css.vercel.app/Web/privacidad.html)

@@ -230,7 +230,7 @@ aviso nunca salía. Se sustituyó por `readdir` con `try/catch`.
 
 ## 7. Siguiente: Fase 7
 
-`Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 7 — **contenido y
+`Docs/02-auditorias/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 7 — **contenido y
 calidad del CI**.
 
 1. **7.1** Reclasificar los **36 demos de la categoría «Other»** usando el campo

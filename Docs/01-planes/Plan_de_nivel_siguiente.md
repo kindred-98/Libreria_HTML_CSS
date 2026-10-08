@@ -1,7 +1,7 @@
 # Plan de nivel siguiente: del 80 al 97
 
 Fecha: 2026-10-06. Complementa [`Plan_de_fases.md`](./Plan_de_fases.md) (fases 0-7,
-ya cerradas) y [`Auditoria.md`](./Auditoria.md).
+ya cerradas) y [`Auditoria.md`](../02-auditorias/Auditoria.md).
 
 Este documento **no repite lo hecho**: saca el proyecto del "código bien
 auditado" al "producto listo para el mercado". Las notas de partida no son una
@@ -251,7 +251,7 @@ informativo**, no bloqueante (ver tarea 3).
      `Web:MetaRefreshCheck` (el redirect de `/` lo exige la raíz del sitio),
      `Web:S6821`/`Web:S1135` (los avisos de *todo* dentro de los demos),
      `S1135` (los `TODO` documentados). Cada uno con comentario en el
-     panel, y la lista reflejada en `Docs/AnalisisSonarQube.md`.
+     panel, y la lista reflejada en `Docs/03-sonar/AnalisisSonarQube.md`.
 3. **SonarCloud en CI, en modo informativo.** Workflow nuevo `sonar.yml` con
    `SonarSource/sonarcloud-github-action` sobre `main` y sobre cada PR,
    usando un `SONAR_TOKEN` en *Repository secrets* (nuevo, generado para

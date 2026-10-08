@@ -1,6 +1,6 @@
 # Fase 1 aplicada — ganancias rápidas
 
-**Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/Auditoria.md`](../Auditoria.md)
+**Fecha:** 2026-10-02 · **Auditoría de referencia:** [`Docs/02-auditorias/Auditoria.md`](../Auditoria.md)
 (fecha 2026-10-02, commit revisado `39f4e8d`) · **Commit que la aplica:** `1a2e106`
 
 La auditoría propone 11 puntos de ataque (§10). Se dividió en 6 fases; esta es la
@@ -96,7 +96,7 @@ Búsqueda de referencias al fichero borrado:
 
 ```text
 git grep recurso-84b7e44a
-  -> solo Docs/Auditoria.md, Docs/Auditoria-2026-09-30.md y Docs/Plan_de_fases.md
+  -> solo Docs/02-auditorias/Auditoria.md, Docs/02-auditorias/Auditoria-2026-09-30.md y Docs/01-planes/Plan_de_fases.md
      (las propias auditorías, como evidencia del hallazgo)
 ```
 

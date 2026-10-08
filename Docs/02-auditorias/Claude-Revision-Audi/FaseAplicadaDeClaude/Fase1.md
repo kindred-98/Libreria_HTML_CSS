@@ -307,7 +307,7 @@ la web y la de código propio ya está caracterizada.
 
 ## 5. Siguiente: Fase 2
 
-`Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 2 — **bugs concretos**:
+`Docs/02-auditorias/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 2 — **bugs concretos**:
 
 1. **2.1 `markdown-preview-live`** — cambiar `` /```([sS]*?)```/g `` por
    `` /```([\s\S]*?)```/g ``. El `[sS]` solo coincide con las letras *s* y *S*,

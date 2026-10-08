@@ -36,7 +36,7 @@ descarga de ZIP funcionando con una prueba que no cubría el caso del usuario (�
 
 ## 1. Estado real de las fases
 
-El plan de fases (`Docs/Plan_de_fases.md`) declaraba el estado. Se contrastó con el disco:
+El plan de fases (`Docs/01-planes/Plan_de_fases.md`) declaraba el estado. Se contrastó con el disco:
 
 > **Nota:** esta tabla es el estado en `39f4e8d`. Hoy ya no es así: los 119 ZIP han salido
 > del repo, `.gitattributes` tiene 16 líneas con 12 tipos binarios, los 9 ficheros
@@ -55,7 +55,7 @@ El plan de fases (`Docs/Plan_de_fases.md`) declaraba el estado. Se contrastó co
 | 7 — CI | pendiente | ⚠️ parcial: solo el aviso de `sandbox`; la matriz sigue en `[22]` |
 | 8 y 9 | requieren decidir | ⏸️ sin empezar |
 
-`Docs/Plan_de_fases.md` sigue describiendo la decisión de la Fase 2.2 que **no** se
+`Docs/01-planes/Plan_de_fases.md` sigue describiendo la decisión de la Fase 2.2 que **no** se
 tomó (retirar los 119 ZIP del repo). Hay que actualizarlo.
 
 ---

@@ -34,7 +34,7 @@ CreacionesNuevas/url-qr-code-generator/script.js   |   18 +-
 .../vendor/LICENSE-qrcode-generator                |   21 +
 .../url-qr-code-generator/vendor/qrcode.js         | 2297 ++++++++++++++
 .../FaseAplicadaDeClaude/Fase1.md                  |  327 +++
-Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md |    2 +-
+Docs/02-auditorias/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md |    2 +-
 Docs/THIRD_PARTY_NOTICES.md                        |   15 +
 PRIVACY.md                                         |    1 -
 README.md                                          |    2 +-
@@ -276,7 +276,7 @@ mismo script y mismo navegador, para que la comparación sea real.
 
 ## 5. Siguiente: Fase 3
 
-`Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 3 — **test de humo
+`Docs/02-auditorias/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 3 — **test de humo
 de los 1 018 demos**. Esta fase **no arregla nada: solo mide**.
 
 1. **3.1** `Web/scripts/smoke-demos.mjs` + `npm run validar:demos`. Levanta

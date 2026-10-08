@@ -1,6 +1,6 @@
 # Presupuestos de rendimiento, y por qué el móvil mide 84
 
-Fecha: 2026-10-06. Complementa [`Sesion_2026-10-05_06.md`](./Sesion_2026-10-05_06.md)
+Fecha: 2026-10-06. Complementa [`Sesion_2026-10-05_06.md`](../04-sesiones/Sesion_2026-10-05_06.md)
 §7 (lo que queda de la Fase 3).
 
 Este documento recoge **qué se midió**, **qué NO se hizo aunque sonara
@@ -105,7 +105,7 @@ Queda anotado aquí para hacerlo con calma y con ojos encima.
 ### El `header` repetido, y el resto de exclusiones
 
 Nada de esto afecta al rendimiento móvil; está en
-[`Sonar_decisiones.md`](./Sonar_decisiones.md).
+[`Sonar_decisiones.md`](../03-sonar/Sonar_decisiones.md).
 
 ---
 
@@ -171,7 +171,7 @@ El propio script lo dice al terminar, y el workflow deja el paso en el log:
 
 ```
 Las 5 paginas por encima de 80. El presupuesto se sube cuando el margen
-sea holgado (ver Docs/Presupuestos_rendimiento.md).
+sea holgado (ver Docs/05-rendimiento/Presupuestos_rendimiento.md).
 ```
 
 Se sube cuando el **peor caso** de la portada en dos pasadas seguidas quede

@@ -1,6 +1,6 @@
 # Fase 5: presupuestos que bloqueen
 
-Fecha: 2026-10-06. Complementa [`Sesion_2026-10-05_06.md`](./Sesion_2026-10-05_06.md)
+Fecha: 2026-10-06. Complementa [`Sesion_2026-10-05_06.md`](../04-sesiones/Sesion_2026-10-05_06.md)
 y [`Presupuestos_rendimiento.md`](./Presupuestos_rendimiento.md).
 
 La idea de la fase: **lo que se midió una vez, se mide siempre**. Ahora mismo el

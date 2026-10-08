@@ -182,7 +182,7 @@ EXIT 0
 
 ## 5. Siguiente: Fase 5
 
-`Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 5 — **imágenes de
+`Docs/02-auditorias/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md` §Fase 5 — **imágenes de
 Wikimedia en local**. La Fase 3 ya dejó la lista: **85 demos `galerias-*`,
 ≈540 peticiones a `upload.wikimedia.org`**.
 

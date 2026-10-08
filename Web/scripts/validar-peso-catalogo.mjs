@@ -93,7 +93,7 @@ if (kbGzip > UMBRAL_KB) {
   console.error("  2. Subir el presupuesto en este script, a conciencia, si el crecimiento");
   console.error("     es buscado. Se edita aqui y queda en el historial del repo.");
   console.error("  3. Partir el catalogo en indice y detalle (analizado en");
-  console.error("     Docs/Presupuestos_rendimiento.md: hoy no aporta nada medible).");
+  console.error("     Docs/05-rendimiento/Presupuestos_rendimiento.md: hoy no aporta nada medible).");
   process.exitCode = 1;
 } else {
   const margen = UMBRAL_KB - kbGzip;
