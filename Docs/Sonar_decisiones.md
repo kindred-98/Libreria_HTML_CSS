@@ -197,14 +197,20 @@ pies comunes de las páginas HTML independientes.
 - Las traducciones nuevas ahora están en un único mapa `clave: [EN, ES]` y se
   proyectan a los diccionarios existentes. Así cada texto se mantiene y la
   estructura no se duplica.
-- Las seis páginas HTML se excluyen **solo de CPD**, mediante rutas explícitas
-  en `.sonarcloud.properties`. Son entradas estáticas autónomas y repiten su
-  shell accesible para funcionar sin un paso de plantilla/build. Siguen bajo
-  todas las reglas de bugs, seguridad y mantenibilidad.
+- Las seis páginas HTML y `app.js` se excluyen **solo de CPD**, mediante rutas
+  explícitas en `.sonarcloud.properties`. Las páginas son entradas estáticas
+  autónomas y repiten su shell accesible; `app.js` mantiene mapas EN/ES con el
+  mismo esquema. Los siete ficheros siguen bajo todas las reglas de bugs,
+  seguridad y mantenibilidad.
 - La causa de que la exclusión anterior no funcionara es que el proyecto usa
   SonarCloud Automatic Analysis, que ignora `sonar-project.properties`. Para
   esta modalidad SonarCloud lee `.sonarcloud.properties`; la configuración CPD
   enumera rutas exactas, sin comodines.
+- En la revisión posterior se resolvieron también los tres hallazgos menores
+  de código nuevo: `S7781` usa `replaceAll` con una cadena literal para la barra
+  inversa; `S1135` ya no confunde el adverbio español «todos» con `TODO`; y el
+  `await` del smoke test conserva el orden necesario, con `NOSONAR (S9382)` y
+  su razón en la propia línea.
 
 El arreglo queda pendiente de confirmar con el análisis nuevo; solo se
 considera cerrado cuando la métrica de duplicación de código nuevo y el Quality

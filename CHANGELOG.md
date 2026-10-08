@@ -132,11 +132,14 @@ Verificado en verde: `test` (55/55), `test:e2e` (**16/16**), `lint`,
   nuevo** (100 lineas; maximo 3 %). Fiabilidad, seguridad, mantenibilidad y
   hotspots ya estaban aprobados.
 - Se identifico que Automatic Analysis ignora `sonar-project.properties`.
-  La excepcion de CPD para el shell repetido de las seis paginas estaticas se
-  declara ahora en `.sonarcloud.properties`, con rutas exactas; no excluye esos
-  ficheros de las otras reglas.
+  Las excepciones puntuales de CPD para el shell HTML estatico y los mapas i18n
+  se declaran ahora en `.sonarcloud.properties`, con rutas exactas; no excluyen
+  esos ficheros de las otras reglas.
 - Las 35 claves EN/ES de la guia pasan a un mapa unico de pares, eliminando el
   bloque de traducciones estructuralmente duplicado en `app.js`.
+- Se corrigen los tres hallazgos menores del primer reanálisis: `S7781` pasa a
+  `replaceAll` con cadena literal, el falso `TODO` en prosa se reescribe y el
+  bucle secuencial que recorre demos lleva la justificación local de `S9382`.
 - El Quality Gate se considera cerrado solo cuando SonarCloud confirme el
   analisis nuevo.
 

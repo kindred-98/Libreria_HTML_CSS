@@ -41,7 +41,7 @@
 // `\w+` greedy seguidos: si el resto no encaja, el motor prueba todas las
 // combinaciones. Es cierto, y aqui no importa: se ejecutan sobre ficheros de
 // codigo fuente, donde una linea ronda los 100 caracteres, asi que el peor caso
-// son unos 10.000 pasos por linea. Medido: `--dry-run` sobre TODO el repositorio
+// son unos 10.000 pasos por linea. Medido: `--dry-run` sobre todos los ficheros
 // (1.018 demos) tarda **1,1 segundos**. Hacerlas "optimas" obligaria a
 // anchoring o cuantificadores posesivos que dejarian de transformar los casos
 // que hoy transforman, que es justo el trabajo de este script.
