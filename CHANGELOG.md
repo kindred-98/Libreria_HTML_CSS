@@ -160,7 +160,8 @@ había pasado. También midió 5,8 % de duplicación global.
   sin debilitar el bloqueo de rutas internas; un e2e comprueba que `.git`,
   `Docs`, `package.json` y `CONTRIBUTING.md` responden 403.
 - `smoke-demos.mjs` y `validar-layout.mjs` reutilizan ahora
-  `lib/servidor.mjs`, eliminando el bloque repetido de arranque del servidor.
+  `lib/servidor.mjs`, eliminando el bloque repetido de arranque del servidor y
+  bajando el typecheck heredado de 17 a 15 errores.
 - Los siete `S3403` en pasos de formularios comparan índices numéricos; se
   conserva la igualdad estricta con una nota local. Los `S6551` se precisan con
   tipos; los `S2486` y `S9382` llevan la justificación de sus fallbacks y de las
@@ -169,16 +170,30 @@ había pasado. También midió 5,8 % de duplicación global.
   autónomos (rutas explícitas sin comodines); el resto de HTML/JS/CSS y todas
   las reglas no-CPD siguen analizadas. `npm run duplicados` encontró cero pares
   de demos por encima de 0,90.
-- `smoke-demos.mjs` y `validar-layout.mjs` reutilizan `lib/servidor.mjs` para
-  eliminar el bloque de arranque duplicado; el presupuesto de typecheck baja de
-  17 a 15 errores heredados.
-
-La reducción del 5,8 % global se confirma en el siguiente análisis automático
-de la PR; no se cuenta como cerrada antes de revisar esa medida.
+Tras integrar PR 20, SonarCloud midió **4 code smells**, 0 bugs y 0 vulnerabilidades;
+la duplicación global bajó de **5,8 % a 1,5 %**. Queda el último grupo descrito
+a continuación.
 
 Verificado localmente: `npm test` (55/55), `test:e2e` (17/17), `validar`
 (1018/1018), `validar:demos` (1018/1018), `duplicados` (0 pares >= 0,90),
 lint, formato y typecheck (15 errores heredados/38).
+
+---
+
+## [Sonar: resuelve los cuatro últimos code smells] - 2026-10-08
+
+- **S3579** (`video-brief-uploader`): el reset vacía cada lista con
+  `archivos[clave].length = 0` en vez de reasignar una propiedad indexada del
+  objeto.
+- **S6551**: el mapa usa guardas `typeof` para regiones e idiomas, el nivel de
+  contribución se añade como clase solo si es string y `fill` se comprueba como
+  número finito antes de serializar a CSS.
+- Reanalizar la rama en una PR para confirmar 0 issues y que el CPD siga en el
+  nivel esperado.
+
+Verificado localmente: `npm test` (55/55), `test:e2e` (17/17),
+`validar:demos` (1018/1018), layout/a11y/Lighthouse, lint, formato y typecheck
+(15 errores heredados/38).
 
 ---
 
