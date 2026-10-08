@@ -140,8 +140,8 @@ Verificado en verde: `test` (55/55), `test:e2e` (**16/16**), `lint`,
 - Se corrigen los tres hallazgos menores del primer reanálisis: `S7781` pasa a
   `replaceAll` con cadena literal, el falso `TODO` en prosa se reescribe y el
   bucle secuencial que recorre demos lleva la justificación local de `S9382`.
-- El Quality Gate se considera cerrado solo cuando SonarCloud confirme el
-  analisis nuevo.
+- Analisis final de SonarCloud en la PR: **Quality Gate PASSED**, 0 issues
+  nuevos, 0 hotspots y **0 lineas duplicadas en codigo nuevo (0,0 %)**.
 
 ---
 

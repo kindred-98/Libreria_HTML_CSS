@@ -212,6 +212,6 @@ pies comunes de las páginas HTML independientes.
   `await` del smoke test conserva el orden necesario, con `NOSONAR (S9382)` y
   su razón en la propia línea.
 
-El arreglo queda pendiente de confirmar con el análisis nuevo; solo se
-considera cerrado cuando la métrica de duplicación de código nuevo y el Quality
-Gate pasen.
+El análisis final de la PR 19 (`7d230fa`) confirmó **0 issues nuevos, 0 líneas
+duplicadas y Quality Gate PASSED**. Tras integrar la PR, todavía corresponde
+reanalisar `main` para actualizar las métricas e incidencias totales.
