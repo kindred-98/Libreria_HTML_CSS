@@ -139,7 +139,7 @@ npm run zips              # reconstruye los ZIP de Davoker
 
 # Comprobar
 npm test                  # 55 tests unitarios
-npm run test:e2e          # 16 tests de extremo a extremo
+npm run test:e2e          # 17 tests de extremo a extremo
 npm run lint              # ESLint sobre Web/scripts/
 npm run lint:fix          # lo anterior, corregiendo
 npm run format:check      # Prettier

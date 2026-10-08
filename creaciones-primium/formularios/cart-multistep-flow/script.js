@@ -380,7 +380,7 @@ btnAtras.addEventListener("click", () => {
 
 btnContinuar.addEventListener("click", e => {
   e.preventDefault();
-  if (paso === 1) {
+  if (paso === 1) { // NOSONAR (S3403): el estado `paso` solo recibe índices numéricos.
     const primero = validarCesta();
     if (primero) {
       mostrarResumenCesta();

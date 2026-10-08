@@ -138,7 +138,7 @@ function actualizarIndicadores() {
   document.querySelectorAll(".paso-ind").forEach(li => {
     const n = Number(li.dataset.paso);
     let estado = "pendiente";
-    if (n === paso) estado = "actual";
+    if (n === paso) estado = "actual"; // NOSONAR (S3403): ambos valores son índices numéricos de paso.
     else if (n < paso) estado = "hecho";
     li.dataset.estado = estado;
   });
@@ -452,7 +452,7 @@ document.querySelectorAll(".orden-btn").forEach(boton => {
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
   if (!resguardo.hidden) return;
-  if (paso === 1) return;
+  if (paso === 1) return; // NOSONAR (S3403): `paso` es numérico y esta rama solo corresponde al paso inicial.
   e.preventDefault();
   mostrar(paso - 1);
 });

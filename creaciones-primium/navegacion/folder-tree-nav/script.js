@@ -51,7 +51,7 @@
         return btn.dataset.node;
       });
       window.sessionStorage.setItem(KEY, JSON.stringify(open));
-    } catch (err) {
+    } catch (err) { // NOSONAR (S2486): storage can be unavailable; the tree still works in memory.
       // Se ignora a proposito: dentro del sandbox del catalogo `sessionStorage`
       // puede lanzar (origen opaco o modo privado) y perder el estado guardado
       // no rompe el arbol, solo se reabre desde cero.
@@ -72,7 +72,7 @@
         if (open.includes(node)) setBranch(li, true, false);
         else setBranch(li, false, false);
       });
-    } catch (err) {
+    } catch (err) { // NOSONAR (S2486): no readable saved state is equivalent to a fresh load.
       // Se ignora a proposito: el `sessionStorage` puede lanzar al leerlo
       // (origen opaco) y sin estado guardado el arbol se muestra entero.
       return;

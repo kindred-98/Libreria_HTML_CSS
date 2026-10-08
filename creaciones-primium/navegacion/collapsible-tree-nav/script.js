@@ -62,7 +62,7 @@
         var id = node.querySelector(':scope > .tw').getAttribute('aria-controls');
         setOpen(node, list.includes(id));
       });
-    } catch (e) {
+    } catch (e) { // NOSONAR (S2486): malformed saved JSON falls back to the default tree state.
       // Se ignora a proposito: si lo guardado no es JSON valido se aplica el
       // estado por defecto (solo el primer nivel abierto) en vez de dejar el
       // arbol a medias.

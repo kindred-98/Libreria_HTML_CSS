@@ -1,10 +1,10 @@
 /**
  * Arranca `serve.mjs` en un puerto libre.
  *
- * Por que existe: `validar-a11y.mjs` y `validar-lighthouse.mjs` necesitan el
- * mismo servidor local, y los dos traian su propia copia identica de estas dos
- * funciones. Son 42 lineas repetidas palabra por palabra, y esa repeticion es
- * la que contaba SonarCloud como duplicacion en la PR. Aqui estan una sola vez.
+ * Por que existe: `validar-a11y.mjs`, `validar-lighthouse.mjs`,
+ * `validar-layout.mjs` y `smoke-demos.mjs` usan el mismo servidor local. Antes
+ * layout y smoke duplicaban el arranque que ya compartian a11y y Lighthouse;
+ * estas funciones lo mantienen en un unico modulo.
  *
  * Que hace:
  *

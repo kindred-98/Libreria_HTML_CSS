@@ -124,9 +124,15 @@ const compressFromBytes = 1024;
 // credenciales si el remoto se clono con token en la URL. Cualquier punto
 // inicial basta: una lista cerrada siempre se queda corta (.env, .nvmrc,
 // .editorconfig...), y ninguno de ellos es un recurso que el sitio necesite.
-const noServir = /^\./;
-const noServirTambien =
-  /^(?:Docs|CHANGELOG\.md|CONTRIBUTING\.md|SECURITY\.md|CODE_OF_CONDUCT\.md|vercel\.json|package\.json)(?:\/|$)/;
+const noServirTambien = [
+  "Docs",
+  "CHANGELOG.md",
+  "CONTRIBUTING.md",
+  "SECURITY.md",
+  "CODE_OF_CONDUCT.md",
+  "vercel.json",
+  "package.json",
+];
 
 function resolveRequest(url) {
   let requested;
@@ -145,7 +151,8 @@ function resolveRequest(url) {
   const relative = path.relative(repositoryDirectory, base);
   if (relative.startsWith("..") || path.isAbsolute(relative)) return null;
   const relativo = relative.split(path.sep).join("/");
-  if (noServir.test(relativo) || noServirTambien.test(relativo)) return null;
+  const esRutaInterna = noServirTambien.some((ruta) => relativo === ruta || relativo.startsWith(`${ruta}/`));
+  if (relativo.startsWith(".") || esRutaInterna) return null;
   return base;
 }
 
