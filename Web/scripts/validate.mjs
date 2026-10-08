@@ -17,6 +17,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { leerDireccion } from "./lib/donacion.mjs";
+import { lineasInnerHtmlConConcatenacion } from "./lib/inyeccion.mjs";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "../..");
@@ -295,6 +296,59 @@ if (warnings.length) {
     `AVISO: ${warnings.length} demo(s) animan con CSS sin escuchar prefers-reduced-motion: ${lista}\n` +
       "       Anade el bloque de Web/scripts/add-reduced-motion.mjs (ver CONTRIBUTING, regla 7).",
   );
+}
+
+// 10. Ningun demo monta HTML concatenando datos en `innerHTML` (P0-2). La gente
+//     copia estos demos a aplicaciones reales, y el patron
+//     `innerHTML = '...' + dato` es un XSS en cuanto el dato venga del usuario:
+//     hoy los datos son fijos, pero el patron se copia tal cual.
+//
+//     Excepciones permitidas: asignar la cadena vacia para vaciar y literales
+//     estaticos sin variables (aunque lleven signos entre comillas). Concatenar
+//     sobre `textContent` o montar con createElement/append es seguro siempre y
+//     la regla no lo toca. El detalle del analisis vive en lib/inyeccion.mjs.
+//
+//     Alcance: cualquier `.js` del repositorio salvo vendor/ (codigo de un
+//     tercero que se copia tal cual), Web/data/ (artefactos generados: el
+//     catalogo incrusta las fuentes de los demos) y GevendraAutorExterno/
+//     (copia local no versionada de un tercero, fuera del repo hasta que su
+//     autor autorice la redistribucion, ver THIRD_PARTY_NOTICES). Tambien se
+//     saltan las carpetas de dependencias y temporales por el mismo motivo
+//     que en el resto del script.
+const carpetasNoEscanear = new Set([
+  "node_modules",
+  "tmp",
+  "temp",
+  "dist",
+  "build",
+  "coverage",
+  "GevendraAutorExterno",
+  "vendor",
+]);
+async function findJavascriptFiles(directory, acc) {
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    if (entry.name.startsWith(".")) continue;
+    const entryPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      const relative = path.relative(repositoryDirectory, entryPath).split(path.sep).join("/");
+      if (carpetasNoEscanear.has(entry.name) || relative === "Web/data") continue;
+      await findJavascriptFiles(entryPath, acc);
+    } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".js")) {
+      acc.push(entryPath);
+    }
+  }
+}
+const javascriptDemoFiles = [];
+await findJavascriptFiles(repositoryDirectory, javascriptDemoFiles);
+for (const javascriptFile of javascriptDemoFiles) {
+  const relative = path.relative(repositoryDirectory, javascriptFile);
+  const texto = await readFile(javascriptFile, "utf8");
+  for (const linea of lineasInnerHtmlConConcatenacion(texto)) {
+    fail(
+      "inyeccion",
+      `${relative}:${linea.numero}: innerHTML con concatenacion o interpolacion (linea: ${linea.texto})`,
+    );
+  }
 }
 
 for (const note of notes) console.log(`info  ${note}`);

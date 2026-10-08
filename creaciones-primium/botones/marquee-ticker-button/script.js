@@ -48,7 +48,7 @@
     );
   }
   var CHIPS_HTML = CHIPS.join("");
-  tapeRow.innerHTML = CHIPS_HTML + CHIPS_HTML;
+  tapeRow.innerHTML = CHIPS_HTML.repeat(2);
 
   function smooth(src) {
     var out = [];

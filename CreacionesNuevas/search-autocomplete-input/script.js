@@ -10,7 +10,19 @@ inp.addEventListener('input',()=>{
   if(!res.length){list.classList.remove('open');return;}
   res.forEach((r,i)=>{
     const li=document.createElement('li');
-    li.innerHTML=r.replace(new RegExp('('+q+')','gi'),'<mark>$1</mark>');
+    // Resaltado sin RegExp: la entrada del usuario nunca se interpreta como patron.
+    // Se recorren todas las coincidencias (como hacia el replace global) con indexOf
+    // sobre el texto en minusculas, y cada trozo se monta con nodos y textContent.
+    const bajo=r.toLowerCase();let desde=0;let pos=bajo.indexOf(q,desde);
+    if(pos<0){li.textContent=r;}
+    else{
+      while(pos>=0){
+        li.appendChild(document.createTextNode(r.slice(desde,pos)));
+        const mark=document.createElement('mark');mark.textContent=r.slice(pos,pos+q.length);
+        li.appendChild(mark);desde=pos+q.length;pos=bajo.indexOf(q,desde);
+      }
+      li.appendChild(document.createTextNode(r.slice(desde)));
+    }
     li.addEventListener('click',()=>{inp.value=r;list.classList.remove('open');});
     list.appendChild(li);
   });

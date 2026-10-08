@@ -5,7 +5,7 @@ function gen(){
   palette.innerHTML='';
   for(let i=0;i<5;i++){
     const c=rndHex();const s=document.createElement('div');s.className='swatch';
-    s.style.background=c;s.innerHTML='<span class="sw-hex">'+c+'</span>';
+    s.style.background=c;const hex=document.createElement('span');hex.className='sw-hex';hex.textContent=c;s.appendChild(hex);
     s.addEventListener('click',()=>{navigator.clipboard?.writeText(c).catch(()=>{});showToast(c+' copied!');});
     palette.appendChild(s);
   }

@@ -4,7 +4,13 @@ document.querySelectorAll('.trigger').forEach(btn=>btn.addEventListener('click',
 function toast(type){
   const [title,sub]=msgs[type];const t=document.createElement('div');
   t.className='toast toast-'+type;
-  t.innerHTML='<span class="toast-icon">'+icons[type]+'</span><div class="toast-body"><strong>'+title+'</strong><span>'+sub+'</span></div><button class="toast-close">✕</button>';
+  const icon=document.createElement('span');icon.className='toast-icon';icon.textContent=icons[type];
+  const body=document.createElement('div');body.className='toast-body';
+  const strong=document.createElement('strong');strong.textContent=title;
+  const detail=document.createElement('span');detail.textContent=sub;
+  body.append(strong,detail);
+  const close=document.createElement('button');close.className='toast-close';close.textContent='✕';
+  t.append(icon,body,close);
   document.getElementById('stack').prepend(t);
   t.querySelector('.toast-close').onclick=()=>remove(t);
   setTimeout(()=>remove(t),4000);
