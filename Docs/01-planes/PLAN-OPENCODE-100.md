@@ -1,0 +1,183 @@
+# PLAN-OPENCODE-100: llevar Libreria_HTML_CSS al 100 %
+
+Repo: `kindred-98/Libreria_HTML_CSS` · Despliegue: https://libreria-html-css.vercel.app/Web/components.html
+Origen: auditoría del 2026-10-08 (código del repo + documentación propia). Estado de partida: sin vulnerabilidades bloqueantes, `npm audit` 0, Sonar A/A/A según `Docs/Sesion_2026-10-08.md`.
+
+Este documento es una lista de tareas para un agente de código. Cada tarea tiene **archivos**, **qué hacer** y **criterio de aceptación** comprobable. Haz las tareas en orden de prioridad (P0 → P2).
+
+---
+
+## 0. Reglas de trabajo (obligatorias)
+
+1. Una rama y una PR por bloque (`fix/seguridad-p0`, `perf/minificacion`, etc.). Nunca commits directos a `main`.
+2. Antes de cada commit y al terminar cada tarea, ejecuta y que pasen:
+   - `npm run validar` (incluye `validar-csp`)
+   - `npm test` (hoy 55/55)
+   - `npm run test:e2e` (hoy 17/17)
+   - `npm run validar:demos` (hoy 1018/1018)
+   - `npm run lint` y `npm run format:check`
+   - `npm run typecheck` (no puede subir de 15 errores heredados; presupuesto actual 38)
+3. No edites a mano los archivos generados (`Web/data/catalog.json`, `Web/data/sources/*`, `Web/sitemap.xml`, ZIP). Regenera con `npm run catalogo`, `npm run sellar`, `npm run zips`, `npm run sitemap`.
+4. No añadas dependencias de **runtime**. Solo se permite una devDependency de build para minificar (esbuild o lightningcss).
+5. No debilites ni borres tests, validadores ni presupuestos para que algo pase. Si un test falla por un cambio legítimo, explícalo en la PR.
+6. No toques `CODEOWNERS`, `SECURITY.md` ni `.github/workflows/` salvo donde una tarea lo pida expresamente.
+7. Cambios **visuales** (animaciones, anchos, estilos de la portada) se dejan en la PR marcados como "requiere revisión humana".
+8. Cada PR describe: qué cambió, cómo se verificó y el antes/después medido.
+
+---
+
+## P0: Seguridad (hacer primero)
+
+### P0-1. Blindar la dirección de donación (USDT BEP20)
+
+**Por qué:** está en el pie de todas las páginas y es lo más valioso para un atacante con acceso de escritura.
+
+**Archivos:** `Web/*.html` (pie de página), `Web/scripts/validate.mjs` o un script nuevo `Web/scripts/validar-donacion.mjs`, `package.json`, `.github/workflows/validate.yml`.
+
+**Qué hacer:**
+1. Localiza todas las apariciones de la dirección actual (`grep -rn "0xa8f0" --include=*.html --include=*.js --include=*.md .`). Debe aparecer solo donde se muestra y, si procede, en `README.md`.
+2. Crea `Web/scripts/validar-donacion.mjs` que:
+   - lea la dirección esperada de **una sola fuente** (constante en el propio script o `Web/data/donacion.json`);
+   - falle si cualquier HTML/JS/MD del repo contiene una dirección `0x` de 40 hex distinta de la esperada;
+   - falle si la esperada falta en alguna página donde debe estar.
+3. Añade el script `"validar:donacion"` a `package.json`, inclúyelo en `npm run validar` y en `validate.yml`.
+4. Añade `Web/scripts/validar-donacion.mjs` y el fichero de la dirección esperada a `.github/CODEOWNERS` (línea nueva, `@kindred-98`).
+5. Añade un test unitario en `Web/scripts/__tests__/` que verifique que el validador falla con una dirección alterada.
+
+**Aceptación:** cambiar un solo carácter de la dirección en cualquier HTML hace fallar `npm run validar` y el CI. Test unitario incluido.
+
+### P0-2. Eliminar patrones de inyección en demos copiables
+
+**Por qué:** la gente copia estas demos a apps reales. Hoy los datos son fijos, pero el patrón es un XSS en cuanto se use con entrada de usuario.
+
+**Archivos (empezar por estos):**
+- `CreacionesNuevas/notification-toast-system/script.js` (concatena `title` y `sub` en `innerHTML`)
+- `CreacionesNuevas/color-palette-generator/script.js` (concatena `c` en `innerHTML`)
+- `CreacionesNuevas/search-autocomplete-input/script.js` (`new RegExp('('+q+')','gi')` con texto del usuario + `innerHTML`)
+- `creaciones-primium/navegacion/spotlight-search-overlay/script.js` (línea ~191, concatena `b.name` en `innerHTML`)
+- Después, los 8 `innerHTML` restantes de `CreacionesNuevas/` y cualquier `innerHTML` no vacío de `creaciones-primium/` que concatene variables (`grep -rnE '\.innerHTML\s*=' creaciones-primium CreacionesNuevas --include=*.js`; descarta las asignaciones a `""`).
+
+**Qué hacer:**
+1. Sustituye `innerHTML` por `createElement` + `textContent` (y `append`). Si hay que resaltar coincidencias (`<mark>`), construye nodos: texto antes, `<mark>` con `textContent`, texto después.
+2. En `search-autocomplete-input`: no construyas un `RegExp` desde la entrada. Usa `indexOf` sobre `toLowerCase()` o escapa con `q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')`.
+3. Mantén idéntico el aspecto y el comportamiento visible.
+4. Añade una regla al validador (`Web/scripts/validate.mjs` o `smoke-demos.mjs`) que **falle** si aparece `innerHTML =` con concatenación (`+`) o interpolación (`${`) fuera de `vendor/`. Documenta la excepción permitida (asignación a cadena vacía o literal estático sin variables).
+
+**Aceptación:** `grep -rnE "\.innerHTML\s*=.*(\+|\\$\{)" creaciones-primium CreacionesNuevas --include=*.js | grep -v vendor/` no devuelve nada; `npm run validar:demos` sigue en 1018/1018; la nueva regla del validador falla si reintroduces el patrón.
+
+### P0-3. Lista blanca de tipos de archivo en demos y descargas
+
+**Por qué:** los ZIP se construyen con los archivos que declara el catálogo; nada impide hoy que se cuele un tipo nuevo (por ejemplo un `.exe`, `.php` o `.svg` con script).
+
+**Archivos:** `Web/scripts/generate-catalog.mjs`, `Web/scripts/validate.mjs`, `Web/scripts/build-zips.mjs`.
+
+**Qué hacer:**
+1. Define una lista blanca única compartida (por ejemplo en `Web/scripts/lib/`): `.html .css .js .mjs .json .png .jpg .jpeg .webp .svg .woff2 .txt .md` (ajusta a lo que ya existe en el repo; hoy hay html/css/js/png/jpg/svg/woff2/txt/json/md).
+2. `generate-catalog.mjs` y `build-zips.mjs` deben **fallar** (exit code ≠ 0) si encuentran un archivo de demo con otra extensión, o un archivo sin extensión.
+3. Para `.svg`: falla si contiene `<script`, `on*=` (atributos de evento) o `javascript:`.
+4. Añade tests unitarios con un archivo `.exe`/`.php` simulado en un directorio temporal.
+
+**Aceptación:** crear `CreacionesNuevas/x/payload.exe` hace fallar `npm run catalogo` y `npm run validar`. El estado actual del repo pasa sin cambios.
+
+---
+
+## P1: CSP, rendimiento e indexación
+
+### P1-1. CSP sin `'unsafe-inline'` en las páginas de `/Web/`
+
+**Archivos:** `vercel.json`, `Web/*.html`, `Web/scripts/validar-csp.mjs`.
+
+**Qué hacer:**
+1. Inventaría los scripts y estilos inline de `Web/*.html` (hay JSON-LD, que no ejecuta; busca `<script>` ejecutables, `onclick=`, `style="..."`).
+2. Mueve el JS inline a archivos en `Web/scripts/` o, si debe seguir inline, calcula su hash SHA-256 y añádelo a `script-src` (`'sha256-...'`). Genera los hashes en el build para que no se desincronicen.
+3. Crea en `vercel.json` una CSP **propia para `/Web/(.*)`** sin `'unsafe-inline'` en `script-src`. Mantén la CSP actual con `sandbox` para las demos (las demos sí necesitan inline).
+4. Sustituye `img-src https://*.githubusercontent.com` por los orígenes exactos que realmente se usen (comprueba con `grep -rhoE "https://[a-z0-9.-]*githubusercontent\.com" Web`). Si no se usa ninguno en `/Web/`, quítalo de esa CSP.
+5. Si Google Tag Manager exige `'unsafe-inline'`, no lo aceptes por defecto: usa hash o nonce estático; si no es viable, documenta la decisión en `Docs/` y deja GTM solo tras el consentimiento ya existente.
+6. Actualiza `validar-csp.mjs` para que verifique que `/Web/` no tiene `unsafe-inline` en `script-src`.
+
+**Aceptación:** `npm run validar:csp` pasa; con un navegador (Playwright) las seis páginas de `/Web/` cargan sin errores de CSP en consola; `npm run test:e2e` 17/17.
+
+### P1-2. Minificar JS y CSS en el build
+
+**Archivos:** `package.json`, `vercel.json` (`buildCommand`), `Web/scripts/stamp-assets.mjs`, `Web/scripts/app.js`, `Web/scripts/zip.js`, `Web/styles/site.css`, `Web/styles/team-core.css`, `DavokerDiseñador/transicion.css`.
+
+**Qué hacer:**
+1. Añade `esbuild` como devDependency fijada a versión exacta.
+2. Crea `Web/scripts/minificar.mjs` que genere versiones minificadas **solo en el build de Vercel** (no sobrescribas los fuentes del repo). Mantén los nombres de fichero que usan los HTML o actualiza `stamp-assets.mjs` para que el `?v=hash` se calcule sobre el archivo minificado.
+3. Inserta el paso en `buildCommand` de `vercel.json` antes de `stamp-assets`.
+4. Minifica también `DavokerDiseñador/transicion.css` y `davoker.html` (CSS/JS inline) si la comprobación de `validar:demos` sigue pasando; si no, deja constancia.
+5. Mide **antes y después** (bytes en bruto y con brotli) y pon la tabla en la PR. No afirmes mejoras sin esa tabla.
+
+**Aceptación:** tabla antes/después en la PR; `npm run test:e2e` y `npm run validar:demos` siguen verdes; los `?v=` de los HTML cambian de forma coherente.
+
+### P1-3. Precarga de fuentes y arranque más rápido
+
+**Archivos:** `Web/index.html`, `Web/components.html` y el resto de páginas de `/Web/`.
+
+**Qué hacer:**
+1. Añade `<link rel="preload" as="font" type="font/woff2" crossorigin>` para las fuentes que se usan en el primer pintado (identifica cuáles con una traza de Lighthouse o el panel Network; probablemente `manrope-latin.woff2`). No precargues las que no se usan arriba del pliegue.
+2. Confirma `font-display: swap` en las `@font-face`.
+3. Comprueba que no hay recursos que bloqueen el render aparte del CSS principal.
+
+**Aceptación:** Lighthouse móvil de la portada ≥ 88 en dos pasadas (hoy 84-87). Anota las cifras reales.
+
+### P1-4. Contenido inicial del catálogo sin depender de JavaScript
+
+**Por qué:** el HTML servido de `components.html` solo dice "Loading collection...". Afecta al LCP y a cómo indexan los buscadores.
+
+**Archivos:** `Web/scripts/generate-catalog.mjs`, `Web/components.html`, `Web/index.html`, `Web/scripts/app.js`.
+
+**Qué hacer:**
+1. En el build, inyecta en el HTML un bloque estático con la primera página del catálogo (los mismos elementos que `renderComponents()` pinta primero: título, categoría, enlace al detalle), dentro de un contenedor que `app.js` reemplace al hidratar.
+2. `app.js` no debe duplicar tarjetas: al arrancar vacía el contenedor y renderiza como hoy.
+3. No uses iframes en el contenido estático. Los iframes siguen montándose diferidos.
+4. Si el cambio es grande, déjalo en una PR aparte y no mezcles con P1-2.
+
+**Aceptación:** `curl -s .../components.html` contiene enlaces reales a componentes; sin JS la página muestra contenido; `npm run test:e2e` 17/17; Lighthouse SEO sigue en 100.
+
+### P1-5. Carrusel de portada
+
+**Archivos:** `Web/scripts/app.js` (`renderFeaturedComponents`, `montarPreview`).
+
+**Qué hacer:** reducir el coste de los 33 iframes sin cambiar el aspecto: montar solo los visibles y los siguientes 2-3, y desmontar los que salen de la zona de observación. Mantén el `sandbox` actual de los iframes y no añadas `allow-same-origin`.
+
+**Aceptación:** número de iframes simultáneos en el DOM ≤ 8 en la portada tras 5 s sin interacción; sin regresión en `validar:layout`; TBT medido antes/después en la PR.
+
+---
+
+## P2: Limpieza y cierre
+
+### P2-1. Coherencia documental
+- `SECURITY.md` dice que no hay releases numeradas, pero `README.md`/`CHANGELOG.md` anuncian la v1.0.0. Corrige `SECURITY.md` (tabla de versiones con soporte: `main` y `v1.0.x`). Es el único cambio permitido en ese archivo.
+- Añade a `Docs/` un `Estado_final.md` con las cifras reales de antes/después de cada tarea.
+
+### P2-2. Sonar y tipos
+- Resuelve los 4 code smells abiertos de la rama `fix/sonar-issues-after-merge` y confirma el análisis en `main`.
+- Reduce `typecheck` de 15 errores heredados a 0 si es viable sin cambios de comportamiento; si no, baja el presupuesto de 38 a 15 para que no pueda empeorar.
+
+### P2-3. Licencias (comprobación automática, no asesoría legal)
+- Script `Web/scripts/validar-licencias.mjs`: cada carpeta de demo debe tener `LICENSE`, y su autor/licencia debe aparecer en `Docs/THIRD_PARTY_NOTICES.md` o en el catálogo. Falla si falta alguno.
+- Lista en `Docs/` las demos cuya licencia no permita uso comercial o redistribución, para que una persona las revise antes de monetizar nada.
+
+### P2-4. Presupuesto de rendimiento
+- Cuando P1 esté cumplido, sube el umbral móvil de `validar:lighthouse:movil` de 80 al valor que dejen las mediciones menos 5 puntos (regla del propio repo: el presupuesto va por debajo del valor actual).
+
+---
+
+## Definición de terminado (100 %)
+
+- [ ] P0-1, P0-2 y P0-3 fusionadas, con tests.
+- [ ] `/Web/` sin `'unsafe-inline'` en `script-src`, `validar:csp` verde.
+- [ ] JS/CSS minificados en el build, con tabla antes/después.
+- [ ] Contenido del catálogo visible sin JavaScript.
+- [ ] Lighthouse móvil: portada ≥ 90 y resto ≥ 95 (dos pasadas, peor caso). Escritorio se mantiene en 100/100/100/100.
+- [ ] `npm test`, `test:e2e`, `validar`, `validar:demos` (1018/1018), lint y formato en verde.
+- [ ] SonarCloud: 0 bugs, 0 vulnerabilidades, 0 hotspots abiertos.
+- [ ] `SECURITY.md` y documentación coherentes con la release v1.0.0.
+
+## Fuera de alcance (no hacer)
+
+- No cambiar la licencia, el texto legal ni la política de privacidad.
+- No cambiar la dirección de donación ni otros datos de identidad del proyecto.
+- No reescribir demos por estética ni cambiar su diseño.
+- No introducir frameworks ni dependencias de runtime.
