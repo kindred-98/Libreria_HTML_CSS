@@ -568,6 +568,10 @@ const PAGE_SIZE = 9;
 const componentsHtmlFile = path.join(repositoryDirectory, "Web", "components.html");
 const buildCatalogOpen = "<!-- build:catalog -->";
 const buildCatalogClose = "<!-- /build:catalog -->";
+const buildFiltersAuthorsOpen = "<!-- build:filters:authors -->";
+const buildFiltersAuthorsClose = "<!-- /build:filters:authors -->";
+const buildFiltersCategoriesOpen = "<!-- build:filters:categories -->";
+const buildFiltersCategoriesClose = "<!-- /build:filters:categories -->";
 const escape = (texto) =>
   String(texto ?? "").replace(
     /[&<>"']/g,
@@ -598,22 +602,79 @@ const tarjetas = visibles
     );
   })
   .join("\n          ");
+// Chips de filtro: la misma logica que renderFilters() y renderAuthorFilters()
+// de app.js (getCategories() y getAuthors() ordenados con localeCompare,
+// etiquetas en espanol y estado inicial category="All" y author=null). Van en
+// el HTML porque los fieldsets vacios cuestan 142 px que aparecen sobre la
+// rejilla ya pintada: el CLS del presupuesto movil de CI. Si este bloque y
+// app.js se desincronizan, el test e2e "los filtros estaticos del build
+// coinciden con los que pinta app.js" falla.
+const etiquetasCategoriasEs = {
+  All: "Todas",
+  Animations: "Animaciones",
+  Buttons: "Botones",
+  Cards: "Tarjetas",
+  Controls: "Controles",
+  Effects: "Efectos",
+  Forms: "Formularios",
+  Galleries: "Galerías",
+  Loaders: "Indicadores de carga",
+  Navigation: "Navegación",
+  Other: "Otros",
+};
+const categorias = [...new Set(components.map((component) => component.category))].sort((first, second) =>
+  first.localeCompare(second),
+);
+const chipsCategorias = ["All", ...categorias]
+  .map(
+    (categoria) =>
+      `<button class="filter-button" type="button" aria-pressed="${String(categoria === "All")}">` +
+      `${escape(etiquetasCategoriasEs[categoria] ?? categoria)}</button>`,
+  )
+  .join("\n            ");
+const autoresPreferidos = ["Davoker", "kindred-98", "fatmaerm"];
+const autoresPresentes = new Set(components.map((component) => component.author).filter(Boolean));
+const autoresExtras = [...autoresPresentes]
+  .filter((author) => !autoresPreferidos.includes(author))
+  .sort((first, second) => first.localeCompare(second));
+const autoresFx = {
+  Davoker: "filter-button--liquid",
+  "kindred-98": "filter-button--datamosh",
+  fatmaerm: "filter-button--pulse",
+};
+// En espanol las etiquetas de autor son la propia clave (Davoker, kindred-98,
+// fatmaerm): translations.es.authors de app.js las mapea a si mismas.
+const chipsAutores = [...autoresPreferidos, ...autoresExtras]
+  .map((author) => {
+    const fx = autoresFx[author];
+    const clase = fx ? `filter-button ${fx}` : "filter-button";
+    // Sin ningun autor marcado (state.author = null) al cargar: pressed=false.
+    return `<button class="${clase}" type="button" aria-pressed="false">${escape(author)}</button>`;
+  })
+  .join("\n            ");
+
 const componentsHtmlOriginal = await readFile(componentsHtmlFile, "utf8");
-const openIndex = componentsHtmlOriginal.indexOf(buildCatalogOpen);
-const closeIndex = componentsHtmlOriginal.indexOf(buildCatalogClose, openIndex + buildCatalogOpen.length);
-if (openIndex < 0 || closeIndex < 0 || closeIndex < openIndex) {
-  throw new Error(
-    `components.html: no encuentro los marcadores ${buildCatalogOpen} / ${buildCatalogClose} para la primera pagina estatica`,
-  );
-}
-const before = componentsHtmlOriginal.slice(0, openIndex);
-const after = componentsHtmlOriginal.slice(closeIndex + buildCatalogClose.length);
 // El bloque reemplazado es TODO lo que va desde el marcador de apertura hasta
 // el de cierre: si se reescribe solo el contenido intermedio, los marcadores
 // se quedan en su sitio y la operacion es idempotente (re-generar produce el
-// mismo resultado si el catalogo no cambia).
-const componentsHtmlActualizado =
-  before + buildCatalogOpen + `\n          ${tarjetas}\n          ` + buildCatalogClose + after;
+// mismo resultado si el catalogo no cambia). Si falta un par de marcadores el
+// build falla en vez de dejar la pagina a medio inyectar.
+const sustituirMarcador = (html, abierto, cerrado, contenido) => {
+  const openIndex = html.indexOf(abierto);
+  const closeIndex = html.indexOf(cerrado, openIndex + abierto.length);
+  if (openIndex < 0 || closeIndex < 0 || closeIndex < openIndex) {
+    throw new Error(`components.html: no encuentro los marcadores ${abierto} / ${cerrado}`);
+  }
+  return html.slice(0, openIndex) + abierto + contenido + cerrado + html.slice(closeIndex + cerrado.length);
+};
+const componentsHtmlActualizado = [
+  [buildCatalogOpen, buildCatalogClose, `\n          ${tarjetas}\n          `],
+  [buildFiltersAuthorsOpen, buildFiltersAuthorsClose, `\n            ${chipsAutores}\n            `],
+  [buildFiltersCategoriesOpen, buildFiltersCategoriesClose, `\n            ${chipsCategorias}\n            `],
+].reduce(
+  (html, [abierto, cerrado, contenido]) => sustituirMarcador(html, abierto, cerrado, contenido),
+  componentsHtmlOriginal,
+);
 await writeFile(componentsHtmlFile, componentsHtmlActualizado, "utf8");
 
 console.log(
