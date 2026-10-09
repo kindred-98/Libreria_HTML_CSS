@@ -1028,7 +1028,18 @@ function renderAuthorFilters() {
 const previewObserver = typeof IntersectionObserver === "function"
   ? new IntersectionObserver((entries) => {
       for (const entry of entries) {
-        if (entry.isIntersecting) mountQueuedPreview(entry.target);
+        // Cada entrada trae la caja .live-preview observada. Si esta en la
+        // zona de observacion se monta el iframe; si sale, se desmonta: asi
+        // el numero de iframes vivos en la portada nunca supera los visibles
+        // + los 2-3 siguientes, en vez de los 33 que monta el render inicial.
+        // El navegador libera la memoria del iframe al sacarlo del DOM, y
+        // al volver a entrar la caja se vuelve a montar (el coste de recargar
+        // el demo se paga solo con el scroll de vuelta, no a la ida).
+        if (entry.isIntersecting) {
+          mountQueuedPreview(entry.target);
+        } else {
+          desmontarPreview(entry.target);
+        }
       }
     }, { rootMargin: "400px 0px" })
   : null;
@@ -1062,7 +1073,6 @@ function mountQueuedPreview(container) {
     ? container
     : container?.querySelector?.(".live-preview");
   if (!preview) return;
-  previewObserver?.unobserve(preview);
   if (preview.dataset.previewMounted === "true") return;
   montarPreview(preview);
 }
@@ -1136,8 +1146,20 @@ function montarPreview(preview) {
   // llegara antes que el `load`, el estado se quedaria en "loading" para
   // siempre. El temporizador de seguridad sigue poniendo "ready" pase lo que
   // pase, para que la vista previa no se quede con el texto de "cargando".
-armPreviewListeners(frame, preview);
+  armPreviewListeners(frame, preview);
   frame.src = url;
+}
+
+// Inversa de `montarPreview`: se llama cuando la caja sale de la zona de
+// observacion del `previewObserver`. Saca el iframe del DOM (asi el navegador
+// libera su memoria y deja de pintar el demo) y resetea el estado a "loading"
+// para que `mountQueuedPreview` la vuelva a montar si vuelve a entrar.
+function desmontarPreview(preview) {
+  if (preview.dataset.previewMounted !== "true") return;
+  const frame = preview.querySelector("iframe");
+  if (frame) frame.remove();
+  preview.dataset.previewMounted = "false";
+  preview.dataset.previewState = "loading";
 }
 
 function componentDetailUrl(componentId) {
