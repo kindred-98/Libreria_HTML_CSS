@@ -555,6 +555,63 @@ await mkdir(path.dirname(catalogFile), { recursive: true });
 await writeFile(catalogFile, `${JSON.stringify(components.map(toIndexEntry))}\n`, "utf8");
 await writeFile(catalogScriptFile, `window.COMPONENT_CATALOG = ${JSON.stringify(components)};\n`, "utf8");
 await writeSources(sourcesDirectory, components);
+
+// Primera pagina estatica de la rejilla: se inyecta en components.html con
+// los mismos campos que `createComponentCard` pinta al hidratar, pero sin
+// iframe (la etiqueta se monta al ejecutar, ver el comentario del marcador
+// en components.html). Se usa el mismo `pageSize` que app.js para que el
+// contenido del primer lote no salte al hidratar. La categoria que se ve
+// es la clave del catalogo (la misma que getCategoryLabel traduce al idioma
+// activo en runtime), y el `aria-label` del enlace va en espanol: el sitio
+// es bilingue y al hidratar app.js lo sustituye.
+const PAGE_SIZE = 9;
+const componentsHtmlFile = path.join(repositoryDirectory, "Web", "components.html");
+const buildCatalogOpen = "<!-- build:catalog -->";
+const buildCatalogClose = "<!-- /build:catalog -->";
+const escape = (texto) =>
+  String(texto ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  }[c]));
+const visibles = components.filter((component) => component.author !== "Davoker").slice(0, PAGE_SIZE);
+const tarjetas = visibles
+  .map((component, index) => {
+    const id = encodeURIComponent(component.id);
+    const name = escape(component.name);
+    const description = escape(component.description);
+    const category = escape(component.category);
+    return (
+      `<article class="component-card"><div class="card-preview"></div>` +
+      `<div class="card-content"><div class="component-card-top">` +
+      `<span class="component-category">${category}</span>` +
+      `<span class="component-number">${String(index + 1).padStart(3, "0")}</span>` +
+      `</div><h3>${name}</h3><p>${description}</p>` +
+      `<a class="card-link" href="./components.html?component=${id}" aria-label="Ver componente: ${name}">Ver componente<span aria-hidden="true">→</span></a>` +
+      `</div></article>`
+    );
+  })
+  .join("\n          ");
+const componentsHtmlOriginal = await readFile(componentsHtmlFile, "utf8");
+const openIndex = componentsHtmlOriginal.indexOf(buildCatalogOpen);
+const closeIndex = componentsHtmlOriginal.indexOf(buildCatalogClose, openIndex + buildCatalogOpen.length);
+if (openIndex < 0 || closeIndex < 0 || closeIndex < openIndex) {
+  throw new Error(
+    `components.html: no encuentro los marcadores ${buildCatalogOpen} / ${buildCatalogClose} para la primera pagina estatica`,
+  );
+}
+const before = componentsHtmlOriginal.slice(0, openIndex);
+const after = componentsHtmlOriginal.slice(closeIndex + buildCatalogClose.length);
+// El bloque reemplazado es TODO lo que va desde el marcador de apertura hasta
+// el de cierre: si se reescribe solo el contenido intermedio, los marcadores
+// se quedan en su sitio y la operacion es idempotente (re-generar produce el
+// mismo resultado si el catalogo no cambia).
+const componentsHtmlActualizado =
+  before + buildCatalogOpen + `\n          ${tarjetas}\n          ` + buildCatalogClose + after;
+await writeFile(componentsHtmlFile, componentsHtmlActualizado, "utf8");
+
 console.log(
   `Generated ${components.length} component entries at ${path.relative(repositoryDirectory, catalogFile)} ` +
     `and ${components.length} source files at ${path.relative(repositoryDirectory, sourcesDirectory)}.`,
