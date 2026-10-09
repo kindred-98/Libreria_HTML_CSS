@@ -46,8 +46,14 @@ import process from "node:process";
 
 import { PAGINAS, medirConLighthouse } from "./lib/lighthouse.mjs";
 
-/** Puntuacion minima de rendimiento en movil. */
-const UMBRAL_RENDIMIENTO = 85;
+/** Puntuacion minima de rendimiento en movil.
+ * Subido de 85 a 89 tras P1 segun la regla del plan: presupuesto = (peor caso
+ * observado en 30 mediciones) - 5. La peor de las 30 fue 94 en componentes
+ * (variabilidad normal de Lighthouse en headless); 94 - 5 = 89. Asi el
+ * presupuesto deja margen para la variabilidad y un error de medicion de
+ * unos 5 puntos sin permitir una regresion real.
+ */
+const UMBRAL_RENDIMIENTO = 89;
 
 /** CLS maximo por pagina. */
 const UMBRAL_CLS = 0.05;
