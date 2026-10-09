@@ -632,10 +632,10 @@ const chipsCategorias = ["All", ...categorias]
       `${escape(etiquetasCategoriasEs[categoria] ?? categoria)}</button>`,
   )
   .join("\n            ");
-const autoresPreferidos = ["Davoker", "kindred-98", "fatmaerm"];
+const autoresPreferidos = new Set(["Davoker", "kindred-98", "fatmaerm"]);
 const autoresPresentes = new Set(components.map((component) => component.author).filter(Boolean));
 const autoresExtras = [...autoresPresentes]
-  .filter((author) => !autoresPreferidos.includes(author))
+  .filter((author) => !autoresPreferidos.has(author))
   .sort((first, second) => first.localeCompare(second));
 const autoresFx = {
   Davoker: "filter-button--liquid",
