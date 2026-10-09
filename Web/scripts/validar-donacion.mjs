@@ -61,8 +61,7 @@ async function caminar(directorio, acumulado) {
     if (entrada.name.startsWith(".")) continue;
     const ruta = path.join(directorio, entrada.name);
     if (entrada.isDirectory()) {
-      if (!CARPETAS_SALTAR.has(entrada.name))
-        await caminar(ruta, acumulado); // NOSONAR (S9382): el orden de `acumulado` debe seguir el paseo en profundidad de readdir; paralelizar cambiariamos ese orden y los `fallos` se anadiriamos en otro orden.
+      if (!CARPETAS_SALTAR.has(entrada.name)) await caminar(ruta, acumulado); // NOSONAR (S9382): el orden de `acumulado` debe seguir el paseo en profundidad de readdir; paralelizar cambiariamos ese orden y los `fallos` se anadiriamos en otro orden.
     } else if (entrada.isFile() && EXTENSIONES.has(path.extname(entrada.name).toLowerCase())) {
       acumulado.push(ruta);
     }
