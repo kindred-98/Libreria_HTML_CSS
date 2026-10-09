@@ -135,7 +135,7 @@ if (!existsSync(sourcesDirectory)) {
     distribucion.set(clave, contador);
   }
   notes.push(`fuentes: ${archivos.length} componentes`);
-  for (const [licencia, datos] of [...distribucion.entries()].sort()) {
+  for (const [licencia, datos] of [...distribucion.entries()].sort(([a], [b]) => a.localeCompare(b))) {
     notes.push(`  ${licencia}: ${datos.redistribuible} redistribuibles / ${datos.total} totales`);
   }
   if (sinRedistribucionTecnica > 0) {
