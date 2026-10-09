@@ -822,17 +822,18 @@
         /* --- FONDO ESPACIAL Y EFECTOS AL CLICAR (canvas de esta
            portada, no son ninguno de los 46 efectos) ---
            #fondo-espacio va DETRÁS de todo el contenido (z-index -1,
-           por encima del color de body) y se estira al ALTO del
-           documento, así el cielo de nebulosa y estrellas llega hasta
-           el pie sin cortarse; #efectos va SOBRE la página (40), por debajo de
-           las escenas (200) y del botón de tema (150), y solo pinta
-           cuando se cliquea en cualquier parte: la animación vive en
-           el guion de esta página y pointer-events:none no deja que
-           estorbe los clics ni el scroll. */
+           por encima del color de body) y ocupa SOLO la ventana
+           (fixed): antes se estiraba al ALTO del documento y crecía
+           sin límite (cientos de MB por canvas, cielo() síncrono en
+           cada resize que nunca se encogía); #efectos va SOBRE la
+           página (40), por debajo de las escenas (200) y del botón de
+           tema (150), y solo pinta cuando se cliquea en cualquier
+           parte: la animación vive en el guion de esta página y
+           pointer-events:none no deja que estorbe los clics ni el
+           scroll. */
         #fondo-espacio {
-            position: absolute;
-            top: 0;
-            left: 0;
+            position: fixed;
+            inset: 0;
             z-index: -1;
             pointer-events: none;
         }
@@ -2934,15 +2935,15 @@
             }
 
             function medir() {
-                // alto del documento, no de la ventana: el cielo tiene
-                // que llegar hasta el pie en las capturas de página
-                // completa (el lienzo no estira el body: va absolute)
+                // La ventana, no el documento: el lienzo es fixed y
+                // antes crecia con scrollHeight hasta cientos de MB sin
+                // encogerse nunca (cielo() se rehacia en cada resize).
                 // ancho del CONTENIDO, no de la ventana: window.innerWidth
-                // incluye la barra de scroll vertical, y este lienzo es
-                // absolute, asi que un ancho de mas creaba scroll horizontal.
+                // incluye la barra de scroll vertical, y este lienzo
+                // es fixed, asi que un ancho de mas creaba scroll
+                // horizontal.
                 an = document.documentElement.clientWidth;
-                al = Math.max(window.innerHeight,
-                              document.documentElement.scrollHeight);
+                al = window.innerHeight;
                 lienzo.style.width = an + "px";
                 lienzo.style.height = al + "px";
                 lienzo.width = Math.round(an * dpr);
@@ -3070,8 +3071,7 @@
                 if (Math.random() < dt / 7000 && fugaces.length < 3) {
                     fugaces.push({
                         x: Math.random() * an * .8 - an * .1,
-                        y: (window.pageYOffset || 0)
-                           + Math.random() * window.innerHeight * .45,
+                        y: Math.random() * window.innerHeight * .45,
                         vx: 420 + Math.random() * 420,
                         vy: 190 + Math.random() * 240,
                         t: 0, vida: 700 + Math.random() * 700
@@ -3108,18 +3108,31 @@
                 ox = (e.clientX / (an || 1)) * 2 - 1;
                 oy = (e.clientY / (al || 1)) * 2 - 1;
             });
-            window.addEventListener("resize", function () {
+            // cielo() es costoso (siembra + nebulosa sincrona): resize y
+            // ResizeObserver pueden disparar muchas veces seguidas, asi
+            // que se agrupan en un solo trabajo diferido de 150 ms.
+            var redibujo = 0;
+            function repideCielo() {
+                clearTimeout(redibujo);
+                redibujo = setTimeout(function () {
+                    redibujo = 0;
+                    if (document.hidden) { return; }  // al volver, visibilitychange
+                    cielo();
+                    fotograma((window.performance && performance.now()) || 0);
+                }, 150);
+            }
+            window.addEventListener("resize", repideCielo);
+            // abrir o cerrar una carpeta del índice cambia la altura del
+            // body (y con la barra de scroll, el ancho visible)
+            if (window.ResizeObserver) {
+                new ResizeObserver(repideCielo).observe(document.body);
+            }
+            document.addEventListener("visibilitychange", function () {
+                if (document.hidden) { return; }
+                ult = 0;                 // dt del frame tras volver
                 cielo();
                 fotograma((window.performance && performance.now()) || 0);
             });
-            // abrir o cerrar una carpeta del índice cambia la altura del
-            // body: ahí el cielo se vuelve a estirar (solo en ese caso)
-            if (window.ResizeObserver) {
-                new ResizeObserver(function () {
-                    cielo();
-                    fotograma((window.performance && performance.now()) || 0);
-                }).observe(document.body);
-            }
             window.__fondo = {
                 repinta: function () {
                     tema = "";
@@ -3129,7 +3142,8 @@
             cielo();
             fotograma(0);        // primer plano sin esperar a rAF
             requestAnimationFrame(function bucle(ts) {
-                fotograma(ts);
+                // la pestaña oculta no pinta: sin fotogramas, sin CPU
+                if (!document.hidden) { fotograma(ts); }
                 requestAnimationFrame(bucle);
             });
         })();
@@ -4387,6 +4401,7 @@
                 // pinta no debe matar el bucle para siempre (las
                 // particulas se quedarian clavadas en su tope).
                 requestAnimationFrame(bucle);
+                if (document.hidden) { return; }   // pestaña oculta: sin CPU
                 var dt = ult ? Math.min(.05, (ts - ult) / 1000) : .016;
                 ult = ts;
                 try {
