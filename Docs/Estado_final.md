@@ -270,10 +270,15 @@ Al abrir la PR #22 dos comprobaciones quedaron en rojo.
   líneas con `Math.random` tocadas por P3-1/P3-3 en
   `davoker.html` (2 helpers `eleccion`, el `k` de paralaje, la `y`
   de las fugaces y el `charAt` de los destellos). Aleatoriedad
-  visual de una animación, sin valor criptográfico: resueltas con
-  `// NOSONAR (S2245)` y motivo en la propia línea, siguiendo el
-  patrón del repo y documentado en
-  `Docs/03-sonar/Sonar_decisiones.md`.
+  visual de una animación, sin valor criptográfico. **El
+  `// NOSONAR` no funcionó en este caso** (el JS vive dentro de
+  un `<script>` de un `.html`; la supresión `NOSONAR` no se
+  propaga al informe del analizador JS/TS para S2245). Se
+  cerraron vía **SonarCloud UI → Mark as Won't fix** con el motivo
+  en el comentario, y se quitaron los 5 `// NOSONAR (S2245)` del
+  fichero. Detalle y por qué en
+  `Docs/03-sonar/Sonar_decisiones.md` § "Quality Gate de la PR 22
+  (2026-10-09)".
 - Los 26 code smells de New Code no bloquean: el Quality Gate solo
   exigía Reliability y Security ≥ A sobre New Code.
 

@@ -222,8 +222,17 @@ coinciden con los que pinta app.js". CLS de `componentes`: **0.066 →
 - **S2245** ×5 (VULNERABILITY MAJOR, las 5 vulnerabilidades de New
   Code): `Math.random` en las líneas de `davoker.html` tocadas por
   P3-1/P3-3. Es aleatoriedad visual de una animación, sin valor
-  criptográfico: `// NOSONAR (S2245)` con motivo en la propia línea,
-  documentado en `Docs/03-sonar/Sonar_decisiones.md`.
+  criptográfico. **El `// NOSONAR` no surtió efecto para S2245
+  cuando el `Math.random` vive dentro de un `<script>` de un
+  `.html`**: se intentó en primer lugar (formato idéntico al que
+  funciona para S9382 en `.mjs`) y los 5 issues seguían abiertos
+  tras el análisis posterior al push. Se cerraron vía SonarCloud
+  UI (`Mark as Won't fix` con el motivo), y se quitaron los 5
+  `// NOSONAR (S2245)` del fichero. La regla general es: para
+  S2245 en JS embebido en HTML, **no usar `NOSONAR`**; usar la
+  transición `wontfix` con motivo. Detalle en
+  `Docs/03-sonar/Sonar_decisiones.md` § "Quality Gate de la PR 22
+  (2026-10-09)".
 
 ---
 

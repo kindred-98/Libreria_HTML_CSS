@@ -252,16 +252,48 @@ funcionar si dos licencias comparten prefijo. Arreglado de verdad con
 `localeCompare` por clave. Es el único bug de New Code: con este commit,
 Reliability vuelve a A.
 
-### `S2245` ×5 — `Math.random` en `davoker.html` (VULNERABILITY MAJOR, NOSONAR)
+### `S2245` ×5 — `Math.random` en `davoker.html` (VULNERABILITY MAJOR, WONTFIX)
 
 Las cinco líneas con `Math.random` que el diff de los fixes P3-1/P3-3 marcó
 como código nuevo (los dos helpers `eleccion`, el `k` de paralaje, la `y` de
 las fugaces y el `charAt` de los destellos). La animación del portal no genera
 tokens, identificadores ni nada que dependa de imprevisibilidad criptográfica:
-es aleatoriedad visual. Resueltos con `// NOSONAR (S2245)` y el motivo en la
-propia línea, el mismo patrón que los `NOSONAR (S9382)` del repo, y tal como
-dicta «La regla que se ha seguido» de este documento: el aviso se documenta
-donde se va a leer, en el fichero. Con los cinco cerrados, Security vuelve a A.
+es aleatoriedad visual.
+
+**Por qué no se cerró con `// NOSONAR` (mecánica):** se intentó en primer
+lugar, con el formato `// NOSONAR (S2245): aleatoriedad visual, sin valor
+criptografico` en la propia línea —el mismo patrón que en este repo
+funciona para `S9382` en `.mjs` (verificado: `lighthouse.mjs:112` S9382
+suprimida, ausente en la lista de issues abiertos). El push al que iba
+asociado (18:22:44, 9 de octubre) llevaba el comentario en cada una de las
+cinco líneas exactas (2913, 3023, 3074, 3169, 3831) y, sin embargo, el
+análisis posterior de SonarCloud mantuvo las cinco issues `OPEN` con
+`updateDate 19:18:10` y `status=VULNERABILITY`. El formato del comentario
+no es el problema: el problema es que **`javascript:S2245` levantado sobre
+JS embebido en `<script>` dentro de un `.html` no se suprime con
+`NOSONAR`** (la línea se mapea correctamente al informe, pero la supresión
+no se propaga desde el comentario del script al informe del analizador
+JS/TS). En `.mjs` el patrón sí funciona; en HTML embebido, no — y como el
+repositorio corre bajo SonarCloud Automatic Analysis (que ignora
+`sonar-project.properties` y solo respeta `.sonarcloud.properties`, sin
+soporte para `sonar.issue.ignore.multicriteria`), no queda un atajo de
+configuración que apague S2245 en una línea concreta.
+
+**Cómo se cerró:** los cinco issues se cerraron con **Mark as Won't fix en
+SonarCloud UI** con el comentario `Aleatoriedad visual del portal
+(Math.random para partículas, paletas y destellos). No se genera ningún
+token ni identificador criptográfico.` Los `// NOSONAR (S2245)` se quitaron
+de `davoker.html` (dejarlos solo confundiría: parecen suprimir y no
+suprimen). El motivo completo del cierre queda archivado en el issue de
+SonarCloud.
+
+**Regla operativa que sale de esto:** para `javascript:S2245` (o cualquier
+regla que se levante sobre JS embebido en `.html`), **no usar `NOSONAR`**;
+cerrar la issue con `Won't fix` o `False positive` en la UI de SonarCloud
+con el motivo. La regla `S2245` en `.mjs` (válida para todo lo que
+vivienda de `Web/scripts/**`) sí se puede tratar con `NOSONAR` como
+hasta ahora; el patrón documentado en este fichero para `S5843`, `S8786`
+y los `S9382` no cambia.
 
 Los 26 code smells restantes de New Code (`S9382` de await en bucle en los
 scripts de validación, `S1135` de TODO, etc.) no bloquean el Quality Gate y
