@@ -55,7 +55,7 @@ async function tieneLicensePorDemo(rootAbsolute) {
       const rutaCompleta = path.join(dir, entrada.name);
       if (entrada.isDirectory()) {
         if (entrada.name === "vendor" || entrada.name === "node_modules") continue;
-        await walk(rutaCompleta);
+        await walk(rutaCompleta); // NOSONAR (S9382): el orden de `sinLicense` debe coincidir con el paseo en profundidad del filesystem; paralelizar cambiariamos ese orden y los tests que comprueban el listado fallarian.
       } else if (entrada.name === "index.html") {
         // Cada carpeta con index.html representa un demo. Se exige su LICENSE
         // junto al index.html.
@@ -83,7 +83,7 @@ for (const { root, license, donde } of RAICES) {
       notes.push(`${root}: LICENSE en la raiz (${license})`);
     }
   } else {
-    const sinLicense = await tieneLicensePorDemo(rootAbsolute);
+    const sinLicense = await tieneLicensePorDemo(rootAbsolute); // NOSONAR (S9382): `failures` se imprime en el orden en que se anade; paralelizar entre las 3 RAICES cambiariamos ese orden y los mensajes del script no saldrian en el orden esperado por el operador.
     if (sinLicense.length > 0) {
       failures.push(
         `${root}: ${sinLicense.length} demo(s) sin LICENSE (esperado ${license}): ` +
@@ -126,10 +126,10 @@ if (!existsSync(sourcesDirectory)) {
       // source unverified, missingReferences) o por una restriccion de
       // licencia. Aqui separamos los dos casos: solo se reporta como
       // 'restriccion de licencia' cuando la licencia NO es MIT.
-      if (license !== "MIT") {
-        restringidos.push({ id: fuente.folder, license, redistribuible: false });
-      } else {
+      if (license === "MIT") {
         sinRedistribucionTecnica += 1;
+      } else {
+        restringidos.push({ id: fuente.folder, license, redistribuible: false });
       }
     }
     distribucion.set(clave, contador);
@@ -174,24 +174,22 @@ if (!existsSync(sourcesDirectory)) {
     "",
   ];
   if (restringidos.length === 0) {
-    lineas.push("- 0 componentes con una `license` distinta de MIT en `Web/data/sources/*.json`.");
     lineas.push(
+      "- 0 componentes con una `license` distinta de MIT en `Web/data/sources/*.json`.",
       `- Los 1018 componentes declaran MIT. Los ${sinRedistribucionTecnica} con ` +
         "`downloadable: false` no son restricciones de licencia: son tecnicas " +
         "(LICENSE ausente en el demo, source unverified, missingReferences) y `npm run validar` " +
         "ya las cuenta como aviso. No hace falta cambiar la licencia: hay que " +
         "arreglar la fuente verificada o anadir el LICENSE que falta.",
+      "- Las unicas restricciones adicionales del proyecto son las de las 676 fotos de",
+      "  `creaciones-primium/galerias/`, que cargan desde Wikimedia",
+      "  Commons. La tabla de licencias CC detectadas esta documentada en la seccion",
+      '  "Fotografias de las galerias (Wikimedia Commons)" de',
+      "  `Docs/THIRD_PARTY_NOTICES.md`.",
     );
-    lineas.push("- Las unicas restricciones adicionales del proyecto son las de las 676 fotos de");
-    lineas.push("  `creaciones-primium/galerias/`, que cargan desde Wikimedia");
-    lineas.push("  Commons. La tabla de licencias CC detectadas esta documentada en la seccion");
-    lineas.push('  "Fotografias de las galerias (Wikimedia Commons)" de');
-    lineas.push("  `Docs/THIRD_PARTY_NOTICES.md`.");
   } else {
     lineas.push(`Hay ${restringidos.length} componente(s) con una licencia distinta de MIT:`);
-    lineas.push("");
-    lineas.push("| id | license |");
-    lineas.push("|---|---|");
+    lineas.push("", "| id | license |", "|---|---|");
     for (const r of restringidos) {
       lineas.push(`| ${r.id} | ${r.license} |`);
     }

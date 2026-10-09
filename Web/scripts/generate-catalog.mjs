@@ -632,10 +632,10 @@ const chipsCategorias = ["All", ...categorias]
       `${escape(etiquetasCategoriasEs[categoria] ?? categoria)}</button>`,
   )
   .join("\n            ");
-const autoresPreferidos = ["Davoker", "kindred-98", "fatmaerm"];
+const autoresPreferidos = new Set(["Davoker", "kindred-98", "fatmaerm"]);
 const autoresPresentes = new Set(components.map((component) => component.author).filter(Boolean));
 const autoresExtras = [...autoresPresentes]
-  .filter((author) => !autoresPreferidos.includes(author))
+  .filter((author) => !autoresPreferidos.has(author))
   .sort((first, second) => first.localeCompare(second));
 const autoresFx = {
   Davoker: "filter-button--liquid",
@@ -654,9 +654,10 @@ const chipsAutores = [...autoresPreferidos, ...autoresExtras]
   .join("\n            ");
 
 const componentsHtmlOriginal = await readFile(componentsHtmlFile, "utf8");
-// El bloque reemplazado es TODO lo que va desde el marcador de apertura hasta
-// el de cierre: si se reescribe solo el contenido intermedio, los marcadores
-// se quedan en su sitio y la operacion es idempotente (re-generar produce el
+// El bloque reemplazado es la fraccion completa que va desde el marcador
+// de apertura hasta el de cierre: si se reescribe solo el contenido
+// intermedio, los marcadores se quedan en su sitio y la operacion es
+// idempotente (re-generar produce el
 // mismo resultado si el catalogo no cambia). Si falta un par de marcadores el
 // build falla en vez de dejar la pagina a medio inyectar.
 const sustituirMarcador = (html, abierto, cerrado, contenido) => {

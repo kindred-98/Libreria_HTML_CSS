@@ -58,7 +58,7 @@ export function lineasInnerHtmlConConcatenacion(texto) {
   /** @type {{numero: number, texto: string}[]} */
   const encontradas = [];
   for (let i = 0; i < lineas.length; i++) {
-    const coincidencia = lineas[i].match(patronAsignacion);
+    const coincidencia = patronAsignacion.exec(lineas[i]);
     if (!coincidencia) continue;
     const resto = coincidencia[1];
     const sinLiterales = resto.replace(literalesComilla, '""');

@@ -61,7 +61,7 @@ async function caminar(directorio, acumulado) {
     if (entrada.name.startsWith(".")) continue;
     const ruta = path.join(directorio, entrada.name);
     if (entrada.isDirectory()) {
-      if (!CARPETAS_SALTAR.has(entrada.name)) await caminar(ruta, acumulado);
+      if (!CARPETAS_SALTAR.has(entrada.name)) await caminar(ruta, acumulado); // NOSONAR (S9382): el orden de `acumulado` debe seguir el paseo en profundidad de readdir; paralelizar cambiariamos ese orden y los `fallos` se anadiriamos en otro orden.
     } else if (entrada.isFile() && EXTENSIONES.has(path.extname(entrada.name).toLowerCase())) {
       acumulado.push(ruta);
     }
@@ -103,7 +103,7 @@ export async function comprobarDonacion(raiz) {
     const ruta = path.join(raiz, relativa);
     let texto;
     try {
-      texto = await readFile(ruta, "utf8");
+      texto = await readFile(ruta, "utf8"); // NOSONAR (S9382): el orden de los `fallos` debe coincidir con el orden de PAGINAS_OBLIGATORIAS; paralelizar los invertiria.
     } catch {
       fallos.push(`${relativa}: no existe o no se puede leer`);
       continue;
@@ -121,7 +121,7 @@ export async function comprobarDonacion(raiz) {
     const relativa = path.relative(raiz, ruta).split(path.sep).join("/");
     let texto;
     try {
-      texto = await readFile(ruta, "utf8");
+      texto = await readFile(ruta, "utf8"); // NOSONAR (S9382): cada fallo se empuja a `fallos` en el orden en que se recorre `ficheros`; paralelizar cambiariamos el orden de los mensajes de salida.
     } catch {
       fallos.push(`${relativa}: no se puede leer`);
       continue;

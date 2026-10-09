@@ -204,10 +204,10 @@ for (const htmlFile of htmlFiles) {
 //    acaban en un desconocido. Se comprueba en CI porque lo comun es el cambio
 //    accidental, no el malicioso, y un error asi no se nota al mirar la pagina.
 //    La direccion no se teclea aqui: sale de Web/data/donacion.json, la fuente
-//    unica, para que no haya dos constantes que puedan divergir. El barrido de
-//    todo el repositorio vive en Web/scripts/validar-donacion.mjs, que corre en
-//    el mismo paso de CI; aqui se comprueba la presencia en las cuatro copias
-//    que el sitio carga de verdad.
+//    unica, para que no haya dos constantes que puedan divergir. El barrido
+//    completo del repositorio vive en Web/scripts/validar-donacion.mjs, que
+//    corre en el mismo paso de CI; aqui se comprueba la presencia en las
+//    cuatro copias que el sitio carga de verdad.
 let donationAddress = "";
 try {
   donationAddress = leerDireccion(
@@ -333,7 +333,7 @@ async function findJavascriptFiles(directory, acc) {
     if (entry.isDirectory()) {
       const relative = path.relative(repositoryDirectory, entryPath).split(path.sep).join("/");
       if (carpetasNoEscanear.has(entry.name) || relative === "Web/data") continue;
-      await findJavascriptFiles(entryPath, acc);
+      await findJavascriptFiles(entryPath, acc); // NOSONAR (S9382): el orden de `acc` debe seguir el paseo en profundidad de readdir; paralelizar cambiariamos ese orden y los `failures` se anadiriamos en otro orden.
     } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".js")) {
       acc.push(entryPath);
     }
@@ -343,7 +343,7 @@ const javascriptDemoFiles = [];
 await findJavascriptFiles(repositoryDirectory, javascriptDemoFiles);
 for (const javascriptFile of javascriptDemoFiles) {
   const relative = path.relative(repositoryDirectory, javascriptFile);
-  const texto = await readFile(javascriptFile, "utf8");
+  const texto = await readFile(javascriptFile, "utf8"); // NOSONAR (S9382): cada fallo se anade a `failures` en el orden en que se recorre `javascriptDemoFiles`; paralelizar cambiariamos el orden de los mensajes de salida.
   for (const linea of lineasInnerHtmlConConcatenacion(texto)) {
     fail(
       "inyeccion",
