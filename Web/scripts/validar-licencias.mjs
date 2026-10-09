@@ -55,7 +55,7 @@ async function tieneLicensePorDemo(rootAbsolute) {
       const rutaCompleta = path.join(dir, entrada.name);
       if (entrada.isDirectory()) {
         if (entrada.name === "vendor" || entrada.name === "node_modules") continue;
-        await walk(rutaCompleta);
+        await walk(rutaCompleta); // NOSONAR (S9382): el orden de `sinLicense` debe coincidir con el paseo en profundidad del filesystem; paralelizar cambiariamos ese orden y los tests que comprueban el listado fallarian.
       } else if (entrada.name === "index.html") {
         // Cada carpeta con index.html representa un demo. Se exige su LICENSE
         // junto al index.html.
@@ -83,7 +83,7 @@ for (const { root, license, donde } of RAICES) {
       notes.push(`${root}: LICENSE en la raiz (${license})`);
     }
   } else {
-    const sinLicense = await tieneLicensePorDemo(rootAbsolute);
+    const sinLicense = await tieneLicensePorDemo(rootAbsolute); // NOSONAR (S9382): `failures` se imprime en el orden en que se anade; paralelizar entre las 3 RAICES cambiariamos ese orden y los mensajes del script no saldrian en el orden esperado por el operador.
     if (sinLicense.length > 0) {
       failures.push(
         `${root}: ${sinLicense.length} demo(s) sin LICENSE (esperado ${license}): ` +

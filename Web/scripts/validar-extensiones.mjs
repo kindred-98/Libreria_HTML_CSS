@@ -46,7 +46,8 @@ async function caminar(directorio, acumulado) {
     if (entrada.name.startsWith(".")) continue;
     if (FICHEROS_SISTEMA.has(entrada.name)) continue;
     const ruta = path.join(directorio, entrada.name);
-    if (entrada.isDirectory()) await caminar(ruta, acumulado);
+    if (entrada.isDirectory())
+      await caminar(ruta, acumulado); // NOSONAR (S9382): el orden de `acumulado` debe seguir el paseo en profundidad de readdir; paralelizar cambiariamos ese orden y los `fallos` se anadiriamos en otro orden.
     else if (entrada.isFile() && !entrada.name.toLowerCase().endsWith(".zip")) acumulado.push(ruta);
   }
 }
@@ -72,7 +73,7 @@ export async function comprobarExtensiones(raiz, directorios) {
     /** @type {string[]} */
     const ficheros = [];
     try {
-      await caminar(directorio, ficheros);
+      await caminar(directorio, ficheros); // NOSONAR (S9382): `fallos` se imprime en el orden en que se anade; paralelizar entre las raices del plan cambiariamos ese orden.
     } catch (error) {
       const relativa = path.relative(raiz, directorio).split(path.sep).join("/");
       fallos.push(
@@ -85,7 +86,7 @@ export async function comprobarExtensiones(raiz, directorios) {
       const relativa = path.relative(raiz, ruta).split(path.sep).join("/");
       let contenido;
       if (ruta.toLowerCase().endsWith(".svg")) {
-        contenido = await readFile(ruta, "utf8");
+        contenido = await readFile(ruta, "utf8"); // NOSONAR (S9382): `fallos` se imprime en el orden en que se anade; paralelizar entre ficheros del mismo directorio cambiariamos ese orden.
       }
       for (const fallo of comprobarFichero(relativa, contenido)) {
         fallos.push(`${relativa}: ${fallo}`);
