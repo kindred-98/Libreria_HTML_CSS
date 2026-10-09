@@ -298,3 +298,97 @@ y los `S9382` no cambia.
 Los 26 code smells restantes de New Code (`S9382` de await en bucle en los
 scripts de validación, `S1135` de TODO, etc.) no bloquean el Quality Gate y
 siguen la tabla de «pendiente real» de más arriba.
+
+---
+
+## Sprint post-merge de la PR 22 (2026-10-09)
+
+Tras el merge de la PR 22 a `main` y la re-analisis automatica de
+SonarCloud, el contador de issues del proyecto quedo en 32 (todos
+code smells, reliability MAJOR de los 2 `S3403` aparte, ambos
+falsos positivos). El sprint vive en la rama
+`fix/sonar-post-merge-32` y se compone de 6 commits sobre `main`.
+De las 32, 28 se cierran en codigo o con `NOSONAR`; las 4
+restantes son falsos positivos confirmados y se cierran desde la
+UI de SonarCloud (`Mark as Won't fix`).
+
+### Cierres por cambio de codigo (16 issues, 4 commits)
+
+- **`S1135` x3** (INFO, `Web:S1135` x1 + `javascript:S1135` x2): los
+  tres comentarios que Sonar marcaba como "TODO pendiente" usaban la
+  palabra en espanol ("mueven todo lo que hay debajo", "es TODO lo
+  que va desde...", "el barrido de todo el repositorio..."). Se
+  reescribieron sin la palabra. `Web/components.html:118`,
+  `Web/scripts/generate-catalog.mjs:657`, `Web/scripts/validate.mjs:208`.
+  Las otras "Todo"/"todo" que quedan en el repo Sonar NO las marca
+  (la heuristica distingue marcador de tarea de adverbio).
+- **`S7776` x1** (`Web/scripts/generate-catalog.mjs:635`):
+  `autoresPreferidos` pasa de array a `Set`, y `.includes()` a
+  `.has()`. El spread de la linea 647 sigue funcionando porque un
+  `Set` es iterable. `Web/data/catalog.json` queda byte-identico
+  (1018 entradas, mismo orden).
+- **`S6594` x1** (`Web/scripts/lib/inyeccion.mjs:61`):
+  `lineas[i].match(patronAsignacion)` ->
+  `patronAsignacion.exec(lineas[i])`. API recomendada para
+  `RegExp` en una sola iteracion.
+- **`S6660` x1** (`Web/scripts/validar-licencias.mjs:129`): el
+  `if (license !== "MIT") { ... } else { if (license === "MIT") ... }`
+  se invierte para aplanar la estructura (un `if` no puede ser la
+  unica sentencia de un `else`).
+- **`S7778` x9** (`Web/scripts/validar-licencias.mjs:178-189 y
+  192-194`): 9 `lineas.push(literal)` consecutivos se consolidan
+  en dos llamadas con argumentos multiples. `Array.push` acepta
+  numero variable de argumentos. Salida byte-identica.
+- **`S9382` x3** (`Web/scripts/minificar.mjs:79, 81, 82`): el bucle
+  sobre `OBJETIVOS` (5 archivos independientes) se reemplaza por
+  `Promise.all(OBJETIVOS.map(async ...))`. Encadenar 3 awaits por
+  archivo en serie (read -> transform -> write) no aporta nada
+  porque no hay estado compartido entre iteraciones. La tabla
+  impresa despues sale identica porque `filas` mantiene el mismo
+  orden.
+
+### Cierres con NOSONAR (10 issues, 2 commits)
+
+Diez awaits en bucle que S9382 marcaba y que no se pueden
+paralelizar sin cambiar el orden de los mensajes de salida del
+script. En todos el patron es el mismo: una recursion `walk` /
+`caminar` que rellena un array en el orden de `readdir`, o un
+bucle que anade a `failures`/`fallos` con la funcion `fail()` o un
+`.push()` directo. Paralelizar invierte ese orden y los tests
+asumen el orden actual. Se anota `// NOSONAR (S9382): <motivo>` en
+la propia linea, mismo patron que `lighthouse.mjs:112`.
+
+- `Web/scripts/validar-licencias.mjs:58, 86`
+- `Web/scripts/validar-donacion.mjs:64, 106, 124`
+- `Web/scripts/validar-extensiones.mjs:49, 75, 88`
+- `Web/scripts/validate.mjs:336, 346`
+
+Verificado con `git stash` + diff de stdout: los cuatro scripts
+producen la misma salida antes y despues del cambio.
+
+### Falsos positivos cerrados en la UI de SonarCloud (4 issues)
+
+- **`S3403` x2** en
+  `creaciones-primium/formularios/insider-plan-inline/script.js:164, 232`:
+  `planElegido` se declara `let planElegido = ""` (L26) y se
+  reasigna en un `addEventListener` (L47: `planElegido = p.id;`) y
+  en otra funcion (L278). SonarJS no rastrea la reasignacion a
+  traves de un event listener y cree que el `if (planElegido === "")`
+  es siempre `false`. Mismo patron que el FP ya documentado para
+  `clinic-appointment-desk/script.js:235`.
+- **`S6551` x2** en
+  `creaciones-primium/tarjetas/busker-tip-song-card/script.js:163` y
+  `creaciones-primium/formularios/coach-athlete-profile-edit/script.js:236`:
+  las variables implicadas son siempre primitivos (`listeners` y
+  `tipped` son numeros; `v` viene de `elegidas()` que devuelve los
+  `value` de los inputs marcados y se usa como string en la linea
+  siguiente). La regla dispara por el patron de concatenacion, no
+  por inspeccion del tipo real.
+
+**Regla operativa que sale de este sprint:** para `S9382`, la
+decision entre arreglar y `NOSONAR` se reduce a una sola pregunta:
+**el bucle rellena un array o empuja a un array compartido cuyo
+orden aparece despues en la salida del script (o lo asumen los
+tests)?**. Si la respuesta es si, `NOSONAR` con el motivo en la
+propia linea; si la respuesta es no, `Promise.all` con el mismo
+orden de mapeo para que la salida sea identica.
