@@ -204,10 +204,10 @@ for (const htmlFile of htmlFiles) {
 //    acaban en un desconocido. Se comprueba en CI porque lo comun es el cambio
 //    accidental, no el malicioso, y un error asi no se nota al mirar la pagina.
 //    La direccion no se teclea aqui: sale de Web/data/donacion.json, la fuente
-//    unica, para que no haya dos constantes que puedan divergir. El barrido de
-//    todo el repositorio vive en Web/scripts/validar-donacion.mjs, que corre en
-//    el mismo paso de CI; aqui se comprueba la presencia en las cuatro copias
-//    que el sitio carga de verdad.
+//    unica, para que no haya dos constantes que puedan divergir. El barrido
+//    completo del repositorio vive en Web/scripts/validar-donacion.mjs, que
+//    corre en el mismo paso de CI; aqui se comprueba la presencia en las
+//    cuatro copias que el sitio carga de verdad.
 let donationAddress = "";
 try {
   donationAddress = leerDireccion(
