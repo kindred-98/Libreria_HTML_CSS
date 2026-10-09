@@ -333,7 +333,7 @@ async function findJavascriptFiles(directory, acc) {
     if (entry.isDirectory()) {
       const relative = path.relative(repositoryDirectory, entryPath).split(path.sep).join("/");
       if (carpetasNoEscanear.has(entry.name) || relative === "Web/data") continue;
-      await findJavascriptFiles(entryPath, acc);
+      await findJavascriptFiles(entryPath, acc); // NOSONAR (S9382): el orden de `acc` debe seguir el paseo en profundidad de readdir; paralelizar cambiariamos ese orden y los `failures` se anadiriamos en otro orden.
     } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".js")) {
       acc.push(entryPath);
     }
@@ -343,7 +343,7 @@ const javascriptDemoFiles = [];
 await findJavascriptFiles(repositoryDirectory, javascriptDemoFiles);
 for (const javascriptFile of javascriptDemoFiles) {
   const relative = path.relative(repositoryDirectory, javascriptFile);
-  const texto = await readFile(javascriptFile, "utf8");
+  const texto = await readFile(javascriptFile, "utf8"); // NOSONAR (S9382): cada fallo se anade a `failures` en el orden en que se recorre `javascriptDemoFiles`; paralelizar cambiariamos el orden de los mensajes de salida.
   for (const linea of lineasInnerHtmlConConcatenacion(texto)) {
     fail(
       "inyeccion",
