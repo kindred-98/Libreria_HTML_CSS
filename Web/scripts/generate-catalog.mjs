@@ -569,13 +569,17 @@ const componentsHtmlFile = path.join(repositoryDirectory, "Web", "components.htm
 const buildCatalogOpen = "<!-- build:catalog -->";
 const buildCatalogClose = "<!-- /build:catalog -->";
 const escape = (texto) =>
-  String(texto ?? "").replace(/[&<>"']/g, (c) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;",
-  }[c]));
+  String(texto ?? "").replace(
+    /[&<>"']/g,
+    (c) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[c],
+  );
 const visibles = components.filter((component) => component.author !== "Davoker").slice(0, PAGE_SIZE);
 const tarjetas = visibles
   .map((component, index) => {
