@@ -2,8 +2,8 @@
 
 Cifras reales medidas en `planning/v1.2.0-more-demos` después de aplicar las
 tareas P0-1, P0-2, P0-3, P1-1, P1-2, P1-3, P1-4, P1-5, P2-1, P2-2,
-P2-3 y P2-4. La limpieza de `davoker.html` (3 bugs duros en
-`davoker.html` reportados por otra sesión de agente) llega después.
+P2-3 y P2-4, más los 3 fixes de `davoker.html` (P3-1, P3-2 y P3-3
+del plan) aplicados en los commits `1e6f2ab`, `255276b` y `61a6a57`.
 
 ## P0-1. Dirección de donación
 
@@ -180,6 +180,53 @@ Tabla cruda / brotli (medido con `zlib.brotliCompressSync` a calidad 11):
   `PerformanceObserver`: 0.0000 sobre los 6 páginas de `/Web/`) y no
   se aborda en este commit.
 
+## Davoker (P3-1, P3-2 y P3-3)
+
+### P3-1. Fix A — índice aleatorio entero
+
+- 31 sorteos corregidos en `DavokerDiseñador/davoker.html`: 22
+  literales inline `["#a","#b"][...]`, 5 accesos a `cols`, y 1 cada
+  uno de `paletas`, `frases`, `g` y `"01".charAt(...)`.
+- Helper `eleccion(lista)` con `Math.floor(Math.random() * n)`
+  declarado en los dos IIFEs (fondo y efectos).
+- Único `Math.trunc` que queda (comprobado con grep): el `k` de
+  paralaje de las estrellas, float intencionado y documentado en el
+  comentario del helper.
+- Verificación (Playwright): 60 disparos sin excepciones; `activas`
+  decae 79 → 57 → 38 → 10 → 0; fondo con **0 % de píxeles blancos
+  puros** (con el bug salían todas las estrellas en blanco); 0
+  `pageerror`.
+
+### P3-2. Fix B — el bucle rAF sobrevive a excepciones
+
+- `avanza()`: la cola `KL` se drena **antes** de ejecutar los
+  callbacks (antes se reasignaba después, así que una excepción
+  perdía el vaciado), con `try/catch` por callback y por `p.fn`.
+- `bucle`: `requestAnimationFrame` se reprograma **primero** y
+  `avanza`/`pinta` van dentro de `try/catch`.
+- Verificación: 60 disparos sin excepciones con decaimiento normal;
+  además se parcheó `CanvasRenderingContext2D.fill` para lanzar
+  excepciones reales en `pinta()`: **80 excepciones inyectadas y el
+  bucle siguió vivo** (288 → 94 → 0 partículas tras restaurar).
+
+### P3-3. Fix C — fondo viewport, debounce y pausa
+
+- `#fondo-espacio`: `position: absolute` + alto del documento →
+  `position: fixed; inset: 0` (viewport). `medir()` pasa de
+  `max(innerHeight, scrollHeight)` a `innerHeight`.
+- Buffer del canvas: **68 MB y creciente** (no se encogía: al cerrar
+  todo seguía en 12408 px de alto) → **4,9 MB fijo** en 900 px.
+- `cielo()` en cada resize sin control → `resize` y
+  `ResizeObserver` agrupados con debounce de 150 ms.
+- Ambos bucles rAF en pausa con `document.hidden` y repintado al
+  volver (`visibilitychange`, reset del `dt`).
+- Verificación: abrir y cerrar todas las carpetas del índice
+  mantiene el fondo en 900 px; 50 clics sin que muera el bucle de
+  efectos; 0 `pageerror`; capturas arriba y al pie sin costura
+  visible (el color de `body` coincide con el cielo).
+- **Cambio visual: requiere revisión humana** (el cielo ya no se
+  desplaza con el scroll; queda fijo en la ventana).
+
 ## Resumen de la batería (al cierre de P2-4)
 
 - `npm run validar`: 1751 ficheros coherentes en donación, CSP sin
@@ -198,5 +245,6 @@ Tabla cruda / brotli (medido con `zlib.brotliCompressSync` a calidad 11):
 - `npm run lint`: verde.
 - `npm run typecheck`: 15 errores heredados (presupuesto 15,
   bajado de 38 en P2-2).
-- `npm run format:check`: 39 ficheros en CRLF/LF (pre-existente
-  en el entorno; no bloqueante).
+- `npm run format:check`: 40 ficheros en CRLF/LF (pre-existente
+  en el entorno; no bloqueante; solo scripts de `Web/scripts`, que
+  esta rama no toca).

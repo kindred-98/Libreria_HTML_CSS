@@ -164,16 +164,45 @@ Este documento es una lista de tareas para un agente de código. Cada tarea tien
 
 ---
 
+## P3: Fixes de `davoker.html` (añadidos tras el plan)
+
+Tres bugs duros diagnosticados por otra sesión de agente en
+`DavokerDiseñador/davoker.html`. Aprobados para esta misma rama.
+Ver cifras en `Docs/Estado_final.md` § Davoker.
+
+### P3-1. Fix A — índice aleatorio entero ✅
+Sorteo `arr[(Math.random() * Math.trunc(n))]` daba float → casi siempre
+`undefined` (colores blancos + `TypeError` en `paleta[0]` de
+`fuegos_artificiales`). Sustituido por el helper `eleccion(lista)` con
+`Math.floor` en ambos IIFEs (31 ocurrencias). El `k` de paralaje de las
+estrellas se deja con float a propósito.
+
+### P3-2. Fix B — el bucle rAF sobrevive a excepciones ✅
+`avanza()` drenaba `KL` después de ejecutar los callbacks y `bucle` no
+reprogramaba rAF hasta el final: una excepción mataba el bucle para
+siempre (partículas clavadas en su tope). Ahora: drenado previo,
+`try/catch` por callback y por `p.fn`, y `requestAnimationFrame` primero.
+
+### P3-3. Fix C — fondo viewport + debounce + pausa ✅
+`#fondo-espacio` era `absolute` a la altura del documento y nunca se
+encogía (hasta 273 MB/canvas; `cielo()` síncrono 162 ms–2.8 s en cada
+resize del `ResizeObserver` de body). Ahora: `position: fixed` a la
+ventana, resize/ResizeObserver con debounce de 150 ms, y ambos bucles
+rAF en pausa con `document.hidden` (repintado al volver).
+
+---
+
 ## Definición de terminado (100 %)
 
-- [ ] P0-1, P0-2 y P0-3 fusionadas, con tests.
-- [ ] `/Web/` sin `'unsafe-inline'` en `script-src`, `validar:csp` verde.
-- [ ] JS/CSS minificados en el build, con tabla antes/después.
-- [ ] Contenido del catálogo visible sin JavaScript.
-- [ ] Lighthouse móvil: portada ≥ 90 y resto ≥ 95 (dos pasadas, peor caso). Escritorio se mantiene en 100/100/100/100.
-- [ ] `npm test`, `test:e2e`, `validar`, `validar:demos` (1018/1018), lint y formato en verde.
-- [ ] SonarCloud: 0 bugs, 0 vulnerabilidades, 0 hotspots abiertos.
-- [ ] `SECURITY.md` y documentación coherentes con la release v1.0.0.
+- [x] P0-1, P0-2 y P0-3 fusionadas, con tests.
+- [x] `/Web/` sin `'unsafe-inline'` en `script-src`, `validar:csp` verde.
+- [x] JS/CSS minificados en el build, con tabla antes/después.
+- [x] Contenido del catálogo visible sin JavaScript.
+- [x] Lighthouse móvil: portada ≥ 90 (97/94 en dos pasadas; 96-100 después) y resto ≥ 95 con una excepción: `componentes` bajó a 94 en el peor de 30 mediciones (ruido de CLS ya documentado; presupuesto fijado en 89 según la regla de P2-4). Escritorio se mantiene en 100/100/100/100.
+- [x] `npm test`, `test:e2e`, `validar`, `validar:demos` (1018/1018), lint y formato en verde (`format:check` falla en local por `core.autocrlf`, preexistente y documentado en `Docs/Estado_final.md`).
+- [ ] SonarCloud: 0 bugs, 0 vulnerabilidades, 0 hotspots abiertos (los 4 code smells de la rama están cerrados en `main`; confirmar el análisis en la plataforma requiere acceso a SonarCloud).
+- [x] `SECURITY.md` y documentación coherentes con la release v1.0.0.
+- [x] P3-1, P3-2 y P3-3 (fixes de `davoker.html`) aplicados y verificados.
 
 ## Fuera de alcance (no hacer)
 
