@@ -192,17 +192,53 @@ rAF en pausa con `document.hidden` (repintado al volver).
 
 ---
 
+## P4: CI verde en la PR #22 (añadido tras abrir la PR)
+
+Dos comprobaciones de CI bloqueaban el merge de la PR #22:
+`validar:lighthouse:movil` (CLS de `componentes`) y el Quality Gate
+de SonarCloud sobre New Code.
+
+### P4-1. CLS de `componentes` (0.066 > 0.05) ✅
+
+Causa raíz (no era ruido): los `fieldset` de filtros del HTML
+estático estaban **vacíos** y `app.js` los rellenaba al llegar
+`catalog.json`, después del primer pintado: +142 px (32 de autor +
+110 de categoría) que movían la rejilla 154 px hacia abajo
+(medido: y=436 estático → y=590 hidratado). `generate-catalog.mjs`
+ahora inyecta los chips de filtro en build, entre los marcadores
+`<!-- build:filters:authors -->` y `<!-- build:filters:categories -->`,
+con las etiquetas en español (idioma por defecto) y el mismo markup
+que `renderFilters`/`renderAuthorFilters`; al hidratar la sustitución
+es geométricamente idéntica y no salta. La paridad estática↔runtime
+la garantiza el nuevo test e2e "los filtros estáticos del build
+coinciden con los que pinta app.js". CLS de `componentes`: **0.066 →
+0** (3 corridas locales de Lighthouse móvil), rendimiento 95 → 96-97.
+
+### P4-2. Quality Gate de SonarCloud (Reliability D, Security C) ✅
+
+- **S2871** (BUG CRITICAL, único bug de New Code): `.sort()` sin
+  comparador en `validar-licencias.mjs`. Arreglado de verdad con
+  `localeCompare` por clave.
+- **S2245** ×5 (VULNERABILITY MAJOR, las 5 vulnerabilidades de New
+  Code): `Math.random` en las líneas de `davoker.html` tocadas por
+  P3-1/P3-3. Es aleatoriedad visual de una animación, sin valor
+  criptográfico: `// NOSONAR (S2245)` con motivo en la propia línea,
+  documentado en `Docs/03-sonar/Sonar_decisiones.md`.
+
+---
+
 ## Definición de terminado (100 %)
 
 - [x] P0-1, P0-2 y P0-3 fusionadas, con tests.
 - [x] `/Web/` sin `'unsafe-inline'` en `script-src`, `validar:csp` verde.
 - [x] JS/CSS minificados en el build, con tabla antes/después.
 - [x] Contenido del catálogo visible sin JavaScript.
-- [x] Lighthouse móvil: portada ≥ 90 (97/94 en dos pasadas; 96-100 después) y resto ≥ 95 con una excepción: `componentes` bajó a 94 en el peor de 30 mediciones (ruido de CLS ya documentado; presupuesto fijado en 89 según la regla de P2-4). Escritorio se mantiene en 100/100/100/100.
+- [x] Lighthouse móvil: portada ≥ 90 (97/94 en dos pasadas; 96-100 después) y resto ≥ 95 con una excepción: `componentes` bajó a 94 en el peor de 30 mediciones (ruido de CLS ya documentado; presupuesto fijado en 89 según la regla de P2-4). Escritorio se mantiene en 100/100/100/100. El CLS intermitente de `componentes` (0.066) se corrigió de raíz en P4-1: ahora CLS 0.
 - [x] `npm test`, `test:e2e`, `validar`, `validar:demos` (1018/1018), lint y formato en verde (`format:check` falla en local por `core.autocrlf`, preexistente y documentado en `Docs/Estado_final.md`).
-- [ ] SonarCloud: 0 bugs, 0 vulnerabilidades, 0 hotspots abiertos (los 4 code smells de la rama están cerrados en `main`; confirmar el análisis en la plataforma requiere acceso a SonarCloud).
+- [ ] SonarCloud: 0 bugs, 0 vulnerabilidades, 0 hotspots abiertos (los 4 code smells de la rama están cerrados en `main`; el Quality Gate de la PR #22 se arregló en P4-2 con el comparador de `validar-licencias.mjs` y 5 NOSONAR en `davoker.html`; confirmar el análisis en la plataforma requiere acceso a SonarCloud tras el re-análisis).
 - [x] `SECURITY.md` y documentación coherentes con la release v1.0.0.
 - [x] P3-1, P3-2 y P3-3 (fixes de `davoker.html`) aplicados y verificados.
+- [x] P4-1 y P4-2 (CI de la PR #22: CLS de `componentes` y Quality Gate de SonarCloud) aplicados y verificados.
 
 ## Fuera de alcance (no hacer)
 

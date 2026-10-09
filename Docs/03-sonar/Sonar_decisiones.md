@@ -234,3 +234,35 @@ La última medición global quedó en **1,5 %**. Se excluyen de CPD solo los 119
 `index.html` de Davoker que repetían scaffolding autónomo; el resto de HTML, JS
 y CSS conserva CPD. `npm run duplicados` dio cero pares por encima de 0,90. El
 análisis final de la nueva PR confirmará que estos cuatro issues desaparecen.
+
+## Quality Gate de la PR 22 (2026-10-09)
+
+La PR de la rama única `planning/v1.2.0-more-demos` tuvo el Quality Gate en
+rojo con dos condiciones sobre New Code: **Reliability Rating D** y
+**Security Rating C**. API (`/api/issues/search?pullRequest=22`): 32 issues
+de los que 1 era BUG y 5 VULNERABILIDADES; los otros 26 son code smells, que
+no bloquean.
+
+### `S2871` — `.sort()` sin función comparadora (BUG CRITICAL, arreglado)
+
+`validar-licencias.mjs` ordenaba las entradas del `Map` de distribución con
+`.sort()` sin comparador: convierte cada par `[clave, datos]` a cadena y
+ordena por `"MIT,[object Object]"`, que funciona por accidente y deja de
+funcionar si dos licencias comparten prefijo. Arreglado de verdad con
+`localeCompare` por clave. Es el único bug de New Code: con este commit,
+Reliability vuelve a A.
+
+### `S2245` ×5 — `Math.random` en `davoker.html` (VULNERABILITY MAJOR, NOSONAR)
+
+Las cinco líneas con `Math.random` que el diff de los fixes P3-1/P3-3 marcó
+como código nuevo (los dos helpers `eleccion`, el `k` de paralaje, la `y` de
+las fugaces y el `charAt` de los destellos). La animación del portal no genera
+tokens, identificadores ni nada que dependa de imprevisibilidad criptográfica:
+es aleatoriedad visual. Resueltos con `// NOSONAR (S2245)` y el motivo en la
+propia línea, el mismo patrón que los `NOSONAR (S9382)` del repo, y tal como
+dicta «La regla que se ha seguido» de este documento: el aviso se documenta
+donde se va a leer, en el fichero. Con los cinco cerrados, Security vuelve a A.
+
+Los 26 code smells restantes de New Code (`S9382` de await en bucle en los
+scripts de validación, `S1135` de TODO, etc.) no bloquean el Quality Gate y
+siguen la tabla de «pendiente real» de más arriba.

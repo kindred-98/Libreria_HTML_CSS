@@ -174,11 +174,11 @@ Tabla cruda / brotli (medido con `zlib.brotliCompressSync` a calidad 11):
   sobre la peor observada para absorver la variabilidad normal de
   Lighthouse en headless.
 - El umbral de CLS sigue en 0.05. En 2 de las 30 mediciones de
-  verificación, `componentes` mostró CLS 0.066, que sigue fallando
-  el presupuesto de CLS: la variabilidad intermitente 0.05-0.07 ya
-  estaba documentada en P1-4 y P1-5 (medida con
-  `PerformanceObserver`: 0.0000 sobre los 6 páginas de `/Web/`) y no
-  se aborda en este commit.
+  verificación, `componentes` mostró CLS 0.066, que superaba el
+  presupuesto. Aquí se atribuyó a "variabilidad intermitente" (P1-4
+  y P1-5), pero tenía causa raíz y se corrigió después, en el
+  commit de CI de la PR #22: ver § P4. CLS tras ese fix: 0 en tres
+  corridas locales de Lighthouse móvil.
 
 ## Davoker (P3-1, P3-2 y P3-3)
 
@@ -227,24 +227,83 @@ Tabla cruda / brotli (medido con `zlib.brotliCompressSync` a calidad 11):
 - **Cambio visual: requiere revisión humana** (el cielo ya no se
   desplaza con el scroll; queda fijo en la ventana).
 
-## Resumen de la batería (al cierre de P2-4)
+## P4. CI de la PR #22 (CLS y Quality Gate)
 
-- `npm run validar`: 1751 ficheros coherentes en donación, CSP sin
+Al abrir la PR #22 dos comprobaciones quedaron en rojo.
+
+### P4-1. CLS de `componentes`: 0.066 → 0
+
+- **Causa raíz** (no era ruido intermitente, como se creía en P1-4
+  y P1-5): los `fieldset#author-filters` y `fieldset#category-filters`
+  del HTML estático estaban vacíos; `app.js` los rellenaba con los
+  chips al cargar `catalog.json`, después del primer pintado. Medido
+  con y sin JavaScript a 412 px: los fieldsets pasaban de 0 a
+  **32 + 110 px** y la rejilla se movía de y=436 a y=590
+  (**+154 px**), justo el shift de 0.066 que veía Lighthouse
+  (`layout-shifts`: un único evento en `#component-grid`).
+- **Fix**: `generate-catalog.mjs` inyecta los chips de filtro en
+  build entre los marcadores `<!-- build:filters:authors -->` y
+  `<!-- build:filters:categories -->`, con las etiquetas en español
+  (idioma por defecto del sitio), el mismo orden (`localeCompare`,
+  igual que `getCategories`/`getAuthors`), las mismas clases (incluidas
+  las animaciones `filter-button--liquid/datamosh/pulse`) y el mismo
+  `aria-pressed` inicial (`Todas` activa, ningún autor). Al hidratar,
+  `renderFilters`/`renderAuthorFilters` sustituyen el bloque por
+  botones geométricamente idénticos: no hay movimiento.
+- **Guard**: nuevo test e2e "componentes: los filtros estáticos del
+  build coinciden con los que pinta app.js" (lee los chips con
+  JavaScript desactivado y los compara con los hidratados: texto,
+  clase, `aria-pressed` y `type`). Si las etiquetas de
+  `translations.es` de `app.js` cambian sin cambiarlas en el build,
+  el test falla en CI.
+- **Medición**: CLS de `componentes` con Lighthouse móvil: **0 en 3
+  corridas locales** (antes 0.066 reproducido en la misma sonda);
+  rendimiento 95 → 96-97.
+
+### P4-2. Quality Gate de SonarCloud (New Code: Reliability D, Security C)
+
+- **1 BUG**: `javascript:S2871` (CRITICAL) en
+  `validar-licencias.mjs:138`, `.sort()` sin función comparadora
+  sobre las entradas del `Map`. Arreglado con
+  `localeCompare` por clave.
+- **5 VULNERABILIDADES**: `javascript:S2245` (MAJOR) en las cinco
+  líneas con `Math.random` tocadas por P3-1/P3-3 en
+  `davoker.html` (2 helpers `eleccion`, el `k` de paralaje, la `y`
+  de las fugaces y el `charAt` de los destellos). Aleatoriedad
+  visual de una animación, sin valor criptográfico: resueltas con
+  `// NOSONAR (S2245)` y motivo en la propia línea, siguiendo el
+  patrón del repo y documentado en
+  `Docs/03-sonar/Sonar_decisiones.md`.
+- Los 26 code smells de New Code no bloquean: el Quality Gate solo
+  exigía Reliability y Security ≥ A sobre New Code.
+
+## Resumen de la batería (al cierre de P4)
+
+- `npm run validar`: 1753 ficheros coherentes en donación, CSP sin
   advertencias.
 - `npm run validar:licencias`: 0 componentes con licencia distinta
   de MIT; las tres raíces tienen su `LICENSE` esperado.
 - `npm test`: 81/81.
-- `npm run test:e2e`: 17/17.
+- `npm run test:e2e`: 18/18 (el décimo octavo es el test de paridad
+  de filtros estáticos↔hidratados de P4-1).
 - `npm run validar:demos`: 1018/1018.
 - `npm run validar:layout`: 184/184 medidas.
 - `npm run validar:html`: verde.
-- `npm run validar:lighthouse:movil`: 5 corridas consecutivas
-  (30 mediciones) en 95-100 con el nuevo umbral 89.
-- `npm run validar:lighthouse` (desktop): 5 corridas en 100 en
-  performance, a11y, best-practices y seo.
+- `npm run validar:a11y`: sin violaciones serious ni critical en
+  24 pasadas (12 reglas avisadas, preexistentes).
+- `npm run validar:lighthouse:movil` tras P4: 3 corridas completas;
+  `componentes` con **CLS 0** en todas (antes 0.066 reproducido de
+  forma estable) y las 6 páginas dentro de presupuesto en 2 de las 3
+  corridas. En la restante, `team core` marcó CLS 0.052 (umbral
+  0.05): es una página que P4 no toca, estable en 0.013-0.016 en 8
+  mediciones sueltas, y su pico puntual queda aquí registrado por si
+  vuelve a salir en CI.
+- `npm run validar:lighthouse` (desktop): 6/6 páginas por encima del
+  umbral en las 4 categorías (100/99/100/100/100/100).
 - `npm run lint`: verde.
 - `npm run typecheck`: 15 errores heredados (presupuesto 15,
   bajado de 38 en P2-2).
-- `npm run format:check`: 40 ficheros en CRLF/LF (pre-existente
-  en el entorno; no bloqueante; solo scripts de `Web/scripts`, que
-  esta rama no toca).
+- `npm run format:check`: 39 ficheros en CRLF/LF (pre-existente
+  en el entorno; no bloqueante en CI, donde los ficheros llegan en
+  LF: los ficheros tocados por P4 pasan `prettier --check` con
+  contenido LF).
