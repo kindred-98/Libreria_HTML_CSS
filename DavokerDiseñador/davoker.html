@@ -3271,18 +3271,30 @@
                 reloj += ds;
                 var i, j, p, arr;
                 if (KL.length) {
-                    arr = [];
-                    for (i = 0; i < KL.length; i++) {
-                        if (KL[i].t <= reloj) { KL[i].fn(); }
-                        else { arr.push(KL[i]); }
+                    // Se drena ANTES de ejecutar: un callback puede
+                    // empujar cola() nueva y una excepcion no debe dejar
+                    // la cola sin vaciar ni repetir los mismos callbacks.
+                    arr = KL;
+                    KL = [];
+                    for (i = 0; i < arr.length; i++) {
+                        if (arr[i].t <= reloj) {
+                            try { arr[i].fn(); }
+                            catch (e) {
+                                if (window.console) { console.error("cola:", e); }
+                            }
+                        } else { KL.push(arr[i]); }
                     }
-                    KL = arr;
                 }
                 for (i = P.length - 1; i >= 0; i--) {
                     p = P[i];
                     p.t += ds;
                     if (p.t >= p.vida) { P.splice(i, 1); continue; }
-                    if (p.fn) { p.fn(p, ds); }
+                    if (p.fn) {
+                        try { p.fn(p, ds); }
+                        catch (e) {
+                            if (window.console) { console.error("particula:", e); }
+                        }
+                    }
                     p.vy += p.g * ds;
                     var f = 1 - p.rz * ds;
                     if (f < 0) { f = 0; }
@@ -4371,11 +4383,18 @@
             }
 
             function bucle(ts) {
+                // rAF se reprograma PRIMERO: una excepcion en avanza o
+                // pinta no debe matar el bucle para siempre (las
+                // particulas se quedarian clavadas en su tope).
+                requestAnimationFrame(bucle);
                 var dt = ult ? Math.min(.05, (ts - ult) / 1000) : .016;
                 ult = ts;
-                avanza(dt);
-                pinta();
-                requestAnimationFrame(bucle);
+                try {
+                    avanza(dt);
+                    pinta();
+                } catch (e) {
+                    if (window.console) { console.error("efectos:", e); }
+                }
             }
 
             document.addEventListener("click", function (e) {
