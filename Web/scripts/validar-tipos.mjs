@@ -1,7 +1,7 @@
 /**
  * Puerta de entrada del typecheck.
  *
- * `tsc --checkJs` sobre `Web/scripts/**` (los scripts de Node) encuentra 38
+ * `tsc --checkJs` sobre `Web/scripts/**` (los scripts de Node) encuentra 15
  * errores de tipado hoy, todos en codigo que ya funcionaba. Ponerlos a cero
  * de golpe seria un PR de tipos Giant que mezclaria con lo que se esta
  * tocando en cada commit, asi que en vez de eso esto fija un presupuesto:
@@ -24,7 +24,7 @@ import { fileURLToPath } from "node:url";
  * Numero maximo de errores de tipado tolerados en todo `Web/scripts`.
  * Bajar este numero es trabajo accepted de la Fase 0; subirlo, no.
  */
-const PRESUPUESTO_TOTAL = 38;
+const PRESUPUESTO_TOTAL = 15;
 
 /** Rutas que tienen que estar a cero errores, sin margen. */
 const SIN_DEUDA = [/Web[\\/]scripts[\\/]lib[\\/]/, /Web[\\/]scripts[\\/]__tests__[\\/]/];

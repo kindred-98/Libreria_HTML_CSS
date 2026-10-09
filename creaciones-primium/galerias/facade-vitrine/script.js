@@ -41,7 +41,10 @@
     travel();
 
     var d = OBJ[at];
-    document.getElementById("sNo").innerHTML = pad(at + 1) + " <i>/ 09</i>";
+    var sNo = document.getElementById("sNo");
+    var sNoTotal = document.createElement("i");
+    sNoTotal.textContent = "/ 09";
+    sNo.replaceChildren(pad(at + 1) + " ", sNoTotal);
     document.getElementById("sName").textContent = d.name;
     document.getElementById("sNote").textContent = d.note;
     document.getElementById("sUse").textContent = d.use;

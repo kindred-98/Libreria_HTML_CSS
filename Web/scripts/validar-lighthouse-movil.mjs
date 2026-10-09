@@ -28,7 +28,7 @@
  * 97, asi que 80 dejaba 13 puntos de margen inutil. Con 85 quedan **ocho
  * puntos** sobre el peor valor: una regresion normal lo dispara y la
  * variacion de la medicion no. El plan de subida esta en
- * `Docs/Presupuestos_rendimiento.md` §6.
+ * `Docs/05-rendimiento/Presupuestos_rendimiento.md` §6.
  *
  * ## Por que el de CLS es 0,05
  *
@@ -46,8 +46,14 @@ import process from "node:process";
 
 import { PAGINAS, medirConLighthouse } from "./lib/lighthouse.mjs";
 
-/** Puntuacion minima de rendimiento en movil. */
-const UMBRAL_RENDIMIENTO = 85;
+/** Puntuacion minima de rendimiento en movil.
+ * Subido de 85 a 89 tras P1 segun la regla del plan: presupuesto = (peor caso
+ * observado en 30 mediciones) - 5. La peor de las 30 fue 94 en componentes
+ * (variabilidad normal de Lighthouse en headless); 94 - 5 = 89. Asi el
+ * presupuesto deja margen para la variabilidad y un error de medicion de
+ * unos 5 puntos sin permitir una regresion real.
+ */
+const UMBRAL_RENDIMIENTO = 89;
 
 /** CLS maximo por pagina. */
 const UMBRAL_CLS = 0.05;
@@ -119,6 +125,6 @@ if (fallos.length > 0) {
 } else {
   console.log(
     `Las ${filas.length} paginas dentro de presupuesto. El umbral se sube cuando el ` +
-      "margen sea holgado (ver Docs/Presupuestos_rendimiento.md).",
+      "margen sea holgado (ver Docs/05-rendimiento/Presupuestos_rendimiento.md).",
   );
 }

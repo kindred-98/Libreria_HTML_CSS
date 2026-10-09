@@ -2,6 +2,7 @@ import { lstat, readdir, readFile, mkdir, realpath, stat, writeFile } from "node
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { toIndexEntry, writeSources } from "./catalog-format.mjs";
+import { comprobarExtensiones } from "./validar-extensiones.mjs";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryDirectory = path.resolve(scriptDirectory, "../..");
@@ -516,6 +517,21 @@ try {
   if (error.code !== "ENOENT") throw error;
 }
 
+// Lista blanca de extensiones antes de generar nada (P0-3): un `.exe`,
+// `.php` o `.svg` con script que se cuele en una carpeta de demos no llega
+// ni a catalogarse, y el build corta con codigo != 0. Se comprueba sobre las
+// raices completas (no solo las carpetas con index.html) para que una carpeta
+// nueva sin pagina tambien quede cubierta. Misma funcion que usa validate.mjs.
+const controlExtensiones = await comprobarExtensiones(
+  repositoryDirectory,
+  libraryRoots.map((root) => root.directory),
+);
+if (controlExtensiones.fallos.length > 0) {
+  console.error(`extensiones: ${controlExtensiones.fallos.length} fichero(s) fuera de la lista blanca:`);
+  for (const fallo of controlExtensiones.fallos) console.error(`  - ${fallo}`);
+  process.exit(1);
+}
+
 const pages = (
   await Promise.all(
     libraryRoots.map(async (root) => ({
@@ -539,6 +555,128 @@ await mkdir(path.dirname(catalogFile), { recursive: true });
 await writeFile(catalogFile, `${JSON.stringify(components.map(toIndexEntry))}\n`, "utf8");
 await writeFile(catalogScriptFile, `window.COMPONENT_CATALOG = ${JSON.stringify(components)};\n`, "utf8");
 await writeSources(sourcesDirectory, components);
+
+// Primera pagina estatica de la rejilla: se inyecta en components.html con
+// los mismos campos que `createComponentCard` pinta al hidratar, pero sin
+// iframe (la etiqueta se monta al ejecutar, ver el comentario del marcador
+// en components.html). Se usa el mismo `pageSize` que app.js para que el
+// contenido del primer lote no salte al hidratar. La categoria que se ve
+// es la clave del catalogo (la misma que getCategoryLabel traduce al idioma
+// activo en runtime), y el `aria-label` del enlace va en espanol: el sitio
+// es bilingue y al hidratar app.js lo sustituye.
+const PAGE_SIZE = 9;
+const componentsHtmlFile = path.join(repositoryDirectory, "Web", "components.html");
+const buildCatalogOpen = "<!-- build:catalog -->";
+const buildCatalogClose = "<!-- /build:catalog -->";
+const buildFiltersAuthorsOpen = "<!-- build:filters:authors -->";
+const buildFiltersAuthorsClose = "<!-- /build:filters:authors -->";
+const buildFiltersCategoriesOpen = "<!-- build:filters:categories -->";
+const buildFiltersCategoriesClose = "<!-- /build:filters:categories -->";
+const escape = (texto) =>
+  String(texto ?? "").replace(
+    /[&<>"']/g,
+    (c) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[c],
+  );
+const visibles = components.filter((component) => component.author !== "Davoker").slice(0, PAGE_SIZE);
+const tarjetas = visibles
+  .map((component, index) => {
+    const id = encodeURIComponent(component.id);
+    const name = escape(component.name);
+    const description = escape(component.description);
+    const category = escape(component.category);
+    return (
+      `<article class="component-card"><div class="card-preview"></div>` +
+      `<div class="card-content"><div class="component-card-top">` +
+      `<span class="component-category">${category}</span>` +
+      `<span class="component-number">${String(index + 1).padStart(3, "0")}</span>` +
+      `</div><h3>${name}</h3><p>${description}</p>` +
+      `<a class="card-link" href="./components.html?component=${id}" aria-label="Ver componente: ${name}">Ver componente<span aria-hidden="true">→</span></a>` +
+      `</div></article>`
+    );
+  })
+  .join("\n          ");
+// Chips de filtro: la misma logica que renderFilters() y renderAuthorFilters()
+// de app.js (getCategories() y getAuthors() ordenados con localeCompare,
+// etiquetas en espanol y estado inicial category="All" y author=null). Van en
+// el HTML porque los fieldsets vacios cuestan 142 px que aparecen sobre la
+// rejilla ya pintada: el CLS del presupuesto movil de CI. Si este bloque y
+// app.js se desincronizan, el test e2e "los filtros estaticos del build
+// coinciden con los que pinta app.js" falla.
+const etiquetasCategoriasEs = {
+  All: "Todas",
+  Animations: "Animaciones",
+  Buttons: "Botones",
+  Cards: "Tarjetas",
+  Controls: "Controles",
+  Effects: "Efectos",
+  Forms: "Formularios",
+  Galleries: "Galerías",
+  Loaders: "Indicadores de carga",
+  Navigation: "Navegación",
+  Other: "Otros",
+};
+const categorias = [...new Set(components.map((component) => component.category))].sort((first, second) =>
+  first.localeCompare(second),
+);
+const chipsCategorias = ["All", ...categorias]
+  .map(
+    (categoria) =>
+      `<button class="filter-button" type="button" aria-pressed="${String(categoria === "All")}">` +
+      `${escape(etiquetasCategoriasEs[categoria] ?? categoria)}</button>`,
+  )
+  .join("\n            ");
+const autoresPreferidos = ["Davoker", "kindred-98", "fatmaerm"];
+const autoresPresentes = new Set(components.map((component) => component.author).filter(Boolean));
+const autoresExtras = [...autoresPresentes]
+  .filter((author) => !autoresPreferidos.includes(author))
+  .sort((first, second) => first.localeCompare(second));
+const autoresFx = {
+  Davoker: "filter-button--liquid",
+  "kindred-98": "filter-button--datamosh",
+  fatmaerm: "filter-button--pulse",
+};
+// En espanol las etiquetas de autor son la propia clave (Davoker, kindred-98,
+// fatmaerm): translations.es.authors de app.js las mapea a si mismas.
+const chipsAutores = [...autoresPreferidos, ...autoresExtras]
+  .map((author) => {
+    const fx = autoresFx[author];
+    const clase = fx ? `filter-button ${fx}` : "filter-button";
+    // Sin ningun autor marcado (state.author = null) al cargar: pressed=false.
+    return `<button class="${clase}" type="button" aria-pressed="false">${escape(author)}</button>`;
+  })
+  .join("\n            ");
+
+const componentsHtmlOriginal = await readFile(componentsHtmlFile, "utf8");
+// El bloque reemplazado es TODO lo que va desde el marcador de apertura hasta
+// el de cierre: si se reescribe solo el contenido intermedio, los marcadores
+// se quedan en su sitio y la operacion es idempotente (re-generar produce el
+// mismo resultado si el catalogo no cambia). Si falta un par de marcadores el
+// build falla en vez de dejar la pagina a medio inyectar.
+const sustituirMarcador = (html, abierto, cerrado, contenido) => {
+  const openIndex = html.indexOf(abierto);
+  const closeIndex = html.indexOf(cerrado, openIndex + abierto.length);
+  if (openIndex < 0 || closeIndex < 0 || closeIndex < openIndex) {
+    throw new Error(`components.html: no encuentro los marcadores ${abierto} / ${cerrado}`);
+  }
+  return html.slice(0, openIndex) + abierto + contenido + cerrado + html.slice(closeIndex + cerrado.length);
+};
+const componentsHtmlActualizado = [
+  [buildCatalogOpen, buildCatalogClose, `\n          ${tarjetas}\n          `],
+  [buildFiltersAuthorsOpen, buildFiltersAuthorsClose, `\n            ${chipsAutores}\n            `],
+  [buildFiltersCategoriesOpen, buildFiltersCategoriesClose, `\n            ${chipsCategorias}\n            `],
+].reduce(
+  (html, [abierto, cerrado, contenido]) => sustituirMarcador(html, abierto, cerrado, contenido),
+  componentsHtmlOriginal,
+);
+await writeFile(componentsHtmlFile, componentsHtmlActualizado, "utf8");
+
 console.log(
   `Generated ${components.length} component entries at ${path.relative(repositoryDirectory, catalogFile)} ` +
     `and ${components.length} source files at ${path.relative(repositoryDirectory, sourcesDirectory)}.`,

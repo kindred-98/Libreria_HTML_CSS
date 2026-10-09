@@ -7,9 +7,10 @@ Este repositorio es público y acepta pull requests. Es razonable asumir que alg
 | Versión | Recibe avisos de seguridad |
 | --- | --- |
 | `main` | Sí |
+| `v1.0.x` | Sí |
 | Versiones anteriores | No |
 
-El proyecto no publica releases numeradas: todo el desarrollo ocurre en `main`, así que `main` es lo único mantenido.
+`main` recibe el desarrollo activo. La rama `v1.0.x` recibe avisos y arreglos de seguridad durante la misma ventana: aunque no se publican releases nuevas, se mantiene por compatibilidad con despliegues existentes hasta que se decida retirarla. `README.md` y `CHANGELOG.md` anuncian la v1.0.0; este es el sitio que reciben esos despliegues.
 
 ## Cómo reportar un problema
 

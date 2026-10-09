@@ -55,6 +55,7 @@
     </script>
 
     <link rel="preload" href="./data/catalog.json" as="fetch" crossorigin>
+    <link rel="preload" href="./assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="./styles/site.css?v=8c0c1494">
     <script defer src="./scripts/zip.js?v=a138f906"></script>
     <script defer src="./scripts/app.js?v=e8ab702b"></script>
@@ -110,11 +111,41 @@
             </label>
             <p class="results-count" id="results-count" aria-live="polite" data-i18n="loadingCollection">Loading collection...</p>
           </div>
+          <!-- Los chips de filtro se inyectan en build (generate-catalog.mjs)
+               con las etiquetas en espanol, el idioma por defecto del sitio.
+               Sin esto, los fieldsets estan vacios hasta que llega
+               catalog.json y app.js los rellena: los 142 px que ocupan los
+               chips aparecen sobre la rejilla ya pintada y mueven todo lo que
+               hay debajo (CLS 0.066 en el presupuesto movil de CI). Al
+               hidratar, renderFilters/renderAuthorFilters sustituyen el bloque
+               por botones identicos, asi que el pintado no salta. La etiqueta
+               en espanol es una copia de translations.es de app.js (app.js es
+               un script clasico y no puede importarse en el build); si se
+               cambia alla y no aqui, el test e2e "los filtros estaticos del
+               build coinciden con los que pinta app.js" falla en CI. -->
           <fieldset class="category-filters author-filters" id="author-filters">
             <legend class="visually-hidden" data-i18n="filterByAuthor">Filter by author</legend>
+            <!-- build:filters:authors -->
+            <button class="filter-button filter-button--liquid" type="button" aria-pressed="false">Davoker</button>
+            <button class="filter-button filter-button--datamosh" type="button" aria-pressed="false">kindred-98</button>
+            <button class="filter-button filter-button--pulse" type="button" aria-pressed="false">fatmaerm</button>
+            <!-- /build:filters:authors -->
           </fieldset>
           <fieldset class="category-filters" id="category-filters">
             <legend class="visually-hidden" data-i18n="filterByCategory">Filter by category</legend>
+            <!-- build:filters:categories -->
+            <button class="filter-button" type="button" aria-pressed="true">Todas</button>
+            <button class="filter-button" type="button" aria-pressed="false">Animaciones</button>
+            <button class="filter-button" type="button" aria-pressed="false">Botones</button>
+            <button class="filter-button" type="button" aria-pressed="false">Tarjetas</button>
+            <button class="filter-button" type="button" aria-pressed="false">Controles</button>
+            <button class="filter-button" type="button" aria-pressed="false">Efectos</button>
+            <button class="filter-button" type="button" aria-pressed="false">Formularios</button>
+            <button class="filter-button" type="button" aria-pressed="false">Galerías</button>
+            <button class="filter-button" type="button" aria-pressed="false">Indicadores de carga</button>
+            <button class="filter-button" type="button" aria-pressed="false">Navegación</button>
+            <button class="filter-button" type="button" aria-pressed="false">Otros</button>
+            <!-- /build:filters:categories -->
           </fieldset>
           <!-- Encabezado de nivel 2 antes de las tarjetas. No se ve porque la
                pagina ya dice arriba "Browse components", pero hace falta: cada
@@ -123,7 +154,25 @@
                usa quien navega con lector de pantalla por encabezados. Ademas
                nombra la seccion de la rejilla. -->
           <h2 class="visually-hidden" data-i18n="resultsHeading">Results</h2>
-          <div class="component-grid" id="component-grid"></div>
+          <!-- La primera pagina del catalogo se inyecta en build (generate-catalog.mjs)
+               con datos reales, para que la rejilla no salga vacia al cargar. app.js
+               llama a elements.grid.replaceChildren al hidratar, asi que el bloque
+               estatico se sustituye sin doble pintado. NO usar iframes aqui: el area
+               del preview queda vacia (mismas reglas de CSS) y se monta perezosa en
+               tiempo de ejecucion. -->
+          <div class="component-grid" id="component-grid">
+            <!-- build:catalog -->
+          <article class="component-card"><div class="card-preview"></div><div class="card-content"><div class="component-card-top"><span class="component-category">Effects</span><span class="component-number">001</span></div><h3>3D Cube Rubiks Twist</h3><p>A 3D Rubik&#39;s cube whose faces twist and scramble with the drag.</p><a class="card-link" href="./components.html?component=3d-cube-rubiks-twist" aria-label="Ver componente: 3D Cube Rubiks Twist">Ver componente<span aria-hidden="true">→</span></a></div></article>
+          <article class="component-card"><div class="card-preview"></div><div class="card-content"><div class="component-card-top"><span class="component-category">Controls</span><span class="component-number">002</span></div><h3>3D Range Slider</h3><p>A range slider that tracks in 3D, with a perspective handle.</p><a class="card-link" href="./components.html?component=3d-range-slider" aria-label="Ver componente: 3D Range Slider">Ver componente<span aria-hidden="true">→</span></a></div></article>
+          <article class="component-card"><div class="card-preview"></div><div class="card-content"><div class="component-card-top"><span class="component-category">Effects</span><span class="component-number">003</span></div><h3>3D Split Flap Board</h3><p>A departure board whose letters flip like a real split-flap display.</p><a class="card-link" href="./components.html?component=3d-split-flap-board" aria-label="Ver componente: 3D Split Flap Board">Ver componente<span aria-hidden="true">→</span></a></div></article>
+          <article class="component-card"><div class="card-preview"></div><div class="card-content"><div class="component-card-top"><span class="component-category">Animations</span><span class="component-number">004</span></div><h3>8-Bit Game Heart HUD</h3><p>An 8-bit style life meter with a beating pixel heart.</p><a class="card-link" href="./components.html?component=8bit-game-heart-hud" aria-label="Ver componente: 8-Bit Game Heart HUD">Ver componente<span aria-hidden="true">→</span></a></div></article>
+          <article class="component-card"><div class="card-preview"></div><div class="card-content"><div class="component-card-top"><span class="component-category">Forms</span><span class="component-number">005</span></div><h3>Alien Glyph Translator</h3><p>A translator that renders your text as invented alien glyphs.</p><a class="card-link" href="./components.html?component=alien-glyph-translator" aria-label="Ver componente: Alien Glyph Translator">Ver componente<span aria-hidden="true">→</span></a></div></article>
+          <article class="component-card"><div class="card-preview"></div><div class="card-content"><div class="component-card-top"><span class="component-category">Animations</span><span class="component-number">006</span></div><h3>Analog CRT Oscilloscope</h3><p>An oscilloscope drawing a live waveform on a curved CRT screen.</p><a class="card-link" href="./components.html?component=analog-crt-oscilloscope" aria-label="Ver componente: Analog CRT Oscilloscope">Ver componente<span aria-hidden="true">→</span></a></div></article>
+          <article class="component-card"><div class="card-preview"></div><div class="card-content"><div class="component-card-top"><span class="component-category">Effects</span><span class="component-number">007</span></div><h3>Animated Gradient Border</h3><p>A card border that cycles through a moving colour gradient.</p><a class="card-link" href="./components.html?component=animated-gradient-border" aria-label="Ver componente: Animated Gradient Border">Ver componente<span aria-hidden="true">→</span></a></div></article>
+          <article class="component-card"><div class="card-preview"></div><div class="card-content"><div class="component-card-top"><span class="component-category">Cards</span><span class="component-number">008</span></div><h3>API Status Ping Pill</h3><p>A pill that pings to show the current status of an API.</p><a class="card-link" href="./components.html?component=api-status-ping-pill" aria-label="Ver componente: API Status Ping Pill">Ver componente<span aria-hidden="true">→</span></a></div></article>
+          <article class="component-card"><div class="card-preview"></div><div class="card-content"><div class="component-card-top"><span class="component-category">Forms</span><span class="component-number">009</span></div><h3>ASCII Art Generator</h3><p>A tool that turns a short text into ASCII art banners.</p><a class="card-link" href="./components.html?component=ascii-art-generator" aria-label="Ver componente: ASCII Art Generator">Ver componente<span aria-hidden="true">→</span></a></div></article>
+          <!-- /build:catalog -->
+          </div>
           <div class="davoker-portal" id="davoker-portal" hidden>
             <iframe class="davoker-frame" id="davoker-frame" title="davoker" referrerpolicy="no-referrer" sandbox="allow-scripts allow-forms allow-popups allow-downloads" data-src="../DavokerDise%C3%B1ador/davoker.html"></iframe>
           </div>

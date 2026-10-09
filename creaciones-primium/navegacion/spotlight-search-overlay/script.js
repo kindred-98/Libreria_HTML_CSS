@@ -139,16 +139,26 @@
     return out;
   }
 
+  function svgNode(tag, attrs) {
+    var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var key in attrs) el.setAttribute(key, attrs[key]);
+    return el;
+  }
+
   function emblemFor(g, title) {
     var paths = {
-      Articles: '<path d="M60 20v80M20 60h80"/><path d="M34 34l52 52M86 34l-52 52"/>',
-      Glossary: '<path d="M28 34h64M28 52h64M28 70h44M28 88h30"/>',
-      Atlases: '<path d="M22 34l38-14 38 14v52L60 100 22 86z"/><path d="M60 20v80"/>',
-      People: '<circle cx="60" cy="46" r="16"/><path d="M30 100c0-18 13-30 30-30s30 12 30 30"/>',
-      Commands: '<path d="M60 24 94 60 60 96 26 60z"/><path d="M60 24v72M26 60h68"/>'
+      Articles: [['path', { d: 'M60 20v80M20 60h80' }], ['path', { d: 'M34 34l52 52M86 34l-52 52' }]],
+      Glossary: [['path', { d: 'M28 34h64M28 52h64M28 70h44M28 88h30' }]],
+      Atlases: [['path', { d: 'M22 34l38-14 38 14v52L60 100 22 86z' }], ['path', { d: 'M60 20v80' }]],
+      People: [['circle', { cx: '60', cy: '46', r: '16' }], ['path', { d: 'M30 100c0-18 13-30 30-30s30 12 30 30' }]],
+      Commands: [['path', { d: 'M60 24 94 60 60 96 26 60z' }], ['path', { d: 'M60 24v72M26 60h68' }]]
     };
-    emblem.innerHTML = '<circle class="em__ring" cx="60" cy="60" r="48"/><circle cx="60" cy="60" r="30"/>' +
-      (paths[g] || paths.Articles);
+    var shapes = (paths[g] || paths.Articles).map(function (s) { return svgNode(s[0], s[1]); });
+    emblem.replaceChildren(
+      svgNode('circle', { class: 'em__ring', cx: '60', cy: '60', r: '48' }),
+      svgNode('circle', { cx: '60', cy: '60', r: '30' }),
+      ...shapes
+    );
     prevKind.textContent = g.replace(/s$/, '') + ' \u00b7 ' + title;
   }
 
@@ -188,8 +198,9 @@
       var sec = document.createElement('section');
       var head = document.createElement('p');
       head.className = 'grp__k';
-      head.innerHTML = '<b>' + String(bi + 1).padStart(2, '0') + '</b> ' + b.name +
-        ' \u00b7 ' + b.rows.length;
+      var num = document.createElement('b');
+      num.textContent = String(bi + 1).padStart(2, '0');
+      head.replaceChildren(num, document.createTextNode(' ' + b.name + ' \u00b7 ' + b.rows.length));
       sec.appendChild(head);
       var ul = document.createElement('ul');
       ul.className = 'res';

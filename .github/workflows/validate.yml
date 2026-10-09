@@ -102,6 +102,13 @@ jobs:
       - name: Comprobar el CSP del despliegue
         run: node Web/scripts/validar-csp.mjs
 
+      # La direccion de donacion (P0-1): fuente unica en Web/data/donacion.json,
+      # presencia en las tres paginas del sitio y ninguna direccion 0x+40 ajena
+      # en ningun HTML, JS o MD del repositorio. Es el dato mas valioso del pie:
+      # una letra cambiada desvia los donativos y no se nota al mirar la pagina.
+      - name: Comprobar la direccion de donacion
+        run: npm run validar:donacion
+
       # Presupuesto de peso del catalogo (Fase 5). El catalogo es el segundo
       # recurso mas pesado de la pagina: 707 KB en disco, 163 KB comprimidos.
       # No es hoy un cuello de botella (la pagina de componentes puntua 97),
@@ -110,7 +117,7 @@ jobs:
       # antes. Va en los tres jobs de Node porque no necesita navegador: es
       # una cuenta de bytes y tarda menos de un segundo.
       #
-      # Detalle y criterio de subida en Docs/Fase5_presupuestos.md.
+      # Detalle y criterio de subida en Docs/05-rendimiento/Fase5_presupuestos.md.
       - name: Comprobar el peso del catalogo (presupuesto)
         run: npm run validar:peso
 
@@ -215,7 +222,7 @@ jobs:
       # presupuesto en silencio.
       #
       # El detalle de las mediciones y el plan de subida estan en
-      # Docs/Presupuestos_rendimiento.md y en Docs/Fase5_presupuestos.md.
+      # Docs/05-rendimiento/Presupuestos_rendimiento.md y en Docs/05-rendimiento/Fase5_presupuestos.md.
       - name: Presupuesto de rendimiento en movil
         if: matrix.node-version == 24
         run: npm run validar:lighthouse:movil

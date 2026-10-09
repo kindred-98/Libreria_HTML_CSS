@@ -91,7 +91,10 @@
     }
     glow.style.opacity = (0.55 + 0.45 * (1 - Number(expose.value) / 150)).toFixed(3);
 
-    document.getElementById("bNo").innerHTML = pad(at + 1) + "<i>/09</i>";
+    var bNo = document.getElementById("bNo");
+    var bNoTotal = document.createElement("i");
+    bNoTotal.textContent = "/09";
+    bNo.replaceChildren(pad(at + 1), bNoTotal);
     document.getElementById("bName").textContent = d.name;
     document.getElementById("bNote").textContent = d.note;
     document.getElementById("bSub").textContent = d.sub;

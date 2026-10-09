@@ -48,6 +48,24 @@ async function esperarRejilla(pagina) {
   );
 }
 
+/** Chips de filtro tal y como estan en el DOM: texto, clase, estado y tipo. */
+async function leerChips(pagina) {
+  return pagina.evaluate(() => ({
+    categorias: [...document.querySelectorAll("#category-filters button")].map((button) => [
+      button.textContent,
+      button.className,
+      button.getAttribute("aria-pressed"),
+      button.getAttribute("type"),
+    ]),
+    autores: [...document.querySelectorAll("#author-filters button")].map((button) => [
+      button.textContent,
+      button.className,
+      button.getAttribute("aria-pressed"),
+      button.getAttribute("type"),
+    ]),
+  }));
+}
+
 before(async () => {
   servidor = await arrancarServidor(ORIGEN_PUERTO);
   navegador = await chromium.launch({ args: ["--no-sandbox"] });
@@ -66,7 +84,12 @@ test("el servidor no publica archivos internos del repositorio", async () => {
   assert.equal(publico.status, 200);
   await publico.arrayBuffer();
 
-  for (const ruta of ["/.git/config", "/Docs/Sonar_decisiones.md", "/CONTRIBUTING.md", "/package.json"]) {
+  for (const ruta of [
+    "/.git/config",
+    "/Docs/03-sonar/Sonar_decisiones.md",
+    "/CONTRIBUTING.md",
+    "/package.json",
+  ]) {
     const respuesta = await fetch(`${ORIGEN}${ruta}`);
     await respuesta.arrayBuffer();
     assert.equal(respuesta.status, 403, `${ruta}: debe permanecer bloqueada`);
@@ -113,6 +136,35 @@ test("componentes: la rejilla se rellena con el catalogo y pagina", async () => 
   // Con 1018 componentes tiene que haber paginacion: es la senal de que la
   // rejilla no esta volcando las 1018 en el DOM de golpe.
   assert.equal(await pagina.locator("#pagination").isVisible(), true);
+  await pagina.close();
+});
+
+test("componentes: los filtros estaticos del build coinciden con los que pinta app.js", async () => {
+  // Sin JavaScript se ve lo que generate-catalog.mjs inyecta en
+  // components.html; con JavaScript se ve lo que renderFilters y
+  // renderAuthorFilters pintan al hidratar. Si no coinciden (etiqueta, orden,
+  // clase o aria-pressed), los chips cambian de alto cuando llega
+  // catalog.json y mueven la rejilla ya pintada: es el CLS del presupuesto
+  // movil de CI, que aqui no se mide pero si se rompe.
+  const sinJavaScript = await navegador.newContext({ javaScriptEnabled: false });
+  const paginaEstatica = await sinJavaScript.newPage();
+  await paginaEstatica.goto(`${ORIGEN}/Web/components.html`, { waitUntil: "load" });
+  const estaticos = await leerChips(paginaEstatica);
+  await sinJavaScript.close();
+  assert.equal(estaticos.categorias.length > 1, true, "el build no inyecto chips de categoria");
+  assert.equal(estaticos.autores.length > 0, true, "el build no inyecto chips de autor");
+
+  const pagina = await abrir("/Web/components.html");
+  // Los botones de paginacion solo existen tras cargar catalog.json y
+  // renderRoute, y renderFilters se ejecuta antes: con ellos pintados, los
+  // filtros ya estan hidratados.
+  await pagina.waitForFunction(
+    () => document.querySelectorAll("#pagination-pages button").length > 0,
+    undefined,
+    { timeout: 15000 },
+  );
+  const hidratados = await leerChips(pagina);
+  assert.deepEqual(estaticos, hidratados);
   await pagina.close();
 });
 

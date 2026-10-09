@@ -138,8 +138,7 @@ function drop(clientX, clientY, force) {
   node.style.cssText = '--x:' + x.toFixed(2) + '%;--y:' + y.toFixed(2) + '%;--w:' + w.toFixed(2) +
     '%;--ar:' + (0.92 + Math.random() * 0.24).toFixed(2) +
     ';--c1:' + p[0] + ';--c2:' + p[1] + ';--c3:' + p[2] + ';--c4:' + p[3] + ';--c5:' + p[4] + ';--c6:' + p[5];
-  node.innerHTML = '<span class="wet"></span><span class="rim"><i></i></span><span class="mass"><i></i></span>' +
-    '<span class="sed"></span><span class="flick"><i></i></span>';
+  node.innerHTML = '<span class="wet"></span><span class="rim"><i></i></span><span class="mass"><i></i></span><span class="sed"></span><span class="flick"><i></i></span>';
   field.appendChild(node);
   const b = read(node);
   b.born = performance.now();

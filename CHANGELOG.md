@@ -2,12 +2,12 @@
 
 Formato: [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
 
-**Documentación relacionada**: [README](./README.md) · plan de fases ([`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md)) · [Web/README.md](./Web/README.md) · [THIRD_PARTY_NOTICES.md](./Docs/THIRD_PARTY_NOTICES.md) · detalle de la sesión del 2026-10-01/02 ([`Docs/Sesion_2026-10-01_02.md`](./Docs/Sesion_2026-10-01_02.md)).
+**Documentación relacionada**: [README](./README.md) · plan de fases ([`Docs/01-planes/Plan_de_fases.md`](./Docs/01-planes/Plan_de_fases.md)) · [Web/README.md](./Web/README.md) · [THIRD_PARTY_NOTICES.md](./Docs/THIRD_PARTY_NOTICES.md) · detalle de la sesión del 2026-10-01/02 ([`Docs/04-sesiones/Sesion_2026-10-01_02.md`](./Docs/04-sesiones/Sesion_2026-10-01_02.md)).
 
 Cada fase terminada se registra aquí con su fecha. Las fases están definidas en
-[`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md); las de la auditoría vigente,
-en [`Docs/Auditoria.md`](./Docs/Auditoria.md) §10, y lo que se aplicó de cada una
-queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplicadas/).
+[`Docs/01-planes/Plan_de_fases.md`](./Docs/01-planes/Plan_de_fases.md); las de la auditoría vigente,
+en [`Docs/02-auditorias/Auditoria.md`](./Docs/02-auditorias/Auditoria.md) §10, y lo que se aplicó de cada una
+queda en [`Docs/02-auditorias/Fases-de-Auditoria-Aplicadas/`](./Docs/02-auditorias/Fases-de-Auditoria-Aplicadas/).
 
 ## [1.0.0] - 2026-10-03
 
@@ -18,7 +18,7 @@ queda en [`Docs/Fases-de-Auditoria-Aplicadas/`](./Docs/Fases-de-Auditoria-Aplica
 - Cada fase tiene su propia entrada mas abajo, de mas reciente a mas antigua.
 - El tag y la release no se crean desde aqui: el comando `gh release create`
   queda en
-  [`Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`](./Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md),
+  [`Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`](./Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md),
   para que lo ejecute Angel una vez la PR este en `main`.
 
 ## [Arregla los previews en blanco de iOS/iPadOS y el viewport movil de Safari] - 2026-10-05
@@ -214,7 +214,7 @@ En esta primera pasada se pensó que los falsos positivos había que marcarlos
 desde la interfaz. En la sesión del 2026-10-08 se comprobó que, con permisos de
 escritura, la API `api/issues/do_transition` sí permite hacerlo y guardar el
 motivo en cada issue. El inventario y las decisiones están en
-`Docs/Sonar_para_marcar.md` y `Docs/Sonar_decisiones.md`.
+`Docs/03-sonar/Sonar_para_marcar.md` y `Docs/03-sonar/Sonar_decisiones.md`.
 
 ---
 
@@ -273,7 +273,7 @@ Segundo bloque del descenso de las 101 incidencias.
   son unos 10.000 pasos por linea de 100 caracteres. En las `categoryRules`,
   ademas de ser barato, **deciden la categoria de los 1.018 demos**, asi que
   tocar una alternativa moveria el catalogo. Los dos motivos, en
-  `Docs/Sonar_decisiones.md`.
+  `Docs/03-sonar/Sonar_decisiones.md`.
 
 El catalogo se comparo byte a byte antes y despues: **identico**.
 
@@ -443,7 +443,7 @@ para que el cambio quede en el historial. No se baja el presupuesto en
 silencio.
 
 El resto de la fase (presupuesto de CLS, presupuesto del tamano del catalogo y
-uptime diario) queda documentado en `Docs/Fase5_presupuestos.md`, con el
+uptime diario) queda documentado en `Docs/05-rendimiento/Fase5_presupuestos.md`, con el
 criterio de terminado de cada punto.
 
 ---
@@ -543,7 +543,7 @@ ganar 70 ms no compensa arriesgar la portada.
 
 Todo el detalle, el plan de subida del umbral a 85, 88, 90 y 92, y el criterio
 objetivo para saber cuando toca subirlo, estan en
-`Docs/Presupuestos_rendimiento.md`.
+`Docs/05-rendimiento/Presupuestos_rendimiento.md`.
 
 ## [Fase 3: la portada movil baja de 77 a 84 de rendimiento] - 2026-10-06
 
@@ -619,7 +619,7 @@ existen.
 
 ## [Cierra las fases 0, 1, 2, 4a y 4b, y documenta lo que queda] - 2026-10-06
 
-Cierre de la sesion. `Docs/Sesion_2026-10-05_06.md` recoge, fase por fase, que se
+Cierre de la sesion. `Docs/04-sesiones/Sesion_2026-10-05_06.md` recoge, fase por fase, que se
 hizo, con que numero medido detras, que se decidio **no** hacer y por que.
 
 - **Fase 0** — 48 tests unitarios y 15 e2e con `node:test` (cero dependencias
@@ -776,7 +776,7 @@ veia con el shell a otra altura y, cuando el scroll llegaba, llegaba tarde.
   `evento.origin !== window.location.origin`, que sobre el papel es lo
   correcto. El iframe del portal lleva `sandbox` **sin** `allow-same-origin`
   (lo quito `090ca05` al cerrar el punto 2 de
-  [`Docs/Hallazgos_agente_paralelo_2026-10-05.md`](./Docs/Hallazgos_agente_paralelo_2026-10-05.md)),
+  [`Docs/02-auditorias/Hallazgos_agente_paralelo_2026-10-05.md`](./Docs/02-auditorias/Hallazgos_agente_paralelo_2026-10-05.md)),
   asi que su origen es opaco y `event.origin` llega **siempre como `"null"`**:
   el chequeo descartaba todos los mensajes y el centrado no se ejecutaba nunca.
   Solo funciono mientras `28de356` tuvo `allow-same-origin` puesto, que era
@@ -820,7 +820,7 @@ veia con el shell a otra altura y, cuando el scroll llegaba, llegaba tarde.
 
 ## [Documenta el plan para llevar el proyecto del 80 al 97] - 2026-10-06
 
-`Docs/Plan_de_nivel_siguiente.md` recoge el camino desde el 80 actual hasta
+`Docs/01-planes/Plan_de_nivel_siguiente.md` recoge el camino desde el 80 actual hasta
 un 97, con el producto/mercado en 100. No es una opinion: cada nota trae su
 comando y su medicion.
 
@@ -984,7 +984,7 @@ Verificado en verde: `validar`, `validar:html`, `validar:enlaces`,
 
 ## [Documenta que se deja de Sonar y por que] - 2026-10-06
 
-`Docs/Sonar_decisiones.md`: lo que **no** se toca de SonarQube y el motivo de
+`Docs/03-sonar/Sonar_decisiones.md`: lo que **no** se toca de SonarQube y el motivo de
 cada caso. Un aviso sin tocar, sin explicacion escrita, no es un "won't fix":
 es deuda oculta que vuelve en seis meses sin que nadie sepa por que sigue ahi.
 
@@ -1585,7 +1585,7 @@ fallos).
 ## [Arregla tres regresiones detectadas en el analisis de SonarQube] - 2026-10-03
 
 El otro agente que limpio los 1.600 code smells dejo sin querer tres
-regresiones que el informe paralelo (`Docs/Hallazgos_agente_paralelo_2026-10-05.md`)
+regresiones que el informe paralelo (`Docs/02-auditorias/Hallazgos_agente_paralelo_2026-10-05.md`)
 ya habia marcado. Se arreglan aqui:
 
 - **`.github/workflows/validate.yml`**: el step de `setup-node` perdio la
@@ -1702,7 +1702,7 @@ asi:
 
 ## [Constancia de la fase 7 cerrada] - 2026-10-03
 
-- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md` reune los seis
+- `Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md` reune los seis
   apartados (7.1 a 7.6, incluido el opcional), la tabla completa de los 35
   demos reclasificados, el motivo del unico que sigue en «Other», el resultado
   del detector de duplicados, los umbrales de Lighthouse y los criterios de
@@ -1710,7 +1710,7 @@ asi:
 - Con esto cierran las ocho fases del plan. La 5 quedo cancelada por Angel
   (87,26 MB por encima del umbral de 40 MB).
 - La tabla «Registro de avance» del
-  [`PLAN-MEJORAS-OPENCODE.md`](./Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md)
+  [`PLAN-MEJORAS-OPENCODE.md`](./Docs/02-auditorias/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md)
   queda rellena: siete fases hechas y una cancelada, con la PR como unico
   paso pendiente.
 
@@ -1779,7 +1779,7 @@ asi:
 - 35 de los 36 demos que estaban en `Other` pasan a una categoria existente,
   usando el campo `category` de `Web/data/component-overrides.json` y sin
   renombrar ninguna carpeta. La tabla `id -> categoria` esta en
-  `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`.
+  `Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase7.md`.
 - Queda uno solo en `Other`: `dev-console-easter-egg`, que no tiene interfaz
   y se dispara desde la consola del navegador; es el unico que no encaja en
   ninguna categoria.
@@ -1790,7 +1790,7 @@ asi:
 
 ## [Constancia de la fase 6 cerrada] - 2026-10-03
 
-- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase6.md` reune los tres
+- `Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase6.md` reune los tres
   apartados (6.1, 6.2 y 6.3), el informe del piloto de movimiento reducido, los
   criterios de aceptacion —ya los cuatro en verde— y el siguiente paso.
 
@@ -1883,7 +1883,7 @@ asi:
   auditoria: `--dry-run` sigue sirviendo para volver a medir.
 - Quedan sin cubrir los criterios de la fase y del «estado esperado» que
   dependen de dejar de hacer hotlinking. Detalle en
-  `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase5.md`.
+  `Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase5.md`.
 
 ## [Inventario de las imagenes de Wikimedia] - 2026-10-03
 
@@ -1905,7 +1905,7 @@ asi:
 
 ## [Constancia de la fase 4 cerrada] - 2026-10-03
 
-- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase4.md` recoge los dos
+- `Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase4.md` recoge los dos
   commits de la fase (`0750085` y `8495576`): las dos excepciones de la linea
   base y el `<path>` del Mobius que se pintaba con `NaN`.
 - Incluye la causa raiz de cada uno, la comprobacion antes/despues (40
@@ -1944,7 +1944,7 @@ asi:
 
 ## [Constancia de la fase 3 cerrada] - 2026-10-03
 
-- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase3.md` recoge la fase
+- `Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase3.md` recoge la fase
   aplicada en el commit `28704f3`: el script de test de humo, su linea base
   versionada y el paso que se anade al CI de Node 24.
 - Incluye las cifras de la primera pasada (1.018 demos, **3 con fallos** y 85
@@ -1988,7 +1988,7 @@ asi:
 
 ## [Constancia de la fase 2 cerrada] - 2026-10-03
 
-- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase2.md` recoge las dos
+- `Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase2.md` recoge las dos
   subfases aplicadas y fusionadas en el PR #4 (`06daa83`): la regex de los
   bloques de codigo de `markdown-preview-live` y el QR de
   `url-qr-code-generator` generado en local con `qrcode-generator` v2.0.4
@@ -2052,7 +2052,7 @@ asi:
 
 ## [Constancia de la fase 1 cerrada] - 2026-10-03
 
-- `Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase1.md` recoge las cinco
+- `Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase1.md` recoge las cinco
   subfases aplicadas y fusionadas en el PR #3 (`ff215a2`): las cuatro politicas
   de `sandbox` para las 1018 rutas de demo, el test de la direccion de
   donacion, `npm audit` en el CI, el workflow de CodeQL con las acciones
@@ -2066,7 +2066,7 @@ asi:
 ## [El correo personal sale tambien del plan de fases] - 2026-10-03
 
 - **Ampliacion de la 1.5.** En
-  `Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md:110` el correo se
+  `Docs/02-auditorias/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md:110` el correo se
   sustituye por el marcador `<correo-personal-del-mantenedor>`. La orden del
   `grep` sigue funcionando con el marcador, asi que la instruccion no se rompe.
 - **Estado**: `git grep` con la cadena del correo ya no encuentra el plan. Lo
@@ -2084,7 +2084,7 @@ asi:
   STOP de la fase pedia activar antes el reporte privado de vulnerabilidades en
   GitHub, y ya esta activo, asi que se podia hacer.
 - **La unica otra aparicion no se toca, y se avisa.** El correo sigue en
-  `Docs/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md:110`, que es donde el plan
+  `Docs/02-auditorias/Claude-Revision-Audi/PLAN-MEJORAS-OPENCODE.md:110`, que es donde el plan
   ordena literalmente ejecutar ese mismo `grep`. Cambiarlo dejaria la instruccion
   inutil; es documentacion del hallazgo, igual que pasaba con los informes de la
   auditoria.
@@ -2168,7 +2168,7 @@ asi:
 - **Fase 0 completa.** Es la unica de las ocho que no toca un solo fichero del
   repositorio: se resuelve entera en la interfaz de GitHub y de Vercel. Ahora deja
   constancia en
-  [`Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase0.md`](./Docs/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase0.md),
+  [`Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase0.md`](./Docs/02-auditorias/Claude-Revision-Audi/FaseAplicadaDeClaude/Fase0.md),
   con lo que quedo configurado, lo que se descarto y por que.
 - **Ruleset `Protege main`, activo.** Lista de bypass vacia, asi que nadie se la
   salta ni el dueño, y 4 branch rules apuntando solo a `main`: exigir pull request
@@ -2239,19 +2239,19 @@ asi:
   la auditoria enumeraba (uno del mantenedor, otro de un centro educativo y otro de un
   tercero que no dio permiso) estaban citados en cuatro informes, o sea que la
   documentacion que denunciaba el problema lo estaba reproducindo. Ahora se siguen
-  describiendo igual, pero sin teclear la direccion: `Docs/Auditoria-2026-09-30.md`,
-  `Docs/Auditoria.md`, `Docs/Plan_de_fases.md` y
-  `Docs/Fases-de-Auditoria-Aplicadas/Fase1-Aplicada.md`.
+  describiendo igual, pero sin teclear la direccion: `Docs/02-auditorias/Auditoria-2026-09-30.md`,
+  `Docs/02-auditorias/Auditoria.md`, `Docs/01-planes/Plan_de_fases.md` y
+  `Docs/02-auditorias/Fases-de-Auditoria-Aplicadas/Fase1-Aplicada.md`.
 - **`SECURITY.md:22` no se toca.** Sigue publicando la direccion hasta la fase 1.5,
   que lleva un STOP condicionado a activar el reporte privado de vulnerabilidades en
   GitHub.
 - **La historia no se reescribe.** Los correos siguen en los metadatos de los commits
   antiguos; sacarlos de ahi exige `git filter-repo` y es una decision tuya, no mia
-  (fase 9 de [`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md)).
+  (fase 9 de [`Docs/01-planes/Plan_de_fases.md`](./Docs/01-planes/Plan_de_fases.md)).
 
 ## [El plan de revision de Claude cambia de carpeta] - 2026-10-02
 
-- **`Docs/Claude-Revision-Audi.md/` pasa a `Docs/Claude-Revision-Audi/`.** El nombre
+- **`Docs/Claude-Revision-Audi.md/` pasa a `Docs/02-auditorias/Claude-Revision-Audi/`.** El nombre
   anterior acababa en `.md`, pero lo que ahi dentro habia era una carpeta con un
   fichero, no un documento, y hacer `Docs/algo.md` lo convertia en un callejon al
   navegarlo desde GitHub. Sigue dentro `PLAN-MEJORAS-OPENCODE.md` con el mismo texto:
@@ -2260,9 +2260,9 @@ asi:
 
 ## [La documentacion de la auditoria queda al dia con lo aplicado] - 2026-10-02
 
-- **`Docs/Auditoria.md` corregida sin reescribirla.** Sigue siendo el diagnostico en
+- **`Docs/02-auditorias/Auditoria.md` corregida sin reescribirla.** Sigue siendo el diagnostico en
   `39f4e8d`, el commit revisado, y ahora lo dice en la cabecera; el estado actual queda
-  enlazado hacia `Docs/Fases-de-Auditoria-Aplicadas/`. Lo que dejo de ser cierto:
+  enlazado hacia `Docs/02-auditorias/Fases-de-Auditoria-Aplicadas/`. Lo que dejo de ser cierto:
   «0 dependencias npm» (hay `playwright` en `devDependencies`), «24 filas» en §4 (la
   tabla tiene 16), la tabla de resumen (decia 4 criticos y 8 altos; ahora los 10
   hallazgos con ID y las 9 filas sin ID de §6 y §7), `site.css:1761` (era 1753), y el
@@ -2534,7 +2534,7 @@ manual.
 
 ## [Auditoría de seguridad, licencias y código muerto] - 2026-09-30
 
-- `Docs/Auditoria.md` recoge el resultado: qué se comprobó y está bien, qué hay
+- `Docs/02-auditorias/Auditoria.md` recoge el resultado: qué se comprobó y está bien, qué hay
   que proteger y qué queda por decidir. Los datos del documento están medidos
   sobre el repositorio, no estimados.
 - **No hay secretos activos** ni en el árbol ni en los 67 commits: ni claves de
@@ -2939,7 +2939,7 @@ Se puede corregir por ID con `author` en `Web/data/component-overrides.json`.
 
 ## [El catálogo se genera en el despliegue] — 2026-09-27
 
-Continuidad de la [segunda auditoría](./Docs/Auditoria.md). Resuelve
+Continuidad de la [segunda auditoría](./Docs/02-auditorias/Auditoria.md). Resuelve
 el problema que aquella dejó abierto: el catálogo había que regenerarlo a mano, así que
 un demo nuevo no aparecía en la web hasta que alguien se acordaba.
 
@@ -3001,7 +3001,7 @@ catálogo. Se suben (~1,6 MB) y el build los sobrescribe.
 
 Trabajo posterior a la primera auditoría (su documento se borró al limpiar
 `Docs/` en `d650750` y no tiene equivalente actual; el inventario que la
-sustituye está en [`Auditoria.md`](./Docs/Auditoria.md)), que
+sustituye está en [`Auditoria.md`](./Docs/02-auditorias/Auditoria.md)), que
 limpió 13,64 MB de ficheros sin uso. Aquí se registra lo que no es una fase del plan.
 
 ### Hecho — un solo sitio: se elimina el despliegue en GitHub Pages
@@ -3200,7 +3200,7 @@ ZIP habilitada por ser creaciones originales con licencia propia.
   de sentido (ya no publica 0 componentes, publica 248).
 - `Web/README.md`: 364 componentes y las dos situaciones de licencia.
 - `THIRD_PARTY_NOTICES.md`: tabla con las dos colecciones y su estado de ZIP.
-- `Docs/Plan_de_fases.md`: **Fase 9** añadida y el pendiente que la bloqueaba
+- `Docs/01-planes/Plan_de_fases.md`: **Fase 9** añadida y el pendiente que la bloqueaba
   marcado como resuelto.
 
 ### Verificado
@@ -3727,7 +3727,7 @@ todas las tarjetas mostraban la misma frase
   `.github-pages-site-check-2/`, `.github-pages-site-final-check/`.
 - Verificación: `git ls-files` ya **no contiene ninguna ruta `github-pages*`**.
 - Se creó este `CHANGELOG.md` y el plan de fases en
-  [`Docs/Plan_de_fases.md`](./Docs/Plan_de_fases.md) (Fases 0–8).
+  [`Docs/01-planes/Plan_de_fases.md`](./Docs/01-planes/Plan_de_fases.md) (Fases 0–8).
 
 ### Pendiente / limitaciones
 

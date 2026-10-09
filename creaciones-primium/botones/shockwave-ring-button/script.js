@@ -150,7 +150,7 @@
     wavesEl.textContent = String(waves);
     chargeV = 1;
     needle.style.transform = "rotate(" + (R.bear + 180).toFixed(0) + "deg)";
-    bearingEl.innerHTML = String(Math.round((R.bear + 360) % 360)).slice(0, 3) + "&deg;";
+    bearingEl.textContent = String(Math.round((R.bear + 360) % 360)).slice(0, 3) + "\u00b0";
     rd.textContent = "FIRE";
     rd.style.color = "#ffb27a";
     lamp.style.background = "#ff5a4a";
