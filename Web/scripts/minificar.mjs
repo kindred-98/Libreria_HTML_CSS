@@ -73,21 +73,22 @@ const numero = (n) => n.toLocaleString("es-ES");
 const rellenar = (texto, ancho, izquierda = true) =>
   izquierda ? String(texto).padStart(ancho) : String(texto).padEnd(ancho);
 
-const filas = [];
-for (const relativa of OBJETIVOS) {
-  const ruta = path.join(repositoryDirectory, relativa);
-  const original = await readFile(ruta, "utf8");
-  const loader = relativa.endsWith(".css") ? "css" : "js";
-  const { code } = await transform(original, { minify: true, loader });
-  await writeFile(ruta, code, "utf8");
-  filas.push({
-    relativa,
-    antes: Buffer.byteLength(original),
-    despues: Buffer.byteLength(code),
-    brotliAntes: brotliDe(original),
-    brotliDespues: brotliDe(code),
-  });
-}
+const filas = await Promise.all(
+  OBJETIVOS.map(async (relativa) => {
+    const ruta = path.join(repositoryDirectory, relativa);
+    const original = await readFile(ruta, "utf8");
+    const loader = relativa.endsWith(".css") ? "css" : "js";
+    const { code } = await transform(original, { minify: true, loader });
+    await writeFile(ruta, code, "utf8");
+    return {
+      relativa,
+      antes: Buffer.byteLength(original),
+      despues: Buffer.byteLength(code),
+      brotliAntes: brotliDe(original),
+      brotliDespues: brotliDe(code),
+    };
+  }),
+);
 
 const anchoFichero = Math.max(...filas.map((f) => f.relativa.length));
 console.log("");
